@@ -1,0 +1,33 @@
+#canvas {
+//  background: #eee;
+}
+
+#playerTable {
+  min-width: 877px;
+}
+
+#clock {
+  font-size: 600%;
+}
+
+#clock_box {
+  float: left;
+}
+
+#round {
+  font-size: 600%;
+}
+
+#round_box {
+  float: left;
+  margin-right: 100px;
+}
+
+#status_box {
+  overflow: hidden;
+}
+
+.button1 {
+  float: left;
+}
+

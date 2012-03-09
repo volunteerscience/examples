@@ -1,0 +1,477 @@
+<script>
+
+var BUTTON = 1;
+var CLICK = 2;
+var COMPLETE = 3;
+var TIMEOUT_ONLY = 4;
+
+var showScore = false;
+var submitType = TIMEOUT_ONLY;
+
+var FIRST_ACTUAL_ROUND = 101;
+
+var numRounds = 6;
+var numCities = 27;
+var cities = new Array();
+var width = 620;
+var height = 460;
+var cityRad = 10;
+var lastCity = null;
+var paths = new Array();
+var score = 0;
+var cityOrder = new Array();
+
+function buildMap(mapSeed, num) {
+  Math.seedrandom(mapSeed);
+
+  var ret = new Array();
+  for (var i = 0; i < num; i++) {
+    var city = new Object();
+    city.index = i;
+    city.x = cityRad+Math.random()*width;
+    city.y = cityRad+Math.random()*height;
+    ret.push(city);
+  }
+  return ret;
+}
+
+function addInteractiveCity(city) {
+//    alert('addICity():'+city.x);
+    city.circle = paper.circle(city.x,city.y,cityRad);
+    city.circle.attr("fill", "#0f0");
+    city.circle.attr("stroke", "#000");
+
+    city.circle.click(function() {
+      var clobber = null;
+      for (idx in cityOrder) {
+        if (clobber != null) {
+          cities[cityOrder[idx]].circle.attr("fill","#0f0");
+        } else if (cityOrder[idx] == city.index) {
+          clobber = parseInt(idx);
+          if (clobber == numCities-1) return;
+          lastCity = cities[cityOrder[idx]];
+          lastCity.circle.attr("fill","#00f");
+        }
+      }
+
+      if (clobber != null) {
+        while(cityOrder.length > (clobber+1)) {
+          cityOrder.pop();
+        }
+
+        while(paths.length > clobber) {
+          paths.pop().line.remove();
+        }
+
+        if (cityOrder.length > 1) {
+          var firstCity = cities[cityOrder[0]];
+          firstCity.circle.attr("fill","#f00");
+        }
+
+        // recalculate score
+        score = 0;
+        var last = null;
+        for (idx in cityOrder) {
+          cit = cities[cityOrder[idx]];
+          if (last != null) {
+            var dx = (cit.x-last.x);
+            var dy = (cit.y-last.y);
+            var dist = Math.sqrt(dx*dx+dy*dy);
+            score+=dist;
+          }
+          last = cit;
+        }
+        $('#score').html('Score: '+Math.floor(score));
+
+        return;        
+      }
+
+      city.circle.attr("fill","#00f");
+      if (lastCity != null) {
+        lastCity.circle.attr("fill","#f00");
+        var dx = (city.x-lastCity.x);
+        var dy = (city.y-lastCity.y);
+        var dist = Math.sqrt(dx*dx+dy*dy);
+        score+=dist;
+        $('#score').html('Score: '+Math.floor(score));
+        var path = new Object();
+        path.line = paper.path("M "+lastCity.x+" "+lastCity.y+" l "+dx+" "+dy+" z");
+        path.line.attr({stroke: '#3b4449',
+            'stroke-width': 10});
+        path.line.toBack();
+        background.toBack();
+        paths.push(path);
+      }
+
+      lastCity = city;
+      cityOrder.push(city.index);
+
+      // draw last line
+      if (cityOrder.length == numCities) {
+        var firstCity = cities[cityOrder[0]];
+        firstCity.circle.attr("fill","#00f");
+        lastCity.circle.attr("fill","#f00");
+        var dx = (firstCity.x-lastCity.x);
+        var dy = (firstCity.y-lastCity.y);
+        var dist = Math.sqrt(dx*dx+dy*dy);
+        score+=dist;
+        $('#score').html('Score: '+Math.floor(score));
+
+	path = new Object();
+        path.line = paper.path("M "+lastCity.x+" "+lastCity.y+" l "+dx+" "+dy+" z");
+        path.line.attr({stroke: '#6b6469',
+            'stroke-width': 4});
+        path.line.toBack();
+        background.toBack();
+        paths.push(path);
+      }
+
+    });
+}
+
+function initializeRound(round) {
+  $('#round').html((1+round-FIRST_ACTUAL_ROUND)+'/'+numRounds);
+
+  submitted = false;
+  setRound(round); // save some rounds for questions
+  cities = buildMap(seed+round, numCities);
+  paths = new Array();
+  cityOrder = new Array();
+  paper.clear();
+  background = paper.rect(0, 0, 640, 480, 10).attr({fill: "#eee", stroke: "none"});
+
+  for (var i in cities) {
+    addInteractiveCity(cities[i]);
+  }
+  reset();
+
+  setClockTimeout(new Date().getTime()+45000);
+
+  if (round > FIRST_ACTUAL_ROUND) {
+    for (var i = 1; i <= numPlayers; i++) {
+      if (i != myid) {
+//        alert('myid:'+myid+' i:'+i);
+        drawTeamSolution(i, round-1, 0, tPaper[i]);
+      }
+    }
+  }
+}
+
+var tFac = 0.33;
+var tPaper = new Array();
+function initialize() {
+  $('#player_status_box').hide();
+  $('#q1').hide();
+  $('#q2').hide();
+  $('#instructions').hide();
+  $('#waiting').hide();
+  $('#game').hide();
+}
+
+function initializeGame() {
+  if (!showScore) {
+    $('#score').hide();
+    $('#otherScore').hide();  
+  }
+
+  if (submitType != BUTTON) {
+    $('#submitButton').hide();
+  }
+
+  $('#waiting').hide();
+  $('#game').show();
+
+  paper = Raphael("canvas", 640, 480);
+
+  initializeRound(FIRST_ACTUAL_ROUND);
+
+  if (numPlayers == 1) {
+    tPaper[1] = Raphael("canvas2", 640*tFac, 480*tFac);
+  } else {
+    if (myid == 1) {
+      tPaper[2] = Raphael("canvas2", 640*tFac, 480*tFac);
+    } else {
+      tPaper[1] = Raphael("canvas2", 640*tFac, 480*tFac);
+    }
+  }
+}
+
+function reset() {
+  for (idx in cities) {
+    var city = cities[idx];
+    city.circle.attr("fill", "#0f0");
+  }
+
+  for (idx in paths) {
+    var path = paths[idx];
+    path.line.remove();
+  }
+  paths = new Array();
+  score = 0;
+  lastCity = null;
+  cityOrder = new Array();
+  $('#score').html('Score: ');
+}
+
+function newMove(participant, index) {
+//  alert('newMove: '+participant+' '+index);
+//  if ((numPlayers > 1) && (participant == myid)) return;
+//  drawTeamSolution(participant, currentRound, index, tPaper[participant]);
+}
+
+var delme = new Array();
+function drawTeamSolution(part, round, index, paper2) {
+//  alert('drawTeam:'+paper2);
+  fetchMove(part, round, index, function(val) {
+//    alert('fetched move');
+    var num = numCities;
+    var myCities = buildMap(seed+round, num);
+
+//    alert(myCities.length);
+
+    // clear the old map
+    for (idx in delme) {
+      delme[idx].remove();
+    }
+
+    paper2.rect(0, 0, 640*tFac, 480*tFac, 10*tFac).attr({fill: "#eee", stroke: "none"});
+
+    answer = val.split(",");
+//    alert('val:'+val+' answer:'+answer.length);
+
+    for (idx in myCities) {
+      var city = myCities[idx];
+      circle = paper2.circle(city.x*tFac,city.y*tFac,cityRad*tFac);
+      circle.attr("fill", "#0f0");
+      circle.attr("stroke", "#000");
+      delme.push(circle);
+    }
+
+    var otherScore = 0;
+    var last = null;
+    for (idx in answer) {
+      var city = myCities[answer[idx]];
+      if (last != null) {
+        var dx = city.x-last.x;
+        var dy = city.y-last.y;
+        var dist = Math.sqrt(dx*dx+dy*dy);
+        otherScore+=dist;
+
+        line = paper2.path("M "+last.x*tFac+" "+last.y*tFac+" l "+dx*tFac+" "+dy*tFac+" z");
+        line.attr({stroke: '#3b4449',
+            'stroke-width': 10*tFac});
+        delme.push(line);
+      }
+      last = city;
+    }
+
+    if (answer.length == num) {
+      var first = myCities[answer[0]];
+      var dx = first.x-last.x;
+      var dy = first.y-last.y;
+      var dist = Math.sqrt(dx*dx+dy*dy);
+      otherScore+=dist;
+
+      line = paper2.path("M "+last.x*tFac+" "+last.y*tFac+" l "+dx*tFac+" "+dy*tFac+" z");
+      line.attr({stroke: '#6b6469',
+            'stroke-width': 4*tFac});
+      delme.push(line);
+      last = first;
+    }
+    
+    $('#otherScore').html('Score: '+Math.floor(otherScore));
+
+    for (idx in answer) {
+      var city = myCities[answer[idx]];
+      if (city == last) {
+        circle = paper2.circle(city.x*tFac,city.y*tFac,cityRad*tFac);
+        circle.attr("fill", "#00f");
+        circle.attr("stroke", "#000");
+        delme.push(circle);
+      } else {
+        circle = paper2.circle(city.x*tFac,city.y*tFac,cityRad*tFac);
+        circle.attr("fill", "#f00");
+        circle.attr("stroke", "#000");
+        delme.push(circle);
+      }
+    }
+  });
+}
+
+function pushSolution() {
+  submit(cityOrder.join());
+}
+
+var clockTimer = null;
+var timeout = 0;
+function setClockTimeout(tick) {
+  timeout = tick;
+  if (clockTimer != null) {
+    clearInterval(clockTimer);
+  }
+  clockTimer = setInterval(updateClock, 300);
+}
+
+var submitted = false;
+function updateClock() {
+  var delta = timeout - new Date().getTime();
+  if (delta < 0) delta = 0;
+  var seconds = Math.floor(delta/1000);
+  $("#clock").html(seconds);
+  if (delta == 0) {
+    // time is up
+    if (submitted == false) {
+      submitted = true;
+      pushSolution();
+    }
+
+    var done = true;
+//    alert('moves:'+moves);
+    for (i in moves) {
+      if (moves[i] < 0) {
+        done = false;
+      }
+    }
+    if (done) {
+      clearInterval(clockTimer);
+      clockTimer = null;
+      startNextRound();
+    }
+  }
+}
+
+function startNextRound() {
+  initializeRound(currentRound+1);
+}
+
+function submitAuthorization() {
+  submit('accept');
+  $("#authorize").hide();
+  $("#q1").show();
+  setRound(1);
+}
+
+function q1(val) {
+  submit(val);
+  $("#q1").hide();
+  $("#q2").show();  
+  setRound(2);
+}
+
+function q2(val) {
+  submit(val);
+  $("#q2").hide();
+  $("#instructions").show();
+  setRound(3);
+}
+
+function iUnderstand() {
+  submit('i understand');
+  $("#instructions").hide();
+  $("#waiting").show();
+
+  clockTimer = setInterval(ready, 300);
+}
+
+function ready() {
+  var done = true;
+//    alert('moves:'+moves);
+  for (var i = 1; i <= numPlayers; i++) {
+    if (moves[i] < 0) {
+      done = false;
+    }
+  }
+  if (done) {
+    clearInterval(clockTimer);
+    clockTimer = null;
+    initializeGame();
+  }
+}
+
+
+
+</script>
+
+<div id="authorize">
+<h2>Authorization</h2>
+  I authorize you to use my test results and questions.<br/><br/>
+
+  <input class="button1" type="submit" value="Authorize" onclick="submitAuthorization()"/>
+</div>
+
+<div id="q1">
+<h2>Survey</h2>
+  What is your favorite color?<br/><br/>
+
+  <input class="button1" type="submit" value="Blue" onclick="q1('blue')"/>
+  <input class="button1" type="submit" value="Green" onclick="q1('green')"/>
+
+
+</div>
+
+<div id="q2">
+<h2>Survey</h2>
+  What is your level of education?<br/><br/>
+
+  <input class="button1" type="submit" value="None" onclick="q2('none')"/>
+  <input class="button1" type="submit" value="High School" onclick="q2('hs')"/>
+  <input class="button1" type="submit" value="Undergraduate" onclick="q2('ba')"/>
+  <input class="button1" type="submit" value="Masters" onclick="q2('ma')"/>
+  <input class="button1" type="submit" value="PhD" onclick="q2('phd')"/>
+
+</div>
+
+
+
+<div id="instructions">
+<h2>Instructions</h2>
+
+Find the shortest path through the cities by clicking on them in order.  You can share your solution with your team.<br/><br/>
+&lt;Insert Video Here&gt;<br/><br/>
+
+  <input class="button1" type="submit" value="I understand" onclick="iUnderstand()"/>
+
+</div>
+
+<div id="waiting">
+<h2>Waiting</h2>
+  Waiting for your teammate(s).
+</div>
+
+<div id="game">
+
+<br/>
+
+<div id="status_box">
+  <div id="round_box">
+    Round:
+    <div id="round">1/6</div>
+  </div>
+
+  <div id="clock_box">
+    Seconds remaining:
+    <div id="clock">45</div>
+  </div>
+</div>
+
+<table id="playerTable">
+  <tr>
+    <td>
+<div id="score">Score: </div>
+<div id="canvas"></div>
+<input class="button2" type="submit" onclick="reset(); return false;" value="Reset" />
+<input class="button2" id="submitButton" type="submit" onclick="pushSolution(); return false;" value="Share Your Solution" />
+    </td>
+    <td>
+Teammate's solution:<br/>
+(Last Round)<br/>
+<div id="otherScore">Score: </div>
+<div id="canvas2"></div>
+
+    </td>
+  </tr>
+</table>
+
+</div> 
+
+<br/><br/><br/>

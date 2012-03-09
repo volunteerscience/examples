@@ -1,0 +1,85 @@
+<script>
+
+function initialize() {
+  $('.square').click(function() {
+    if ($(this).html() == '') {
+      if (myid == 1) {
+        if (moves[1] > moves[2]) return;
+        $(this).html('X');
+      } else {
+        if (moves[1] <= moves[2]) return;
+        $(this).html('O');
+      }
+      submit($(this).attr('id'));
+    }
+  });
+
+  updateUI();
+}
+
+
+function newMove(participant, index) {
+  fetchMove(participant, currentRound, index, function(val) {
+//    alert('fetched '+participant+' '+index+' val:'+val);
+    strng = 'O';
+    if (participant == 1) {
+      if (typeof(variables['player_1_symbol']) == 'undefined') {
+        strng = variables['player_1_symbol'];
+      } else {
+        strng = 'X';      
+      }
+    } else {
+      if (typeof(variables['player_2_symbol']) == 'undefined') {
+        strng = variables['player_2_symbol'];
+      }
+    }
+    $('#'+val).html(strng);
+    updateUI();
+  });
+}
+
+function updateUI() {
+  if (moves[1] + moves[2] == 7) { // move 0 for each
+    $('#instruction').html('Game Over <a href="'+WAITING_ROOM_URL+'">Return to waiting room</a>');
+    quit();
+    return;  
+  }
+  if (myid == 1) {
+    if (moves[1] == moves[2]) {
+      $('#instruction').html('Your move.');
+    } else {
+      $('#instruction').html('Please wait for the other player.');
+    }
+  } else {
+    if (moves[1] == moves[2]+1) {
+      $('#instruction').html('Your move.');
+    } else {
+      $('#instruction').html('Please wait for the other player.');
+    }
+  }
+}
+
+</script>
+
+    <br/>
+    <div id="instruction">Please wait for the other player.</div>
+
+    <table id="ticktacktoe">
+      <tr>
+        <td><div class="square" id="a"></div></td>
+        <td><div class="square" id="b"></div></td>
+        <td><div class="square" id="c"></div></td>
+      </tr>
+      <tr>
+        <td><div class="square" id="d"></div></td>
+        <td><div class="square" id="e"></div></td>
+        <td><div class="square" id="f"></div></td>
+      </tr>
+      <tr>
+        <td><div class="square" id="g"></div></td>
+        <td><div class="square" id="h"></div></td>
+        <td><div class="square" id="i"></div></td>
+      </tr>
+    </table>
+
+

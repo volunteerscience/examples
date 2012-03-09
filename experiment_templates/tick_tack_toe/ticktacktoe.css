@@ -1,0 +1,18 @@
+.square {
+  width: 100px;
+  height: 100px;
+  background: #eee;
+  font-size: 800%;
+  line-height:1em;
+  text-align:center;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+#ticktacktoe table, th, td {
+  border: 1px solid black;
+//  background: #000;
+}
