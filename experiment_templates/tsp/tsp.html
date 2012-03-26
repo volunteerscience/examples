@@ -161,11 +161,13 @@ var tFac = 0.33;
 var tPaper = new Array();
 function initialize() {
   $('#player_status_box').hide();
-  $('#q1').hide();
-  $('#q2').hide();
-  $('#instructions').hide();
-  $('#waiting').hide();
-  $('#game').hide();
+//  $('#q1').hide();
+//  $('#q2').hide();
+//  $('#instructions').hide();
+//  $('#waiting').hide();
+//  $('#game').hide();
+  
+  iUnderstand();
 }
 
 function initializeGame() {
@@ -392,14 +394,14 @@ function ready() {
 
 </script>
 
-<div id="authorize">
+<div id="authorize" style="display: none;">
 <h2>Authorization</h2>
   I authorize you to use my test results and questions.<br/><br/>
 
   <input class="button1" type="submit" value="Authorize" onclick="submitAuthorization()"/>
 </div>
 
-<div id="q1">
+<div id="q1" style="display: none;">
 <h2>Survey</h2>
   What is your favorite color?<br/><br/>
 
@@ -409,7 +411,7 @@ function ready() {
 
 </div>
 
-<div id="q2">
+<div id="q2" style="display: none;">
 <h2>Survey</h2>
   What is your level of education?<br/><br/>
 
@@ -423,7 +425,7 @@ function ready() {
 
 
 
-<div id="instructions">
+<div id="instructions" style="display: none;">
 <h2>Instructions</h2>
 
 Find the shortest path through the cities by clicking on them in order.  You can share your solution with your team.<br/><br/>
@@ -438,7 +440,7 @@ Find the shortest path through the cities by clicking on them in order.  You can
   Waiting for your teammate(s).
 </div>
 
-<div id="game">
+<div id="game" style="display: none;">
 
 <br/>
 
