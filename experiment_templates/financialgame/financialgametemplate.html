@@ -1,0 +1,142 @@
+<script type="text/javascript">
+
+
+function initGame(){
+
+	setTimeout('getVars()', 1000);
+}
+
+function getVars() {
+
+	setRound(1);
+
+	var myvars = new Array();
+	myvars[0] = variables['Prev_Rnd_Choice'];
+	myvars[1] = variables['Total_Payoff'];
+	myvars[2] = variables['Avg_Payoff'];
+	myvars[3] = variables['No_of_Rnds'];
+	myvars[4] = variables['Duration_of_Rnds'];
+	myvars[5] = variables['Duration_btw_Rnds'];
+	myvars[6] = variables['Score_Window'];
+	myvars[7] = variables['Choice_Ratio'];
+	myvars[8] = variables['Prev_Rnd_Avg_Payoff'];
+	myvars[9] = variables['Choice 1 Text'];
+	myvars[10] = variables['Choice 2 Text'];
+	myvars[11] = variables['Choice 3 Text'];
+	myvars[12] = variables['Choice 4 Text'];
+	myvars[13] = variables['Choice 5 Text'];
+	myvars[14] = variables['Action_Select_Text'];
+	myvars[15] = variables['Wait_Rnd_Text'];
+	myvars[16] = variables['Begin_Rnd_Text'];
+	myvars[17] = variables['End_of_Exp_Text'];
+	myvars[18] = variables['Prev_Rnd_Choice_Text'];
+	myvars[19] = variables['Prev_Rnd_Payoff_Text'];
+	myvars[20] = variables['Total_Payoff_Text'];
+	myvars[21] = variables['Avg_Payoff_Text'];
+	myvars[22] = variables['Choice_Ratio_Text'];
+	myvars[23] = variables['Prev_Rnd_Avg_Payoff_Text'];
+	myvars[24] = variables['Time_Rem_Text'];
+	myvars[25] = variables['payoff'];
+	myvars[26] = variables['Enable Polling'];
+	myvars[27] = variables['Bot_Count'];
+	myvars[28] = variables['Bot_Type'];
+	myvars[29] = variables['Participant_Count_Display'];
+	myvars[30] = variables['Participant_Count_Display_Text'];
+
+	getFlashMovie("financialgametemplate").sendVars(myvars, myid, numPlayers, getName(myid));
+
+}
+
+function quitGame() {
+        quit();
+        window.location="/stop_test/";
+}
+
+function getFlashMovie(movieName)
+{
+  if (window.document[movieName]) 
+  {
+      return window.document[movieName];
+  }
+  if (navigator.appName.indexOf("Microsoft Internet")==-1)
+  {
+    if (document.embeds && document.embeds[movieName])
+      return document.embeds[movieName]; 
+  }
+  else // if (navigator.appName.indexOf("Microsoft Internet")!=-1)
+  {
+    return document.getElementById(movieName);
+  }
+}
+
+var firstRound=true;
+var InstructionsTimer;
+
+function callToActionscript(pt, str) 
+{
+     if(firstRound)
+     {
+		firstRound=false;
+		getFlashMovie("financialgametemplate").sendSira(pt, str)
+     }
+     else
+		getFlashMovie("financialgametemplate").sendToActionscript(pt, str);
+}
+
+function newMove(participant, index) {
+  fetchMove(participant, currentRound, index, function(val) {
+	callToActionscript(participant, val);
+  });
+}
+
+function countDownInstructions(){  
+	 if (this.InstructionsTimer <=0){  
+		$("#pbar").hide();
+		$("#step2").show();
+		$("#flashwrapper").html(" ");
+		$("#flashwrapper").html('<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" id="financialgametemplate" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="640" height="480" align="absmiddle"> <param name="movie" value="'+getFile('financialgametemplate.swf')+'"> <param name="play" value="true"> <param name="loop" value="true"> <param name="quality" value="high"> <param name="wmode" value="transparent"> <embed width="640" height="480" src="'+getFile('financialgametemplate.swf')+'" name="financialgametemplate" swliveconnect="true" wmode="transparent" play="true" loop="true" quality="high" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"></embed></object>');
+	 }else{  
+		this.InstructionsTimer--;
+		document.getElementById("timerbar").style.width=(this.InstructionsTimer*100/parseInt(variables['InstructionsTimer']+""))+"%";
+		document.getElementById("timer").innerHTML = this.InstructionsTimer;  
+		setTimeout("countDownInstructions()", 1000);
+	 }  
+} 
+
+function initialize()
+{
+	$("#pbar").show();
+	$("#instimg").attr("src", getFile('instructions.png'));
+	$("#step2").hide();
+	this.InstructionsTimer=parseInt(variables['InstructionsTimer']+"");
+	countDownInstructions();
+}
+
+</script>
+<table id="pbar" border="0" width="806" align="center">
+	<tr>
+		<td width="566">
+			<div class="progress">
+			<div class="bar" style="width:100%;" id="timerbar"></div>
+			</div>
+		</td>
+        <td width="143">
+            <h3 align="right">Please wait:
+            </h3>
+        </td>
+        <td width="83">
+            <h3><font color="red" id="timer"></font></h3>
+        </td>
+	</tr>
+    <tr>
+        <td width="800" colspan="3"><img id="instimg" align="absmiddle" src="#" width="800" height="600" border="0"></td>
+    </tr>
+</table>
+<table id="step2" align="center" border="0">
+    <tr>
+        <td width="618">
+		<div id="flashwrapper">
+		</div>
+       </td>
+    </tr>
+</table>
