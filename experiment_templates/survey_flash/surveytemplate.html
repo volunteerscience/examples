@@ -1,0 +1,99 @@
+
+<script type="text/javascript">
+
+function loadXMLDoc(dname)
+{
+	if (window.XMLHttpRequest)
+	{
+		xhttp=new XMLHttpRequest();
+	}
+	else
+	{
+		xhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xhttp.open("GET",dname,false);
+	xhttp.send();
+	return xhttp.responseXML;
+} 
+
+function parseConfigXML()
+{
+	xmlDoc=loadXMLDoc(getFile("surveytemplate.xml"));
+	var title = $.trim(xmlDoc.getElementsByTagName("title")[0].childNodes[0].nodeValue);
+	var introtext = $.trim(xmlDoc.getElementsByTagName("introduction")[0].getElementsByTagName("text")[0].childNodes[0].nodeValue);
+	var intropic = getFile($.trim(xmlDoc.getElementsByTagName("introduction")[0].getElementsByTagName("picture")[0].childNodes[0].nodeValue));
+	var questions = new Array();
+	for(var i = 0; i < xmlDoc.getElementsByTagName("question").length; i++)
+	{
+		var question = new Array();
+		question.push($.trim(xmlDoc.getElementsByTagName("question")[i].attributes.getNamedItem("type").nodeValue)); // question type
+
+		var text, picture, video;
+		var choices = new Array();
+		if(xmlDoc.getElementsByTagName("question")[i].getElementsByTagName("text").length>0)
+			text = $.trim(xmlDoc.getElementsByTagName("question")[i].getElementsByTagName("text")[0].childNodes[0].nodeValue);
+		else
+			text = "";
+		question.push(text);
+		if(xmlDoc.getElementsByTagName("question")[i].getElementsByTagName("picture").length>0)
+			picture = getFile($.trim(xmlDoc.getElementsByTagName("question")[i].getElementsByTagName("picture")[0].childNodes[0].nodeValue));
+		else
+			picture = "";
+		question.push(picture);
+		if(xmlDoc.getElementsByTagName("question")[i].getElementsByTagName("video").length>0)
+			video = getFile($.trim(xmlDoc.getElementsByTagName("question")[i].getElementsByTagName("video")[0].childNodes[0].nodeValue));
+		else
+			video = "";
+		question.push(video);
+		
+		if(xmlDoc.getElementsByTagName("question")[i].getElementsByTagName("choice").length>0)
+		{
+			for(var j = 0; j < xmlDoc.getElementsByTagName("question")[i].getElementsByTagName("choice").length; j++)
+				choices.push($.trim(xmlDoc.getElementsByTagName("question")[i].getElementsByTagName("choice")[j].childNodes[0].nodeValue));
+		}
+		question.push(choices);
+		questions.push(question);
+	}
+	var strictness = $.trim(xmlDoc.getElementsByTagName("survey")[0].attributes.getNamedItem("strict").nodeValue);
+	if(strictness==null)
+		strictness = "false";
+	getFlashMovie("surveytemplate").sendVars(title, introtext, intropic, questions, getFile("SkinUnderAllNoCaption.swf"), strictness);
+}
+
+function quitGame() {
+	window.location="http://129.10.58.85/soclab/stop_test/";
+}
+
+function getFlashMovie(movieName)
+{
+  if (window.document[movieName]) 
+  {
+      return window.document[movieName];
+  }
+  if (navigator.appName.indexOf("Microsoft Internet")==-1)
+  {
+    if (document.embeds && document.embeds[movieName])
+      return document.embeds[movieName]; 
+  }
+  else // if (navigator.appName.indexOf("Microsoft Internet")!=-1)
+  {
+    return document.getElementById(movieName);
+  }
+}
+
+function initialize()
+{
+	$("#flashwrapper").html(" ");
+	$("#flashwrapper").html('<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" id="surveytemplate" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="800" height="600" align="absmiddle"> <param name="movie" value="'+getFile('surveytemplate.swf')+'"> <param name="play" value="true"> <param name="loop" value="true"> <param name="quality" value="high"> <param name="allowFullScreen" value="true"> <param name="wmode" value="transparent"> <embed width="800" height="600" src="'+getFile('surveytemplate.swf')+'" name="surveytemplate" allowFullScreen="true" swliveconnect="true" wmode="transparent" play="true" loop="true" quality="high" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"></embed></object>');
+}
+
+</script>
+
+<table align="center" border="0">
+    <tr>
+        <td width="800">
+		<div id="flashwrapper">
+		</div>
+       </td>
+    </tr>
+</table>

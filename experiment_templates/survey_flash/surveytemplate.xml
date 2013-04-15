@@ -1,0 +1,60 @@
+<survey strict="true">
+	<title>
+	Title of the Survey
+	</title>
+	<introduction>
+		<picture>
+		neu.png
+		</picture>
+		<text>
+		Here are the instructions for this survey...
+		</text>
+	</introduction>
+	<question type="likert">
+		<picture>
+		picture1.jpg
+		</picture>
+		<text>
+		This is a photo about nature.
+		</text>
+	</question>
+	<question type="likert-custom">
+		<text>
+		What is your reason for going green?
+		</text>
+		<choice>
+		I Dont know exactly why! There are so many reasons!
+		</choice>
+		<choice>
+		Man Kind did this we have to fix it
+		</choice>
+		<choice>
+		Go Green? No Thanks!
+		</choice>
+	</question>
+	<question type="multiple">
+		<picture>
+		picture2.jpg
+		</picture>
+		<text>
+		What are you doing to help the planet?
+		</text>
+		<choice>
+		Recycle
+		</choice>
+		<choice>
+		Turns of Lights or TVs
+		</choice>
+		<choice>
+		Not using plastic bags
+		</choice>
+	</question>
+	<question type="likert">
+		<video>
+		tornado.flv
+		</video>
+		<text>
+		This is a video about natural disaster.
+		</text>
+	</question>
+</survey>

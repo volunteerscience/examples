@@ -1,0 +1,3757 @@
+<table border="0" id="step1" width="800" height="600" class="ultimatumgametable" align="center">
+    <tr>
+        <td width="800" height="80">
+			<div class="game-info" id="gameinfo">
+			</div>
+        </td>
+    </tr>
+	<tr>
+		<td>
+			<table border="0" width="800" height="500">
+                <tr>
+                    <td width="786" height="120" colspan="5">
+                        <table border="0" width="788">
+                            <tr>
+                                <td width="286" height="120">
+                                    <table border="0" width="287">
+                                        <tr>
+                                            <td width="159" class="defaulttext"><b>Current Round:</b></td>
+                                            <td width="118" class="defaulttext" id="exproundnumtext"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="159" class="defaulttext"><b>Status:</b></td>
+                                            <td width="118" class="defaulttext" id="statustext"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="159" class="defaulttext"><b>Total Earnings:</b></td>
+                                            <td width="118" class="defaulttext" id="totearnings">0</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="159" class="defaulttext"><b>Last Round Earning:</b></td>
+                                            <td width="118" class="defaulttext" id="lrearning">0</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="159" class="defaulttext"></td>
+                                            <td width="118" class="defaulttext"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td width="249" height="120">
+								    <table border="0" width="251">
+                                        <tr>
+                                            <td width="245">
+											    <div class="progress progress-success progress-striped active" id="totalpointsbardiv">
+													<div class="bar" style="width:100%;" id="totalpointsbar"></div>
+												</div>
+												<p align="center" id="remptstext" class="defaulttext"></p>												
+											</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="245"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="245"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="245"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="245"></td>
+                                        </tr>
+                                    </table>
+								</td>
+                                <td width="239" height="120">
+									<table border="0" width="239">
+                                        <tr>
+                                            <td width="233">
+												<div class="progress" id="timebardiv">
+													<div class="bar" style="width:100%;" id="timebar"></div>
+												</div>
+												<p align="center" id="timeremtext" class="defaulttext"></p>
+											</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="233" height="30"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="233"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="233"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="233"></td>
+                                        </tr>
+                                    </table>
+								</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+				<tr>
+					<td width="154" height="300" id="firsttd">
+					    <table id="firstscreen" width="138" align="center" border="0">
+                            <tr>
+                                <td width="80" height="143" id="firstScrResizableCol1">&nbsp;</td>
+                                <td width="48" height="165" rowspan="2">
+									<div class="progress vertical bottom progress-success">
+										<div class="bar" id="pointbar1" style="height:0px;"></div>
+									</div>				
+								</td>
+								<td width="0" height="275" rowspan="4"></td>
+                            </tr>
+                            <tr>
+                                <td width="80" height="15" id="firstScrResizableCol2">
+								<div id="slider1"></div>
+								</td>
+                            </tr>
+                            <tr>
+                                <td width="80" height="48" id="firstScrResizableCol3">
+									<span class="numeric-stepper" id="stepper1">
+										<input name="ns_textbox" id="stepperbox1" size="2" type="text" />
+										<button type="submit" name="ns_button_1" value="1" class="plus">+</button>
+										<button type="submit" name="ns_button_2" value="-1" class="minus">-</button>
+									</span>
+								</td>
+                                <td width="48" height="48" id="boxtd1">
+                                    <div id="pointbox1" class="defaulttext">0</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="80" height="40" id="firstScrResizableCol4"></td>
+                                <td width="48" height="40">
+                                    <p align="center" id="username1" class="defaulttext"></p>
+                                </td>
+                            </tr>
+                        </table>
+						<p align="center" id="acceptedtext1">						
+							<span class="badge badge-success">Accepted</span> 
+						</p>
+						<p align="center" id="rejectedtext1">						
+							<span class="badge badge-important">Rejected</span> 
+						</p>
+					</td>
+                    <td width="154" height="300" id="secondtd">
+                        <table id="secondscreen" width="142" align="center" border="0">
+                            <tr>
+                                <td width="80" height="147" id="secondScrResizableCol1">&nbsp;</td>
+                                <td width="48" height="170" rowspan="2">
+									<div class="progress vertical bottom progress-success">
+										<div class="bar" id="pointbar2" style="height:0px;"></div>
+									</div>				
+								</td>
+                                <td width="0" height="275" rowspan="4"></td>
+                            </tr>
+                            <tr>
+                                <td width="80" height="16" id="secondScrResizableCol2">
+								<div id="slider2"></div>
+								</td>
+                            </tr>
+                            <tr>
+                                <td width="80" height="56" id="secondScrResizableCol3">
+									<span class="numeric-stepper" id="stepper2">
+										<input name="ns_textbox" id="stepperbox2" size="2" type="text" />
+										<button type="submit" name="ns_button_1" value="1" class="plus">+</button>
+										<button type="submit" name="ns_button_2" value="-1" class="minus">-</button>
+									</span>
+								</td>
+                                <td width="48" height="56" id="boxtd2">
+                                    <div id="pointbox2" class="defaulttext">0</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="80" height="40" id="secondScrResizableCol4"></td>
+                                <td width="48" height="40">
+                                    <p align="center" id="username2" class="defaulttext"></p>
+                                </td>
+                            </tr>
+                        </table>
+						<p align="center" id="acceptedtext2">						
+							<span class="badge badge-success">Accepted</span> 
+						</p>
+						<p align="center" id="rejectedtext2">						
+							<span class="badge badge-important">Rejected</span> 
+						</p>
+                    </td>
+					<td width="154" height="300" id="thirdtd">
+						<table id="thirdscreen" width="138" align="center" border="0">
+                            <tr>
+                                <td width="80" height="143" id="thirdScrResizableCol1">&nbsp;</td>
+                                <td width="48" height="170" rowspan="2">
+									<div class="progress vertical bottom progress-success">
+										<div class="bar" id="pointbar3" style="height:0px;"></div>
+									</div>				
+								</td>
+								<td width="0" height="275" rowspan="4"></td>
+                            </tr>
+                            <tr>
+                                <td width="80" height="20" id="thirdScrResizableCol2">
+								<div id="slider3"></div>
+								</td>
+                            </tr>
+                            <tr>
+                                <td width="80" height="56" id="thirdScrResizableCol3">
+									<span class="numeric-stepper" id="stepper3">
+										<input name="ns_textbox" id="stepperbox3" size="2" type="text" />
+										<button type="submit" name="ns_button_1" value="1" class="plus">+</button>
+										<button type="submit" name="ns_button_2" value="-1" class="minus">-</button>
+									</span>
+								</td>
+                                <td width="48" height="56" id="boxtd3">
+                                    <div id="pointbox3" class="defaulttext">0</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="80" height="40" id="thirdScrResizableCol4"></td>
+                                <td width="48" height="40">
+                                    <p align="center" id="username3" class="defaulttext"></p>
+                                </td>
+                            </tr>
+                        </table>
+						<p align="center" id="acceptedtext3">						
+							<span class="badge badge-success">Accepted</span> 
+						</p>
+						<p align="center" id="rejectedtext3">						
+							<span class="badge badge-important">Rejected</span> 
+						</p>
+					</td>
+					<td width="154" height="300" id="fourthtd">
+						<table id="fourthscreen" width="138" align="center" border="0">
+                            <tr>
+                                <td width="80" height="143" id="fourthScrResizableCol1">&nbsp;</td>
+                                <td width="48" height="170" rowspan="2">
+									<div class="progress vertical bottom progress-success">
+										<div class="bar" id="pointbar4" style="height:0px;"></div>
+									</div>				
+								</td>
+								<td width="0" height="275" rowspan="4"></td>
+                            </tr>
+                            <tr>
+                                <td width="80" height="20" id="fourthScrResizableCol2">
+								<div id="slider4"></div>
+								</td>
+                            </tr>
+                            <tr>
+                                <td width="80" height="56" id="fourthScrResizableCol3">
+									<span class="numeric-stepper" id="stepper4">
+										<input name="ns_textbox" id="stepperbox4" size="2" type="text" />
+										<button type="submit" name="ns_button_1" value="1" class="plus">+</button>
+										<button type="submit" name="ns_button_2" value="-1" class="minus">-</button>
+									</span>
+								</td>
+                                <td width="48" height="56" id="boxtd4">
+                                    <div id="pointbox4" class="defaulttext">0</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="80" height="40" id="fourthScrResizableCol4"></td>
+                                <td width="48" height="40">
+                                    <p align="center" id="username4" class="defaulttext"></p>
+                                </td>
+                            </tr>
+                        </table>
+						<p align="center" id="acceptedtext4">						
+							<span class="badge badge-success">Accepted</span> 
+						</p>
+						<p align="center" id="rejectedtext4">						
+							<span class="badge badge-important">Rejected</span> 
+						</p>
+					</td>
+					<td width="154" height="300" id="fifthtd">
+						<table id="fifthscreen" width="138" align="center" border="0">
+                            <tr>
+                                <td width="80" height="143" id="fifthScrResizableCol1">&nbsp;</td>
+                                <td width="48" height="170" rowspan="2">
+									<div class="progress vertical bottom progress-success">
+										<div class="bar" id="pointbar5" style="height:0px;"></div>
+									</div>				
+								</td>
+								<td width="0" height="275" rowspan="4"></td>
+                            </tr>
+                            <tr>
+                                <td width="80" height="20" id="fifthScrResizableCol2">
+								<div id="slider5"></div>
+								</td>
+                            </tr>
+                            <tr>
+                                <td width="80" height="56" id="fifthScrResizableCol3">
+									<span class="numeric-stepper" id="stepper5">
+										<input name="ns_textbox" id="stepperbox5" size="2" type="text" />
+										<button type="submit" name="ns_button_1" value="1" class="plus">+</button>
+										<button type="submit" name="ns_button_2" value="-1" class="minus">-</button>
+									</span>
+								</td>
+                                <td width="48" height="56" id="boxtd5">
+                                    <div id="pointbox5" class="defaulttext">0</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="80" height="40" id="fifthScrResizableCol4"></td>
+                                <td width="48" height="40">
+                                    <p align="center" id="username5" class="defaulttext"></p>
+                                </td>
+                            </tr>
+                        </table>
+						<p align="center" id="acceptedtext5">						
+							<span class="badge badge-success">Accepted</span> 
+						</p>
+						<p align="center" id="rejectedtext5">						
+							<span class="badge badge-important">Rejected</span> 
+						</p>
+					</td>
+				</tr>
+                <tr width="794">
+				<td width="794" height="47" colspan="5" id="butcontainer">
+				</td>
+                </tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<div id="tippingModal" class="mymodal hide fade" role="dialog" aria-labelledby="myModalLabel" style="width:560px;height:200px;"> 
+	<div class="mymodal-header">  
+		<a class="close" data-dismiss="modal">x</a>  
+		<h3>Specify Tipping Amount</h3>  
+	</div>  
+	<div class="mymodal-body">  
+		<table border="0" width="794">
+			<tr>
+				<td width="788" colspan="2">
+					<div class="progress">
+						<div class="bar bar-success" style="width:100%;" id="modalbar"></div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td width="213">
+					<p align="center" id="tippingamounttext"></p>
+				</td>
+				<td width="571">
+					<div id="slideramount"></div>  
+				</td>
+			</tr>
+		</table>
+	</div>  
+	<div class="mymodal-footer">  
+		<a href="#" onClick="submit('Accept '+$('#slideramount').slider('value'));$('#choicetable').hide();" class="btn btn-success" data-dismiss="modal">OK</a>  
+	</div>  
+</div>
+
+<script type="text/javascript">
+
+var expRoundNum;
+var dictatorTimer;
+var dictateeTimer;
+var roundIntervalTimer;
+var timeoutDictator;
+var timeoutDictatee;
+var timeoutRoundInterval;
+var dictatorList;
+var dictateeList;
+var waitThisRound=true;
+var numOfAccepts;
+var numOfRejects;
+var shares;
+var competitiveCurrentRound;
+var reverseCurrentRound;
+var pirateCurrentRound;
+var pirateCurrentSenior;
+var totalTip;
+var tips;
+var myTip;
+var trustCoefficient;
+var initialEndowment;
+var endowmentCount;
+var myEndowment;
+
+setRound(1);
+
+function initialize()
+{
+	if(parseInt(variables['game_type'])==1||parseInt(variables['game_type'])==2
+	||parseInt(variables['game_type'])==3||parseInt(variables['game_type'])==4
+	||parseInt(variables['game_type'])==6||parseInt(variables['game_type'])==7)	//classic ultimatum & competitive ultimatum & ultimatum with tipping && reverse ultimatum & dictator game & trust game
+	{
+		this.expRoundNum=0;
+		this.competitiveCurrentRound=1;
+		this.reverseCurrentRound=1;
+		initDictatorOptions();
+		$( "#slider1" ).slider( "setOption" , "max", parseInt(variables['total_points']));
+		$( "#slider2" ).slider( "setOption" , "max", parseInt(variables['total_points']));
+		$( "#slider3" ).slider( "setOption" , "max", parseInt(variables['total_points']));
+		$( "#slider4" ).slider( "setOption" , "max", parseInt(variables['total_points']));
+		$( "#slider5" ).slider( "setOption" , "max", parseInt(variables['total_points']));
+		if(myid==1)
+		{
+			var roundsstr="";
+			var rn=Math.floor(Math.random()*numPlayers)+1;
+			roundsstr+=(rn+"_");
+			for(var m=1; m < parseInt(variables['number_of_rounds']); m++)
+			{
+				if(parseInt($.trim(variables['fixed_dictator']))==1)
+					roundsstr+=(rn+"_");
+				else
+					roundsstr+=((Math.floor(Math.random()*numPlayers)+1)+"_");
+			}
+			roundsstr="["+variables['game_type']+"]"+roundsstr;
+			submit(roundsstr);
+		}
+	}
+	if(parseInt(variables['game_type'])==5)	//pirate game
+	{
+		this.expRoundNum=0;
+		this.pirateCurrentRound=1;
+		initDictatorOptions();
+		$( "#slider1" ).slider( "setOption" , "max", parseInt(variables['total_points']));
+		$( "#slider2" ).slider( "setOption" , "max", parseInt(variables['total_points']));
+		$( "#slider3" ).slider( "setOption" , "max", parseInt(variables['total_points']));
+		$( "#slider4" ).slider( "setOption" , "max", parseInt(variables['total_points']));
+		$( "#slider5" ).slider( "setOption" , "max", parseInt(variables['total_points']));
+		if(myid==1)
+		{
+			var roundsstr="["+variables['game_type']+"]";
+			submit(roundsstr);
+		}
+	}
+}
+
+function nextUltimatumRound()
+{
+	this.expRoundNum++;
+	this.totalTip=0;
+	this.myTip=0;
+	this.numOfAccepts=0;
+	this.numOfRejects=0;
+	this.tips=new Array();
+	hideUltimatumResults();
+	if(expRoundNum==1)
+		setRound(1+this.expRoundNum);
+	else
+		setRound(2*this.expRoundNum);
+	setScreens();
+	if(this.dictatorList[this.expRoundNum-1]==myid)
+	{
+		$('#statustext').html("Dictator");
+		$('#gameinfo').html('You have been given '+variables['total_points']+' points. There are '+numPlayers+' players in this game. You are in charge of proposing a distribution of these points up among all '+numPlayers+' players by moving the slider bars or entering numbers. All of the points must be used by giving them to at least one player.');
+		$('#gameinfo').height(60);
+		showDictatorOptions();
+	}
+	else
+	{
+		$('#statustext').html("Dictatee");
+		$('#gameinfo').html(getName(this.dictatorList[this.expRoundNum-1])+' is dictator for this round.</br></br>You are dictatee. Please wait while dictator making you an offer...');
+		$('#gameinfo').height(60);
+		hideDictatorOptions();
+	}
+	this.dictatorTimer=parseInt(variables['dictator_round_time']);
+	this.dictateeTimer=parseInt(variables['dictatee_round_time']);
+	this.roundIntervalTimer=parseInt(variables['round_interval_time']);
+	document.getElementById("timebar").style.width="100%";
+	$("#timeremtext").html(this.dictatorTimer+" seconds remaining");
+	$("#exproundnumtext").html(this.expRoundNum+" of "+parseInt(variables['number_of_rounds']));
+	countDownDictator();
+}
+
+function nextTrustRound()
+{
+	this.trustCoefficient=3;
+	this.initialEndowment=0;
+	this.endowmentCount=0;
+	this.myEndowment=-1;
+	this.expRoundNum++;
+	hideUltimatumResults();
+	if(expRoundNum==1)
+		setRound(1+this.expRoundNum);
+	else
+		setRound(2*this.expRoundNum);
+	setScreens();
+	if(this.dictatorList[this.expRoundNum-1]==myid)
+	{
+		$('#statustext').html("Dictator");
+		$('#gameinfo').html('You are dictator for this round and waiting for an initial endowment from others. After receiving the endowment, you can distribute the points. All of the points must be used by giving them to at least one player. There are '+numPlayers+' players in this game.');
+		$('#gameinfo').height(60);
+		hideDictatorOptions();
+	}
+	else
+	{
+		$('#statustext').html("Dictatee");
+		$('#gameinfo').html('You are dictatee and '+getName(this.dictatorList[this.expRoundNum-1])+' is dictator for this round.</br>You have '+variables['total_points']+' points. Please give an initial endowment to dictator from this amount. The amount you endow will be multiplied by '+this.trustCoefficient+' before it reaches to '+getName(this.dictatorList[this.expRoundNum-1]));
+		$('#gameinfo').height(60);
+		$( "#slider1" ).slider( "setOption" , "max", parseInt(variables['total_points']));
+		$( "#slider2" ).slider( "setOption" , "max", parseInt(variables['total_points']));
+		$( "#slider3" ).slider( "setOption" , "max", parseInt(variables['total_points']));
+		$( "#slider4" ).slider( "setOption" , "max", parseInt(variables['total_points']));
+		$( "#slider5" ).slider( "setOption" , "max", parseInt(variables['total_points']));
+		showDictatorOptions();
+		for(var i=1; i<=numPlayers; i++)
+		{
+			if(myid!=i&&this.dictatorList[this.expRoundNum-1]!=i)
+				hideDictatorOptionsFor(i);
+		}
+	}
+	this.dictatorTimer=parseInt(variables['dictator_round_time']);
+	this.dictateeTimer=parseInt(variables['dictatee_round_time']);
+	this.roundIntervalTimer=parseInt(variables['round_interval_time']);
+	document.getElementById("timebar").style.width="100%";
+	$("#timeremtext").html(this.dictatorTimer+" seconds remaining");
+	$("#exproundnumtext").html(this.expRoundNum+" of "+parseInt(variables['number_of_rounds']));
+	countDownDictatee();
+}
+
+function nextReverseUltimatumRound()
+{
+	clearTimeout(this.timeoutDictator);
+	this.expRoundNum++;
+	this.totalTip=0;
+	this.myTip=0;
+	this.numOfAccepts=0;
+	this.numOfRejects=0;
+	this.tips=new Array();
+	hideUltimatumResults();
+	if(expRoundNum==1)
+		this.reverseCurrentRound+=this.expRoundNum;
+	setRound(this.reverseCurrentRound);
+	setScreens();
+	if(this.dictatorList[this.expRoundNum-1]==myid)
+	{
+		$('#statustext').html("Dictator");
+		$('#gameinfo').html('You have been given '+variables['total_points']+' points. There are '+numPlayers+' players in this game. You are in charge of proposing a distribution of these points up among all '+numPlayers+' players by moving the slider bars or entering numbers. All of the points must be used by giving them to at least one player.');
+		$('#gameinfo').height(60);
+		showDictatorOptions();
+	}
+	else
+	{
+		$('#statustext').html("Dictatee");
+		$('#gameinfo').html(getName(this.dictatorList[this.expRoundNum-1])+' is dictator for this round.</br></br>You are dictatee. Please wait while dictator making you an offer...');
+		$('#gameinfo').height(60);
+		hideDictatorOptions();
+	}
+	this.dictatorTimer=parseInt(variables['dictator_round_time']);
+	this.dictateeTimer=parseInt(variables['dictatee_round_time']);
+	this.roundIntervalTimer=parseInt(variables['round_interval_time']);
+	document.getElementById("timebar").style.width="100%";
+	$("#timeremtext").html(this.dictatorTimer+" seconds remaining");
+	$("#exproundnumtext").html(this.expRoundNum+" of "+parseInt(variables['number_of_rounds']));
+	countDownDictator();
+}
+
+function nextPirateRound()
+{
+	clearTimeout(this.timeoutDictator);
+	this.expRoundNum++;
+	this.numOfAccepts=0;
+	this.numOfRejects=0;
+	this.pirateCurrentSenior=1;
+	hideUltimatumResults();
+	if(expRoundNum==1)
+		this.pirateCurrentRound+=this.expRoundNum;
+	setRound(this.pirateCurrentRound);
+	setScreens();
+	if(this.pirateCurrentSenior==myid)
+	{
+		$('#statustext').html("Proposer");
+		$('#gameinfo').html('You are the most senior pirate. Initial seniority order: ');
+		for(var i=1; i<=numPlayers; i++)
+		{
+			if(i<numPlayers)
+				$('#gameinfo').html($('#gameinfo').html()+getName(i)+' > ');
+			else
+				$('#gameinfo').html($('#gameinfo').html()+getName(i));
+		}
+		$('#gameinfo').html($('#gameinfo').html()+'</br>You have '+variables['total_points']+' coins to distribute. There are '+(numPlayers+1-this.pirateCurrentSenior)+' pirates on board. If the proposed allocation is approved by a majority or a tie vote, it happens. If not, the proposer is thrown overboard.');
+		$('#gameinfo').height(60);
+		showDictatorOptions();
+	}
+	else
+	{
+		$('#statustext').html("Responder");
+		$('#gameinfo').html(getName(this.pirateCurrentSenior)+' is the most senior pirate. Initial seniority order: ');
+		for(var i=1; i<=numPlayers; i++)
+		{
+			if(i<numPlayers)
+				$('#gameinfo').html($('#gameinfo').html()+getName(i)+' > ');
+			else
+				$('#gameinfo').html($('#gameinfo').html()+getName(i));
+		}
+		$('#gameinfo').html($('#gameinfo').html()+'</br>Please wait while he proposes a share. If the proposed allocation is approved by a majority or a tie vote, it happens. If not, the proposer is thrown overboard.');
+		$('#gameinfo').height(60);
+		hideDictatorOptions();
+	}
+	this.dictatorTimer=parseInt(variables['dictator_round_time']);
+	this.dictateeTimer=parseInt(variables['dictatee_round_time']);
+	this.roundIntervalTimer=parseInt(variables['round_interval_time']);
+	document.getElementById("timebar").style.width="100%";
+	$("#timeremtext").html(this.dictatorTimer+" seconds remaining");
+	$("#exproundnumtext").html(this.expRoundNum+" of "+parseInt(variables['number_of_rounds']));
+	countDownDictator();
+}
+
+function nextCompetitiveUltimatumRound()
+{
+	this.expRoundNum++;
+	hideUltimatumResults();
+	if(expRoundNum==1)
+		this.competitiveCurrentRound+=this.expRoundNum;
+	setRound(this.competitiveCurrentRound);
+	this.numOfAccepts=0;
+	this.numOfRejects=0;
+	setScreens();
+	this.dictatorList=new Array();
+	for(var i=1; i<=numPlayers; i++)
+	{
+		if(i!=this.dictateeList[this.expRoundNum-1])
+			this.dictatorList.push(i);
+	}
+	if(this.dictateeList[this.expRoundNum-1]==myid)
+	{
+		$('#statustext').html("Dictatee");
+		$('#gameinfo').html('You are dictatee and others are dictators for this round.</br>There are '+numPlayers+' players in this game. Each of the dictators will offer a share of '+variables['total_points']+' points one by one.</br>You can accept at most one offer. '+getName(this.dictatorList[this.numOfRejects])+' is now making you an offer...');
+		$('#gameinfo').height(60);
+		hideDictatorOptions();
+	}
+	else if(this.dictatorList[this.numOfRejects]==myid)
+	{
+		$('#statustext').html("Dictator");
+		$('#gameinfo').html('You are dictator. It is your turn. Please make your offer...</br>'+getName(this.dictateeList[this.expRoundNum-1])+' is dictatee for this round.');	
+		$('#gameinfo').height(60);
+		showDictatorOptions();
+		for(var i=0; i<this.dictatorList.length; i++)
+		{
+			if(myid!=this.dictatorList[i])
+				hideDictatorOptionsFor(this.dictatorList[i]);
+		}
+	}
+	else
+	{
+		$('#statustext').html("Dictator");
+		$('#gameinfo').html('You are dictator.</br>'+getName(this.dictateeList[this.expRoundNum-1])+' is dictatee for this round.</br>'+getName(this.dictatorList[this.numOfRejects])+' is now making offer. Please wait your turn...');
+		$('#gameinfo').height(60);
+		hideDictatorOptions();
+	}
+	this.dictatorTimer=parseInt(variables['dictator_round_time']);
+	this.dictateeTimer=parseInt(variables['dictatee_round_time']);
+	this.roundIntervalTimer=parseInt(variables['round_interval_time']);
+	document.getElementById("timebar").style.width="100%";
+	$("#timeremtext").html(this.dictatorTimer+" seconds remaining");
+	$("#exproundnumtext").html(this.expRoundNum+" of "+parseInt(variables['number_of_rounds']));
+	countDownDictator();
+}
+
+function submitUltimatumShare()
+{
+	if(getRemainingPoints()>0)
+	{
+		$('#gameinfo').html('Please share all remaining points!');
+		$('#gameinfo').height(60);
+		return;
+	}
+	if(parseInt(variables['game_type'])==1 || parseInt(variables['game_type'])==3||parseInt(variables['game_type'])==4||parseInt(variables['game_type'])==5||parseInt(variables['game_type'])==6||parseInt(variables['game_type'])==7)	//classic ultimatum & ultimatum with tipping & reverse ultimatum & pirate game & dictator game & trust game
+	{
+		var allVals="";
+		if(numPlayers==2)
+		{
+			allVals+=($("#slider2").slider("value")+",");
+			allVals+=($("#slider4").slider("value")+",");
+		}
+		if(numPlayers==3)
+		{
+			allVals+=($("#slider2").slider("value")+",");
+			allVals+=($("#slider3").slider("value")+",");
+			allVals+=($("#slider4").slider("value")+",");
+		}
+		if(numPlayers==4)
+		{
+			allVals+=($("#slider1").slider("value")+",");
+			allVals+=($("#slider2").slider("value")+",");
+			allVals+=($("#slider4").slider("value")+",");
+			allVals+=($("#slider5").slider("value")+",");
+		}
+		if(numPlayers==5)
+		{
+			allVals+=($("#slider1").slider("value")+",");
+			allVals+=($("#slider2").slider("value")+",");
+			allVals+=($("#slider3").slider("value")+",");
+			allVals+=($("#slider4").slider("value")+",");
+			allVals+=($("#slider5").slider("value")+",");
+		}
+	}
+	if(parseInt(variables['game_type'])==2) //competitive ultimatum
+	{
+		var allVals="";
+		if(numPlayers==2)
+		{
+			if(this.dictatorList[this.numOfRejects]==1)
+				allVals+=($("#slider2").slider("value")+",");
+			if(this.dictatorList[this.numOfRejects]==2)
+				allVals+=($("#slider4").slider("value")+",");
+			if(this.dictateeList[this.expRoundNum-1]==1)
+				allVals+=($("#slider2").slider("value")+",");
+			if(this.dictateeList[this.expRoundNum-1]==2)
+				allVals+=($("#slider4").slider("value")+",");
+		}
+		if(numPlayers==3)
+		{
+			if(this.dictatorList[this.numOfRejects]==1)
+				allVals+=($("#slider2").slider("value")+",");
+			if(this.dictatorList[this.numOfRejects]==2)
+				allVals+=($("#slider3").slider("value")+",");
+			if(this.dictatorList[this.numOfRejects]==3)
+				allVals+=($("#slider4").slider("value")+",");
+			if(this.dictateeList[this.expRoundNum-1]==1)
+				allVals+=($("#slider2").slider("value")+",");
+			if(this.dictateeList[this.expRoundNum-1]==2)
+				allVals+=($("#slider3").slider("value")+",");
+			if(this.dictateeList[this.expRoundNum-1]==3)
+				allVals+=($("#slider4").slider("value")+",");
+		}
+		if(numPlayers==4)
+		{
+			if(this.dictatorList[this.numOfRejects]==1)
+				allVals+=($("#slider1").slider("value")+",");
+			if(this.dictatorList[this.numOfRejects]==2)
+				allVals+=($("#slider2").slider("value")+",");
+			if(this.dictatorList[this.numOfRejects]==3)
+				allVals+=($("#slider4").slider("value")+",");
+			if(this.dictatorList[this.numOfRejects]==4)
+				allVals+=($("#slider5").slider("value")+",");
+			if(this.dictateeList[this.expRoundNum-1]==1)
+				allVals+=($("#slider1").slider("value")+",");
+			if(this.dictateeList[this.expRoundNum-1]==2)
+				allVals+=($("#slider2").slider("value")+",");
+			if(this.dictateeList[this.expRoundNum-1]==3)
+				allVals+=($("#slider4").slider("value")+",");
+			if(this.dictateeList[this.expRoundNum-1]==4)
+				allVals+=($("#slider5").slider("value")+",");
+		}
+		if(numPlayers==5)
+		{
+			if(this.dictatorList[this.numOfRejects]==1)
+				allVals+=($("#slider1").slider("value")+",");
+			if(this.dictatorList[this.numOfRejects]==2)
+				allVals+=($("#slider2").slider("value")+",");
+			if(this.dictatorList[this.numOfRejects]==3)
+				allVals+=($("#slider3").slider("value")+",");
+			if(this.dictatorList[this.numOfRejects]==4)
+				allVals+=($("#slider4").slider("value")+",");
+			if(this.dictatorList[this.numOfRejects]==5)
+				allVals+=($("#slider5").slider("value")+",");
+			if(this.dictateeList[this.expRoundNum-1]==1)
+				allVals+=($("#slider1").slider("value")+",");
+			if(this.dictateeList[this.expRoundNum-1]==2)
+				allVals+=($("#slider2").slider("value")+",");
+			if(this.dictateeList[this.expRoundNum-1]==3)
+				allVals+=($("#slider3").slider("value")+",");
+			if(this.dictateeList[this.expRoundNum-1]==4)
+				allVals+=($("#slider4").slider("value")+",");
+			if(this.dictateeList[this.expRoundNum-1]==5)
+				allVals+=($("#slider5").slider("value")+",");
+		}
+	}
+	submit(allVals);
+	$('#gameinfo').html('Please wait during the voting process...');
+	$('#gameinfo').height(60);
+	hideDictatorOptions();
+}
+
+function placeUltimatumAnswerButtons()
+{
+	if(parseInt(variables['game_type'])==3) // ultimatum with tipping
+	{
+		if(numPlayers==2)
+		{
+			if(myid==1)
+			{
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"146\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" data-toggle=\"modal\" data-target=\"#tippingModal\" class=\"btn btn-primary\" id=\"accept_button\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"546\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+				$("#tippingamounttext").html($("#pointbox2").html()+" of "+$("#pointbox2").html());
+			}
+			if(myid==2)
+			{
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"467\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" data-toggle=\"modal\" data-target=\"#tippingModal\" class=\"btn btn-primary\" id=\"accept_button\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"225\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+				$("#tippingamounttext").html($("#pointbox4").html()+" of "+$("#pointbox4").html());
+			}
+		}
+		if(numPlayers==3)
+		{
+			if(myid==1)
+			{
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"71\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" data-toggle=\"modal\" data-target=\"#tippingModal\" class=\"btn btn-primary\" id=\"accept_button\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"621\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+				$("#tippingamounttext").html($("#pointbox2").html()+" of "+$("#pointbox2").html());
+			}
+			if(myid==2)
+			{
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"323\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" data-toggle=\"modal\" data-target=\"#tippingModal\" class=\"btn btn-primary\" id=\"accept_button\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"369\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+				$("#tippingamounttext").html($("#pointbox3").html()+" of "+$("#pointbox3").html());
+			}
+			if(myid==3)
+			{
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"542\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" data-toggle=\"modal\" data-target=\"#tippingModal\" class=\"btn btn-primary\" id=\"accept_button\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"150\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+				$("#tippingamounttext").html($("#pointbox4").html()+" of "+$("#pointbox4").html());
+			}
+		}
+		if(numPlayers==4)
+		{
+			if(myid==1)
+			{
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"7\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" data-toggle=\"modal\" data-target=\"#tippingModal\" class=\"btn btn-primary\" id=\"accept_button\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"685\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+				$("#tippingamounttext").html($("#pointbox1").html()+" of "+$("#pointbox1").html());
+			}
+			if(myid==2)
+			{
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"204\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" data-toggle=\"modal\" data-target=\"#tippingModal\" class=\"btn btn-primary\" id=\"accept_button\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"488\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+				$("#tippingamounttext").html($("#pointbox2").html()+" of "+$("#pointbox2").html());
+			}
+			if(myid==3)
+			{
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"406\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" data-toggle=\"modal\" data-target=\"#tippingModal\" class=\"btn btn-primary\" id=\"accept_button\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"286\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+				$("#tippingamounttext").html($("#pointbox4").html()+" of "+$("#pointbox4").html());
+			}
+			if(myid==4)
+			{
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"602\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" data-toggle=\"modal\" data-target=\"#tippingModal\" class=\"btn btn-primary\" id=\"accept_button\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"90\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+				$("#tippingamounttext").html($("#pointbox5").html()+" of "+$("#pointbox5").html());
+			}
+		}
+		if(numPlayers==5)
+		{
+			if(myid==1)
+			{
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"0\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" data-toggle=\"modal\" data-target=\"#tippingModal\" class=\"btn btn-primary\" id=\"accept_button\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"692\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+				$("#tippingamounttext").html($("#pointbox1").html()+" of "+$("#pointbox1").html());
+			}
+			if(myid==2)
+			{
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"148\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" data-toggle=\"modal\" data-target=\"#tippingModal\" class=\"btn btn-primary\" id=\"accept_button\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"544\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+				$("#tippingamounttext").html($("#pointbox2").html()+" of "+$("#pointbox2").html());
+			}
+			if(myid==3)
+			{
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"307\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" data-toggle=\"modal\" data-target=\"#tippingModal\" class=\"btn btn-primary\" id=\"accept_button\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"385\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+				$("#tippingamounttext").html($("#pointbox3").html()+" of "+$("#pointbox3").html());
+			}
+			if(myid==4)
+			{
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"465\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" data-toggle=\"modal\" data-target=\"#tippingModal\" class=\"btn btn-primary\" id=\"accept_button\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"227\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+				$("#tippingamounttext").html($("#pointbox4").html()+" of "+$("#pointbox4").html());
+			}
+			if(myid==5)
+			{
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"604\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" data-toggle=\"modal\" data-target=\"#tippingModal\" class=\"btn btn-primary\" id=\"accept_button\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+				$("#tippingamounttext").html($("#pointbox5").html()+" of "+$("#pointbox5").html());
+			}
+		}
+		$("#slideramount").slider( "setOption", "max", parseInt($("#tippingamounttext").html()));
+		$("#slideramount").slider( "value", parseInt($("#tippingamounttext").html()));
+		document.getElementById("modalbar").style.width="100%";
+	}
+	else
+	{
+		if(numPlayers==2)
+		{
+			if(myid==1)
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"146\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"accept_button\" onClick=\"submit('Accept');$('#choicetable').hide();\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"546\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+			if(myid==2)
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"467\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"accept_button\" onClick=\"submit('Accept');$('#choicetable').hide();\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"225\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+		}
+		if(numPlayers==3)
+		{
+			if(myid==1)
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"71\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"accept_button\" onClick=\"submit('Accept');$('#choicetable').hide();\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"621\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+			if(myid==2)
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"323\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"accept_button\" onClick=\"submit('Accept');$('#choicetable').hide();\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"369\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+			if(myid==3)
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"542\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"accept_button\" onClick=\"submit('Accept');$('#choicetable').hide();\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"150\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+		}
+		if(numPlayers==4)
+		{
+			if(myid==1)
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"7\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"accept_button\" onClick=\"submit('Accept');$('#choicetable').hide();\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"685\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+			if(myid==2)
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"204\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"accept_button\" onClick=\"submit('Accept');$('#choicetable').hide();\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"488\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+			if(myid==3)
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"406\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"accept_button\" onClick=\"submit('Accept');$('#choicetable').hide();\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"286\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+			if(myid==4)
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"602\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"accept_button\" onClick=\"submit('Accept');$('#choicetable').hide();\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"90\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+		}
+		if(numPlayers==5)
+		{
+			if(myid==1)
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"0\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"accept_button\" onClick=\"submit('Accept');$('#choicetable').hide();\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"692\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+			if(myid==2)
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"148\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"accept_button\" onClick=\"submit('Accept');$('#choicetable').hide();\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"544\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+			if(myid==3)
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"307\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"accept_button\" onClick=\"submit('Accept');$('#choicetable').hide();\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"385\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+			if(myid==4)
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"465\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"accept_button\" onClick=\"submit('Accept');$('#choicetable').hide();\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"227\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+			if(myid==5)
+				$("#butcontainer").html("<table id=\"choicetable\" width=\"794\"><tr><td width=\"604\" height=\"47\"></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"accept_button\" onClick=\"submit('Accept');$('#choicetable').hide();\"><i class=\"icon-ok icon-white\"></i> Accept</button></td><td width=\"88\" height=\"47\"><button type=\"submit\" class=\"btn btn-primary\" id=\"reject_button\" onClick=\"submit('Reject');$('#choicetable').hide();\"><i class=\"icon-remove icon-white\"></i> Reject</button></td></tr></table>");
+		}
+	}
+}
+
+function acceptUltimatum(gameplayerid)
+{
+	$("#butcontainer").height(12);
+	if(numPlayers==2)
+	{
+		if(gameplayerid==1)
+		{
+			$("#rejectedtext2").hide();
+			$("#acceptedtext2").show();
+		}
+		if(gameplayerid==2)
+		{
+			$("#rejectedtext4").hide();
+			$("#acceptedtext4").show();
+		}
+	}
+	if(numPlayers==3)
+	{
+		if(gameplayerid==1)
+		{
+			$("#rejectedtext2").hide();
+			$("#acceptedtext2").show();
+		}
+		if(gameplayerid==2)
+		{
+			$("#rejectedtext3").hide();
+			$("#acceptedtext3").show();
+		}
+		if(gameplayerid==3)
+		{
+			$("#rejectedtext4").hide();
+			$("#acceptedtext4").show();
+		}
+	}
+	if(numPlayers==4)
+	{
+		if(gameplayerid==1)
+		{
+			$("#rejectedtext1").hide();
+			$("#acceptedtext1").show();
+		}
+		if(gameplayerid==2)
+		{
+			$("#rejectedtext2").hide();
+			$("#acceptedtext2").show();
+		}
+		if(gameplayerid==3)
+		{
+			$("#rejectedtext4").hide();
+			$("#acceptedtext4").show();
+		}
+		if(gameplayerid==4)
+		{
+			$("#rejectedtext5").hide();
+			$("#acceptedtext5").show();
+		}
+	}
+	if(numPlayers==5)
+	{
+		if(gameplayerid==1)
+		{
+			$("#rejectedtext1").hide();
+			$("#acceptedtext1").show();
+		}
+		if(gameplayerid==2)
+		{
+			$("#rejectedtext2").hide();
+			$("#acceptedtext2").show();
+		}
+		if(gameplayerid==3)
+		{
+			$("#rejectedtext3").hide();
+			$("#acceptedtext3").show();
+		}
+		if(gameplayerid==4)
+		{
+			$("#rejectedtext4").hide();
+			$("#acceptedtext4").show();
+		}
+		if(gameplayerid==5)
+		{
+			$("#rejectedtext5").hide();
+			$("#acceptedtext5").show();
+		}
+	}
+	if(gameplayerid==myid)
+	{
+		$('#gameinfo').html('Please wait during others vote...');
+		$('#gameinfo').height(60);
+	}
+}
+
+function rejectUltimatum(gameplayerid)
+{
+	$("#butcontainer").height(12);
+	if(numPlayers==2)
+	{
+		if(gameplayerid==1)
+		{
+			$("#acceptedtext2").hide();
+			$("#rejectedtext2").show();
+		}
+		if(gameplayerid==2)
+		{
+			$("#acceptedtext4").hide();
+			$("#rejectedtext4").show();
+		}
+	}
+	if(numPlayers==3)
+	{
+		if(gameplayerid==1)
+		{
+			$("#acceptedtext2").hide();
+			$("#rejectedtext2").show();
+		}
+		if(gameplayerid==2)
+		{
+			$("#acceptedtext3").hide();
+			$("#rejectedtext3").show();
+		}
+		if(gameplayerid==3)
+		{
+			$("#acceptedtext4").hide();
+			$("#rejectedtext4").show();
+		}
+	}
+	if(numPlayers==4)
+	{
+		if(gameplayerid==1)
+		{
+			$("#acceptedtext1").hide();
+			$("#rejectedtext1").show();
+		}
+		if(gameplayerid==2)
+		{
+			$("#acceptedtext2").hide();
+			$("#rejectedtext2").show();
+		}
+		if(gameplayerid==3)
+		{
+			$("#acceptedtext4").hide();
+			$("#rejectedtext4").show();
+		}
+		if(gameplayerid==4)
+		{
+			$("#acceptedtext5").hide();
+			$("#rejectedtext5").show();
+		}
+	}
+	if(numPlayers==5)
+	{
+		if(gameplayerid==1)
+		{
+			$("#acceptedtext1").hide();
+			$("#rejectedtext1").show();
+		}
+		if(gameplayerid==2)
+		{
+			$("#acceptedtext2").hide();
+			$("#rejectedtext2").show();
+		}
+		if(gameplayerid==3)
+		{
+			$("#acceptedtext3").hide();
+			$("#rejectedtext3").show();
+		}
+		if(gameplayerid==4)
+		{
+			$("#acceptedtext4").hide();
+			$("#rejectedtext4").show();
+		}
+		if(gameplayerid==5)
+		{
+			$("#acceptedtext5").hide();
+			$("#rejectedtext5").show();
+		}
+	}
+	if(gameplayerid==myid)
+	{
+		$('#gameinfo').html('Please wait during others vote...');
+		$('#gameinfo').height(60);
+	}
+}
+
+function countDownDictator(){  
+	 if (this.dictatorTimer <=0){
+		clearTimeout(this.timeoutDictator);
+		if(parseInt(variables['game_type'])==1||parseInt(variables['game_type'])==3||parseInt(variables['game_type'])==4||parseInt(variables['game_type'])==6)	//classic ultimatum & ultimatum with tipping & reverse ultimatum & dictator game
+		{
+			if($('#statustext').html()=="Dictator")
+			{
+				hideDictatorOptions();
+				var dictator_points=Math.floor(Math.random()*(parseInt(variables['total_points'])-parseInt(variables['total_points'])/numPlayers-1))+parseInt(variables['total_points'])/numPlayers+1;
+				var dictatee_points=Math.floor((parseInt(variables['total_points'])-dictator_points)/(numPlayers-1));
+				if(dictatee_points*(numPlayers-1)+dictator_points<parseInt(variables['total_points']))
+					dictator_points+=(parseInt(variables['total_points'])-(dictatee_points*(numPlayers-1)+dictator_points));
+				var allVals="";
+				for(var i=0; i<numPlayers; i++)
+					if(i+1==this.dictatorList[this.expRoundNum-1])
+						allVals+=(dictator_points+",");
+					else
+						allVals+=(dictatee_points+",");
+				submit(allVals);
+			}
+		}
+		if(parseInt(variables['game_type'])==7)	//trust game
+		{
+			if($('#statustext').html()=="Dictator")
+			{
+				hideDictatorOptions();
+				var dictator_points=Math.floor(Math.random()*(this.initialEndowment-this.initialEndowment/numPlayers-1))+this.initialEndowment/numPlayers+1;
+				var dictatee_points=Math.floor((this.initialEndowment-dictator_points)/(numPlayers-1));
+				if(dictatee_points*(numPlayers-1)+dictator_points<this.initialEndowment)
+					dictator_points+=(this.initialEndowment-(dictatee_points*(numPlayers-1)+dictator_points));
+				var allVals="";
+				for(var i=0; i<numPlayers; i++)
+					if(i+1==this.dictatorList[this.expRoundNum-1])
+						allVals+=(dictator_points+",");
+					else
+						allVals+=(dictatee_points+",");
+				submit(allVals);
+			}
+		}
+		if(parseInt(variables['game_type'])==5)	//pirate game
+		{
+			if($('#statustext').html()=="Proposer")
+			{
+				hideDictatorOptions();
+				var dictator_points=Math.floor(Math.random()*(parseInt(variables['total_points'])-parseInt(variables['total_points'])/(numPlayers-this.pirateCurrentSenior+1)-1))+parseInt(variables['total_points'])/(numPlayers-this.pirateCurrentSenior+1)+1;
+				var dictatee_points=Math.floor((parseInt(variables['total_points'])-dictator_points)/((numPlayers-this.pirateCurrentSenior+1)-1));
+				if(dictatee_points*((numPlayers-this.pirateCurrentSenior+1)-1)+dictator_points<parseInt(variables['total_points']))
+					dictator_points+=(parseInt(variables['total_points'])-(dictatee_points*((numPlayers-this.pirateCurrentSenior+1)-1)+dictator_points));
+				var allVals="";
+				for(var i=1; i<this.pirateCurrentSenior; i++)
+					allVals+=("0,");
+				for(var i=this.pirateCurrentSenior; i<=numPlayers; i++)
+					if(i==this.pirateCurrentSenior)
+						allVals+=(dictator_points+",");
+					else
+						allVals+=(dictatee_points+",");
+				submit(allVals);
+			}
+		}
+		if(parseInt(variables['game_type'])==2)	//competitive ultimatum
+		{
+			if(this.dictatorList[this.numOfRejects]==myid)
+			{
+				hideDictatorOptions();
+				var dictator_points=Math.floor(Math.random()*(parseInt(variables['total_points'])-parseInt(variables['total_points']/2-1)))+parseInt(variables['total_points'])/2+1;
+				var dictatee_points=parseInt(variables['total_points'])-dictator_points;
+				var allVals="";
+				allVals+=(dictator_points+",");
+				allVals+=(dictatee_points+",");
+				submit(allVals);
+			}
+		}
+	 }else{  
+		this.dictatorTimer--;
+		document.getElementById("timebar").style.width=(this.dictatorTimer*100/parseInt(variables['dictator_round_time'])+"")+"%";
+		document.getElementById("timeremtext").innerHTML = this.dictatorTimer+" seconds remaining"; 
+		this.timeoutDictator=setTimeout("countDownDictator()", 1000);
+	 }  
+}
+
+function countDownDictatee(){  
+	 if (this.dictateeTimer <=0){
+		clearTimeout(this.timeoutDictatee);
+		if(parseInt(variables['game_type'])==1 || parseInt(variables['game_type'])==2 || parseInt(variables['game_type'])==4)	//classic ultimatum & competitive ultimatum & reverse ultimatum
+		{
+			if($('#statustext').html()=="Dictatee"&&$('#choicetable').is(":visible"))
+			{
+				submit('Accept');
+				$('#choicetable').hide();
+			}
+		}
+		if(parseInt(variables['game_type'])==5)	//pirate game
+		{
+			if($('#choicetable').is(":visible"))
+			{
+				submit('Accept');
+				$('#choicetable').hide();
+			}
+		}
+		if(parseInt(variables['game_type'])==3)	//ultimatum with tipping
+		{
+			if($('#statustext').html()=="Dictatee"&&$('#choicetable').is(":visible"))
+			{
+				submit('Accept '+$("#slideramount").slider( "valueMax"));
+				$('#choicetable').hide();
+				$('.mymodal').hide();
+				$('.modal-backdrop').remove();
+			}
+		}
+		if(parseInt(variables['game_type'])==7)	//trust game
+		{
+			if($('#statustext').html()=="Dictatee" && this.myEndowment==-1)
+			{
+				hideDictatorOptions();
+				var dictator_points=Math.floor(Math.random()*(parseInt(variables['total_points'])-parseInt(variables['total_points'])/2-1))+parseInt(variables['total_points'])/2+1;
+				var dictatee_points=Math.floor(parseInt(variables['total_points'])-dictator_points);
+				var allVals="";
+				for(var i=0; i<numPlayers; i++)
+				{
+					if(i+1==this.dictatorList[this.expRoundNum-1])
+						allVals+=(dictator_points+",");
+					else if(i+1==myid)
+						allVals+=(dictatee_points+",");
+					else
+						allVals+="0,";
+				}
+				submit(allVals);
+			}
+		}
+	 }else{  
+		this.dictateeTimer--;
+		document.getElementById("timebar").style.width=(this.dictateeTimer*100/parseInt(variables['dictatee_round_time'])+"")+"%";
+		document.getElementById("timeremtext").innerHTML = this.dictateeTimer+" seconds remaining"; 
+		this.timeoutDictatee=setTimeout("countDownDictatee()", 1000);
+	 }  
+}
+
+function countDownRoundInterval(){  
+	 if (this.roundIntervalTimer <=0){
+		clearTimeout(this.timeoutRoundInterval);
+		if(parseInt(variables['game_type'])==1 || parseInt(variables['game_type'])==3 || parseInt(variables['game_type'])==6)	//classic ultimatum & ultimatum with tipping & pirate game
+		{
+			if(this.expRoundNum<parseInt(variables['number_of_rounds']))
+			{
+				$("#timebardiv").show();
+				$("#timeremtext").show();
+				nextUltimatumRound();
+			}
+			else
+			{
+				quit();
+				var myurl = "http://"+window.location.host+"/stop_test";
+				window.location = myurl;
+			}
+		}
+		if(parseInt(variables['game_type'])==4)	//reverse ultimatum
+		{
+			if(this.expRoundNum<parseInt(variables['number_of_rounds']))
+			{
+				$("#timebardiv").show();
+				$("#timeremtext").show();
+				nextReverseUltimatumRound();
+			}
+			else
+			{
+				quit();
+				var myurl = "http://"+window.location.host+"/stop_test";
+				window.location = myurl;
+			}
+		}
+		if(parseInt(variables['game_type'])==5)	//pirate game
+		{
+			if(this.expRoundNum<parseInt(variables['number_of_rounds']))
+			{
+				$("#timebardiv").show();
+				$("#timeremtext").show();
+				nextPirateRound();
+			}
+			else
+			{
+				quit();
+				var myurl = "http://"+window.location.host+"/stop_test";
+				window.location = myurl;
+			}
+		}
+		if(parseInt(variables['game_type'])==2)	//competitive ultimatum
+		{
+			if(this.expRoundNum<parseInt(variables['number_of_rounds']))
+			{
+				$("#timebardiv").show();
+				$("#timeremtext").show();
+				nextCompetitiveUltimatumRound();
+			}
+			else
+			{
+				quit();
+				var myurl = "http://"+window.location.host+"/stop_test";
+				window.location = myurl;
+			}
+		}
+		if(parseInt(variables['game_type'])==7)	//trust game
+		{
+			if(this.expRoundNum<parseInt(variables['number_of_rounds']))
+			{
+				$("#timebardiv").show();
+				$("#timeremtext").show();
+				nextTrustRound();
+			}
+			else
+			{
+				quit();
+				var myurl = "http://"+window.location.host+"/stop_test";
+				window.location = myurl;
+			}
+		}
+	 }else{  
+		this.roundIntervalTimer--;
+		if(parseInt(variables['game_type'])==1)	//classic ultimatum
+		{
+			if(this.expRoundNum<parseInt(variables['number_of_rounds']))
+			{
+				if(this.numOfAccepts>this.numOfRejects)
+					$('#gameinfo').html('OFFER IS ACCEPTED!</br></br>Next round begins in '+this.roundIntervalTimer+' seconds.');
+				else
+					$('#gameinfo').html('OFFER IS REJECTED!</br></br>Next round begins in '+this.roundIntervalTimer+' seconds.');
+			}
+			else
+			{
+				if(this.numOfAccepts>this.numOfRejects)
+					$('#gameinfo').html('OFFER IS ACCEPTED!</br></br>Thank you for your participation. You will quit the experiment in '+this.roundIntervalTimer+' seconds.');
+				else
+					$('#gameinfo').html('OFFER IS REJECTED!</br></br>Thank you for your participation. You will quit the experiment in '+this.roundIntervalTimer+' seconds.');
+			}
+		}
+		if(parseInt(variables['game_type'])==6 || parseInt(variables['game_type'])==7)	//dictator game & trust game
+		{
+			if(this.expRoundNum<parseInt(variables['number_of_rounds']))
+			{
+				if(this.numOfAccepts>this.numOfRejects)
+					$('#gameinfo').html('Next round begins in '+this.roundIntervalTimer+' seconds.');
+				else
+					$('#gameinfo').html('Next round begins in '+this.roundIntervalTimer+' seconds.');
+			}
+			else
+			{
+				if(this.numOfAccepts>this.numOfRejects)
+					$('#gameinfo').html('Thank you for your participation. You will quit the experiment in '+this.roundIntervalTimer+' seconds.');
+				else
+					$('#gameinfo').html('Thank you for your participation. You will quit the experiment in '+this.roundIntervalTimer+' seconds.');
+			}
+		}
+		if(parseInt(variables['game_type'])==5)	//pirate game
+		{
+			if(this.expRoundNum<parseInt(variables['number_of_rounds']))
+			{
+				if(this.numOfAccepts>=this.numOfRejects)
+					$('#gameinfo').html('OFFER IS ACCEPTED!</br></br>Next round begins in '+this.roundIntervalTimer+' seconds.');
+				else
+					$('#gameinfo').html('OFFER IS REJECTED!</br></br>Next round begins in '+this.roundIntervalTimer+' seconds.');
+			}
+			else
+			{
+				if(this.numOfAccepts>=this.numOfRejects)
+					$('#gameinfo').html('OFFER IS ACCEPTED!</br></br>Thank you for your participation. You will quit the experiment in '+this.roundIntervalTimer+' seconds.');
+				else
+					$('#gameinfo').html('OFFER IS REJECTED!</br></br>Thank you for your participation. You will quit the experiment in '+this.roundIntervalTimer+' seconds.');
+			}
+		}
+		if(parseInt(variables['game_type'])==4)	//reverse ultimatum
+		{
+			if(this.expRoundNum<parseInt(variables['number_of_rounds']))
+			{
+				if(this.numOfRejects==-1)
+					$('#gameinfo').html('Dictator declined to make a new offer.</br></br>Next round begins in '+this.roundIntervalTimer+' seconds.');
+				else if(this.numOfAccepts>this.numOfRejects)
+					$('#gameinfo').html('OFFER IS ACCEPTED!</br></br>Next round begins in '+this.roundIntervalTimer+' seconds.');
+				else
+					$('#gameinfo').html('OFFER IS REJECTED!</br></br>Next round begins in '+this.roundIntervalTimer+' seconds.');
+			}
+			else
+			{
+				if(this.numOfRejects==-1)
+					$('#gameinfo').html('Dictator declined to make a new offer.</br></br>Thank you for your participation. You will quit the experiment in '+this.roundIntervalTimer+' seconds.');
+				else if(this.numOfAccepts>this.numOfRejects)
+					$('#gameinfo').html('OFFER IS ACCEPTED!</br></br>Thank you for your participation. You will quit the experiment in '+this.roundIntervalTimer+' seconds.');
+				else
+					$('#gameinfo').html('OFFER IS REJECTED!</br></br>Thank you for your participation. You will quit the experiment in '+this.roundIntervalTimer+' seconds.');
+			}
+		}
+		if(parseInt(variables['game_type'])==3)	//ultimatum with tipping
+		{
+			if(this.expRoundNum<parseInt(variables['number_of_rounds']))
+			{
+				if(this.numOfAccepts>this.numOfRejects)
+				{
+					if($('#statustext').html()=="Dictator")
+					{
+						$('#gameinfo').html("OFFER IS ACCEPTED!");
+						for(var k=0; k<this.tips.length; k++)
+							if(k+1!=myid)
+								$('#gameinfo').html($('#gameinfo').html()+"</br>Received tip from "+getName(k+1)+": "+tips[k]);
+						$('#gameinfo').html($('#gameinfo').html()+"</br>Next round begins in "+this.roundIntervalTimer+" seconds.");
+					}
+					if($('#statustext').html()=="Dictatee")
+					{
+						$('#gameinfo').html("OFFER IS ACCEPTED!");
+						$('#gameinfo').html($('#gameinfo').html()+"</br>You gave a tip amount of: "+this.myTip);
+						$('#gameinfo').html($('#gameinfo').html()+"</br>Next round begins in "+this.roundIntervalTimer+" seconds.");
+					}
+				}
+				else
+					$('#gameinfo').html('OFFER IS REJECTED!</br></br>Next round begins in '+this.roundIntervalTimer+' seconds.');
+			}
+			else
+			{
+				if(this.numOfAccepts>this.numOfRejects)
+				{
+					if($('#statustext').html()=="Dictator")
+					{
+						$('#gameinfo').html("OFFER IS ACCEPTED!");
+						for(var k=0; k<this.tips.length; k++)
+							if(k+1!=myid)
+								$('#gameinfo').html($('#gameinfo').html()+"</br>Received tip from "+getName(k+1)+": "+tips[k]);
+						$('#gameinfo').html($('#gameinfo').html()+"</br>Thank you for your participation. You will quit the experiment in "+this.roundIntervalTimer+" seconds.");
+					}
+					if($('#statustext').html()=="Dictatee")
+					{
+						$('#gameinfo').html("OFFER IS ACCEPTED!");
+						$('#gameinfo').html($('#gameinfo').html()+"</br>You gave a tip amount of: "+this.myTip);
+						$('#gameinfo').html($('#gameinfo').html()+"</br>Thank you for your participation. You will quit the experiment in "+this.roundIntervalTimer+" seconds.");
+					}
+				}
+				else
+					$('#gameinfo').html('OFFER IS REJECTED!</br></br>Thank you for your participation. You will quit the experiment in '+this.roundIntervalTimer+' seconds.');
+			}
+		}
+		if(parseInt(variables['game_type'])==2)	//competitive ultimatum
+		{
+			if(this.expRoundNum<parseInt(variables['number_of_rounds']))
+			{
+				if(this.numOfAccepts>0)
+					$('#gameinfo').html(getName(this.dictateeList[this.expRoundNum-1])+' accepted the offer of '+getName(this.dictatorList[this.numOfRejects])+'!</br></br>Next round begins in '+this.roundIntervalTimer+' seconds.');
+				if(this.numOfRejects==numPlayers-1)
+					$('#gameinfo').html(getName(this.dictateeList[this.expRoundNum-1])+" didn't accept any of the offers!</br></br>Next round begins in "+this.roundIntervalTimer+" seconds.");
+			}
+			else
+			{
+				if(this.numOfAccepts>0)
+					$('#gameinfo').html(getName(this.dictateeList[this.expRoundNum-1])+' accepted the offer of '+getName(this.dictatorList[this.numOfRejects])+'!</br></br>Thank you for your participation. You will quit the experiment in '+this.roundIntervalTimer+' seconds.');
+				if(this.numOfRejects==numPlayers-1)
+					$('#gameinfo').html(getName(this.dictateeList[this.expRoundNum-1])+" didn't accept any of the offers!</br></br>Thank you for your participation. You will quit the experiment in "+this.roundIntervalTimer+" seconds.");
+			}
+		}
+		$('#gameinfo').height(60);
+		this.timeoutRoundInterval=setTimeout("countDownRoundInterval()", 1000);
+	 }  
+}
+
+function hideDictatorOptionsFor(i)
+{
+	if(numPlayers==2)
+	{
+		if(i==1)
+		{
+			$('#slider2').hide();
+			$('#stepper2').hide();
+			$("#secondScrResizableCol1").width(40);
+			$("#secondScrResizableCol2").width(40);
+			$("#secondScrResizableCol3").width(40);
+			$("#secondScrResizableCol4").width(40);
+		}
+		if(i==2)
+		{
+			$('#slider4').hide();
+			$('#stepper4').hide();
+			$("#fourthScrResizableCol1").width(40);
+			$("#fourthScrResizableCol2").width(40);
+			$("#fourthScrResizableCol3").width(40);
+			$("#fourthScrResizableCol4").width(40);
+		}
+	}
+	if(numPlayers==3)
+	{
+		if(i==1)
+		{
+			$('#slider2').hide();
+			$('#stepper2').hide();
+			$("#secondScrResizableCol1").width(40);
+			$("#secondScrResizableCol2").width(40);
+			$("#secondScrResizableCol3").width(40);
+			$("#secondScrResizableCol4").width(40);
+		}
+		if(i==2)
+		{
+			$('#slider3').hide();
+			$('#stepper3').hide();
+			$("#thirdScrResizableCol1").width(40);
+			$("#thirdScrResizableCol2").width(40);
+			$("#thirdScrResizableCol3").width(40);
+			$("#thirdScrResizableCol4").width(40);
+		}
+		if(i==3)
+		{
+			$('#slider4').hide();
+			$('#stepper4').hide();
+			$("#fourthScrResizableCol1").width(40);
+			$("#fourthScrResizableCol2").width(40);
+			$("#fourthScrResizableCol3").width(40);
+			$("#fourthScrResizableCol4").width(40);
+		}
+	}
+	if(numPlayers==4)
+	{
+		if(i==1)
+		{
+			$('#slider1').hide();
+			$('#stepper1').hide();
+			$("#firstScrResizableCol1").width(40);
+			$("#firstScrResizableCol2").width(40);
+			$("#firstScrResizableCol3").width(40);
+			$("#firstScrResizableCol4").width(40);
+		}
+		if(i==2)
+		{
+			$('#slider2').hide();
+			$('#stepper2').hide();
+			$("#secondScrResizableCol1").width(40);
+			$("#secondScrResizableCol2").width(40);
+			$("#secondScrResizableCol3").width(40);
+			$("#secondScrResizableCol4").width(40);
+		}
+		if(i==3)
+		{
+			$('#slider4').hide();
+			$('#stepper4').hide();
+			$("#fourthScrResizableCol1").width(40);
+			$("#fourthScrResizableCol2").width(40);
+			$("#fourthScrResizableCol3").width(40);
+			$("#fourthScrResizableCol4").width(40);
+		}
+		if(i==4)
+		{
+			$('#slider5').hide();
+			$('#stepper5').hide();
+			$("#fifthScrResizableCol1").width(40);
+			$("#fifthScrResizableCol2").width(40);
+			$("#fifthScrResizableCol3").width(40);
+			$("#fifthScrResizableCol4").width(40);
+		}
+	}
+	if(numPlayers==5)
+	{
+		$('#slider'+i).hide();
+		$('#stepper'+i).hide();
+		if(i==1)
+		{
+			$("#firstScrResizableCol1").width(40);
+			$("#firstScrResizableCol2").width(40);
+			$("#firstScrResizableCol3").width(40);
+			$("#firstScrResizableCol4").width(40);
+		}
+		if(i==2)
+		{
+			$("#secondScrResizableCol1").width(40);
+			$("#secondScrResizableCol2").width(40);
+			$("#secondScrResizableCol3").width(40);
+			$("#secondScrResizableCol4").width(40);
+		}
+		if(i==3)
+		{
+			$("#thirdScrResizableCol1").width(40);
+			$("#thirdScrResizableCol2").width(40);
+			$("#thirdScrResizableCol3").width(40);
+			$("#thirdScrResizableCol4").width(40);
+		}
+		if(i==4)
+		{
+			$("#fourthScrResizableCol1").width(40);
+			$("#fourthScrResizableCol2").width(40);
+			$("#fourthScrResizableCol3").width(40);
+			$("#fourthScrResizableCol4").width(40);
+		}
+		if(i==5)
+		{
+			$("#fifthScrResizableCol1").width(40);
+			$("#fifthScrResizableCol2").width(40);
+			$("#fifthScrResizableCol3").width(40);
+			$("#fifthScrResizableCol4").width(40);
+		}
+	}
+}
+
+function hideDictatorOptions()
+{
+	$('#resignbut').hide();
+	$('#proposebut').hide();
+	$('#slider1').hide();
+	$('#slider2').hide();
+	$('#slider3').hide();
+	$('#slider4').hide();
+	$('#slider5').hide();
+	$('#stepper1').hide();
+	$('#stepper2').hide();
+	$('#stepper3').hide();
+	$('#stepper4').hide();
+	$('#stepper5').hide();
+	$("#firstScrResizableCol1").width(40);
+	$("#firstScrResizableCol2").width(40);
+	$("#firstScrResizableCol3").width(40);
+	$("#firstScrResizableCol4").width(40);
+	$("#secondScrResizableCol1").width(40);
+	$("#secondScrResizableCol2").width(40);
+	$("#secondScrResizableCol3").width(40);
+	$("#secondScrResizableCol4").width(40);
+	$("#thirdScrResizableCol1").width(40);
+	$("#thirdScrResizableCol2").width(40);
+	$("#thirdScrResizableCol3").width(40);
+	$("#thirdScrResizableCol4").width(40);
+	$("#fourthScrResizableCol1").width(40);
+	$("#fourthScrResizableCol2").width(40);
+	$("#fourthScrResizableCol3").width(40);
+	$("#fourthScrResizableCol4").width(40);
+	$("#fifthScrResizableCol1").width(40);
+	$("#fifthScrResizableCol2").width(40);
+	$("#fifthScrResizableCol3").width(40);
+	$("#fifthScrResizableCol4").width(40);
+	$("#remptstext").html("&nbsp");
+	$("#totalpointsbardiv").hide();
+}
+
+function showDictatorOptions()
+{
+	if(parseInt(variables['game_type'])==4)
+	{
+		if(this.numOfRejects==0)
+		{
+			$("#butcontainer").html("<p align=\"center\"><a class=\"mybutton\" id=\"proposebut\" onclick=\"submitUltimatumShare();\" OnMouseOver=\"this.style.cursor='pointer'\">Propose</a></p>");
+			$('#proposebut').show();
+		}
+		else
+		{
+			$("#butcontainer").html("<table border=\"0\"><tr><td width=\"194\"></td><td width=\"194\"><p align=\"center\"><a class=\"mybutton\" id=\"proposebut\" onclick=\"submitUltimatumShare();\" OnMouseOver=\"this.style.cursor='pointer'\">Propose Again</a></p></td><td width=\"194\"><p align=\"center\"><a class=\"mybutton\" id=\"resignbut\" onclick=\"submit('Resign');hideDictatorOptions();\" OnMouseOver=\"this.style.cursor='pointer'\">Resign</a></p></td><td width=\"194\"></td></tr></table>");
+			$('#proposebut').show();
+			$('#resignbut').show();
+		}
+	}
+	else
+	{
+		$("#butcontainer").html("<p align=\"center\"><a class=\"mybutton\" id=\"proposebut\" onclick=\"submitUltimatumShare();\" OnMouseOver=\"this.style.cursor='pointer'\">Propose</a></p>");
+		$('#proposebut').show();
+	}
+	$('#slider1').show();
+	$('#slider2').show();
+	$('#slider3').show();
+	$('#slider4').show();
+	$('#slider5').show();
+	$('#stepper1').show();
+	$('#stepper2').show();
+	$('#stepper3').show();
+	$('#stepper4').show();
+	$('#stepper5').show();
+	$("#firstScrResizableCol1").width(80);
+	$("#firstScrResizableCol2").width(80);
+	$("#firstScrResizableCol3").width(80);
+	$("#firstScrResizableCol4").width(80);
+	$("#secondScrResizableCol1").width(80);
+	$("#secondScrResizableCol2").width(80);
+	$("#secondScrResizableCol3").width(80);
+	$("#secondScrResizableCol4").width(80);
+	$("#thirdScrResizableCol1").width(80);
+	$("#thirdScrResizableCol2").width(80);
+	$("#thirdScrResizableCol3").width(80);
+	$("#thirdScrResizableCol4").width(80);
+	$("#fourthScrResizableCol1").width(80);
+	$("#fourthScrResizableCol2").width(80);
+	$("#fourthScrResizableCol3").width(80);
+	$("#fourthScrResizableCol4").width(80);
+	$("#fifthScrResizableCol1").width(80);
+	$("#fifthScrResizableCol2").width(80);
+	$("#fifthScrResizableCol3").width(80);
+	$("#fifthScrResizableCol4").width(80);
+	$("#totalpointsbardiv").show();
+	document.getElementById("totalpointsbar").style.width="100%";
+	if(parseInt(variables['game_type'])==5)
+		$("#remptstext").html(getRemainingPoints()+" coins remaining");
+	else
+		$("#remptstext").html(getRemainingPoints()+" points remaining");
+}
+
+function hideUltimatumResults()
+{
+	$("#acceptedtext1").hide();
+	$("#rejectedtext1").hide();
+	$("#acceptedtext2").hide();
+	$("#rejectedtext2").hide();
+	$("#acceptedtext3").hide();
+	$("#rejectedtext3").hide();
+	$("#acceptedtext4").hide();
+	$("#rejectedtext4").hide();
+	$("#acceptedtext5").hide();
+	$("#rejectedtext5").hide();
+}
+
+function newMove(participant, index) {
+  fetchMove(participant, currentRound, index, function(val) {
+	if(parseInt(variables['game_type'])==1)	//classic ultimatum
+	{
+		if(this.dictatorList==undefined)
+		{
+			val=val.substring(3, val.length);
+			this.dictatorList=new Array();
+			var tarr=val.split("_");
+			for(var m=0;m<parseInt(variables['number_of_rounds']);m++)
+				this.dictatorList.push(parseInt(tarr[m]));
+			nextUltimatumRound();
+			return;
+		}
+		if(val.indexOf(",") >= 0)
+		{
+			this.shares = new Array();
+			var tarr = val.split(",");
+			for(var m=0; m<tarr.length; m++)
+			{
+				if(tarr[m]!="")
+					shares.push(parseInt(tarr[m]));
+			}
+			if($('#statustext').html()=="Dictatee")
+			{
+				$('#gameinfo').html('Please ACCEPT or REJECT the offer...');
+				placeUltimatumAnswerButtons();
+			}
+			else
+				$('#gameinfo').html('Please wait during the voting process...');
+			$('#gameinfo').height(60);
+			clearTimeout(this.timeoutDictator);
+			countDownDictatee();
+			setRound(1+this.expRoundNum*2);
+			if(numPlayers==2)
+			{
+				$("#slider2").slider( "value", shares[0]);
+				$("#pointbox2").html(shares[0]);
+				document.getElementById("pointbar2").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[0]);
+				$("#slider4").slider( "value", shares[1]);
+				$("#pointbox4").html(shares[1]);
+				document.getElementById("pointbar4").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[1]);
+			}
+			if(numPlayers==3)
+			{
+				$("#slider2").slider( "value", shares[0]);
+				$("#pointbox2").html(shares[0]);
+				document.getElementById("pointbar2").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[0]);
+				$("#slider3").slider( "value", shares[1]);
+				$("#pointbox3").html(shares[1]);
+				document.getElementById("pointbar3").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox3').val(shares[1]);
+				$("#slider4").slider( "value", shares[2]);
+				$("#pointbox4").html(shares[2]);
+				document.getElementById("pointbar4").style.height=(shares[2]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[2]);
+			}
+			if(numPlayers==4)
+			{
+				$("#slider1").slider( "value", shares[0]);
+				$("#pointbox1").html(shares[0]);
+				document.getElementById("pointbar1").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox1').val(shares[0]);
+				$("#slider2").slider( "value", shares[1]);
+				$("#pointbox2").html(shares[1]);
+				document.getElementById("pointbar2").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[1]);
+				$("#slider4").slider( "value", shares[2]);
+				$("#pointbox4").html(shares[2]);
+				document.getElementById("pointbar4").style.height=(shares[2]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[2]);
+				$("#slider5").slider( "value", shares[3]);
+				$("#pointbox5").html(shares[3]);
+				document.getElementById("pointbar5").style.height=(shares[3]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox5').val(shares[3]);
+			}
+			if(numPlayers==5)
+			{
+				$("#slider1").slider( "value", shares[0]);
+				$("#pointbox1").html(shares[0]);
+				document.getElementById("pointbar1").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox1').val(shares[0]);
+				$("#slider2").slider( "value", shares[1]);
+				$("#pointbox2").html(shares[1]);
+				document.getElementById("pointbar2").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[1]);
+				$("#slider3").slider( "value", shares[2]);
+				$("#pointbox3").html(shares[2]);
+				document.getElementById("pointbar3").style.height=(shares[2]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox3').val(shares[2]);
+				$("#slider4").slider( "value", shares[3]);
+				$("#pointbox4").html(shares[3]);
+				document.getElementById("pointbar4").style.height=(shares[3]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[3]);
+				$("#slider5").slider( "value", shares[4]);
+				$("#pointbox5").html(shares[4]);
+				document.getElementById("pointbar5").style.height=(shares[4]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox5').val(shares[4]);
+			}
+		}
+		if(val=="Accept"||val=="Reject")
+		{
+			if(val=="Accept")
+			{
+				acceptUltimatum(participant);
+				this.numOfAccepts++;
+			}
+			if(val=="Reject")
+			{
+				rejectUltimatum(participant);
+				this.numOfRejects++;
+			}
+			if(this.numOfAccepts+this.numOfRejects==numPlayers-1)
+			{
+				clearTimeout(this.timeoutDictatee);
+				$("#timebardiv").hide();
+				$("#timeremtext").hide();
+				if(this.numOfAccepts>this.numOfRejects)
+				{
+					$("#totearnings").html((parseInt($("#totearnings").html())+this.shares[myid-1])+"");
+					$("#lrearning").html(this.shares[myid-1]+"");
+				}
+				else
+					$("#lrearning").html("0");
+				countDownRoundInterval();
+			}
+		}
+	}
+	if(parseInt(variables['game_type'])==2)	//competitive ultimatum
+	{
+		if(this.dictateeList==undefined)
+		{
+			val=val.substring(3, val.length);
+			this.dictateeList=new Array();
+			var tarr=val.split("_");
+			for(var m=0;m<parseInt(variables['number_of_rounds']);m++)
+				this.dictateeList.push(parseInt(tarr[m]));
+			nextCompetitiveUltimatumRound();
+			return;
+		}
+		this.dictatorTimer=parseInt(variables['dictator_round_time']);
+		this.dictateeTimer=parseInt(variables['dictatee_round_time']);
+		if(val.indexOf(",") >= 0)
+		{
+			this.shares = new Array();
+			var tarr = val.split(",");
+			for(var m=0; m<tarr.length; m++)
+			{
+				if(tarr[m]!="")
+					shares.push(parseInt(tarr[m]));
+			}
+			if($('#statustext').html()=="Dictatee")
+			{
+				$('#gameinfo').html('Please ACCEPT or REJECT the offer...');
+				placeUltimatumAnswerButtons();
+			}
+			else
+			{
+				if(this.dictatorList[this.numOfRejects]==myid)
+					$('#gameinfo').html('Please wait during the voting process...');
+				else
+					$('#gameinfo').html(getName(this.dictatorList[this.numOfRejects])+" made offer... Please wait during dictatee's voting process...");
+			}
+			$('#gameinfo').height(60);
+			clearTimeout(this.timeoutDictator);
+			countDownDictatee();
+			this.competitiveCurrentRound++;
+			setRound(this.competitiveCurrentRound);
+			if(numPlayers==2)
+			{
+				if(this.dictatorList[this.numOfRejects]==1)
+				{
+					$("#slider2").slider( "value", shares[0]);
+					$("#pointbox2").html(shares[0]);
+					document.getElementById("pointbar2").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox2').val(shares[0]);
+				}
+				if(this.dictatorList[this.numOfRejects]==2)
+				{
+					$("#slider4").slider( "value", shares[0]);
+					$("#pointbox4").html(shares[0]);
+					document.getElementById("pointbar4").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox4').val(shares[0]);
+				}
+				if(this.dictateeList[this.expRoundNum-1]==1)
+				{
+					$("#slider2").slider( "value", shares[1]);
+					$("#pointbox2").html(shares[1]);
+					document.getElementById("pointbar2").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox2').val(shares[1]);
+				}
+				if(this.dictateeList[this.expRoundNum-1]==2)
+				{
+					$("#slider4").slider( "value", shares[1]);
+					$("#pointbox4").html(shares[1]);
+					document.getElementById("pointbar4").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox4').val(shares[1]);
+				}
+			}
+			if(numPlayers==3)
+			{
+				if(this.dictatorList[this.numOfRejects]==1)
+				{
+					$("#slider2").slider( "value", shares[0]);
+					$("#pointbox2").html(shares[0]);
+					document.getElementById("pointbar2").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox2').val(shares[0]);
+				}
+				if(this.dictatorList[this.numOfRejects]==2)
+				{
+					$("#slider3").slider( "value", shares[0]);
+					$("#pointbox3").html(shares[0]);
+					document.getElementById("pointbar3").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox3').val(shares[0]);
+				}
+				if(this.dictatorList[this.numOfRejects]==3)
+				{
+					$("#slider4").slider( "value", shares[0]);
+					$("#pointbox4").html(shares[0]);
+					document.getElementById("pointbar4").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox4').val(shares[0]);
+				}
+				if(this.dictateeList[this.expRoundNum-1]==1)
+				{
+					$("#slider2").slider( "value", shares[1]);
+					$("#pointbox2").html(shares[1]);
+					document.getElementById("pointbar2").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox2').val(shares[1]);
+				}
+				if(this.dictateeList[this.expRoundNum-1]==2)
+				{
+					$("#slider3").slider( "value", shares[1]);
+					$("#pointbox3").html(shares[1]);
+					document.getElementById("pointbar3").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox3').val(shares[1]);
+				}
+				if(this.dictateeList[this.expRoundNum-1]==3)
+				{
+					$("#slider4").slider( "value", shares[1]);
+					$("#pointbox4").html(shares[1]);
+					document.getElementById("pointbar4").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox4').val(shares[1]);
+				}
+			}
+			if(numPlayers==4)
+			{
+				if(this.dictatorList[this.numOfRejects]==1)
+				{
+					$("#slider1").slider( "value", shares[0]);
+					$("#pointbox1").html(shares[0]);
+					document.getElementById("pointbar1").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox1').val(shares[0]);
+				}
+				if(this.dictatorList[this.numOfRejects]==2)
+				{
+					$("#slider2").slider( "value", shares[0]);
+					$("#pointbox2").html(shares[0]);
+					document.getElementById("pointbar2").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox2').val(shares[0]);
+				}
+				if(this.dictatorList[this.numOfRejects]==3)
+				{
+					$("#slider4").slider( "value", shares[0]);
+					$("#pointbox4").html(shares[0]);
+					document.getElementById("pointbar4").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox4').val(shares[0]);
+				}
+				if(this.dictatorList[this.numOfRejects]==4)
+				{
+					$("#slider5").slider( "value", shares[0]);
+					$("#pointbox5").html(shares[0]);
+					document.getElementById("pointbar5").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox5').val(shares[0]);
+				}
+				if(this.dictateeList[this.expRoundNum-1]==1)
+				{
+					$("#slider1").slider( "value", shares[1]);
+					$("#pointbox1").html(shares[1]);
+					document.getElementById("pointbar1").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox1').val(shares[1]);
+				}
+				if(this.dictateeList[this.expRoundNum-1]==2)
+				{
+					$("#slider2").slider( "value", shares[1]);
+					$("#pointbox2").html(shares[1]);
+					document.getElementById("pointbar2").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox2').val(shares[1]);
+				}
+				if(this.dictateeList[this.expRoundNum-1]==3)
+				{
+					$("#slider4").slider( "value", shares[1]);
+					$("#pointbox4").html(shares[1]);
+					document.getElementById("pointbar4").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox4').val(shares[1]);
+				}
+				if(this.dictateeList[this.expRoundNum-1]==4)
+				{
+					$("#slider5").slider( "value", shares[1]);
+					$("#pointbox5").html(shares[1]);
+					document.getElementById("pointbar5").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox5').val(shares[1]);
+				}
+			}
+			if(numPlayers==5)
+			{
+				if(this.dictatorList[this.numOfRejects]==1)
+				{
+					$("#slider1").slider( "value", shares[0]);
+					$("#pointbox1").html(shares[0]);
+					document.getElementById("pointbar1").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox1').val(shares[0]);
+				}
+				if(this.dictatorList[this.numOfRejects]==2)
+				{
+					$("#slider2").slider( "value", shares[0]);
+					$("#pointbox2").html(shares[0]);
+					document.getElementById("pointbar2").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox2').val(shares[0]);
+				}
+				if(this.dictatorList[this.numOfRejects]==3)
+				{
+					$("#slider3").slider( "value", shares[0]);
+					$("#pointbox3").html(shares[0]);
+					document.getElementById("pointbar3").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox3').val(shares[0]);
+				}
+				if(this.dictatorList[this.numOfRejects]==4)
+				{
+					$("#slider4").slider( "value", shares[0]);
+					$("#pointbox4").html(shares[0]);
+					document.getElementById("pointbar4").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox4').val(shares[0]);
+				}
+				if(this.dictatorList[this.numOfRejects]==4)
+				{
+					$("#slider5").slider( "value", shares[0]);
+					$("#pointbox5").html(shares[0]);
+					document.getElementById("pointbar5").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox5').val(shares[0]);
+				}
+				if(this.dictateeList[this.expRoundNum-1]==1)
+				{
+					$("#slider1").slider( "value", shares[1]);
+					$("#pointbox1").html(shares[1]);
+					document.getElementById("pointbar1").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox1').val(shares[1]);
+				}
+				if(this.dictateeList[this.expRoundNum-1]==2)
+				{
+					$("#slider2").slider( "value", shares[1]);
+					$("#pointbox2").html(shares[1]);
+					document.getElementById("pointbar2").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox2').val(shares[1]);
+				}
+				if(this.dictateeList[this.expRoundNum-1]==3)
+				{
+					$("#slider3").slider( "value", shares[1]);
+					$("#pointbox3").html(shares[1]);
+					document.getElementById("pointbar3").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox3').val(shares[1]);
+				}
+				if(this.dictateeList[this.expRoundNum-1]==4)
+				{
+					$("#slider4").slider( "value", shares[1]);
+					$("#pointbox4").html(shares[1]);
+					document.getElementById("pointbar4").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox4').val(shares[1]);
+				}
+				if(this.dictatorList[this.numOfRejects]==4)
+				{
+					$("#slider5").slider( "value", shares[0]);
+					$("#pointbox5").html(shares[0]);
+					document.getElementById("pointbar5").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+					$('#stepperbox5').val(shares[0]);
+				}
+			}
+		}
+		if(val=="Accept"||val=="Reject")
+		{
+			clearTimeout(this.timeoutDictatee);
+			this.competitiveCurrentRound++;
+			setRound(this.competitiveCurrentRound);
+			if(val=="Accept")
+			{
+				this.numOfAccepts++;
+				acceptUltimatum(this.dictatorList[this.numOfRejects]);
+				$("#timebardiv").hide();
+				$("#timeremtext").hide();
+				if(this.dictatorList[this.numOfRejects]==myid)
+				{
+					$("#totearnings").html((parseInt($("#totearnings").html())+this.shares[0])+"");
+					$("#lrearning").html(this.shares[0]+"");
+				}
+				else if(this.dictateeList[this.expRoundNum-1]==myid)
+				{
+					$("#totearnings").html((parseInt($("#totearnings").html())+this.shares[1])+"");
+					$("#lrearning").html(this.shares[1]+"");
+				}
+				else
+					$("#lrearning").html("0");
+				countDownRoundInterval();
+			}
+			if(val=="Reject")
+			{
+				rejectUltimatum(this.dictatorList[this.numOfRejects]);
+				this.numOfRejects++;
+				if(this.numOfRejects==numPlayers-1)
+				{
+					$("#timebardiv").hide();
+					$("#timeremtext").hide();
+					$("#lrearning").html("0");
+					countDownRoundInterval();
+					return;
+				}
+				countDownDictator();
+				if(this.dictateeList[this.expRoundNum-1]==myid)
+				{
+					$('#gameinfo').html('You are dictatee and others are dictators for this round.</br>There are '+numPlayers+' players in this game. Each of the dictators will offer a share of '+variables['total_points']+' points one by one.</br>You can accept at most one offer. '+getName(this.dictatorList[this.numOfRejects])+' is now making you an offer...');
+				}
+				else
+				{
+					if(this.dictatorList[this.numOfRejects]==myid)
+					{
+						$('#gameinfo').html('You are dictator. It is your turn. Please make your offer...</br>'+getName(this.dictateeList[this.expRoundNum-1])+' is dictatee for this round.');		
+						showDictatorOptions();
+						for(var i=0; i<this.dictatorList.length; i++)
+						{
+							if(myid!=this.dictatorList[i])
+								hideDictatorOptionsFor(this.dictatorList[i]);
+						}
+					}
+					else
+					{
+						var foundDictator=false;
+						for(var i=0; i<this.numOfRejects; i++)
+							if(this.dictatorList[i]==myid)
+								foundDictator=true;
+						if(foundDictator==false)
+							$('#gameinfo').html('You are dictator.</br>'+getName(this.dictateeList[this.expRoundNum-1])+' is dictatee for this round.</br>'+getName(this.dictatorList[this.numOfRejects])+' is now making offer. Please wait your turn...');
+						else
+							$('#gameinfo').html('Your offer is rejected. You are out of game for this round.</br>'+getName(this.dictateeList[this.expRoundNum-1])+' is dictatee for this round.</br>'+getName(this.dictatorList[this.numOfRejects])+' is now making offer...');
+						hideDictatorOptions();
+					}
+				}
+				$('#gameinfo').height(60);
+				if(numPlayers==2)
+				{
+					if(this.dictateeList[this.expRoundNum-1]==1)
+					{
+						document.getElementById("pointbar2").style.height="0%";
+						$( "#pointbox2" ).html("0");
+						$('#stepperbox2').val(0);
+						$("#slider2").slider( "value", 0);
+					}
+					if(this.dictateeList[this.expRoundNum-1]==2)
+					{
+						document.getElementById("pointbar4").style.height="0%";
+						$( "#pointbox4" ).html("0");
+						$('#stepperbox4').val(0);
+						$("#slider4").slider( "value", 0);
+					}
+				}
+				if(numPlayers==3)
+				{
+					if(this.dictateeList[this.expRoundNum-1]==1)
+					{
+						document.getElementById("pointbar2").style.height="0%";
+						$( "#pointbox2" ).html("0");
+						$('#stepperbox2').val(0);
+						$("#slider2").slider( "value", 0);
+					}
+					if(this.dictateeList[this.expRoundNum-1]==2)
+					{
+						document.getElementById("pointbar3").style.height="0%";
+						$( "#pointbox3" ).html("0");
+						$('#stepperbox3').val(0);
+						$("#slider3").slider( "value", 0);
+					}
+					if(this.dictateeList[this.expRoundNum-1]==3)
+					{
+						document.getElementById("pointbar4").style.height="0%";
+						$( "#pointbox4" ).html("0");
+						$('#stepperbox4').val(0);
+						$("#slider4").slider( "value", 0);
+					}
+				}
+				if(numPlayers==4)
+				{
+					if(this.dictateeList[this.expRoundNum-1]==1)
+					{
+						document.getElementById("pointbar1").style.height="0%";
+						$( "#pointbox1" ).html("0");
+						$('#stepperbox1').val(0);
+						$("#slider1").slider( "value", 0);
+					}
+					if(this.dictateeList[this.expRoundNum-1]==2)
+					{
+						document.getElementById("pointbar2").style.height="0%";
+						$( "#pointbox2" ).html("0");
+						$('#stepperbox2').val(0);
+						$("#slider2").slider( "value", 0);
+					}
+					if(this.dictateeList[this.expRoundNum-1]==3)
+					{
+						document.getElementById("pointbar4").style.height="0%";
+						$( "#pointbox4" ).html("0");
+						$('#stepperbox4').val(0);
+						$("#slider4").slider( "value", 0);
+					}
+					if(this.dictateeList[this.expRoundNum-1]==4)
+					{
+						document.getElementById("pointbar5").style.height="0%";
+						$( "#pointbox5" ).html("0");
+						$('#stepperbox5').val(0);
+						$("#slider5").slider( "value", 0);
+					}
+				}
+				if(numPlayers==5)
+				{
+					if(this.dictateeList[this.expRoundNum-1]==1)
+					{
+						document.getElementById("pointbar1").style.height="0%";
+						$( "#pointbox1" ).html("0");
+						$('#stepperbox1').val(0);
+						$("#slider1").slider( "value", 0);
+					}
+					if(this.dictateeList[this.expRoundNum-1]==2)
+					{
+						document.getElementById("pointbar2").style.height="0%";
+						$( "#pointbox2" ).html("0");
+						$('#stepperbox2').val(0);
+						$("#slider2").slider( "value", 0);
+					}
+					if(this.dictateeList[this.expRoundNum-1]==3)
+					{
+						document.getElementById("pointbar3").style.height="0%";
+						$( "#pointbox3" ).html("0");
+						$('#stepperbox3').val(0);
+						$("#slider3").slider( "value", 0);
+					}
+					if(this.dictateeList[this.expRoundNum-1]==4)
+					{
+						document.getElementById("pointbar4").style.height="0%";
+						$( "#pointbox4" ).html("0");
+						$('#stepperbox4').val(0);
+						$("#slider4").slider( "value", 0);
+					}
+					if(this.dictateeList[this.expRoundNum-1]==5)
+					{
+						document.getElementById("pointbar5").style.height="0%";
+						$( "#pointbox5" ).html("0");
+						$('#stepperbox5').val(0);
+						$("#slider5").slider( "value", 0);
+					}
+				}
+			}
+		}
+	}
+	if(parseInt(variables['game_type'])==3)	//ultimatum with tipping
+	{
+		if(this.dictatorList==undefined)
+		{
+			val=val.substring(3, val.length);
+			this.dictatorList=new Array();
+			var tarr=val.split("_");
+			for(var m=0;m<parseInt(variables['number_of_rounds']);m++)
+				this.dictatorList.push(parseInt(tarr[m]));
+			nextUltimatumRound();
+			return;
+		}
+		if(val.indexOf(",") >= 0)
+		{
+			this.shares = new Array();
+			var tarr = val.split(",");
+			for(var m=0; m<tarr.length; m++)
+			{
+				if(tarr[m]!="")
+					shares.push(parseInt(tarr[m]));
+			}
+			clearTimeout(this.timeoutDictator);
+			countDownDictatee();
+			setRound(1+this.expRoundNum*2);
+			if(numPlayers==2)
+			{
+				$("#slider2").slider( "value", shares[0]);
+				$("#pointbox2").html(shares[0]);
+				document.getElementById("pointbar2").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[0]);
+				$("#slider4").slider( "value", shares[1]);
+				$("#pointbox4").html(shares[1]);
+				document.getElementById("pointbar4").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[1]);
+			}
+			if(numPlayers==3)
+			{
+				$("#slider2").slider( "value", shares[0]);
+				$("#pointbox2").html(shares[0]);
+				document.getElementById("pointbar2").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[0]);
+				$("#slider3").slider( "value", shares[1]);
+				$("#pointbox3").html(shares[1]);
+				document.getElementById("pointbar3").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox3').val(shares[1]);
+				$("#slider4").slider( "value", shares[2]);
+				$("#pointbox4").html(shares[2]);
+				document.getElementById("pointbar4").style.height=(shares[2]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[2]);
+			}
+			if(numPlayers==4)
+			{
+				$("#slider1").slider( "value", shares[0]);
+				$("#pointbox1").html(shares[0]);
+				document.getElementById("pointbar1").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox1').val(shares[0]);
+				$("#slider2").slider( "value", shares[1]);
+				$("#pointbox2").html(shares[1]);
+				document.getElementById("pointbar2").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[1]);
+				$("#slider4").slider( "value", shares[2]);
+				$("#pointbox4").html(shares[2]);
+				document.getElementById("pointbar4").style.height=(shares[2]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[2]);
+				$("#slider5").slider( "value", shares[3]);
+				$("#pointbox5").html(shares[3]);
+				document.getElementById("pointbar5").style.height=(shares[3]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox5').val(shares[3]);
+			}
+			if(numPlayers==5)
+			{
+				$("#slider1").slider( "value", shares[0]);
+				$("#pointbox1").html(shares[0]);
+				document.getElementById("pointbar1").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox1').val(shares[0]);
+				$("#slider2").slider( "value", shares[1]);
+				$("#pointbox2").html(shares[1]);
+				document.getElementById("pointbar2").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[1]);
+				$("#slider3").slider( "value", shares[2]);
+				$("#pointbox3").html(shares[2]);
+				document.getElementById("pointbar3").style.height=(shares[2]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox3').val(shares[2]);
+				$("#slider4").slider( "value", shares[3]);
+				$("#pointbox4").html(shares[3]);
+				document.getElementById("pointbar4").style.height=(shares[3]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[3]);
+				$("#slider5").slider( "value", shares[4]);
+				$("#pointbox5").html(shares[4]);
+				document.getElementById("pointbar5").style.height=(shares[4]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox5').val(shares[4]);
+			}
+			if($('#statustext').html()=="Dictatee")
+			{
+				$('#gameinfo').html('Please ACCEPT or REJECT the offer...');
+				placeUltimatumAnswerButtons();
+			}
+			else
+				$('#gameinfo').html('Please wait during the voting process...');
+			$('#gameinfo').height(60);
+		}
+		if(val.indexOf("Accept ") >= 0||val=="Reject")
+		{
+			if(val.indexOf("Accept ") >= 0)
+			{
+				acceptUltimatum(participant);
+				this.numOfAccepts++;
+				if($('#statustext').html()=="Dictator")
+				{
+					this.totalTip+=parseInt(val.substring(7,val.length));
+					tips[participant-1]=parseInt(val.substring(7,val.length));
+				}
+				if($('#statustext').html()=="Dictatee"&&participant==myid)
+					this.myTip=parseInt(val.substring(7,val.length));
+			}
+			if(val=="Reject")
+			{
+				rejectUltimatum(participant);
+				this.numOfRejects++;
+			}
+			if(this.numOfAccepts+this.numOfRejects==numPlayers-1)
+			{
+				clearTimeout(this.timeoutDictatee);
+				$("#timebardiv").hide();
+				$("#timeremtext").hide();
+				if(this.numOfAccepts>this.numOfRejects)
+				{
+					if($('#statustext').html()=="Dictator")
+					{
+						$("#totearnings").html((parseInt($("#totearnings").html())+this.shares[myid-1]+this.totalTip)+"");
+						$("#lrearning").html((this.shares[myid-1]+this.totalTip)+"");
+					}
+					if($('#statustext').html()=="Dictatee")
+					{
+						$("#totearnings").html((parseInt($("#totearnings").html())+this.shares[myid-1]-this.myTip)+"");
+						$("#lrearning").html((this.shares[myid-1]-this.myTip)+"");
+					}
+				}
+				else
+					$("#lrearning").html("0");
+				countDownRoundInterval();
+			}
+		}
+	}
+	if(parseInt(variables['game_type'])==4)	//reverse ultimatum
+	{
+		if(this.dictatorList==undefined)
+		{
+			val=val.substring(3, val.length);
+			this.dictatorList=new Array();
+			var tarr=val.split("_");
+			for(var m=0;m<parseInt(variables['number_of_rounds']);m++)
+				this.dictatorList.push(parseInt(tarr[m]));
+			nextReverseUltimatumRound();
+			return;
+		}
+		if(val.indexOf(",") >= 0)
+		{
+			$("#acceptedtext1").hide();
+			$("#acceptedtext2").hide();
+			$("#acceptedtext3").hide();
+			$("#acceptedtext4").hide();
+			$("#acceptedtext5").hide();
+			$("#rejectedtext1").hide();
+			$("#rejectedtext2").hide();
+			$("#rejectedtext3").hide();
+			$("#rejectedtext4").hide();
+			$("#rejectedtext5").hide();
+			this.shares = new Array();
+			var tarr = val.split(",");
+			for(var m=0; m<tarr.length; m++)
+			{
+				if(tarr[m]!="")
+					shares.push(parseInt(tarr[m]));
+			}
+			if($('#statustext').html()=="Dictatee")
+			{
+				$('#gameinfo').html('Please ACCEPT or REJECT the offer...');
+				placeUltimatumAnswerButtons();
+			}
+			else
+				$('#gameinfo').html('Please wait during the voting process...');
+			$('#gameinfo').height(60);
+			clearTimeout(this.timeoutDictator);
+			countDownDictatee();
+			this.reverseCurrentRound++;
+			setRound(this.reverseCurrentRound);
+			if(numPlayers==2)
+			{
+				$("#slider2").slider( "value", shares[0]);
+				$("#pointbox2").html(shares[0]);
+				document.getElementById("pointbar2").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[0]);
+				$("#slider4").slider( "value", shares[1]);
+				$("#pointbox4").html(shares[1]);
+				document.getElementById("pointbar4").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[1]);
+			}
+			if(numPlayers==3)
+			{
+				$("#slider2").slider( "value", shares[0]);
+				$("#pointbox2").html(shares[0]);
+				document.getElementById("pointbar2").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[0]);
+				$("#slider3").slider( "value", shares[1]);
+				$("#pointbox3").html(shares[1]);
+				document.getElementById("pointbar3").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox3').val(shares[1]);
+				$("#slider4").slider( "value", shares[2]);
+				$("#pointbox4").html(shares[2]);
+				document.getElementById("pointbar4").style.height=(shares[2]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[2]);
+			}
+			if(numPlayers==4)
+			{
+				$("#slider1").slider( "value", shares[0]);
+				$("#pointbox1").html(shares[0]);
+				document.getElementById("pointbar1").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox1').val(shares[0]);
+				$("#slider2").slider( "value", shares[1]);
+				$("#pointbox2").html(shares[1]);
+				document.getElementById("pointbar2").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[1]);
+				$("#slider4").slider( "value", shares[2]);
+				$("#pointbox4").html(shares[2]);
+				document.getElementById("pointbar4").style.height=(shares[2]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[2]);
+				$("#slider5").slider( "value", shares[3]);
+				$("#pointbox5").html(shares[3]);
+				document.getElementById("pointbar5").style.height=(shares[3]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox5').val(shares[3]);
+			}
+			if(numPlayers==5)
+			{
+				$("#slider1").slider( "value", shares[0]);
+				$("#pointbox1").html(shares[0]);
+				document.getElementById("pointbar1").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox1').val(shares[0]);
+				$("#slider2").slider( "value", shares[1]);
+				$("#pointbox2").html(shares[1]);
+				document.getElementById("pointbar2").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[1]);
+				$("#slider3").slider( "value", shares[2]);
+				$("#pointbox3").html(shares[2]);
+				document.getElementById("pointbar3").style.height=(shares[2]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox3').val(shares[2]);
+				$("#slider4").slider( "value", shares[3]);
+				$("#pointbox4").html(shares[3]);
+				document.getElementById("pointbar4").style.height=(shares[3]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[3]);
+				$("#slider5").slider( "value", shares[4]);
+				$("#pointbox5").html(shares[4]);
+				document.getElementById("pointbar5").style.height=(shares[4]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox5').val(shares[4]);
+			}
+		}
+		if(val=="Accept"||val=="Reject")
+		{
+			if(val=="Accept")
+			{
+				acceptUltimatum(participant);
+				this.numOfAccepts++;
+			}
+			if(val=="Reject")
+			{
+				rejectUltimatum(participant);
+				this.numOfRejects++;
+			}
+			if(this.numOfAccepts+this.numOfRejects==numPlayers-1)
+			{
+				clearTimeout(this.timeoutDictatee);
+				this.reverseCurrentRound++;
+				setRound(this.reverseCurrentRound);
+				if(this.numOfAccepts>this.numOfRejects)
+				{
+					$("#totearnings").html((parseInt($("#totearnings").html())+this.shares[myid-1])+"");
+					$("#lrearning").html(this.shares[myid-1]+"");
+					countDownRoundInterval();
+					$("#timebardiv").hide();
+					$("#timeremtext").hide();
+				}
+				else
+				{
+					countDownDictator();
+					if(this.dictatorList[this.expRoundNum-1]==myid)
+					{
+						$('#statustext').html("Dictator");
+						$('#gameinfo').html('Your offer is rejected. You can try again.</br>You are dictator. You have been given '+variables['total_points']+' points.</br>There are '+numPlayers+' players in this game.');
+						$('#gameinfo').height(60);
+						showDictatorOptions();
+					}
+					else
+					{
+						$('#statustext').html("Dictatee");
+						$('#gameinfo').html(getName(this.dictatorList[this.expRoundNum-1])+' is dictator for this round.</br></br>You are dictatee. Please wait while dictator making you an offer...');
+						$('#gameinfo').height(60);
+						hideDictatorOptions();
+					}
+					this.numOfRejects=0;
+					this.numOfAccepts=0;
+					this.dictatorTimer=parseInt(variables['dictator_round_time']);
+					this.dictateeTimer=parseInt(variables['dictatee_round_time']);
+					if(numPlayers==2)
+					{
+						document.getElementById("pointbar2").style.height="0%";
+						$( "#pointbox2" ).html("0");
+						$('#stepperbox2').val(0);
+						$("#slider2").slider( "value", 0);
+						document.getElementById("pointbar4").style.height="0%";
+						$( "#pointbox4" ).html("0");
+						$('#stepperbox4').val(0);
+						$("#slider4").slider( "value", 0);
+					}
+					if(numPlayers==3)
+					{
+						document.getElementById("pointbar2").style.height="0%";
+						$( "#pointbox2" ).html("0");
+						$('#stepperbox2').val(0);
+						$("#slider2").slider( "value", 0);
+						document.getElementById("pointbar3").style.height="0%";
+						$( "#pointbox3" ).html("0");
+						$('#stepperbox3').val(0);
+						$("#slider3").slider( "value", 0);
+						document.getElementById("pointbar4").style.height="0%";
+						$( "#pointbox4" ).html("0");
+						$('#stepperbox4').val(0);
+						$("#slider4").slider( "value", 0);
+					}
+					if(numPlayers==4)
+					{
+						document.getElementById("pointbar1").style.height="0%";
+						$( "#pointbox1" ).html("0");
+						$('#stepperbox1').val(0);
+						$("#slider1").slider( "value", 0);
+						document.getElementById("pointbar2").style.height="0%";
+						$( "#pointbox2" ).html("0");
+						$('#stepperbox2').val(0);
+						$("#slider2").slider( "value", 0);
+						document.getElementById("pointbar4").style.height="0%";
+						$( "#pointbox4" ).html("0");
+						$('#stepperbox4').val(0);
+						$("#slider4").slider( "value", 0);
+						document.getElementById("pointbar5").style.height="0%";
+						$( "#pointbox5" ).html("0");
+						$('#stepperbox5').val(0);
+						$("#slider5").slider( "value", 0);
+					}
+					if(numPlayers==5)
+					{
+						document.getElementById("pointbar1").style.height="0%";
+						$( "#pointbox1" ).html("0");
+						$('#stepperbox1').val(0);
+						$("#slider1").slider( "value", 0);
+						document.getElementById("pointbar2").style.height="0%";
+						$( "#pointbox2" ).html("0");
+						$('#stepperbox2').val(0);
+						$("#slider2").slider( "value", 0);
+						document.getElementById("pointbar3").style.height="0%";
+						$( "#pointbox3" ).html("0");
+						$('#stepperbox3').val(0);
+						$("#slider3").slider( "value", 0);
+						document.getElementById("pointbar4").style.height="0%";
+						$( "#pointbox4" ).html("0");
+						$('#stepperbox4').val(0);
+						$("#slider4").slider( "value", 0);
+						document.getElementById("pointbar5").style.height="0%";
+						$( "#pointbox5" ).html("0");
+						$('#stepperbox5').val(0);
+						$("#slider5").slider( "value", 0);
+					}
+				}				
+			}
+		}
+		if(val=="Resign")
+		{
+			this.reverseCurrentRound++;
+			setRound(this.reverseCurrentRound);
+			this.numOfRejects=-1;
+			$("#acceptedtext1").hide();
+			$("#acceptedtext2").hide();
+			$("#acceptedtext3").hide();
+			$("#acceptedtext4").hide();
+			$("#acceptedtext5").hide();
+			$("#rejectedtext1").hide();
+			$("#rejectedtext2").hide();
+			$("#rejectedtext3").hide();
+			$("#rejectedtext4").hide();
+			$("#rejectedtext5").hide();
+			$("#lrearning").html("0");
+			countDownRoundInterval();
+			$("#timebardiv").hide();
+			$("#timeremtext").hide();
+		}
+	}
+	if(parseInt(variables['game_type'])==5)	//pirate game
+	{
+		if(val.indexOf("]") >= 0)
+		{
+			nextPirateRound();
+			return;
+		}
+		if(val.indexOf(",") >= 0)
+		{
+			$("#acceptedtext1").hide();
+			$("#acceptedtext2").hide();
+			$("#acceptedtext3").hide();
+			$("#acceptedtext4").hide();
+			$("#acceptedtext5").hide();
+			$("#rejectedtext1").hide();
+			$("#rejectedtext2").hide();
+			$("#rejectedtext3").hide();
+			$("#rejectedtext4").hide();
+			$("#rejectedtext5").hide();
+			this.shares = new Array();
+			var tarr = val.split(",");
+			for(var m=0; m<tarr.length; m++)
+			{
+				if(tarr[m]!="")
+					shares.push(parseInt(tarr[m]));
+			}
+			if($('#statustext').html()=="Responder")
+				$('#gameinfo').html('Please ACCEPT or REJECT the offer...');
+			else
+				$('#gameinfo').html('Please wait during the voting process...');
+			if(myid>=this.pirateCurrentSenior)
+				placeUltimatumAnswerButtons();
+			$('#gameinfo').height(60);
+			clearTimeout(this.timeoutDictator);
+			countDownDictatee();
+			this.pirateCurrentRound++;
+			setRound(this.pirateCurrentRound);
+			if(numPlayers==2)
+			{
+				$("#slider2").slider( "value", shares[0]);
+				$("#pointbox2").html(shares[0]);
+				document.getElementById("pointbar2").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[0]);
+				$("#slider4").slider( "value", shares[1]);
+				$("#pointbox4").html(shares[1]);
+				document.getElementById("pointbar4").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[1]);
+			}
+			if(numPlayers==3)
+			{
+				$("#slider2").slider( "value", shares[0]);
+				$("#pointbox2").html(shares[0]);
+				document.getElementById("pointbar2").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[0]);
+				$("#slider3").slider( "value", shares[1]);
+				$("#pointbox3").html(shares[1]);
+				document.getElementById("pointbar3").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox3').val(shares[1]);
+				$("#slider4").slider( "value", shares[2]);
+				$("#pointbox4").html(shares[2]);
+				document.getElementById("pointbar4").style.height=(shares[2]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[2]);
+			}
+			if(numPlayers==4)
+			{
+				$("#slider1").slider( "value", shares[0]);
+				$("#pointbox1").html(shares[0]);
+				document.getElementById("pointbar1").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox1').val(shares[0]);
+				$("#slider2").slider( "value", shares[1]);
+				$("#pointbox2").html(shares[1]);
+				document.getElementById("pointbar2").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[1]);
+				$("#slider4").slider( "value", shares[2]);
+				$("#pointbox4").html(shares[2]);
+				document.getElementById("pointbar4").style.height=(shares[2]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[2]);
+				$("#slider5").slider( "value", shares[3]);
+				$("#pointbox5").html(shares[3]);
+				document.getElementById("pointbar5").style.height=(shares[3]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox5').val(shares[3]);
+			}
+			if(numPlayers==5)
+			{
+				$("#slider1").slider( "value", shares[0]);
+				$("#pointbox1").html(shares[0]);
+				document.getElementById("pointbar1").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox1').val(shares[0]);
+				$("#slider2").slider( "value", shares[1]);
+				$("#pointbox2").html(shares[1]);
+				document.getElementById("pointbar2").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[1]);
+				$("#slider3").slider( "value", shares[2]);
+				$("#pointbox3").html(shares[2]);
+				document.getElementById("pointbar3").style.height=(shares[2]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox3').val(shares[2]);
+				$("#slider4").slider( "value", shares[3]);
+				$("#pointbox4").html(shares[3]);
+				document.getElementById("pointbar4").style.height=(shares[3]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[3]);
+				$("#slider5").slider( "value", shares[4]);
+				$("#pointbox5").html(shares[4]);
+				document.getElementById("pointbar5").style.height=(shares[4]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox5').val(shares[4]);
+			}
+		}
+		if(val=="Accept"||val=="Reject")
+		{
+			if(val=="Accept")
+			{
+				acceptUltimatum(participant);
+				this.numOfAccepts++;
+			}
+			if(val=="Reject")
+			{
+				rejectUltimatum(participant);
+				this.numOfRejects++;
+			}
+			if(this.numOfAccepts+this.numOfRejects==numPlayers+1-this.pirateCurrentSenior)
+			{
+				clearTimeout(this.timeoutDictatee);
+				this.pirateCurrentRound++;
+				setRound(this.pirateCurrentRound);
+				if(this.numOfAccepts>=this.numOfRejects)
+				{
+					$("#totearnings").html((parseInt($("#totearnings").html())+this.shares[myid-1])+"");
+					$("#lrearning").html(this.shares[myid-1]+"");
+					countDownRoundInterval();
+					$("#timebardiv").hide();
+					$("#timeremtext").hide();
+				}
+				else
+				{
+					this.numOfRejects=0;
+					this.numOfAccepts=0;
+					this.dictatorTimer=parseInt(variables['dictator_round_time']);
+					this.dictateeTimer=parseInt(variables['dictatee_round_time']);
+					if(numPlayers==2)
+					{
+						document.getElementById("pointbar2").style.height="0%";
+						$( "#pointbox2" ).html("0");
+						$('#stepperbox2').val(0);
+						$("#slider2").slider( "value", 0);
+						document.getElementById("pointbar4").style.height="0%";
+						$( "#pointbox4" ).html("0");
+						$('#stepperbox4').val(0);
+						$("#slider4").slider( "value", 0);
+					}
+					if(numPlayers==3)
+					{
+						document.getElementById("pointbar2").style.height="0%";
+						$( "#pointbox2" ).html("0");
+						$('#stepperbox2').val(0);
+						$("#slider2").slider( "value", 0);
+						document.getElementById("pointbar3").style.height="0%";
+						$( "#pointbox3" ).html("0");
+						$('#stepperbox3').val(0);
+						$("#slider3").slider( "value", 0);
+						document.getElementById("pointbar4").style.height="0%";
+						$( "#pointbox4" ).html("0");
+						$('#stepperbox4').val(0);
+						$("#slider4").slider( "value", 0);
+					}
+					if(numPlayers==4)
+					{
+						document.getElementById("pointbar1").style.height="0%";
+						$( "#pointbox1" ).html("0");
+						$('#stepperbox1').val(0);
+						$("#slider1").slider( "value", 0);
+						document.getElementById("pointbar2").style.height="0%";
+						$( "#pointbox2" ).html("0");
+						$('#stepperbox2').val(0);
+						$("#slider2").slider( "value", 0);
+						document.getElementById("pointbar4").style.height="0%";
+						$( "#pointbox4" ).html("0");
+						$('#stepperbox4').val(0);
+						$("#slider4").slider( "value", 0);
+						document.getElementById("pointbar5").style.height="0%";
+						$( "#pointbox5" ).html("0");
+						$('#stepperbox5').val(0);
+						$("#slider5").slider( "value", 0);
+					}
+					if(numPlayers==5)
+					{
+						document.getElementById("pointbar1").style.height="0%";
+						$( "#pointbox1" ).html("0");
+						$('#stepperbox1').val(0);
+						$("#slider1").slider( "value", 0);
+						document.getElementById("pointbar2").style.height="0%";
+						$( "#pointbox2" ).html("0");
+						$('#stepperbox2').val(0);
+						$("#slider2").slider( "value", 0);
+						document.getElementById("pointbar3").style.height="0%";
+						$( "#pointbox3" ).html("0");
+						$('#stepperbox3').val(0);
+						$("#slider3").slider( "value", 0);
+						document.getElementById("pointbar4").style.height="0%";
+						$( "#pointbox4" ).html("0");
+						$('#stepperbox4').val(0);
+						$("#slider4").slider( "value", 0);
+						document.getElementById("pointbar5").style.height="0%";
+						$( "#pointbox5" ).html("0");
+						$('#stepperbox5').val(0);
+						$("#slider5").slider( "value", 0);
+					}
+					countDownDictator();
+					this.pirateCurrentSenior++;
+					if(this.pirateCurrentSenior>myid)
+					{
+						$('#statustext').html("Overboard");
+						
+						$('#gameinfo').html('Your offer is rejected. You are overboard for this round.</br>'+getName(this.pirateCurrentSenior)+' is now the most senior pirate.</br>There are '+(numPlayers+1-this.pirateCurrentSenior)+' pirates on board.');
+						$('#gameinfo').height(60);
+						hideDictatorOptions();
+					}
+					else
+					{
+						if(this.pirateCurrentSenior==myid)
+						{
+							$('#statustext').html("Proposer");
+							$('#gameinfo').html('You are the most senior pirate. Initial seniority order: ');
+							for(var i=1; i<=numPlayers; i++)
+							{
+								if(i<numPlayers)
+									$('#gameinfo').html($('#gameinfo').html()+getName(i)+' > ');
+								else
+									$('#gameinfo').html($('#gameinfo').html()+getName(i));
+							}
+							$('#gameinfo').html($('#gameinfo').html()+'</br>You have '+variables['total_points']+' coins to distribute. There are '+(numPlayers+1-this.pirateCurrentSenior)+' pirates on board. If the proposed allocation is approved by a majority or a tie vote, it happens. If not, the proposer is thrown overboard.');
+							$('#gameinfo').height(60);
+							showDictatorOptions();
+							for(var i=1; i<this.pirateCurrentSenior; i++)
+								hideDictatorOptionsFor(i);
+						}
+						else
+						{
+							$('#statustext').html("Responder");
+							$('#gameinfo').html(getName(this.pirateCurrentSenior)+' is the most senior pirate. Initial seniority order: ');
+							for(var i=1; i<=numPlayers; i++)
+							{
+								if(i<numPlayers)
+									$('#gameinfo').html($('#gameinfo').html()+getName(i)+' > ');
+								else
+									$('#gameinfo').html($('#gameinfo').html()+getName(i));
+							}
+							$('#gameinfo').html($('#gameinfo').html()+'</br>Please wait while he proposes a share. If the proposed allocation is approved by a majority or a tie vote, it happens. If not, the proposer is thrown overboard.');
+							$('#gameinfo').height(60);
+							hideDictatorOptions();
+						}
+					}
+				}				
+			}
+		}
+	}
+	if(parseInt(variables['game_type'])==6)	//dictator game
+	{
+		if(this.dictatorList==undefined)
+		{
+			val=val.substring(3, val.length);
+			this.dictatorList=new Array();
+			var tarr=val.split("_");
+			for(var m=0;m<parseInt(variables['number_of_rounds']);m++)
+				this.dictatorList.push(parseInt(tarr[m]));
+			nextUltimatumRound();
+			return;
+		}
+		if(val.indexOf(",") >= 0)
+		{
+			this.shares = new Array();
+			var tarr = val.split(",");
+			for(var m=0; m<tarr.length; m++)
+			{
+				if(tarr[m]!="")
+					shares.push(parseInt(tarr[m]));
+			}
+			if(numPlayers==2)
+			{
+				$("#slider2").slider( "value", shares[0]);
+				$("#pointbox2").html(shares[0]);
+				document.getElementById("pointbar2").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[0]);
+				$("#slider4").slider( "value", shares[1]);
+				$("#pointbox4").html(shares[1]);
+				document.getElementById("pointbar4").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[1]);
+			}
+			if(numPlayers==3)
+			{
+				$("#slider2").slider( "value", shares[0]);
+				$("#pointbox2").html(shares[0]);
+				document.getElementById("pointbar2").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[0]);
+				$("#slider3").slider( "value", shares[1]);
+				$("#pointbox3").html(shares[1]);
+				document.getElementById("pointbar3").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox3').val(shares[1]);
+				$("#slider4").slider( "value", shares[2]);
+				$("#pointbox4").html(shares[2]);
+				document.getElementById("pointbar4").style.height=(shares[2]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[2]);
+			}
+			if(numPlayers==4)
+			{
+				$("#slider1").slider( "value", shares[0]);
+				$("#pointbox1").html(shares[0]);
+				document.getElementById("pointbar1").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox1').val(shares[0]);
+				$("#slider2").slider( "value", shares[1]);
+				$("#pointbox2").html(shares[1]);
+				document.getElementById("pointbar2").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[1]);
+				$("#slider4").slider( "value", shares[2]);
+				$("#pointbox4").html(shares[2]);
+				document.getElementById("pointbar4").style.height=(shares[2]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[2]);
+				$("#slider5").slider( "value", shares[3]);
+				$("#pointbox5").html(shares[3]);
+				document.getElementById("pointbar5").style.height=(shares[3]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox5').val(shares[3]);
+			}
+			if(numPlayers==5)
+			{
+				$("#slider1").slider( "value", shares[0]);
+				$("#pointbox1").html(shares[0]);
+				document.getElementById("pointbar1").style.height=(shares[0]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox1').val(shares[0]);
+				$("#slider2").slider( "value", shares[1]);
+				$("#pointbox2").html(shares[1]);
+				document.getElementById("pointbar2").style.height=(shares[1]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox2').val(shares[1]);
+				$("#slider3").slider( "value", shares[2]);
+				$("#pointbox3").html(shares[2]);
+				document.getElementById("pointbar3").style.height=(shares[2]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox3').val(shares[2]);
+				$("#slider4").slider( "value", shares[3]);
+				$("#pointbox4").html(shares[3]);
+				document.getElementById("pointbar4").style.height=(shares[3]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox4').val(shares[3]);
+				$("#slider5").slider( "value", shares[4]);
+				$("#pointbox5").html(shares[4]);
+				document.getElementById("pointbar5").style.height=(shares[4]*100/parseInt(variables['total_points']))+"%";
+				$('#stepperbox5').val(shares[4]);
+			}
+			clearTimeout(this.timeoutDictator);
+			$("#timebardiv").hide();
+			$("#timeremtext").hide();
+			$("#totearnings").html((parseInt($("#totearnings").html())+this.shares[myid-1])+"");
+			$("#lrearning").html(this.shares[myid-1]+"");
+			countDownRoundInterval();
+		}
+	}
+	if(parseInt(variables['game_type'])==7)	//trust game
+	{
+		if(this.dictatorList==undefined)
+		{
+			val=val.substring(3, val.length);
+			this.dictatorList=new Array();
+			var tarr=val.split("_");
+			for(var m=0;m<parseInt(variables['number_of_rounds']);m++)
+				this.dictatorList.push(parseInt(tarr[m]));
+			nextTrustRound();
+			return;
+		}
+		if(val.indexOf(",") >= 0 && this.endowmentCount<numPlayers-1)
+		{
+			this.endowmentCount++;
+			this.shares = new Array();
+			var tarr = val.split(",");
+			for(var m=0; m<tarr.length; m++)
+			{
+				if(tarr[m]!="")
+					shares.push(parseInt(tarr[m]));
+			}
+			
+			this.initialEndowment+=shares[this.dictatorList[this.expRoundNum-1]-1]*trustCoefficient;
+			if($('#statustext').html()=="Dictatee")
+			{
+				if(participant==myid)
+				{
+					this.myEndowment=shares[this.dictatorList[this.expRoundNum-1]-1]*trustCoefficient;
+					$('#gameinfo').html('You made an endowment of: '+this.myEndowment+'</br>Please wait while others make endowment to dictator...');
+				}
+			}
+			else
+			{
+				$('#gameinfo').html('You received an endowment amount of: '+(shares[myid-1]*trustCoefficient)+' from '+getName(participant)+'</br>Total received endowment: '+this.initialEndowment+' from '+this.endowmentCount+' players.');
+			}
+			$('#gameinfo').height(60);
+			if($('#statustext').html()=="Dictatee"&&participant==myid)
+			{
+				$("#totearnings").html((parseInt($("#totearnings").html())+this.shares[myid-1])+"");
+				if(numPlayers==2)
+				{
+					document.getElementById("pointbar2").style.height="0%";
+					$( "#pointbox2" ).html("0");
+					$('#stepperbox2').val(0);
+					$("#slider2").slider( "value", 0);
+					document.getElementById("pointbar4").style.height="0%";
+					$( "#pointbox4" ).html("0");
+					$('#stepperbox4').val(0);
+					$("#slider4").slider( "value", 0);
+				}
+				if(numPlayers==3)
+				{
+					document.getElementById("pointbar2").style.height="0%";
+					$( "#pointbox2" ).html("0");
+					$('#stepperbox2').val(0);
+					$("#slider2").slider( "value", 0);
+					document.getElementById("pointbar3").style.height="0%";
+					$( "#pointbox3" ).html("0");
+					$('#stepperbox3').val(0);
+					$("#slider3").slider( "value", 0);
+					document.getElementById("pointbar4").style.height="0%";
+					$( "#pointbox4" ).html("0");
+					$('#stepperbox4').val(0);
+					$("#slider4").slider( "value", 0);
+				}
+				if(numPlayers==4)
+				{
+					document.getElementById("pointbar1").style.height="0%";
+					$( "#pointbox1" ).html("0");
+					$('#stepperbox1').val(0);
+					$("#slider1").slider( "value", 0);
+					document.getElementById("pointbar2").style.height="0%";
+					$( "#pointbox2" ).html("0");
+					$('#stepperbox2').val(0);
+					$("#slider2").slider( "value", 0);
+					document.getElementById("pointbar4").style.height="0%";
+					$( "#pointbox4" ).html("0");
+					$('#stepperbox4').val(0);
+					$("#slider4").slider( "value", 0);
+					document.getElementById("pointbar5").style.height="0%";
+					$( "#pointbox5" ).html("0");
+					$('#stepperbox5').val(0);
+					$("#slider5").slider( "value", 0);
+				}
+				if(numPlayers==5)
+				{
+					document.getElementById("pointbar1").style.height="0%";
+					$( "#pointbox1" ).html("0");
+					$('#stepperbox1').val(0);
+					$("#slider1").slider( "value", 0);
+					document.getElementById("pointbar2").style.height="0%";
+					$( "#pointbox2" ).html("0");
+					$('#stepperbox2').val(0);
+					$("#slider2").slider( "value", 0);
+					document.getElementById("pointbar3").style.height="0%";
+					$( "#pointbox3" ).html("0");
+					$('#stepperbox3').val(0);
+					$("#slider3").slider( "value", 0);
+					document.getElementById("pointbar4").style.height="0%";
+					$( "#pointbox4" ).html("0");
+					$('#stepperbox4').val(0);
+					$("#slider4").slider( "value", 0);
+					document.getElementById("pointbar5").style.height="0%";
+					$( "#pointbox5" ).html("0");
+					$('#stepperbox5').val(0);
+					$("#slider5").slider( "value", 0);
+				}
+			}
+			if(this.endowmentCount==numPlayers-1)
+			{
+				clearTimeout(this.timeoutDictatee);
+				countDownDictator();
+				setRound(1+this.expRoundNum*2);
+				if($('#statustext').html()=="Dictatee")
+					$('#gameinfo').html('You made an endowment of: '+this.myEndowment+'</br>Please wait while dictator distributes the points...');
+				else
+				{
+					$('#gameinfo').html($('#gameinfo').html()+'</br>You can now distribute the points you received...');
+					$( "#slider1" ).slider( "setOption" , "max", this.initialEndowment);
+					$( "#slider2" ).slider( "setOption" , "max", this.initialEndowment);
+					$( "#slider3" ).slider( "setOption" , "max", this.initialEndowment);
+					$( "#slider4" ).slider( "setOption" , "max", this.initialEndowment);
+					$( "#slider5" ).slider( "setOption" , "max", this.initialEndowment);
+					showDictatorOptions();
+				}
+			}
+		}
+		else
+		{
+			this.shares = new Array();
+			var tarr = val.split(",");
+			for(var m=0; m<tarr.length; m++)
+			{
+				if(tarr[m]!="")
+					shares.push(parseInt(tarr[m]));
+			}
+			if(numPlayers==2)
+			{
+				$("#slider2").slider( "value", shares[0]);
+				$("#pointbox2").html(shares[0]);
+				document.getElementById("pointbar2").style.height=(shares[0]*100/this.initialEndowment)+"%";
+				$('#stepperbox2').val(shares[0]);
+				$("#slider4").slider( "value", shares[1]);
+				$("#pointbox4").html(shares[1]);
+				document.getElementById("pointbar4").style.height=(shares[1]*100/this.initialEndowment)+"%";
+				$('#stepperbox4').val(shares[1]);
+			}
+			if(numPlayers==3)
+			{
+				$("#slider2").slider( "value", shares[0]);
+				$("#pointbox2").html(shares[0]);
+				document.getElementById("pointbar2").style.height=(shares[0]*100/this.initialEndowment)+"%";
+				$('#stepperbox2').val(shares[0]);
+				$("#slider3").slider( "value", shares[1]);
+				$("#pointbox3").html(shares[1]);
+				document.getElementById("pointbar3").style.height=(shares[1]*100/this.initialEndowment)+"%";
+				$('#stepperbox3').val(shares[1]);
+				$("#slider4").slider( "value", shares[2]);
+				$("#pointbox4").html(shares[2]);
+				document.getElementById("pointbar4").style.height=(shares[2]*100/this.initialEndowment)+"%";
+				$('#stepperbox4').val(shares[2]);
+			}
+			if(numPlayers==4)
+			{
+				$("#slider1").slider( "value", shares[0]);
+				$("#pointbox1").html(shares[0]);
+				document.getElementById("pointbar1").style.height=(shares[0]*100/this.initialEndowment)+"%";
+				$('#stepperbox1').val(shares[0]);
+				$("#slider2").slider( "value", shares[1]);
+				$("#pointbox2").html(shares[1]);
+				document.getElementById("pointbar2").style.height=(shares[1]*100/this.initialEndowment)+"%";
+				$('#stepperbox2').val(shares[1]);
+				$("#slider4").slider( "value", shares[2]);
+				$("#pointbox4").html(shares[2]);
+				document.getElementById("pointbar4").style.height=(shares[2]*100/this.initialEndowment)+"%";
+				$('#stepperbox4').val(shares[2]);
+				$("#slider5").slider( "value", shares[3]);
+				$("#pointbox5").html(shares[3]);
+				document.getElementById("pointbar5").style.height=(shares[3]*100/this.initialEndowment)+"%";
+				$('#stepperbox5').val(shares[3]);
+			}
+			if(numPlayers==5)
+			{
+				$("#slider1").slider( "value", shares[0]);
+				$("#pointbox1").html(shares[0]);
+				document.getElementById("pointbar1").style.height=(shares[0]*100/this.initialEndowment)+"%";
+				$('#stepperbox1').val(shares[0]);
+				$("#slider2").slider( "value", shares[1]);
+				$("#pointbox2").html(shares[1]);
+				document.getElementById("pointbar2").style.height=(shares[1]*100/this.initialEndowment)+"%";
+				$('#stepperbox2').val(shares[1]);
+				$("#slider3").slider( "value", shares[2]);
+				$("#pointbox3").html(shares[2]);
+				document.getElementById("pointbar3").style.height=(shares[2]*100/this.initialEndowment)+"%";
+				$('#stepperbox3').val(shares[2]);
+				$("#slider4").slider( "value", shares[3]);
+				$("#pointbox4").html(shares[3]);
+				document.getElementById("pointbar4").style.height=(shares[3]*100/this.initialEndowment)+"%";
+				$('#stepperbox4').val(shares[3]);
+				$("#slider5").slider( "value", shares[4]);
+				$("#pointbox5").html(shares[4]);
+				document.getElementById("pointbar5").style.height=(shares[4]*100/this.initialEndowment)+"%";
+				$('#stepperbox5').val(shares[4]);
+			}
+			clearTimeout(this.timeoutDictator);
+			$("#timebardiv").hide();
+			$("#timeremtext").hide();
+			$("#totearnings").html((parseInt($("#totearnings").html())+this.shares[myid-1])+"");
+			$("#lrearning").html(this.shares[myid-1]+"");
+			countDownRoundInterval();
+		}
+	}
+  });
+}
+
+function getRemainingPoints()
+{
+	if(parseInt(variables['game_type'])==1||parseInt(variables['game_type'])==3||parseInt(variables['game_type'])==4||parseInt(variables['game_type'])==5||parseInt(variables['game_type'])==6)	//classic ultimatum && ultimatum with tipping & reverse ultimatum & pirate game & dictator game
+		return parseInt(variables['total_points'])-(parseInt($('#stepperbox1').val())+parseInt($('#stepperbox2').val())+parseInt($('#stepperbox3').val())+parseInt($('#stepperbox4').val())+parseInt($('#stepperbox5').val()));
+	if(parseInt(variables['game_type'])==7)	//trust game
+	{
+		if($('#statustext').html()=="Dictatee")
+			return parseInt(variables['total_points'])-(parseInt($('#stepperbox1').val())+parseInt($('#stepperbox2').val())+parseInt($('#stepperbox3').val())+parseInt($('#stepperbox4').val())+parseInt($('#stepperbox5').val()));
+		else
+			return parseInt(this.initialEndowment)-(parseInt($('#stepperbox1').val())+parseInt($('#stepperbox2').val())+parseInt($('#stepperbox3').val())+parseInt($('#stepperbox4').val())+parseInt($('#stepperbox5').val()));
+	}
+	if(parseInt(variables['game_type'])==2)	//competitive ultimatum
+	{
+		if(this.dictatorList==null||this.dictatorList==undefined)
+			return parseInt(variables['total_points'])-(parseInt($('#stepperbox1').val())+parseInt($('#stepperbox2').val())+parseInt($('#stepperbox3').val())+parseInt($('#stepperbox4').val())+parseInt($('#stepperbox5').val()));
+		if(numPlayers==2)
+			return parseInt(variables['total_points'])-(parseInt($('#stepperbox2').val())+parseInt($('#stepperbox4').val()));
+		if(numPlayers==3)
+		{
+			if((this.dictatorList[this.numOfRejects]==1||this.dictateeList[this.expRoundNum-1]==1)&&(this.dictatorList[this.numOfRejects]==2||this.dictateeList[this.expRoundNum-1]==2))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox2').val())+parseInt($('#stepperbox3').val()));
+			if((this.dictatorList[this.numOfRejects]==1||this.dictateeList[this.expRoundNum-1]==1)&&(this.dictatorList[this.numOfRejects]==3||this.dictateeList[this.expRoundNum-1]==3))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox2').val())+parseInt($('#stepperbox4').val()));
+			if((this.dictatorList[this.numOfRejects]==2||this.dictateeList[this.expRoundNum-1]==2)&&(this.dictatorList[this.numOfRejects]==3||this.dictateeList[this.expRoundNum-1]==3))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox3').val())+parseInt($('#stepperbox4').val()));
+		}
+		if(numPlayers==4)
+		{
+			if((this.dictatorList[this.numOfRejects]==1||this.dictateeList[this.expRoundNum-1]==1)&&(this.dictatorList[this.numOfRejects]==2||this.dictateeList[this.expRoundNum-1]==2))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox1').val())+parseInt($('#stepperbox2').val()));
+			if((this.dictatorList[this.numOfRejects]==1||this.dictateeList[this.expRoundNum-1]==1)&&(this.dictatorList[this.numOfRejects]==3||this.dictateeList[this.expRoundNum-1]==3))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox1').val())+parseInt($('#stepperbox4').val()));
+			if((this.dictatorList[this.numOfRejects]==1||this.dictateeList[this.expRoundNum-1]==1)&&(this.dictatorList[this.numOfRejects]==4||this.dictateeList[this.expRoundNum-1]==4))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox1').val())+parseInt($('#stepperbox5').val()));
+			if((this.dictatorList[this.numOfRejects]==2||this.dictateeList[this.expRoundNum-1]==2)&&(this.dictatorList[this.numOfRejects]==3||this.dictateeList[this.expRoundNum-1]==3))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox2').val())+parseInt($('#stepperbox4').val()));
+			if((this.dictatorList[this.numOfRejects]==2||this.dictateeList[this.expRoundNum-1]==2)&&(this.dictatorList[this.numOfRejects]==4||this.dictateeList[this.expRoundNum-1]==4))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox2').val())+parseInt($('#stepperbox5').val()));
+			if((this.dictatorList[this.numOfRejects]==3||this.dictateeList[this.expRoundNum-1]==3)&&(this.dictatorList[this.numOfRejects]==4||this.dictateeList[this.expRoundNum-1]==4))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox4').val())+parseInt($('#stepperbox5').val()));
+		}
+		if(numPlayers==5)
+		{
+			if((this.dictatorList[this.numOfRejects]==1||this.dictateeList[this.expRoundNum-1]==1)&&(this.dictatorList[this.numOfRejects]==2||this.dictateeList[this.expRoundNum-1]==2))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox1').val())+parseInt($('#stepperbox2').val()));
+			if((this.dictatorList[this.numOfRejects]==1||this.dictateeList[this.expRoundNum-1]==1)&&(this.dictatorList[this.numOfRejects]==3||this.dictateeList[this.expRoundNum-1]==3))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox1').val())+parseInt($('#stepperbox3').val()));
+			if((this.dictatorList[this.numOfRejects]==1||this.dictateeList[this.expRoundNum-1]==1)&&(this.dictatorList[this.numOfRejects]==4||this.dictateeList[this.expRoundNum-1]==4))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox1').val())+parseInt($('#stepperbox4').val()));
+			if((this.dictatorList[this.numOfRejects]==1||this.dictateeList[this.expRoundNum-1]==1)&&(this.dictatorList[this.numOfRejects]==5||this.dictateeList[this.expRoundNum-1]==5))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox1').val())+parseInt($('#stepperbox5').val()));
+			if((this.dictatorList[this.numOfRejects]==2||this.dictateeList[this.expRoundNum-1]==2)&&(this.dictatorList[this.numOfRejects]==3||this.dictateeList[this.expRoundNum-1]==3))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox2').val())+parseInt($('#stepperbox3').val()));
+			if((this.dictatorList[this.numOfRejects]==2||this.dictateeList[this.expRoundNum-1]==2)&&(this.dictatorList[this.numOfRejects]==4||this.dictateeList[this.expRoundNum-1]==4))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox2').val())+parseInt($('#stepperbox4').val()));
+			if((this.dictatorList[this.numOfRejects]==2||this.dictateeList[this.expRoundNum-1]==2)&&(this.dictatorList[this.numOfRejects]==5||this.dictateeList[this.expRoundNum-1]==5))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox2').val())+parseInt($('#stepperbox5').val()));
+			if((this.dictatorList[this.numOfRejects]==3||this.dictateeList[this.expRoundNum-1]==3)&&(this.dictatorList[this.numOfRejects]==4||this.dictateeList[this.expRoundNum-1]==4))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox3').val())+parseInt($('#stepperbox4').val()));
+			if((this.dictatorList[this.numOfRejects]==3||this.dictateeList[this.expRoundNum-1]==3)&&(this.dictatorList[this.numOfRejects]==5||this.dictateeList[this.expRoundNum-1]==5))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox3').val())+parseInt($('#stepperbox5').val()));
+			if((this.dictatorList[this.numOfRejects]==4||this.dictateeList[this.expRoundNum-1]==4)&&(this.dictatorList[this.numOfRejects]==5||this.dictateeList[this.expRoundNum-1]==5))
+				return parseInt(variables['total_points'])-(parseInt($('#stepperbox4').val())+parseInt($('#stepperbox5').val()));
+		}
+	}
+}
+
+function setScreens(){
+	document.getElementById("pointbar1").style.height="0%";
+	document.getElementById("pointbar2").style.height="0%";
+	document.getElementById("pointbar3").style.height="0%";
+	document.getElementById("pointbar4").style.height="0%";
+	document.getElementById("pointbar5").style.height="0%";
+	$( "#pointbox1" ).html("0");
+	$('#stepperbox1').val(0);
+	$("#slider1").slider( "value", 0);
+	$( "#pointbox2" ).html("0");
+	$('#stepperbox2').val(0);
+	$("#slider2").slider( "value", 0);
+	$( "#pointbox3" ).html("0");
+	$('#stepperbox3').val(0);
+	$("#slider3").slider( "value", 0);
+	$( "#pointbox4" ).html("0");
+	$('#stepperbox4').val(0);
+	$("#slider4").slider( "value", 0);
+	$( "#pointbox5" ).html("0");
+	$('#stepperbox5').val(0);
+	$("#slider5").slider( "value", 0);
+	if(numPlayers==2)
+	{
+		$("#firstscreen").hide();
+		$("#thirdscreen").hide();
+		$("#fifthscreen").hide();
+		if(myid==1)
+		{
+			$("#username2").html("You");
+			$("#username4").html(getName(2));
+			$("#boxtd"+2).addClass("roundboxred");
+			$("#boxtd"+4).addClass("roundboxblue");
+		}
+		if(myid==2)
+		{
+			$("#username2").html(getName(1));
+			$("#username4").html("You");
+			$("#boxtd"+2).addClass("roundboxblue");
+			$("#boxtd"+4).addClass("roundboxred");
+		}
+	}
+	if(numPlayers==3)
+	{
+		$("#firstscreen").hide();
+		$("#fifthscreen").hide();
+		$("#firsttd").width($("#firsttd").width()-120);
+		$("#fifthtd").width($("#fifthtd").width()-120);
+		$("#secondtd").width($("#secondtd").width()+80);
+		$("#thirdtd").width($("#thirdtd").width()+80);
+		$("#fourthtd").width($("#fourthtd").width()+80);
+		if(myid==1)
+		{
+			$("#username2").html("You");
+			$("#username3").html(getName(2));
+			$("#username4").html(getName(3));
+			$("#boxtd"+2).addClass("roundboxred");
+			$("#boxtd"+3).addClass("roundboxblue");
+			$("#boxtd"+4).addClass("roundboxblue");
+		}
+		if(myid==2)
+		{
+			$("#username2").html(getName(1));
+			$("#username3").html("You");
+			$("#username4").html(getName(3));
+			$("#boxtd"+2).addClass("roundboxblue");
+			$("#boxtd"+3).addClass("roundboxred");
+			$("#boxtd"+4).addClass("roundboxblue");
+		}
+		if(myid==3)
+		{
+			$("#username2").html(getName(1));
+			$("#username3").html(getName(2));
+			$("#username4").html("You");
+			$("#boxtd"+2).addClass("roundboxblue");
+			$("#boxtd"+3).addClass("roundboxblue");
+			$("#boxtd"+4).addClass("roundboxred");
+		}
+	}
+	if(numPlayers==4)
+	{
+		$("#thirdscreen").hide();
+		$("#thirdtd").width(1);
+		if(myid==1)
+		{
+			$("#username1").html("You");
+			$("#username2").html(getName(2));
+			$("#username4").html(getName(3));
+			$("#username5").html(getName(4));
+			$("#boxtd"+1).addClass("roundboxred");
+			$("#boxtd"+2).addClass("roundboxblue");
+			$("#boxtd"+4).addClass("roundboxblue");
+			$("#boxtd"+5).addClass("roundboxblue");
+		}
+		if(myid==2)
+		{
+			$("#username1").html(getName(1));
+			$("#username2").html("You");
+			$("#username4").html(getName(3));
+			$("#username5").html(getName(4));
+			$("#boxtd"+1).addClass("roundboxblue");
+			$("#boxtd"+2).addClass("roundboxred");
+			$("#boxtd"+4).addClass("roundboxblue");
+			$("#boxtd"+5).addClass("roundboxblue");
+		}
+		if(myid==3)
+		{
+			$("#username1").html(getName(1));
+			$("#username2").html(getName(2));
+			$("#username4").html("You");
+			$("#username5").html(getName(4));
+			$("#boxtd"+1).addClass("roundboxblue");
+			$("#boxtd"+2).addClass("roundboxblue");
+			$("#boxtd"+4).addClass("roundboxred");
+			$("#boxtd"+5).addClass("roundboxblue");
+		}
+		if(myid==4)
+		{
+			$("#username1").html(getName(1));
+			$("#username2").html(getName(2));
+			$("#username4").html(getName(3));
+			$("#username5").html("You");
+			$("#boxtd"+1).addClass("roundboxblue");
+			$("#boxtd"+2).addClass("roundboxblue");
+			$("#boxtd"+4).addClass("roundboxblue");
+			$("#boxtd"+5).addClass("roundboxred");
+		}
+	}
+	if(numPlayers==5)
+	{
+		if(myid==1)
+		{
+			$("#username1").html("You");
+			$("#username2").html(getName(2));
+			$("#username3").html(getName(3));
+			$("#username4").html(getName(4));
+			$("#username5").html(getName(5));
+			$("#boxtd"+1).addClass("roundboxred");
+			$("#boxtd"+2).addClass("roundboxblue");
+			$("#boxtd"+3).addClass("roundboxblue");
+			$("#boxtd"+4).addClass("roundboxblue");
+			$("#boxtd"+5).addClass("roundboxblue");
+		}
+		if(myid==2)
+		{
+			$("#username1").html(getName(1));
+			$("#username2").html("You");
+			$("#username3").html(getName(3));
+			$("#username4").html(getName(4));
+			$("#username5").html(getName(5));
+			$("#boxtd"+1).addClass("roundboxblue");
+			$("#boxtd"+2).addClass("roundboxred");
+			$("#boxtd"+3).addClass("roundboxblue");
+			$("#boxtd"+4).addClass("roundboxblue");
+			$("#boxtd"+5).addClass("roundboxblue");
+		}
+		if(myid==3)
+		{
+			$("#username1").html(getName(1));
+			$("#username2").html(getName(2));
+			$("#username3").html("You");
+			$("#username4").html(getName(4));
+			$("#username5").html(getName(5));
+			$("#boxtd"+1).addClass("roundboxblue");
+			$("#boxtd"+2).addClass("roundboxblue");
+			$("#boxtd"+3).addClass("roundboxred");
+			$("#boxtd"+4).addClass("roundboxblue");
+			$("#boxtd"+5).addClass("roundboxblue");
+		}
+		if(myid==4)
+		{
+			$("#username1").html(getName(1));
+			$("#username2").html(getName(2));
+			$("#username3").html(getName(3));
+			$("#username4").html("You");
+			$("#username5").html(getName(5));
+			$("#boxtd"+1).addClass("roundboxblue");
+			$("#boxtd"+2).addClass("roundboxblue");
+			$("#boxtd"+3).addClass("roundboxblue");
+			$("#boxtd"+4).addClass("roundboxred");
+			$("#boxtd"+5).addClass("roundboxblue");
+		}
+		if(myid==5)
+		{
+			$("#username1").html(getName(1));
+			$("#username2").html(getName(2));
+			$("#username3").html(getName(3));
+			$("#username4").html(getName(4));
+			$("#username5").html("You");
+			$("#boxtd"+1).addClass("roundboxblue");
+			$("#boxtd"+2).addClass("roundboxblue");
+			$("#boxtd"+3).addClass("roundboxblue");
+			$("#boxtd"+4).addClass("roundboxblue");
+			$("#boxtd"+5).addClass("roundboxred");
+		}
+	}
+}
+
+function initDictatorOptions()
+{
+	// Sliders
+	
+	this.endowmentCount=0;
+	
+	 $(function() {
+		$( "#slideramount" ).slider({
+		range: "max",
+		min: 0,
+		max: 0,
+		value: 0,
+		slide: function( event, ui ) {
+			document.getElementById("modalbar").style.width=(ui.value*100/$("#slideramount").slider( "valueMax"))+"%";
+			$("#tippingamounttext").html(ui.value+" of "+$("#slideramount").slider( "valueMax"));
+		}
+		});
+	});
+
+	 $(function() {
+		$( "#slider1" ).slider({
+		range: "max",
+		min: 0,
+		max: 0,
+		value: 0,
+		slide: function( event, ui ) {
+			if(ui.value>$('#stepperbox1').val()&&getRemainingPoints()<=0)return;
+			$( "#pointbox1" ).html( ui.value );
+			$('#stepperbox1').val(ui.value);
+			if($( "#slider1" ).html()!="")$( "#slider1" ).slider( "setOption" , "max", ui.value+getRemainingPoints());
+			if($( "#slider2" ).html()!="")$( "#slider2" ).slider( "setOption" , "max", $("#slider2").slider("value")+getRemainingPoints());
+			if($( "#slider3" ).html()!="")$( "#slider3" ).slider( "setOption" , "max", $("#slider3").slider("value")+getRemainingPoints());
+			if($( "#slider4" ).html()!="")$( "#slider4" ).slider( "setOption" , "max", $("#slider4").slider("value")+getRemainingPoints());
+			if($( "#slider5" ).html()!="")$( "#slider5" ).slider( "setOption" , "max", $("#slider5").slider("value")+getRemainingPoints());
+			document.getElementById("pointbar1").style.height=(ui.value*100/(ui.value+$("#slider2").slider("value")+$("#slider3").slider("value")+$("#slider4").slider("value")+$("#slider5").slider("value")+getRemainingPoints()))+"%";
+			document.getElementById("totalpointsbar").style.width=(getRemainingPoints()*100/(ui.value+$("#slider2").slider("value")+$("#slider3").slider("value")+$("#slider4").slider("value")+$("#slider5").slider("value")+getRemainingPoints()))+"%";
+			if(parseInt(variables['game_type'])==5)
+				$("#remptstext").html(getRemainingPoints()+" coins remaining");
+			else
+				$("#remptstext").html(getRemainingPoints()+" points remaining");
+		}
+		});
+		$( "#pointbox1" ).html( $( "#slider1" ).slider( "value" ) );
+	});
+
+	 $(function() {
+		$( "#slider2" ).slider({
+		range: "max",
+		min: 0,
+		max: 0,
+		value: 0,
+		slide: function( event, ui ) {
+			if(ui.value>$('#stepperbox2').val()&&getRemainingPoints()<=0)return;
+			$( "#pointbox2" ).html( ui.value );
+			$('#stepperbox2').val(ui.value);
+			if($( "#slider1" ).html()!="")$( "#slider1" ).slider( "setOption" , "max", $("#slider1").slider("value")+getRemainingPoints());
+			if($( "#slider2" ).html()!="")$( "#slider2" ).slider( "setOption" , "max", ui.value+getRemainingPoints());
+			if($( "#slider3" ).html()!="")$( "#slider3" ).slider( "setOption" , "max", $("#slider3").slider("value")+getRemainingPoints());
+			if($( "#slider4" ).html()!="")$( "#slider4" ).slider( "setOption" , "max", $("#slider4").slider("value")+getRemainingPoints());
+			if($( "#slider5" ).html()!="")$( "#slider5" ).slider( "setOption" , "max", $("#slider5").slider("value")+getRemainingPoints());
+			document.getElementById("pointbar2").style.height=(ui.value*100/($("#slider1").slider("value")+ui.value+$("#slider3").slider("value")+$("#slider4").slider("value")+$("#slider5").slider("value")+getRemainingPoints()))+"%";
+			document.getElementById("totalpointsbar").style.width=(getRemainingPoints()*100/($("#slider1").slider("value")+ui.value+$("#slider3").slider("value")+$("#slider4").slider("value")+$("#slider5").slider("value")+getRemainingPoints()))+"%";
+			if(parseInt(variables['game_type'])==5)
+				$("#remptstext").html(getRemainingPoints()+" coins remaining");
+			else
+				$("#remptstext").html(getRemainingPoints()+" points remaining");
+		}
+		});
+		$( "#pointbox2" ).html( $( "#slider2" ).slider( "value" ) );
+	});
+
+	 $(function() {
+		$( "#slider3" ).slider({
+		range: "max",
+		min: 0,
+		max: 0,
+		value: 0,
+		slide: function( event, ui ) {
+			if(ui.value>$('#stepperbox3').val()&&getRemainingPoints()<=0)return;
+			$( "#pointbox3" ).html( ui.value );
+			$('#stepperbox3').val(ui.value);
+			if($( "#slider1" ).html()!="")$( "#slider1" ).slider( "setOption" , "max", $("#slider1").slider("value")+getRemainingPoints());
+			if($( "#slider2" ).html()!="")$( "#slider2" ).slider( "setOption" , "max", $("#slider2").slider("value")+getRemainingPoints());
+			if($( "#slider3" ).html()!="")$( "#slider3" ).slider( "setOption" , "max", ui.value+getRemainingPoints());
+			if($( "#slider4" ).html()!="")$( "#slider4" ).slider( "setOption" , "max", $("#slider4").slider("value")+getRemainingPoints());
+			if($( "#slider5" ).html()!="")$( "#slider5" ).slider( "setOption" , "max", $("#slider5").slider("value")+getRemainingPoints());
+			document.getElementById("pointbar3").style.height=(ui.value*100/($("#slider1").slider("value")+$("#slider2").slider("value")+ui.value+$("#slider4").slider("value")+$("#slider5").slider("value")+getRemainingPoints()))+"%";
+			document.getElementById("totalpointsbar").style.width=(getRemainingPoints()*100/($("#slider1").slider("value")+$("#slider2").slider("value")+ui.value+$("#slider4").slider("value")+$("#slider5").slider("value")+getRemainingPoints()))+"%";
+			if(parseInt(variables['game_type'])==5)
+				$("#remptstext").html(getRemainingPoints()+" coins remaining");
+			else
+				$("#remptstext").html(getRemainingPoints()+" points remaining");
+		}
+		});
+		$( "#pointbox3" ).html( $( "#slider3" ).slider( "value" ) );
+	});
+
+	 $(function() {
+		$( "#slider4" ).slider({
+		range: "max",
+		min: 0,
+		max: 0,
+		value: 0,
+		slide: function( event, ui ) {
+			if(ui.value>$('#stepperbox4').val()&&getRemainingPoints()<=0)return;
+			$( "#pointbox4" ).html( ui.value );
+			$('#stepperbox4').val(ui.value);
+			if($( "#slider1" ).html()!="")$( "#slider1" ).slider( "setOption" , "max", $("#slider1").slider("value")+getRemainingPoints());
+			if($( "#slider2" ).html()!="")$( "#slider2" ).slider( "setOption" , "max", $("#slider2").slider("value")+getRemainingPoints());
+			if($( "#slider3" ).html()!="")$( "#slider3" ).slider( "setOption" , "max", $("#slider3").slider("value")+getRemainingPoints());
+			if($( "#slider4" ).html()!="")$( "#slider4" ).slider( "setOption" , "max", ui.value+getRemainingPoints());
+			if($( "#slider5" ).html()!="")$( "#slider5" ).slider( "setOption" , "max", $("#slider5").slider("value")+getRemainingPoints());
+			document.getElementById("pointbar4").style.height=(ui.value*100/($("#slider1").slider("value")+$("#slider2").slider("value")+$("#slider3").slider("value")+ui.value+$("#slider5").slider("value")+getRemainingPoints()))+"%";
+			document.getElementById("totalpointsbar").style.width=(getRemainingPoints()*100/($("#slider1").slider("value")+$("#slider2").slider("value")+$("#slider3").slider("value")+ui.value+$("#slider5").slider("value")+getRemainingPoints()))+"%";
+			if(parseInt(variables['game_type'])==5)
+				$("#remptstext").html(getRemainingPoints()+" coins remaining");
+			else
+				$("#remptstext").html(getRemainingPoints()+" points remaining");
+		}
+		});
+		$( "#pointbox4" ).html( $( "#slider4" ).slider( "value" ) );
+	});
+
+	 $(function() {
+		$( "#slider5" ).slider({
+		range: "max",
+		min: 0,
+		max: 0,
+		value: 0,
+		slide: function( event, ui ) {
+			if(ui.value>$('#stepperbox5').val()&&getRemainingPoints()<=0)return;
+			$( "#pointbox5" ).html( ui.value );
+			$('#stepperbox5').val(ui.value);
+			if($( "#slider1" ).html()!="")$( "#slider1" ).slider( "setOption" , "max", $("#slider1").slider("value")+getRemainingPoints());
+			if($( "#slider2" ).html()!="")$( "#slider2" ).slider( "setOption" , "max", $("#slider2").slider("value")+getRemainingPoints());
+			if($( "#slider3" ).html()!="")$( "#slider3" ).slider( "setOption" , "max", $("#slider3").slider("value")+getRemainingPoints());
+			if($( "#slider4" ).html()!="")$( "#slider4" ).slider( "setOption" , "max", $("#slider4").slider("value")+getRemainingPoints());
+			if($( "#slider5" ).html()!="")$( "#slider5" ).slider( "setOption" , "max", ui.value+getRemainingPoints());
+			document.getElementById("pointbar5").style.height=(ui.value*100/($("#slider1").slider("value")+$("#slider2").slider("value")+$("#slider3").slider("value")+$("#slider4").slider("value")+ui.value+getRemainingPoints()))+"%";
+			document.getElementById("totalpointsbar").style.width=(getRemainingPoints()*100/($("#slider1").slider("value")+$("#slider2").slider("value")+$("#slider3").slider("value")+$("#slider4").slider("value")+ui.value+getRemainingPoints()))+"%";
+			if(parseInt(variables['game_type'])==5)
+				$("#remptstext").html(getRemainingPoints()+" coins remaining");
+			else
+				$("#remptstext").html(getRemainingPoints()+" points remaining");
+		}
+		});
+		$( "#pointbox5" ).html( $( "#slider5" ).slider( "value" ) );
+	});
+
+	// Numeric Stepper
+
+	var NumericStepper = {
+
+		register : function(name, minValue, maxValue, stepSize){
+			this.minValue = minValue;
+			this.maxValue = maxValue;
+			this.stepSize = stepSize;
+			var elements = getElementsByClassName(document, "*", name);
+			for (var i=0; i<elements.length; i++){
+				var textbox = elements[i].getElementsByTagName('input')[0];
+				if (textbox){
+					if (textbox.value == undefined || textbox.value == '' || isNaN(textbox.value)) 
+						textbox.value = 0;			
+					textbox.onkeypress = function(e){
+						if(window.event){
+							keynum = e.keyCode; // IE
+						} else if(e.which){
+							keynum = e.which; // Netscape/Firefox/Opera
+						}
+						keychar = String.fromCharCode(keynum);
+						numcheck = /[0-9\-]/;
+						if (keynum==8)
+							return true;
+						else
+							return numcheck.test(keychar);
+					};
+					textbox.onblur = function(){
+						if (parseInt(this.value) < NumericStepper.minValue)
+							this.value = NumericStepper.minValue;
+						if (parseInt(this.value) >NumericStepper. maxValue)
+							this.value = NumericStepper.maxValue;
+					};
+					var buttons = elements[i].getElementsByTagName('button');
+					if (buttons[0]){
+						this.addButtonEvent(buttons[0], textbox, this.stepUp);
+					}
+					if (buttons[1])
+						this.addButtonEvent(buttons[1], textbox, this.stepDown);
+				}
+			}
+		}	
+	  ,addButtonEvent:function(o,textbox, func){
+		o.textbox = textbox;
+			// convert button type to button to prevent form submission onclick
+			if (o.getAttribute("type")=="submit"){
+				o.removeAttribute("type"); // IE fix
+				o.setAttribute("type","button");
+			}
+		o.onclick = func;
+		}
+	  ,stepUp:function(){
+		if(this.textbox.value<parseInt(this.textbox.value)+getRemainingPoints())
+		{
+			NumericStepper.stepper(this.textbox, NumericStepper.stepSize);
+			$("#slider"+this.textbox.id.substring(this.textbox.id.length-1,this.textbox.id.length)).slider( "value", this.textbox.value);
+			$("#pointbox"+this.textbox.id.substring(this.textbox.id.length-1,this.textbox.id.length)).html(this.textbox.value);
+			document.getElementById("pointbar"+this.textbox.id.substring(this.textbox.id.length-1,this.textbox.id.length)).style.height=(this.textbox.value*100/($("#slider1").slider("value")+$("#slider2").slider("value")+$("#slider3").slider("value")+$("#slider4").slider("value")+$("#slider5").slider("value")+getRemainingPoints()))+"%";
+			document.getElementById("totalpointsbar").style.width=(getRemainingPoints()*100/($("#slider1").slider("value")+$("#slider2").slider("value")+$("#slider3").slider("value")+$("#slider4").slider("value")+$("#slider5").slider("value")+getRemainingPoints()))+"%";
+			if(parseInt(variables['game_type'])==5)
+				$("#remptstext").html(getRemainingPoints()+" coins remaining");
+			else
+				$("#remptstext").html(getRemainingPoints()+" points remaining");
+			if($( "#slider1" ).html()!="")$( "#slider1" ).slider( "setOption" , "max", $("#slider1").slider("value")+getRemainingPoints());
+			if($( "#slider2" ).html()!="")$( "#slider2" ).slider( "setOption" , "max", $("#slider2").slider("value")+getRemainingPoints());
+			if($( "#slider3" ).html()!="")$( "#slider3" ).slider( "setOption" , "max", $("#slider3").slider("value")+getRemainingPoints());
+			if($( "#slider4" ).html()!="")$( "#slider4" ).slider( "setOption" , "max", $("#slider4").slider("value")+getRemainingPoints());
+			if($( "#slider5" ).html()!="")$( "#slider5" ).slider( "setOption" , "max", $("#slider5").slider("value")+getRemainingPoints());
+		}
+	  }
+	  ,stepDown:function(){
+		if(this.textbox.value<=parseInt(this.textbox.value)+getRemainingPoints())
+		{
+			NumericStepper.stepper(this.textbox, -NumericStepper.stepSize);
+			$("#slider"+this.textbox.id.substring(this.textbox.id.length-1,this.textbox.id.length)).slider( "value", this.textbox.value);
+			$("#pointbox"+this.textbox.id.substring(this.textbox.id.length-1,this.textbox.id.length)).html(this.textbox.value);
+			document.getElementById("pointbar"+this.textbox.id.substring(this.textbox.id.length-1,this.textbox.id.length)).style.height=(this.textbox.value*100/($("#slider1").slider("value")+$("#slider2").slider("value")+$("#slider3").slider("value")+$("#slider4").slider("value")+$("#slider5").slider("value")+getRemainingPoints()))+"%";
+			document.getElementById("totalpointsbar").style.width=(getRemainingPoints()*100/($("#slider1").slider("value")+$("#slider2").slider("value")+$("#slider3").slider("value")+$("#slider4").slider("value")+$("#slider5").slider("value")+getRemainingPoints()))+"%";
+			if(parseInt(variables['game_type'])==5)
+				$("#remptstext").html(getRemainingPoints()+" coins remaining");
+			else
+				$("#remptstext").html(getRemainingPoints()+" points remaining");
+			if($( "#slider1" ).html()!="")$( "#slider1" ).slider( "setOption" , "max", $("#slider1").slider("value")+getRemainingPoints());
+			if($( "#slider2" ).html()!="")$( "#slider2" ).slider( "setOption" , "max", $("#slider2").slider("value")+getRemainingPoints());
+			if($( "#slider3" ).html()!="")$( "#slider3" ).slider( "setOption" , "max", $("#slider3").slider("value")+getRemainingPoints());
+			if($( "#slider4" ).html()!="")$( "#slider4" ).slider( "setOption" , "max", $("#slider4").slider("value")+getRemainingPoints());
+			if($( "#slider5" ).html()!="")$( "#slider5" ).slider( "setOption" , "max", $("#slider5").slider("value")+getRemainingPoints());
+		}
+	  }
+		,stepper:function(textbox, val){
+		if (textbox == undefined) 
+		  return false;
+		if (val == undefined || isNaN(val)) 
+		  val = 1;
+		if (textbox.value == undefined || textbox.value == '' || isNaN(textbox.value)) 
+		  textbox.value = 0;
+		textbox.value = parseInt(textbox.value) + parseInt(val);
+		if (parseInt(textbox.value) < NumericStepper.minValue)
+		  textbox.value = NumericStepper.minValue;
+		if (parseInt(textbox.value) >NumericStepper.maxValue)
+		  textbox.value = NumericStepper.maxValue;
+	  }
+	}
+
+	/**
+	  getElementsByClassName - returns an array of elements selected by their class name.
+	  @author Jonathan Snook <http://www.snook.ca/jonathan>
+	  @add-ons Robert Nyman <http://www.robertnyman.com>
+	*/
+	function getElementsByClassName(oElm, strTagName, strClassName){
+	  var arrElements = (strTagName == "*" && oElm.all)? oElm.all : oElm.getElementsByTagName(strTagName);
+	  var arrReturnElements = new Array();
+	  strClassName = strClassName.replace(/-/g, "\-");
+	  var oRegExp = new RegExp("(^|\s)" + strClassName + "(\s|$)");
+	  var oElement;
+	  for(var i=0; i<arrElements.length; i++){
+		oElement = arrElements[i];
+		if(oRegExp.test(oElement.className)){
+		  arrReturnElements.push(oElement);
+		}
+	  }
+	  return (arrReturnElements)
+	}
+
+
+
+	/**
+	 * addEvent - simple window.onload event loader.
+	 */
+	function addEvent(o, evt, f){
+		var r = false;
+	  if (o.addEventListener){
+		o.addEventListener(evt, f, false);
+			r = true;
+	  }
+	  else if (o.attachEvent)
+		r = o.attachEvent("on"+evt, f);
+	  return r;
+	}
+
+	var myNumericStepper = NumericStepper.register("numeric-stepper", 0, getRemainingPoints(), 1);
+}
+
+</script>
