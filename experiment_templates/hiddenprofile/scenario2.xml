@@ -1,0 +1,100 @@
+<scenario>
+	<title>
+	Finding the Terrorists
+	</title>
+	<clue visibility="shared">
+The [Group,1], [Group,2], [Group,3], [Group,4] and [Group,5] organizations may be planning attacks. [Group,4] has been unusually active lately.
+[Target,1], [Target,2], [Target,3], [Target,4] and [Target,5] are all potential targets. The [Target,1] in Capital City are particularly vulnerable.
+Police informants indicate that the attack will happen on a weekday.
+	</clue>
+	<clue visibility="private" type="Group" id="1">
+[Group,1] has been influtrated by the police. They are not involved. 
+	</clue>
+	<clue visibility="private" type="Group" id="2">
+All members of the [Group,2] organization are in custody, and could not be involved. 
+	</clue>
+	<clue visibility="private" type="Group" id="3">
+Members of [Group,1] and [Group,3] have been seen on the streets near potential targets.
+	</clue>
+	<clue visibility="private" type="Group" id="4">
+[Group,3] and [Group,4] have local contacts who could assist in attacks.
+	</clue>
+	<clue visibility="private" type="Group" id="5">
+[Group,4] and [Group,5] are not large enough to coordinate attacks.
+	</clue>
+	<clue visibility="private" type="Target" id="1">
+The local government has increased protection at [Target,2] and [Target,3] in Capital City. They are not likely targets.
+	</clue>
+	<clue visibility="private" type="Target" id="2">
+[Target,1] and [Target,4] are considered especially high profile targets and are at high risk of attack.
+	</clue>
+	<clue visibility="private" type="Target" id="3">
+Guard uniforms matching those worn at [Target,4] and [Target,5] have recently gone missing. These uniforms could be used to stage an attack.
+	</clue>
+	<clue visibility="private" type="Target" id="4">
+Inside informants indicate that [Target,5] are not at risk. 
+	</clue>
+	<clue visibility="private" type="Target" id="5">
+The guards at [Target,1] wear plain clothes; guards at the remaining targets wear uniforms.
+	</clue>
+	<clue visibility="private" type="Day" id="1">
+Attacks are most likely on days when target locations are experiencing high activity. 
+	</clue>
+	<clue visibility="private" type="Day" id="2">
+[Day,1]s and [Day,2]s are especially high-activity days at the target locations. 
+	</clue>
+	<clue visibility="private" type="Day" id="3">
+Due to logistical constraints, it is unlikely that the attack will occur on a [Day,1] or [Day,3]. 
+	</clue>
+	<clue visibility="private" type="Day" id="4">
+Security is enhanced on [Day,4]s. The attack will not occur on a [Day,4].
+	</clue>
+	<clue visibility="private" type="Day" id="5">
+Historically, attacks are more likely on [Day,2]s and less likely on [Day,5]s.
+	</clue>
+	<option type="Group" id="1" answer="false">
+	Lion
+	</option>
+	<option type="Group" id="2" answer="false">
+	Cobra
+	</option>
+	<option type="Group" id="3" answer="true">
+	Falcon
+	</option>
+	<option type="Group" id="4" answer="false">
+	Shark
+	</option>
+	<option type="Group" id="5" answer="false">
+	Wolf
+	</option>
+	<option type="Target" id="1" answer="false">
+	Monuments
+	</option>
+	<option type="Target" id="2" answer="false">
+	Banks
+	</option>
+	<option type="Target" id="3" answer="false">
+	Skyscrapers
+	</option>
+	<option type="Target" id="4" answer="true">
+	Embassies
+	</option>
+	<option type="Target" id="5" answer="false">
+	Stariums
+	</option>
+	<option type="Day" id="1" answer="false">
+	Monday
+	</option>
+	<option type="Day" id="2" answer="true">
+	Tuesday
+	</option>
+	<option type="Day" id="3" answer="false">
+	Wednesday
+	</option>
+	<option type="Day" id="4" answer="false">
+	Thursday
+	</option>
+	<option type="Day" id="5" answer="false">
+	Friday
+	</option>
+</scenario>

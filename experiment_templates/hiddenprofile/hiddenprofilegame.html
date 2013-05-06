@@ -1,39 +1,6 @@
-<style type="text/css">
-.mybs-docs-example 
-{
-    position: relative;
-    position: relative;
-    margin: 15px 0;
-    padding: 39px 19px 14px;
-    background-color: white;
-    border: 1px solid #DDD;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-}
-
-.mybs-docs-example::after
-{
-    content: "Rules";
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    padding: 3px 7px;
-    font-size: 12px;
-    font-weight: bold;
-    background-color: whiteSmoke;
-    border: 1px solid #DDD;
-    color: #9DA0A4;
-    -webkit-border-radius: 4px 0 4px 0;
-    -moz-border-radius: 4px 0 4px 0;
-    border-radius: 4px 0 4px 0;
-}
-</style> 
-
-
-<table border="0" width="800" align="center">
+<table border="0" width="806" align="center">
     <tr>
-        <td width="790">
+        <td width="800">
 		
             <div id="helpinfo" class="mybs-docs-example tooltip-demo">
                 <ul>
@@ -44,163 +11,101 @@
             </div>
 		
 			<table id="pbar" border="0" width="800" align="center">
-				<tr>
-					<td width="580">
+				<tr id="pbarrow">
+					<td width="440">
 						<div class="progress">
 						<div class="bar" style="width:100%;" id="timerbar"></div>
 						</div>
 					</td>
-                    <td width="129">
-                        <h3 align="right">Time Left:
-                        </h3>
+					<td width="118">
+                        <p align="right" style="font-family:'Verdana';font-size:15pt;">Time Left:
+                        </p>
                     </td>
-                    <td width="96">
-                        <h3><font color="red" id="timer">&nbsp;</font></h3>
+                    <td width="54">
+                        <p style="font-family:'Verdana';font-size:15pt;"><font color="red" id="timer"></font></p>
                     </td>
 				</tr>
 			</table>
 		
 			<div id="gamecontent">
-			
-				<table id="twocolumn" align="center" border="0" width="766">
+				<div id="pubinfo">
+				</div>
+
+				<table id="step2" align="center" border="0" width="845">
 					<tr>
-						<td>
-							<div id="pubinfo" class="hero-unit" style="width:750px;">
-								<h2 id="ttl" align="center">&nbsp;</h2>
-								<p id="desc">&nbsp;</p>
-								<div id="step1" class="accordion">	
-								</div>
-							</div>
-						</td>		
-						<td>
-							<table id="step2" align="center" border="0" width="500">
+						<td id="conditiontablespaceleft">
+						</td>
+						<td width="306" id="conditiontabletd">
+							<table align="center" border="0" width="308" height="347" id="conditiontable">
+							</table>
+						</td>
+						<td width="2">	
+						</td>
+						<td width="523">			
+							<table align="center" border="0" width="488" class="myhero-unit" id="chattable">
 								<tr>
-									<td width="128" height="17" style="border-width:1; border-color:rgb(204,204,204); border-left-style:solid; border-right-style:none; border-bottom-style:none; border-top-style:solid;">
-										<p>Participant Network</p>
-									</td>
-									<td width="288" height="17" style="border-width:1; border-color:rgb(204,204,204); border-top-style:solid; border-right-style:none; border-bottom-style:none; border-left-style:none;"></td>
-									<td width="84" height="17" style="border-width:1; border-color:rgb(204,204,204); border-top-style:solid; border-right-style:solid; border-bottom-style:none; border-left-style:none;">&nbsp;</td>
-								</tr>
-								<tr>
-									<td width="500" height="95" style="border-width:1; border-color:rgb(204,204,204); border-top-style:none; border-right-style:solid; border-bottom-style:solid; border-left-style:solid;" colspan="3">
-									<div id="myholder" align="center"></div>
+									<td width="476" height="25">
+										<p align="center"><span style="font-family:'Verdana';font-size:14pt;">Discussion</span></p>
 									</td>
 								</tr>
 								<tr>
-									<td width="500" height="13" colspan="2"></td>
-								</tr>
-								<tr>
-									<td width="500" colspan="2">			
-										<table align="center" border="0" width="500" class="hero-unit">
-											<tr>
-												<td width="125" height="23"></td>
-												<td width="375" height="25" rowspan="2" colspan="2">
-													<p align="center"><span style="font-size:14pt;">Discussion</span></p>
-												</td>
-											</tr>
-											<tr>
-												<td width="123" rowspan="2" height="64" class="hero-unit" style="border-width:1;">
-													<div class="row show-grid">
-														<div class="span3" style="width:90%;">
-															<ul id="userlist" class="nav nav-list">
-																<li id="0" class="active"><a onClick="setUser(0); removeActives(); $('#0').addClass('active'); highlightCircle(0);"><i class="icon-user"></i>Everyone</a></li>
-															</ul>
-														</div>
+									<td width="476" height="62">
+										<div class="control-group">  
+											<div class="controls"> 
+												<div id="chat_conversation" style="border: 1px solid black; background-color:white; text-align:left; width: 100%; height: 250px; overflow: auto; font-family:'Verdana'; font-size: 10pt;">
+													<div>
+														Welcome to public chat of the experiment!..<br>
 													</div>
-												</td>
-											</tr>
-											<tr>
-												<td width="417" height="62">
-													<div class="control-group">  
-														<div class="controls"> 
-															<div id="chat_conversation" style="border: 1px solid black; background-color:white; text-align:left; width: 100%; height: 250px; overflow: auto;">
-																<div>
-																	Welcome to public chat of the experiment!..<br>
-																</div>
-															</div>
-														</div>  
-													</div> 
-													<p>
-														<i class="icon-pencil"></i>						
-														<input onFocus="document.getElementById('chat_input').value='';" value="Type something here..." type="text" id="chat_input" style="width: 60%;" class="input-xlarge" id="input01">
-														<button type="submit" class="btn btn-primary" id="chat_send_button" onClick="sendMessage();">
-														<i class="icon-comment icon-white"></i> Send
-														</button>
-													</p>	
-												</td>
-												<td width="-3" height="62"></td>
-											</tr>
-										</table>
+												</div>
+											</div>  
+										</div> 
+										<p>
+											<i class="icon-pencil"></i>						
+											<input onFocus="document.getElementById('chat_input').value='';" value="Type something here..." type="text" id="chat_input" style="width: 78%;" class="input-xlarge">
+											<button type="submit" class="btn btn-primary" id="chat_send_button" onClick="sendMessage();">
+											<i class="icon-comment icon-white"></i> Send
+											</button>
+										</p>	
 									</td>
+									<td width="0" height="62"></td>
 								</tr>
 							</table>
-							<div id="chart_div"></div>
+						</td>
+						<td id="conditiontablespaceright">
 						</td>
 					</tr>
+                    <tr>
+                        <td colspan="6" width="835" height="20">
+
+						</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" width="835">
+						<table border="0">
+							<tr>
+								<td width="490" id="pubcontainer"></td>
+								<td width="10">&nbsp;</td>
+								<td width="300" id="hpnotes">
+									<table border="0" id="notetable">
+										<tr>
+											<td width="294" class="myfont">
+											Notes:
+											</td>
+										</tr>
+										<tr>
+											<td width="294" height="200">
+												<textarea id="notearea"></textarea>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+						</td>
+                    </tr>
 				</table>
 				
-				<table id="step3" border="0" align="center" width="825" class="hero-unit">
-					<tr>
-						<td width="819" colspan="3" height="53"> Please make your final decision...</td>
-					</tr>
-					<tr>
-						<td width="291">
-							<p align="center"></p>
-						</td>
-						<td  align="left" width="221">
-							<form id="rbForm">
-								
-							</form>
-						</td>
-						<td width="299">
-							<p align="center"></p>
-						</td>
-					</tr>
-					<tr>
-						<td width="291" height="9">
-							<p align="center"></p>
-						</td>
-						<td width="221" height="9">
-							<p align="center"></p>
-						</td>
-						<td width="299" height="9">
-							<p align="center
-						</td>"></p>
-					</tr>
-					<tr>
-						<td width="291" height="41">
-							<p align="center"></p>
-						</td>
-						<td width="221" height="41">
-
-							<p align="center"><button type="submit" class="btn btn-primary" onClick="submitDecision();">
-							<i class="icon-ok icon-white"></i> Submit
-						</button></p>
-						</td>
-						<td width="299" height="41">
-							<p align="center"></p>
-						</td>
-					</tr>
-					<tr>
-						<td width="819" height="41" colspan="3">
-							<table align="center" border="0">
-								<tr>
-									<td width="809">
-										<table align="center" border="0" id="endgameresults">
-											<tr>
-												<td align="center" width="803">
-													
-												</td>
-											</tr>
-										</table>
-									</td>
-								</tr>
-								<tr>
-									<td width="809"><p id="submitStatus" align="center">&nbsp;</p></td>
-								</tr>
-							</table>
-						</td>
-					</tr>
+				<table id="step3" border="0" align="center" width="798" class="hero-unit">
 				</table>
 				
 				<table id="endgamesurvey" border="0" width="598" align="center">
@@ -213,7 +118,7 @@
 					</tr>
 					<tr>
 						<td width="364" height="272">
-							<p align="center" id=surveyimage></p>
+							<p align="center" id="surveyimage"></p>
 						</td>
 					</tr>
 					<tr>
@@ -260,13 +165,15 @@
 
 <script language="JavaScript" type="text/javascript">  
 
-var privateOrder="";
+var privateOrder;
 var Step1Timer;
 var Step2Timer;
 var EndGameTimer;
+var NextRoundTimer;
 var selectedUser=0;
 var userMessage="";
-var step3Options = new Array();
+var step3Options;
+var clueType;
 var endGameResultsCount=0;
 var questions = new Array();
 var title;
@@ -275,17 +182,208 @@ var intropic;
 var strictness;
 var currentQuestion=0;
 var surveySelections=new Array();
-var canvasWidth=500;
-var canvasHeight=300;
-var r = Raphael("myholder", canvasWidth, canvasHeight);
+var canvasWidth=300;
+var canvasHeight=303;
+var r;
 var circles = new Array();
 var xVals = new Array();
 var yVals = new Array();
-var labels = r.set();
+var labels;
+var condition;
+var currentDiscRound;
 
-$("#step2").hide();
-$("#step3").hide();
-$('#endgamesurvey').hide();
+function initialize()
+{
+	$("#step2").hide();
+	$("#step3").hide();
+	$('#endgamesurvey').hide();
+	$('#notearea').html("");
+	$('#pubinfo').html("<p id='ttl' align='center'></p><div id='desc' class='accordion'></div><div id='step1' class='accordion'></div>");
+	document.getElementById("timetext").innerHTML="You have "+variables['Step1Timer']+" seconds before proceeding at next step.";
+	this.Step1Timer=parseInt(variables['Step1Timer']+"")+1; 
+	this.Step2Timer=parseInt(variables['Step2Timer']+"")+1;
+	this.EndGameTimer=parseInt(variables['end_game_timer']+"")+1;
+	this.NextRoundTimer=parseInt(variables['round_interval_timer']+"")+1;
+	parseScenarioXML();
+}
+
+function arraySize(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+
+function preprocess(str)
+{
+	while(str.indexOf('[')>=0&&str.indexOf(']',str.indexOf('[')+1)>=0)
+	{
+		if(str.indexOf('[')>=0&&str.indexOf(']',str.indexOf('[')+1)>=0)
+			str=str.substring(0, str.indexOf('['))+this.step3Options[str.substring(str.indexOf('[')+1, str.indexOf(']'))][0]+str.substring(str.indexOf(']',str.indexOf('[')+1)+1, str.length);
+	}
+	return str;
+}
+
+function parseScenarioXML()
+{
+	this.step3Options = new Array();
+	this.clueType = new Array();
+	xmlDoc=loadXMLDoc(getFile("scenario"+variables['scenario_number']+".xml"));
+
+	for(var j=0; j<xmlDoc.getElementsByTagName("option").length; j++)
+	{
+		if(this.clueType[$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)]==null||
+		this.clueType[$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)]==undefined)
+			this.clueType[$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)]=1;
+		else
+			this.clueType[$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)]++;
+		var larray=new Array();
+		larray.push($.trim(xmlDoc.getElementsByTagName("option")[j].childNodes[0].nodeValue));
+		larray.push(0);
+		this.step3Options[$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)+","+$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("id").nodeValue)]=larray;
+	}
+	
+	var title = $.trim(xmlDoc.getElementsByTagName("title")[0].childNodes[0].nodeValue);
+	document.getElementById("ttl").innerHTML=title;
+	var publicInfo="";
+	if($.trim(xmlDoc.getElementsByTagName("clue")[0].attributes.getNamedItem("visibility").nodeValue)=="shared")
+		publicInfo=preprocess($.trim(xmlDoc.getElementsByTagName("clue")[0].childNodes[0].nodeValue));
+	if(xmlDoc.getElementsByTagName("clue")[0].getElementsByTagName("picture")[0]!=null&&xmlDoc.getElementsByTagName("clue")[0].getElementsByTagName("picture")[0]!=undefined)
+		$("#desc").html("<pre id=\"descpre\">"+publicInfo+"</pre><img src=\""+getFile($.trim(xmlDoc.getElementsByTagName("clue")[0].getElementsByTagName("picture")[0].childNodes[0].nodeValue))+"\" alt=\"private info picture\">");
+	else
+		$("#desc").html("<pre id=\"descpre\">"+publicInfo+"</pre>");
+	
+	
+	//var size = arraySize(this.step3Options);
+	
+	//var size = 0, key;
+   // for (key in this.clueType) {
+   //     if (this.clueType.hasOwnProperty(key)) alert(key+","+this.clueType[key]);
+	//}
+	
+	setRound(1);
+
+	if(myid==1)
+	{
+		this.privateOrder="";
+		if(variables['random_private_info']==1)
+		{
+			var numbers=new Array();
+			for(var i=0; i<numPlayers; i++)
+			{
+				var arrkey;
+				for (arrkey in this.clueType)
+				{
+					var randomnumber=-1;
+					do{
+						randomnumber=Math.floor(Math.random()*this.clueType[arrkey])+1;
+					}while(numbers[arrkey+","+randomnumber]==true);
+					numbers[arrkey+","+randomnumber]=true;
+					this.privateOrder+=((arrkey+","+randomnumber)+"-");
+				}
+				this.privateOrder+="_";
+			}
+		}
+		else
+		{
+			for(var i=1; i<=numPlayers; i++)
+			{
+				var arrkey;
+				for (arrkey in this.clueType)
+					this.privateOrder+=((arrkey+","+i)+"-");
+				this.privateOrder+="_";
+			}
+		}
+		
+		if($.trim(variables["visualization_type"])=="1"||$.trim(variables["visualization_type"])=="2"||$.trim(variables["visualization_type"])=="3")
+			this.privateOrder=parseInt(variables["visualization_type"])+" "+this.privateOrder;
+		else
+			this.privateOrder=(Math.floor(Math.random()*3)+1)+" "+this.privateOrder;
+		submit(this.privateOrder);
+	}
+}
+
+function setCondition()
+{
+	this.condition=parseInt(this.privateOrder.substring(0,1));
+	if(this.condition==1)
+	{
+		$("#conditiontable").html("<tr><td width=\"190\" height=\"17\"><p class=\"myfont\">Participants List</p></td><td width=\"71\" height=\"17\"></td><td width=\"31\" height=\"17\"></td></tr><tr><td width=\"150\" rowspan=\"2\" height=\"280\" class=\"myhero-unit\" style=\"border-width:1;\"><div><div class=\"span3\" style=\"width:100%;\"><ul id=\"userlist\" class=\"mynav mynav-list\"\"><li id=\"0\" class=\"active\"><a onClick=\"setUser(0); removeActives(); $('#0').addClass('active');\"><i class=\"icon-user\"></i>Everyone</a></li></ul></div></div></td></tr>");
+		$("#conditiontable").css("background-color", "#F2F5A9");
+		$("#conditiontable").css("width", 150);
+		$("#conditiontabletd").css("width", 150);
+		$("#conditiontablespaceleft").css("width", 78);
+		$("#conditiontablespaceright").css("width", 78);
+		for(var g=1; g<=numPlayers; g++)
+		{
+			if(g==myid)
+				document.getElementById("userlist").innerHTML+=("<li id=\""+g+"\"><a><i class=\"icon-user\"></i>You</a></li>");
+			else
+			{
+				if(canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))
+					document.getElementById("userlist").innerHTML+=("<li id=\""+g+"\"><a onClick=\"setUser("+g+"); removeActives(); $('#"+g+"').addClass('active'); highlightCircle("+g+");\"><i class=\"icon-user\"></i>"+getName(g)+"</a></li>");
+				else
+					document.getElementById("userlist").innerHTML+=("<li id=\""+g+"\"><a><i class=\"icon-user\"></i>"+getName(g)+"</a></li>");
+			}
+		}
+	}
+	if(this.condition==2)
+	{
+		$("#conditiontable").html("<tr><td width=\"190\" height=\"17\"><p class=\"myfont\">Static Participant Network</p></td><td width=\"71\" height=\"17\"></td><td width=\"31\" height=\"17\"></td></tr><tr><td width=\"300\" height=\"95\" colspan=\"3\"><div id=\"myholder\" align=\"center\"></div></td></tr>");
+		drawStaticNetwork();
+	}
+	if(this.condition==3)
+	{
+		$("#conditiontable").html("<tr><td width=\"190\" height=\"17\"><p class=\"myfont\">Dynamic Participant Network</p></td><td width=\"71\" height=\"17\"></td><td width=\"31\" height=\"17\"></td></tr><tr><td width=\"300\" height=\"95\" colspan=\"3\"><div id=\"myholder\" align=\"center\"></div></td></tr>");
+		drawDynamicNetwork();
+	}
+}
+
+function setPrivateInfo(myident)
+{
+	setCondition();
+	this.privateOrder=this.privateOrder.substring(2);
+	var tarr=this.privateOrder.split("_");
+	for(var p=0;p<tarr.length;p++)
+	{
+		if(p+1==myident)
+		{
+			var tarr2=tarr[p].split("-");
+			for(var m=0;m<tarr2.length;m++)
+			{
+				if(tarr2[m].length==0) continue;
+				document.getElementById("step1").innerHTML+="<div class=\"accordion-group\"><div id=\"collapse"+(m+1)+"\" class=\"accordion-body collapse in\" style=\"overflow:hidden;\"><div class=\"accordion-inner\" id=\"pi"+(m+1)+"\">Private information not loaded...</div></div></div>";
+				
+				var pi1="";
+				var img1="";
+				
+				for(var j=0; j<xmlDoc.getElementsByTagName("clue").length; j++)
+				{
+					if($.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("visibility").nodeValue)=="private"&&tarr2[m].split(",")[0]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("type").nodeValue))
+					{
+						//alert(tarr2[m].split(",")[0]+"=="+$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("type").nodeValue)+" sonuc: "+(tarr2[m].split(",")[0]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("type").nodeValue))+" ve "+tarr2[m].split(",")[1]+"=="+$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("id").nodeValue)+" sonuc: "+(tarr2[m].split(",")[1]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("id").nodeValue)))
+						if(tarr2[m].split(",")[1]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("id").nodeValue))
+						{
+							pi1=preprocess($.trim(xmlDoc.getElementsByTagName("clue")[j].childNodes[0].nodeValue));
+							if(xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0]!=undefined&&xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0].childNodes[0]!=null)
+								img1=$.trim(xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0].childNodes[0].nodeValue);
+							break;
+						}
+					}
+				}
+				
+				if(document.getElementById("pi"+(m+1)) != undefined)
+					$("#pi"+(m+1)).html("<pre id='descpre'>"+pi1+"</pre>");
+					
+				if(img1!="" && img1!=null && img1 != undefined)
+					$("#pi"+(m+1)).html($("#pi"+(m+1)).html()+"<img src=\""+img1+"\" alt=\"private info picture\">");
+			}
+		}
+	}
+
+	countDownStep1();
+}
 
 function loadXMLDoc(dname)
 {
@@ -391,7 +489,7 @@ function nextSurveyQuestion()
 			if(surveySelections[z]!=null&&surveySelections[z]!=undefined)
 			{
 				submit(surveySelections[z]);
-				setRound(4+z);
+				setRound(3+parseInt(variables['total_rounds'])+z);
 			}
 		}
 		$("#surveytitle").html('');
@@ -469,70 +567,99 @@ function displaySurveyQuestion(qNum)
 
 function newMove(participant, index) {
   fetchMove(participant, currentRound, index, function(val) {
-	if(currentRound==2)
+	if(currentRound>=2&&this.currentDiscRound<=parseInt(variables['total_rounds']))
 	{
-		step3Options[val][1]++;
+		var tarr=val.split("_");
+		for(var p=0;p<tarr.length;p++)
+		{
+			if(tarr[p].length==0)continue;
+			this.step3Options[tarr[p]][1]++;
+		}
 		endGameResultsCount++;
 		if(endGameResultsCount==numPlayers)
 		{
-			$("#endgameresults").show();
-
-			var labels = new Array();
-			var values = new Array();
-			var distinctNonZero=0;
-			for(var z=0; z<step3Options.length; z++)
+			//$("#endgameresults").show();
+			endGameResultsCount=0;
+			if(parseInt(variables["allow_feedback"])==1)
 			{
-				labels.push("%%.%% - "+step3Options[z][0]);
-				values.push(step3Options[z][1]);
-				if(step3Options[z][1]>0)
-					distinctNonZero++;
-			}
-			// handling graphael piechart zero valued slices bug
-			if(distinctNonZero==1)
-			{
-				while(values.length>1)
+				var arrkey;
+				for (arrkey in this.clueType)
 				{
+					var labels = new Array();
+					var values = new Array();
+					var correctCount=0;
+					var wrongCount=0;
+					
+					for(var y=1; y<=this.clueType[arrkey]; y++)
+					{
+						if(step3Options[arrkey+","+y][1]>0)
+						{
+							for(var j=0; j<xmlDoc.getElementsByTagName("option").length; j++)
+							{
+								if($.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)==arrkey&&y==$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("id").nodeValue))
+								{
+									if($.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("answer").nodeValue)=="true")
+										correctCount+=step3Options[arrkey+","+y][1];
+									else
+										wrongCount+=step3Options[arrkey+","+y][1];
+								}
+							}
+						}
+					}
+					
+					labels.push("%%.%% - Correct");
+					values.push(correctCount);
+					labels.push("%%.%% - Wrong");
+					values.push(wrongCount);
+					
 					if(values[0]==0)
 					{
 						values.splice(0, 1);
 						labels.splice(0, 1);
 					}
-					if(values.length>1&&values[1]==0)
+					if(values[1]==0)
 					{
 						values.splice(1, 1);
 						labels.splice(1, 1);
 					}
+
+					$("#chart_div"+arrkey).css({'width':'150px;'});
+					$("#chart_div"+arrkey).css({'height':'250px;'});
+					var r = Raphael("chart_div"+arrkey),
+					pie = r.piechart(190, 75, 50, values, { legend: labels, legendpos: "west"});
+					r.text(90, 20, "Accuracy results for "+arrkey).attr({ font: "10px sans-serif" });
+					pie.hover(function () {
+						this.sector.stop();
+						this.sector.scale(1.1, 1.1, this.cx, this.cy);
+
+						if (this.label) {
+							this.label[0].stop();
+							this.label[0].attr({ r: 7.5 });
+							this.label[1].attr({ "font-weight": 800 });
+						}
+					}, function () {
+						this.sector.animate({ transform: 's1 1 ' + this.cx + ' ' + this.cy }, 500, "bounce");
+
+						if (this.label) {
+							this.label[0].animate({ r: 5 }, 500, "bounce");
+							this.label[1].attr({ "font-weight": 400 });
+						}
+					});
 				}
 			}
-			$("#chart_div").css({'width':'500px;'});
-			$("#chart_div").css({'height':'400px;'});
-			var r = Raphael("chart_div"),
-            pie = r.piechart(320, 240, 100, values, { legend: labels, legendpos: "west"});
-
-			r.text(320, 100, "End Game Results").attr({ font: "20px sans-serif" });
-			pie.hover(function () {
-				this.sector.stop();
-				this.sector.scale(1.1, 1.1, this.cx, this.cy);
-
-				if (this.label) {
-					this.label[0].stop();
-					this.label[0].attr({ r: 7.5 });
-					this.label[1].attr({ "font-weight": 800 });
-				}
-			}, function () {
-				this.sector.animate({ transform: 's1 1 ' + this.cx + ' ' + this.cy }, 500, "bounce");
-
-				if (this.label) {
-					this.label[0].animate({ r: 5 }, 500, "bounce");
-					this.label[1].attr({ "font-weight": 400 });
-				}
-			});
-
-			document.getElementById("submitStatus").innerHTML="<font color=\"blue\">You will now be redirected to end game survey...</font>";
-			$("#pubinfo").css({ 'width': '500px'});
+			if(this.currentDiscRound<parseInt(variables['total_rounds']))
+			{
+				document.getElementById("submitStatus").innerHTML="<font color=\"blue\">Next round is about to begin...</font>";
+				countDownNextRound();
+			}
+			else
+			{
+				document.getElementById("submitStatus").innerHTML="<font color=\"blue\">You will now be redirected to end game survey...</font>";
+				countDownEndGame();
+			}
 			$("#pbar").show();
-			countDownEndGame();
-			setRound(3);
+			setRound(2+this.currentDiscRound);
+			this.currentDiscRound++;
 		}
 	}
 	if(currentRound==1)
@@ -544,110 +671,19 @@ function newMove(participant, index) {
   });
 }
 
-function setPrivateInfo(myident)
-{
-	if(variables['randomPrivateInformation']==1)
-	{
-		var tarr=this.privateOrder.split("_");
-		for(var p=0;p<tarr.length;p++)
-		{
-			if(p+1==myident)
-			{
-				var tarr2=tarr[p].split(",");
-				for(var m=0;m<tarr2.length;m++)
-				{
-					document.getElementById("step1").innerHTML+="<div class=\"accordion-group\"><div id=\"collapse"+(m+1)+"\" class=\"accordion-body collapse in\" style=\"overflow:hidden;\"><div class=\"accordion-inner\" id=\"pi"+(m+1)+"\">Private information not loaded...</div></div></div>";
-					var pi1="";
-					var img1="";
-					if($.trim(xmlDoc.getElementsByTagName("info")[parseInt(tarr2[m])].attributes.getNamedItem("type").nodeValue)=="private")
-					{
-						pi1=$.trim(xmlDoc.getElementsByTagName("info")[parseInt(tarr2[m])].childNodes[0].nodeValue);
-						if(xmlDoc.getElementsByTagName("info")[parseInt(tarr2[m])].getElementsByTagName("picture")[0]!=undefined&&xmlDoc.getElementsByTagName("info")[parseInt(tarr2[m])].getElementsByTagName("picture")[0].childNodes[0]!=null)
-							img1=$.trim(xmlDoc.getElementsByTagName("info")[parseInt(tarr2[m])].getElementsByTagName("picture")[0].childNodes[0].nodeValue);
-					}
-					if(document.getElementById("pi"+(m+1)) != undefined)
-						$("#pi"+(m+1)).html("<pre>"+pi1+"</pre>");
-						
-					if(img1!="" && img1!=null && img1 != undefined)
-						$("#pi"+(m+1)).html($("#pi"+(m+1)).html()+"<img src=\""+img1+"\" alt=\"private info picture\">");
-				}
-			}
-		}
-	}
-	else
-	{
-		var infnum=1;
-		for(var m=1;m<xmlDoc.getElementsByTagName("info").length;m++)
-		{
-			if(parseInt($.trim(xmlDoc.getElementsByTagName("info")[m].attributes.getNamedItem("participant").nodeValue))==myident)
-			{
-				if(xmlDoc.getElementsByTagName("info")[m].getElementsByTagName("picture")[0]!=null&&xmlDoc.getElementsByTagName("info")[m].getElementsByTagName("picture")[0]!=undefined)
-					$("#step1").html($("#step1").html()+"<div class=\"accordion-group\"><div id=\"collapse"+(m)+"\" class=\"accordion-body collapse in\" style=\"overflow:hidden;\"><div class=\"accordion-inner\" id=\"pi"+(m)+"\"><pre>"+$.trim(xmlDoc.getElementsByTagName("info")[m].childNodes[0].nodeValue)+"</pre><img src=\""+getFile($.trim(xmlDoc.getElementsByTagName("info")[m].getElementsByTagName("picture")[0].childNodes[0].nodeValue))+"\" alt=\"private info picture\"></div></div></div>");
-				else
-					$("#step1").html($("#step1").html()+"<div class=\"accordion-group\"><div id=\"collapse"+(m)+"\" class=\"accordion-body collapse in\" style=\"overflow:hidden;\"><div class=\"accordion-inner\" id=\"pi"+(m)+"\"><pre>"+$.trim(xmlDoc.getElementsByTagName("info")[m].childNodes[0].nodeValue)+"</pre></div></div></div>");
-				infnum++;
-			}
-		}
-	}
-	countDownStep1();
-}
-
-function parseScenarioXML()
-{
-	xmlDoc=loadXMLDoc(getFile("scenario"+variables['Scenario Number']+".xml"));
-	var title = $.trim(xmlDoc.getElementsByTagName("title")[0].childNodes[0].nodeValue);
-	document.getElementById("ttl").innerHTML=title;
-	var publicInfo="";
-	if($.trim(xmlDoc.getElementsByTagName("info")[0].attributes.getNamedItem("type").nodeValue)=="public")
-		publicInfo=$.trim(xmlDoc.getElementsByTagName("info")[0].childNodes[0].nodeValue);
-	if(xmlDoc.getElementsByTagName("info")[0].getElementsByTagName("picture")[0]!=null&&xmlDoc.getElementsByTagName("info")[0].getElementsByTagName("picture")[0]!=undefined)
-		$("#desc").html("<pre>"+publicInfo+"</pre><img src=\""+getFile($.trim(xmlDoc.getElementsByTagName("info")[0].getElementsByTagName("picture")[0].childNodes[0].nodeValue))+"\" alt=\"private info picture\">");
-	else
-		$("#desc").html("<pre>"+publicInfo+"</pre>");
-	for(var j=0; j<xmlDoc.getElementsByTagName("option").length; j++)
-		step3Options.push([$.trim(xmlDoc.getElementsByTagName("option")[j].childNodes[0].nodeValue), 0]);
-		
-	setRound(1);
-
-	if(variables['randomPrivateInformation']==1)
-	{
-		if(myid==1)
-		{
-			var numbers=new Array();
-			for(var i=0; i<numPlayers; i++)
-			{
-				for(var j=0; j<(xmlDoc.getElementsByTagName("info").length-1)/numPlayers; j++)
-				{
-					var randomnumber=-1;
-					do{
-						randomnumber=Math.floor(Math.random()*(xmlDoc.getElementsByTagName("info").length-1))+1;
-					}while(numbers[randomnumber]==true);
-					numbers[randomnumber]=true;
-					if(j<((xmlDoc.getElementsByTagName("info").length-1)/numPlayers)-1)
-						this.privateOrder+=(randomnumber+",");
-					else
-						this.privateOrder+=(randomnumber+"_");
-				}
-			}
-			submit(this.privateOrder);
-		}
-	}
-	else
-	{
-		setPrivateInfo(myid);
-		setRound(2);
-	}
-}
-
 function loadStep2()
 {
+	if(this.currentDiscRound==null||this.currentDiscRound==undefined)
+		this.currentDiscRound=1;
 	$("#step1").hide();  
 	$("#step3").hide();
 	$("#step2").show();
-	$("#pubinfo").css({ 'width': '500px'});
-	drawNetwork();
+	$("#pubcontainer").html($("#desc").html());
+	$("#pubcontainer").css({'width': '490px'});
+	$("#desc").hide();
 	document.getElementById("stepgoal").innerHTML="Please discuss with other participants before making your decision at this step.";
 	document.getElementById("timetext").innerHTML="You have "+variables['Step2Timer']+" seconds before proceeding at next step.";
+	$("#pbarrow").html("<td width=\"77\"><p align=\"right\" style=\"font-family:'Verdana';font-size:15pt;\">Round:</p></td><td width=\"89\"><p style=\"font-family:'Verdana';font-size:15pt;\"><font color=\"red\" id=\"roundtext\">"+this.currentDiscRound+" of "+variables['total_rounds']+"</font></p></td><td width=\"440\"><div class=\"progress\"><div class=\"bar\" style=\"width:100%;\" id=\"timerbar\"></div></div></td><td width=\"118\"><p align=\"right\" style=\"font-family:'Verdana';font-size:15pt;\">Time Left:</p></td><td width=\"54\"><p style=\"font-family:'Verdana';font-size:15pt;\"><font color=\"red\" id=\"timer\"></font></p></td>");
 	countDownStep2();
 }
 
@@ -657,11 +693,31 @@ function loadStep3()
 	$("#step2").hide();  
 	$("#pbar").hide();
 	$("#step3").show();
-	$("#pubinfo").css({ 'width': '750px'});
+	$("#pubinfo").css({ 'width': '800px'});
+	$("#pubinfo").show();
+	$("#desc").show();
 	$("#endgameresults").hide();
 	document.getElementById("stepgoal").innerHTML="Please make your final decision at this step.";
 	document.getElementById("timetext").innerHTML="";
-	$("#timetext").hide(); 
+	$("#timetext").hide();
+	var arrkey;
+	for (arrkey in this.clueType)
+	{
+		if(parseInt(variables["allow_feedback"])==1)
+			$("#step3").html($("#step3").html()+"<tr><td width=\"792\" colspan=\"4\" height=\"53\" class=\"myfont\" id=\"dectext"+arrkey+"\"></td></tr><tr><td width=\"291\"><p align=\"center\"></p></td><td width=\"221\"><form id=\"rbForm"+arrkey+"\"></form></td><td width=\"250\"><p align=\"center\"><div id='chart_div"+arrkey+"' style='height:150px; width:250px;'></div></p></td><td width=\"22\"><p align=\"center\"></p></td></tr><tr><td width=\"291\" height=\"5\"><p align=\"center\"></p></td><td width=\"221\" height=\"5\"><p align=\"center\"></p></td><td width=\"250\"><p align=\"center\"></p></td><td width=\"22\"><p align=\"center\"></p></td></tr>");
+		else
+			$("#step3").html($("#step3").html()+"<tr><td width=\"792\" colspan=\"4\" height=\"53\" class=\"myfont\" id=\"dectext"+arrkey+"\"></td></tr><tr><td width=\"291\"><p align=\"center\"></p></td><td width=\"221\"><form id=\"rbForm"+arrkey+"\"></form></td><td width=\"250\"><p align=\"center\"></p></td><td width=\"22\"><p align=\"center\"></p></td></tr><tr><td width=\"291\" height=\"5\"><p align=\"center\"></p></td><td width=\"221\" height=\"5\"><p align=\"center\"></p></td><td width=\"250\"><p align=\"center\"></p></td><td width=\"22\"><p align=\"center\"></p></td></tr>");
+	}
+	$("#step3").html($("#step3").html()+"<tr><td width=\"291\" height=\"41\"><p align=\"center\"></p></td><td width=\"221\" height=\"41\"><p align=\"center\"><button type=\"submit\" class=\"btn btn-primary\" onClick=\"submitDecision();\"><i class=\"icon-ok icon-white\"></i> Submit</button></p></td><td width=\"272\" height=\"41\"><p align=\"center\"></p></td></tr><tr><td width=\"809\" colspan=\"4\"><p id=\"submitStatus\" align=\"center\">&nbsp;</p></td></tr>");
+	for (arrkey in this.clueType)
+	{
+		$("#dectext"+arrkey).html("Please choose one of the "+arrkey+"s:");
+		for(var k=1; k<=this.clueType[arrkey]; k++)
+		{
+			document.getElementById("rbForm"+arrkey).innerHTML+=("<input type=\"radio\" name=\"findec"+arrkey+"\" value=\""+arrkey+","+k+"\">"+step3Options[arrkey+","+k][0]+"<br>");
+		}
+	}
+	 
 }
 
 function countDownEndGame(){  
@@ -673,11 +729,32 @@ function countDownEndGame(){
 		startSurvey();
 	 }else{  
 		this.EndGameTimer--;
-		document.getElementById("timerbar").style.width=(this.EndGameTimer*100/parseInt(variables['EndGameTimer']+""))+"%";
+		document.getElementById("timerbar").style.width=(this.EndGameTimer*100/parseInt(variables['end_game_timer']+""))+"%";
 		document.getElementById("timer").innerHTML = this.EndGameTimer;  
 		setTimeout("countDownEndGame()", 1000);
 	 }  
-} 
+}
+
+function countDownNextRound(){  
+	 if (this.NextRoundTimer <=0){  
+		$("#step3").hide();
+		$("#pubinfo").hide();
+		this.Step2Timer=parseInt(variables['Step2Timer']+"")+1;
+		$("#step3").html("");
+		this.NextRoundTimer=parseInt(variables['round_interval_timer']+"")+1;
+		var arrkey;
+		for (arrkey in this.clueType)
+			for (var h=1; h<=this.clueType[arrkey]; h++)
+				step3Options[arrkey+","+h][1]=0;
+		loadStep2();
+		
+	 }else{  
+		this.NextRoundTimer--;
+		document.getElementById("timerbar").style.width=(this.NextRoundTimer*100/parseInt(variables['round_interval_timer']+""))+"%";
+		document.getElementById("timer").innerHTML = this.NextRoundTimer;  
+		setTimeout("countDownNextRound()", 1000);
+	 }  
+}  
 
 function countDownStep2(){  
 	 if (this.Step2Timer <=0){  
@@ -703,46 +780,257 @@ function countDownStep1(){
 
 function submitDecision()
 {
-	if($("input:radio[name='findec']:checked").val()==undefined)
+	var subm="";
+	var arrkey;
+	for (arrkey in this.clueType)
 	{
-		document.getElementById("submitStatus").innerHTML="<font color=\"red\">Please select one of the options!</font>";
+		if($("input:radio[name='findec"+arrkey+"']:checked").val()==undefined)
+		{
+			document.getElementById("submitStatus").innerHTML="<font color=\"red\">Please select one of the options from each group!</font>";
+			return;
+		}
+		subm+=($("input:radio[name='findec"+arrkey+"']:checked").val()+"_");
 	}
-	else
-	{
-		submit($("input:radio[name='findec']:checked").val());
-		document.getElementById("submitStatus").innerHTML="<font color=\"green\">Thank you! Your decision has been sent. Waiting for others to show end game result...</font>";
-	}
+	submit(subm);
+	document.getElementById("submitStatus").innerHTML="<font color=\"green\">Thank you! Your choices are sent. Waiting for other participants...</font>";
 }
 
-function initialize()
+function drawStaticNetwork()
 {
-	document.getElementById("timetext").innerHTML="You have "+variables['Step1Timer']+" seconds before proceeding at next step.";
-	this.Step1Timer=parseInt(variables['Step1Timer']+"")+1; 
-	this.Step2Timer=parseInt(variables['Step2Timer']+"")+1;
-	this.EndGameTimer=parseInt(variables['EndGameTimer']+"")+1;
-	
-	parseScenarioXML();
-	
+	var canvasWidth=300;
+	var canvasHeight=303;
+	this.r = Raphael("myholder", 300, 303);
+	this.circles = new Array();
+	this.xVals = new Array();
+	this.yVals = new Array();
+	this.labels = this.r.set();
 	for(var g=1; g<=numPlayers; g++)
 	{
-		if(g==myid)
-			document.getElementById("userlist").innerHTML+=("<li id=\""+g+"\"><a><i class=\"icon-user\"></i>You</a></li>");
-		else
+		var circleY=-1;
+		var circleX=-1;
+		if(numPlayers==1)
 		{
-			if(canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))
-				document.getElementById("userlist").innerHTML+=("<li id=\""+g+"\"><a onClick=\"setUser("+g+"); removeActives(); $('#"+g+"').addClass('active'); highlightCircle("+g+");\"><i class=\"icon-user\"></i>"+getName(g)+"</a></li>");
+			circleY=canvasHeight/2;
+			circleX=canvasWidth/2;
+		}
+		if(numPlayers==2)
+		{
+			circleY=canvasHeight/2;
+			if(g==1)
+				circleX=canvasWidth/3;
+			if(g==2)
+				circleX=2*canvasWidth/3;
+		}
+		if(numPlayers==3)
+		{
+			if(g>1)
+			{
+				circleY=2*canvasHeight/3;
+				if(g==2)
+					circleX=canvasWidth/3;
+				if(g==3)
+					circleX=2*canvasWidth/3;
+			}
 			else
-				document.getElementById("userlist").innerHTML+=("<li id=\""+g+"\"><a><i class=\"icon-user\"></i>"+getName(g)+"</a></li>");
+			{
+				circleX=canvasWidth/2;
+				circleY=canvasHeight/3;
+			}
+		}
+		if(numPlayers==4)
+		{
+			if(g>2)
+			{
+				circleY=2*canvasHeight/3;
+				if(g==3)
+					circleX=canvasWidth/3;
+				if(g==4)
+					circleX=2*canvasWidth/3;
+			}
+			else
+			{
+				circleY=canvasHeight/3;
+				if(g==1)
+					circleX=canvasWidth/3;
+				if(g==2)
+					circleX=2*canvasWidth/3;
+			}
+		}
+		if(numPlayers==5)
+		{
+			if(g==3)
+			{
+				circleY=2*canvasHeight/4;
+				if(g==3)
+					circleX=canvasWidth/2;
+			}
+			else if(g<3)
+			{
+				circleY=canvasHeight/4;
+				if(g==1)
+					circleX=canvasWidth/3;
+				if(g==2)
+					circleX=2*canvasWidth/3;
+			}
+			else
+			{
+				circleY=3*canvasHeight/4;
+				if(g==4)
+					circleX=canvasWidth/3;
+				if(g==5)
+					circleX=2*canvasWidth/3;
+			}
+		}
+		if(numPlayers==6)
+		{
+			if(g>3)
+			{
+				circleY=2*canvasHeight/3;
+				if(g==4)
+					circleX=canvasWidth/4;
+				if(g==5)
+					circleX=2*canvasWidth/4;
+				if(g==6)
+					circleX=3*canvasWidth/4;
+			}
+			else
+			{
+				circleY=canvasHeight/3;
+				if(g==1)
+					circleX=canvasWidth/4;
+				if(g==2)
+					circleX=2*canvasWidth/4;
+				if(g==3)
+					circleX=3*canvasWidth/4;
+			}
+		}
+		if(numPlayers==7)
+		{
+			if(g==4)
+			{
+				circleY=2*canvasHeight/4;
+				circleX=canvasWidth/2;
+			}
+			else if(g<4)
+			{
+				circleY=canvasHeight/4;
+				if(g==1)
+					circleX=canvasWidth/4;
+				if(g==2)
+					circleX=2*canvasWidth/4;
+				if(g==3)
+					circleX=3*canvasWidth/4;
+			}
+			else
+			{
+				circleY=3*canvasHeight/4;
+				if(g==5)
+					circleX=canvasWidth/4;
+				if(g==6)
+					circleX=2*canvasWidth/4;
+				if(g==7)
+					circleX=3*canvasWidth/4;
+			}
+		}
+		if(numPlayers==8)
+		{
+			if(g==4||g==5)
+			{
+				circleY=2*canvasHeight/4;
+				if(g==4)
+					circleX=canvasWidth/4;
+				if(g==5)
+					circleX=3*canvasWidth/4;
+			}
+			else if(g<4)
+			{
+				circleY=canvasHeight/4;
+				if(g==1)
+					circleX=canvasWidth/4;
+				if(g==2)
+					circleX=2*canvasWidth/4;
+				if(g==3)
+					circleX=3*canvasWidth/4;
+			}
+			else
+			{
+				circleY=3*canvasHeight/4;
+				if(g==1)
+					circleX=canvasWidth/4;
+				if(g==2)
+					circleX=2*canvasWidth/4;
+				if(g==3)
+					circleX=3*canvasWidth/4;
+			}
+		}
+		if(numPlayers==9)
+		{
+			if(g<4)
+			{
+				circleY=canvasHeight/4;
+				if(g==1)
+					circleX=canvasWidth/4;
+				if(g==2)
+					circleX=2*canvasWidth/4;
+				if(g==3)
+					circleX=3*canvasWidth/4;
+			}
+			else if(g>=4&&g<=6)
+			{
+				circleY=2*canvasHeight/4;
+				if(g==4)
+					circleX=canvasWidth/4;
+				if(g==5)
+					circleX=2*canvasWidth/4;
+				if(g==6)
+					circleX=3*canvasWidth/4;
+			}
+			else
+			{
+				circleY=3*canvasHeight/4;
+				if(g==7)
+					circleX=canvasWidth/4;
+				if(g==8)
+					circleX=2*canvasWidth/4;
+				if(g==9)
+					circleX=3*canvasWidth/4;
+			}
+		}
+		var circle = r.circle(circleX, circleY,25);
+		circle.attr("fill", "#0A4");
+		circle.attr("stroke", "#000");
+		circles.push(circle);
+		var emptyCircle=r.circle(circleX,circleY,32);
+		xVals.push(circleX);
+		this.yVals.push(circleY);
+		if(myid==g)
+			labels.push(r.text(circleX-9, circleY+3, "You"));
+		else
+			labels.push(r.text(circleX-18.5, circleY+3, getName(g)+""));
+	}          
+	labels.attr({font: "12px Fontin-Sans, Arial", fill: "#fff", "text-anchor": "start"});
+	
+	for(var h=0; h<circles.length-1; h++)
+	{
+		for(var i=h+1; i<circles.length; i++)
+		{
+			var path = new Object();
+			path.line = r.path("M "+xVals[h]+" "+this.yVals[h]+" l "+(xVals[i]-xVals[h])+" "+(this.yVals[i]-this.yVals[h])+" z");
+			path.line.attr({stroke: '#3b4449','stroke-width': 5});
+			path.line.toBack();
 		}
 	}
-	
-	for(var k=0; k<step3Options.length; k++)
-		document.getElementById("rbForm").innerHTML+=("<input type=\"radio\" name=\"findec\" value=\""+k+"\">"+step3Options[k][0]+"<br>");
 }
 
-function drawNetwork()
+function drawDynamicNetwork()
 {
-
+	var canvasWidth=300;
+	var canvasHeight=303;
+	this.r = Raphael("myholder", 300, 303);
+	this.circles = new Array();
+	this.xVals = new Array();
+	this.yVals = new Array();
+	this.labels = this.r.set();
 	for(var g=1; g<=numPlayers; g++)
 	{
 		var circleY=-1;
@@ -945,7 +1233,13 @@ function drawNetwork()
 		circles.push(circle);
 		var emptyCircle=r.circle(circleX,circleY,32);
 		xVals.push(circleX);
-		yVals.push(circleY);
+		this.yVals.push(circleY);
+		
+		if(myid==g)
+			this.labels.push(this.r.text(xVals[g-1]-9, this.yVals[g-1]+4.5, "You"));
+		else
+			this.labels.push(this.r.text(xVals[g-1]-18.5, this.yVals[g-1]+4.5, getName(g)+""));
+		this.labels.attr({font: "12px Fontin-Sans, Verdana", fill: "#fff", "text-anchor": "start"});
 	}   
 
 	circleClick();
@@ -957,7 +1251,7 @@ function drawNetwork()
 			if(canCommunicate(h, i))
 			{
 				var path = new Object();
-				path.line = r.path("M "+xVals[h]+" "+yVals[h]+" l "+(xVals[i]-xVals[h])+" "+(yVals[i]-yVals[h])+" z");
+				path.line = r.path("M "+xVals[h]+" "+this.yVals[h]+" l "+(xVals[i]-xVals[h])+" "+(this.yVals[i]-this.yVals[h])+" z");
 				path.line.attr({stroke: '#3b4449','stroke-width': 5});
 				path.line.toBack();
 			}
@@ -967,11 +1261,10 @@ function drawNetwork()
 
 function canCommunicate(i, j)
 {
-	return (variables["communication"][i][j]!=null&&variables["communication"][i][j]!=undefined&&parseInt(variables["communication"][i][j])==1);
+	return (variables["communication"][i][j]!=null&&variables["communication"][i][j]!=undefined&&parseInt(variables["communication"][i][j]+"")==1);
 }
 
 function circleClick(){
-	labels = r.set();
 	for(var g=1; g<=numPlayers; g++)
 	{
 		if(canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))
@@ -1022,12 +1315,6 @@ function circleClick(){
 				return;
 			});
 		}
-		if(myid==g)
-			labels.push(r.text(xVals[g-1]-9, yVals[g-1], "You"));
-		else
-			labels.push(r.text(xVals[g-1]-18.5, yVals[g-1], getName(g)+""));
-		labels.attr({font: "12px Fontin-Sans, Arial", fill: "#fff", "text-anchor": "start"});
-		
 	}
 }
 
@@ -1040,7 +1327,7 @@ function highlightCircle(gg)
 			if(g==myid||canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))
 			{
 				var circle = new Object();
-				circle=r.circle(xVals[g-1], yVals[g-1], 25);
+				circle=r.circle(xVals[g-1], this.yVals[g-1], 25);
 				circle.attr("fill", "#0A4");
 				circle.attr("stroke", "#000");
 				circles[g-1]=circle;
@@ -1056,13 +1343,18 @@ function highlightCircle(gg)
 		for(var ic=0; ic<numPlayers; ic++)
 		{
 			var circle = new Object();
-			circle=r.circle(xVals[ic], yVals[ic], 25);
+			circle=r.circle(xVals[ic], this.yVals[ic], 25);
 			circle.attr("fill", "#00f");
 			circle.attr("stroke", "#000");
 			circles[ic]=circle;
+			if(myid==ic+1)
+				this.labels.push(this.r.text(xVals[ic]-9, this.yVals[ic], "You"));
+			else
+				this.labels.push(this.r.text(xVals[ic]-18.5, this.yVals[ic], getName(ic+1)+""));
+			this.labels.attr({font: "12px Fontin-Sans, Verdana", fill: "#fff", "text-anchor": "start"});
 		}
 		var circle = new Object();
-		circle=r.circle(xVals[gg-1], yVals[gg-1], 25);
+		circle=r.circle(xVals[gg-1], this.yVals[gg-1], 25);
 		circle.attr("fill", "#0A4");
 		circle.attr("stroke", "#000");
 		circles[gg-1]=circle;
@@ -1070,6 +1362,11 @@ function highlightCircle(gg)
 		setUser(gg); 
 		removeActives();
 		$('#'+gg).addClass('active');
+		if(myid==gg)
+			this.labels.push(this.r.text(xVals[gg-1]-9, this.yVals[gg-1], "You"));
+		else
+			this.labels.push(this.r.text(xVals[gg-1]-18.5, this.yVals[gg-1], getName(gg)+""));
+		this.labels.attr({font: "12px Fontin-Sans, Verdana", fill: "#fff", "text-anchor": "start"});
 	}
 }
 
@@ -1096,30 +1393,46 @@ function removeActives()
 
 function sendMessage()
 {
-	if(selectedUser==0)
+	if(this.condition==3)
 	{
-		for(var g=1; g<=numPlayers; g++)
+		if(selectedUser==undefined||selectedUser==null||selectedUser==0)
 		{
-			if(canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))
+			var msgArr = new Array();
+			msgArr.push(myid);
+			for(var g=1; g<=numPlayers; g++)
 			{
-				var msgArr = new Array();
-				msgArr.push(g);
-				msgArr.push(myid);
-				sendChat($("#chat_input").val(),msgArr);
-				r.circle(xVals[g-1], yVals[g-1], 29);
+				if(canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))
+				{
+					msgArr.push(g);
+					r.circle(xVals[g-1], this.yVals[g-1], 29);
+				}
 			}
+			sendChat($("#chat_input").val(), msgArr);
 		}
-		//sendChat($("#chat_input").val());
+		else
+		{
+			var msgArr = new Array();
+			msgArr.push(myid);
+			if(canCommunicate(myid-1, selectedUser-1)||canCommunicate(selectedUser-1, myid-1))
+			{
+				msgArr.push(selectedUser);
+				r.circle(xVals[selectedUser-1], this.yVals[selectedUser-1], 29);
+			}
+			sendChat($("#chat_input").val(), msgArr);
+		}
 	}
 	else
 	{
-		var msgArr = new Array();
-		msgArr.push(selectedUser);
-		msgArr.push(myid);
-		sendChat($("#chat_input").val(),msgArr);
-		r.circle(xVals[selectedUser-1], yVals[selectedUser-1], 29);
+		if(selectedUser==undefined||selectedUser==null||selectedUser==0)
+			sendChat($("#chat_input").val());
+		else
+		{
+			var msgArr = new Array();
+			msgArr.push(selectedUser);
+			msgArr.push(myid);
+			sendChat($("#chat_input").val(),msgArr);
+		}
 	}
 	$("#chat_input").val('');
 }	
 </script> 
-
