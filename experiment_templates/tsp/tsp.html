@@ -35,6 +35,9 @@ var lineColor = '#1b2429'; // '#3b4449';
 var smallLineColor = '#4b4449'; // '#6b6469';
 var fieldColor = "#0e76bc";
 
+var forceBots = 0; // number of bots _not_ due to dropouts
+var botType = 0;
+
 function initialize() {
   initializeGameType();
   $('#player_status_box').hide();
@@ -111,8 +114,16 @@ function initializeGameType() {
       break;
   }
   
-//  showBest = false; // delme
+  showBest = false; // delme
 
+  if (numPlayers < 2) { // delme
+    forceBots = 1;
+  }
+  
+  botType = Math.floor(Math.random()*2);
+
+  $(".gameid").append(botType);
+  
   if (showBest) {
     $(".gameid").append("B");
   } else {
@@ -124,6 +135,7 @@ function initializeGameType() {
     $(".gameid").append(showTeamModulo);
   }
 //  alert(showTeamModulo+" "+showBest);
+
 }
 
 function initializeGame() {
@@ -145,7 +157,7 @@ function initializeGame() {
   $('#waiting').hide();
   $('#game').show();
 
-  optimal_id = numPlayers+1;
+  optimal_id = numPlayers+forceBots+1;
 
   paper = Raphael("canvas", width+cityRad*2, height+cityRad*2);
 
@@ -160,6 +172,10 @@ function initializeGame() {
       if (myid != i) {
         addSolution(i,getName(i));
       }
+    }
+    for (var i = forceBots; i >= 1; i--) {
+//      addSolution(i+numPlayers,"Bot "+i);
+      addSolution(i+numPlayers,"Player "+(numPlayers+i));
     }
   }
   if (showMe || showBest) {
@@ -342,9 +358,12 @@ function initializeRound(round) {
   numCities = cities.length;
   paths = new Array();
   cityOrder = new Array();
-  paper.clear();
-  background = paper.rect(0, 0, width+cityRad*2, height+cityRad*2, 10).attr({fill: fieldColor, stroke: "none"});
-
+  if (paper === undefined) {
+  } else {
+    paper.clear();
+    background = paper.rect(0, 0, width+cityRad*2, height+cityRad*2, 10).attr({fill: fieldColor, stroke: "none"});
+  }
+  
   for (var i in cities) {
     addInteractiveCity(cities[i]);
   }
@@ -353,10 +372,15 @@ function initializeRound(round) {
   setClockTimeout(new Date().getTime()+variables['round_duration']*1000);
 
   if (round > FIRST_ACTUAL_ROUND) {
-    for (var i = 1; i <= numPlayers; i++) {
+    //alert("forceBots:"+forceBots);
+    for (var i = 1; i <= numPlayers+forceBots; i++) {
       if (i != myid) {
         if ((showTeamModulo > 0) && ((gameRound) % showTeamModulo == 0)) {
-          drawTeamSolution(i, round-1, 0, tPaper[i]);
+          if (i <= numPlayers) {
+            drawTeamSolution(i, round-1, 0, tPaper[i]);
+          } else {
+            drawForceBotSolution(i, round-1, 0, tPaper[i]);
+          }
           $('#solution_'+i).show();
         } else {
           $('#solution_'+i).hide();
@@ -382,6 +406,7 @@ function initializeRound(round) {
 var tFac = 0.33;
 var tPaper = new Array();
 function addSolution(idx, name) {
+  //alert("addSolution("+idx+","+name+")");
   $('#canvas').after('<div id="solution_'+idx+'" class="teamSolution" style="display:none;"><h4 class="gameLabel">'+name+'</h4><div id="canvas_'+idx+'"></div><div id="score_'+idx+'" class="score">10,000</div></div>');
   tPaper[idx] = Raphael("canvas_"+idx, (width+cityRad*2)*tFac, (height+cityRad*2)*tFac);
 }
@@ -405,6 +430,10 @@ function reset() {
 }
 
 function newMove(participant, index) {
+  // don't do anything with this after the game is over
+  var remainingRounds = FIRST_ACTUAL_ROUND+numRounds-currentRound;
+  if (remainingRounds <= 0) return;
+  
 //  alert('newMove: '+currentRound+' '+participant+' '+index);
 //  if ((numPlayers > 1) && (participant == myid)) return;
 //  drawTeamSolution(participant, currentRound, index, tPaper[participant]);
@@ -419,6 +448,23 @@ function newMove(participant, index) {
   }
   if (done) {
     startNextRound();
+  }
+}
+
+function drawForceBotSolution(part, round, index, paper2) {
+  //alert("drawForceBotSolution");
+//  doDrawTeamSolution(part, round, index, paper2, perfectBot());  
+
+  switch(botType) {
+  case 0:
+    doDrawTeamSolution(part, round, index, paper2, progressiveBot(index));  
+    break;
+  case 1:
+    // dittoBot
+    fetchMove(myid, round, index, function(val) {
+      doDrawTeamSolution(part, round, index, paper2, val);
+    });
+    break;
   }
 }
 
@@ -449,7 +495,7 @@ function updateScore(round, xmlVal) {
 // <solution map="2" dist="3">1,3,2,5,7,4,6</map>
 function doDrawTeamSolution(part, round, index, paper2, xmlVal) {
    
-//   alert(xmlVal);
+   //alert("doDrawTeamSolution("+part+","+index+","+xmlVal+")");
    var teamSolution = $(xmlVal);
    var mapIndex = teamSolution.attr('map');   
    var otherScore = teamSolution.attr('dist');
@@ -564,42 +610,77 @@ function playerDisconnect(playerNum) {
 function submitBotSolution(playerId) {
   if (currentRound < FIRST_ACTUAL_ROUND) {
 //    alert('auto_submit');
+    // survey questions, instructions etc
     submitBot(playerId, currentRound, 'auto_submit');  
   } else {
-  
-    // this just generates 0,1,2... essentially a random order on the map
-//    var solution = "0";
-//    for (var i = 1; i < numCities; i++) {
-//      solution += ","+i;    
-//    }
-    
-    // this is the optimal solution
-    var optimal = map[getMapIndex(currentRound)][1];
-    
-    // copy it into the solution
-    var solution = new Array();
-    for (var i = 0; i < numCities; i++) {
-      solution[i] = optimal[i];
-    }
+//    var botSolution = deviantBot(playerId, variables['bot_swaps']);
 
-    // swap some values    
-    Math.seedrandom(playerId+currentRound*100);
-    for (var i = 0; i < variables['bot_swaps']; i++) {
-      var swapMe = Math.floor(Math.random()*(numCities-1))
-//      swapMe = 0;
-//      alert(swapMe);
-      var temp = solution[swapMe];
-      solution[swapMe] = solution[swapMe+1];
-      solution[swapMe+1]=temp;
-    }
+    // TODO: use botType
+    var botSolution = progressiveBot(playerId);
+    submitBot(playerId, currentRound, botSolution);  
+  }
+} 
+
+function randomBot(numSwaps) {
+  // this just generates 0,1,2... essentially a random order on the map
+  var solution = new Array();
+  for (var i = 0; i < numCities; i++) {
+    solution[i] = i;    
+  }  
+  return XMLizeBotSolution(solution);
+}
+
+function perfectBot() {
+  // this is the optimal solution
+  var optimal = map[getMapIndex(currentRound)][1];
+  
+  // copy it into the solution
+  var solution = new Array();
+  for (var i = 0; i < numCities; i++) {
+    solution[i] = optimal[i];
+  }
+  return XMLizeBotSolution(solution);
+}
+
+// from the optimal solution, swap numSwaps amount of cities
+function deviantBot(playerId, numSwaps) {
     
-    
+  // this is the optimal solution
+  var optimal = map[getMapIndex(currentRound)][1];
+  
+  // copy it into the solution
+  var solution = new Array();
+  for (var i = 0; i < numCities; i++) {
+    solution[i] = optimal[i];
+  }
+
+  // swap some values    
+  Math.seedrandom(playerId+currentRound*100);
+  for (var i = 0; i < numSwaps; i++) {
+    var swapMe = Math.floor(Math.random()*(numCities-1))
+    var temp = solution[swapMe];
+    solution[swapMe] = solution[swapMe+1];
+    solution[swapMe+1]=temp;
+  }
+  return XMLizeBotSolution(solution);
+}
+
+// a variant on deviantbot who keeps getting better with every round
+function progressiveBot(playerId) {
+  var remainingRounds = numRounds-gameRound;
+  Math.seedrandom(playerId+currentRound*100);
+  var additionalMistakes = Math.floor(Math.random()*3); // 3 = 0-2
+//  alert("additionalMistakes:"+additionalMistakes);
+  return deviantBot(playerId, remainingRounds+additionalMistakes);
+}
+
+// actually do the submission, solution is an array of city indexes
+function XMLizeBotSolution(solution) {    
     solution = String(solution);
     var dist = getDist(solution.split(","));
     var solutionXML = '<solution bot="true" map="'+getMapIndex(currentRound)+'" dist="'+dist+'">'+solution+'</solution>';    
 //    alert("solution:"+solution);
-    submitBot(playerId, currentRound, solutionXML);  
-  }
+    return solutionXML;
 }
 
 var scoreTable = new Array();
@@ -696,29 +777,15 @@ function updateClock() {
 
 function startNextRound() {
 //  alert("snr:"+currentRound);
-  if (currentRound < (FIRST_ACTUAL_ROUND+numRounds-1)) {
+  var remainingRounds = FIRST_ACTUAL_ROUND+numRounds-currentRound-1;
+//  alert(remainingRounds);
+//  if (currentRound < (FIRST_ACTUAL_ROUND+numRounds-1)) {
+  if (remainingRounds > 0) {
     initializeRound(currentRound+1);
   } else {
-    hideGame(); 
-    showSurvey(6);
-  }
-}
-
-function showSurvey(val) {
-  switch(val) {
-    case 1:
-      break;
-    case 2:
-      break;
-    case 3:
-      break;
-    case 4:
-      break;
-    case 5:
-      break;
-    case 6:
-      showResults();
-      break;
+    hideGame(); // must do this the first time
+    $('#q1').show(); // 1st survey question
+//    showResults(); // called in q1
   }
 }
 
@@ -729,11 +796,13 @@ function submitAuthorization() {
   setRound(1);
 }
 
+// called when done with survey question
 function q1(val) {
   submit(val);
   $("#q1").hide();
-  $("#q2").show();  
-  setRound(2);
+//  $("#q2").show();  
+//  setRound(2);
+  showResults();
 }
 
 function q2(val) {
@@ -816,7 +885,7 @@ function doneVideoInstructions() {
   }
   
   clearInterval(clockTimer);
-  submit('video_instructions');
+  submit('video_instructions best:'+showBest+' teamModulo:'+showTeamModulo+' forceBots:'+forceBots+' botType:'+botType);
   $("#TSP_video").get(0).pause();
   $("#video_instructions").hide();
   $("#waiting").show();
@@ -906,11 +975,13 @@ function showResults() {
 
 <div id="q1" style="display: none;">
 <h2>Survey</h2>
-  What is your favorite color?<br/><br/>
+  How confident were you that tyou had the best possible solution to this Traveling Salesperson Problem?<br/><br/>
 
-  <input class="button1" type="submit" value="Blue" onclick="q1('blue')"/>
-  <input class="button1" type="submit" value="Green" onclick="q1('green')"/>
-
+  <br/><div><input class="btn-success" type="submit" value="Very confident" onclick="q1('1')"/></div>
+  <br/><div><input class="btn-success" type="submit" value="Somewhat confident" onclick="q1('2')"/></div>
+  <br/><div><input class="btn-success" type="submit" value="Neither confident nor unsure" onclick="q1('3')"/></div>
+  <br/><div><input class="btn-success" type="submit" value="Somewhat unsure" onclick="q1('4')"/></div>
+  <br/><div><input class="btn-success" type="submit" value="Very unsure" onclick="q1('5')"/></div>
 
 </div>
 
