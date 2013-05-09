@@ -707,8 +707,8 @@ function pushSolution() {
   var dist = getDist(cityOrder);
   
 //  alert(dist);
-
-  var solutionXML = '<solution map="'+getMapIndex(currentRound)+'" dist="'+dist+'">'+cityOrder.join()+'</solution>';
+  var millis = new Date().getTime() - clockStartTime;
+  var solutionXML = '<solution map="'+getMapIndex(currentRound)+'" dist="'+dist+'" millis="'+millis+'">'+cityOrder.join()+'</solution>';
 //  alert(solutionXML);
   submit(solutionXML);
 }
@@ -739,10 +739,11 @@ function getDist(cityOrder) {
   return dist;
 }
 
-
 var clockTimer = null;
 var timeout = 0;
+var clockStartTime = 0;
 function setClockTimeout(tick) {
+  clockStartTime = new Date().getTime();
   timeout = tick;
   if (clockTimer != null) {
     clearInterval(clockTimer);
@@ -955,22 +956,49 @@ function showResults() {
   
 }
 
+function submitFeedback() {
+//  alert($('#feedback_text').val());
+  submit('<feedback>'+$('#feedback_text').val()+'</feedback>');
+  $('#feedback').hide();
+  $('#feedback_thanks').show();
+}
 
 </script>
 
+
+<div id="feedback_thanks" class="feedback" style="display: none;">
+  <h1 style="padding-top:110px;">Thank you for your feedback.</h1>
+  <div style="position: absolute; bottom:20px; right:20px;"> 
+    <input class="btn-success right" type="submit" value="Close" onclick="$('#feedback_thanks').hide();"/>
+  </div>
+</div>
+
+<div id="feedback" class="feedback" style="display: none;">
+  <h1>Feedback</h1>
+  <h3>Please let us know what you thought!</h3>
+
+  <textarea id="feedback_text" rows="7" cols="80"></textarea>
+  <div style="position: absolute; bottom:20px; right:20px;"> 
+    <input class="btn-success right" type="submit" value="Cancel" onclick="$('#feedback').hide();"/>
+    <input class="btn-success right" type="submit" value="Submit" onclick="submitFeedback();"/>
+  </div>
+</div>
+  
 <div id="results" style="display: none;">
   <h1>Your Score</h1>
   <br/>
   <table id="result_table">
     <tr><th>Round</th><th>Distance from<br/>best answer</th><th></th></tr>
   </table>
+  <br/>
+  <input class="btn-success right" type="submit" value="Submit Feedback" onclick="$('#feedback').show();"/>
 </div>
 
 <div id="authorize" style="display: none;">
 <h2>Authorization</h2>
   I authorize you to use my test results and questions.<br/><br/>
 
-  <input class="button1" type="submit" value="Authorize" onclick="submitAuthorization()"/>
+  <input class="button1" type="submit" value="Authorize" onclick="submitAuthorization();"/>
 </div>
 
 <div id="q1" style="display: none;">
