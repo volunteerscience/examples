@@ -2,25 +2,38 @@
 	<title>
 	Finding the Terrorists
 	</title>
+	<instructions>
+	Welcome to the Hidden Profile game. In this game, you will work with a team to identify the Culprit, Target and Day of a hypothetically planned terrorist attack. You will be given clues to help you identify the Culprit, Target and Day of the attack, and you will have the chance to communicate with your teammates about the planned attack. 
+
+This game will start with an open chat session where you can communicate with your teammates. You may communicate with as many of your teammates as often as you wish, although you will only be able to communicate with one teammate at a time. You will only see the chats that you are directly involved with. You will not be able to see what your teammates are saying to one another and only the teammate you are communicating with will see what you say. 
+
+During open chat, you may take notes in your 'Notes' window. These notes are private; your teammates will not see your notes. 
+
+Following open chat, you will vote on the Culprit, Target and Day of the attack. Then, you will receive feedback on your vote. 
+
+Voting will be followed by a second round of open chat, and then by a second vote. Finally, you will be asked a few short questions about your team when the game is over. 
+
+Your goal is to work with your team to successfully identify the Culprit, Target and Day of the Attack. Good luck!
+	</instructions>
 	<clue visibility="shared">
-The [Group,1], [Group,2], [Group,3], [Group,4] and [Group,5] organizations may be planning attacks. [Group,4] has been unusually active lately.
+The [Culprit,1], [Culprit,2], [Culprit,3], [Culprit,4] and [Culprit,5] organizations may be planning attacks. [Culprit,4] has been unusually active lately.
 [Target,1], [Target,2], [Target,3], [Target,4] and [Target,5] are all potential targets. The [Target,1] in Capital City are particularly vulnerable.
 Police informants indicate that the attack will happen on a weekday.
 	</clue>
-	<clue visibility="private" type="Group" id="1">
-[Group,1] has been influtrated by the police. They are not involved. 
+	<clue visibility="private" type="Culprit" id="1">
+[Culprit,1] has been infiltrated by the police. They are not involved. 
 	</clue>
-	<clue visibility="private" type="Group" id="2">
-All members of the [Group,2] organization are in custody, and could not be involved. 
+	<clue visibility="private" type="Culprit" id="2">
+All members of the [Culprit,2] organization are in custody, and could not be involved. 
 	</clue>
-	<clue visibility="private" type="Group" id="3">
-Members of [Group,1] and [Group,3] have been seen on the streets near potential targets.
+	<clue visibility="private" type="Culprit" id="3">
+Members of [Culprit,1] and [Culprit,3] have been seen on the streets near potential targets.
 	</clue>
-	<clue visibility="private" type="Group" id="4">
-[Group,3] and [Group,4] have local contacts who could assist in attacks.
+	<clue visibility="private" type="Culprit" id="4">
+[Culprit,3] and [Culprit,4] have local contacts who could assist in attacks.
 	</clue>
-	<clue visibility="private" type="Group" id="5">
-[Group,4] and [Group,5] are not large enough to coordinate attacks.
+	<clue visibility="private" type="Culprit" id="5">
+[Culprit,4] and [Culprit,5] are not large enough to coordinate attacks.
 	</clue>
 	<clue visibility="private" type="Target" id="1">
 The local government has increased protection at [Target,2] and [Target,3] in Capital City. They are not likely targets.
@@ -52,19 +65,19 @@ Security is enhanced on [Day,4]s. The attack will not occur on a [Day,4].
 	<clue visibility="private" type="Day" id="5">
 Historically, attacks are more likely on [Day,2]s and less likely on [Day,5]s.
 	</clue>
-	<option type="Group" id="1" answer="false">
+	<option type="Culprit" id="1" answer="false">
 	Lion
 	</option>
-	<option type="Group" id="2" answer="false">
+	<option type="Culprit" id="2" answer="false">
 	Cobra
 	</option>
-	<option type="Group" id="3" answer="true">
+	<option type="Culprit" id="3" answer="true">
 	Falcon
 	</option>
-	<option type="Group" id="4" answer="false">
+	<option type="Culprit" id="4" answer="false">
 	Shark
 	</option>
-	<option type="Group" id="5" answer="false">
+	<option type="Culprit" id="5" answer="false">
 	Wolf
 	</option>
 	<option type="Target" id="1" answer="false">
@@ -80,7 +93,7 @@ Historically, attacks are more likely on [Day,2]s and less likely on [Day,5]s.
 	Embassies
 	</option>
 	<option type="Target" id="5" answer="false">
-	Stariums
+	Stadiums
 	</option>
 	<option type="Day" id="1" answer="false">
 	Monday

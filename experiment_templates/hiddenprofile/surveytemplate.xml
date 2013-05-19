@@ -4,75 +4,27 @@
 	</title>
 	<introduction>
 		<text>
-		Please answer the questions to the best of your ability, then click on the "Submit" button at the last page of the form. Please complete the survey one time only.
+		Thank you for playing the Hidden Profile game! Please answer the following questions about each of your teammates. We appreciate your help!
 		</text>
 	</introduction>
-	<question type="likert-custom">
+	<question type="likert-players-selfexclude">
 		<text>
-		How many disagreements were there over different ideas about this decision?
+		To what extent did you communicate with each of the following teammates?
 		</text>
-		<choice>
-		Not Sure
-		</choice>
-		<choice>
-		No Disagreements
-		</choice>
-		<choice>
-		A Few Disagreements
-		</choice>
-		<choice>
-		Many Disagreements
-		</choice>
 	</question>
-	<question type="likert-custom">
+	<question type="likert-players-selfexclude">
 		<text>
-		How many differences about the content of this decision did the group have to work through?
+		To what extent did each of the following teammates provide information that was useful to you?
 		</text>
-		<choice>
-		Not Sure
-		</choice>
-		<choice>
-		No Differences
-		</choice>
-		<choice>
-		A Few Differences
-		</choice>
-		<choice>
-		Many Differences
-		</choice>
 	</question>
-	<question type="likert-custom">
+	<question type="likert-players-selfexclude">
 		<text>
-		How much anger was there among the group over this decision?
+		To what extent did each of the following teammates change the outcome of the game?
 		</text>
-		<choice>
-		Not Sure
-		</choice>
-		<choice>
-		No Anger
-		</choice>
-		<choice>
-		A Little Anger
-		</choice>
-		<choice>
-		A Lot of Anger
-		</choice>
 	</question>
-	<question type="likert-custom">
+	<question type="likert-players-selfexclude">
 		<text>
-		How much personal friction was there in the group during the decision making process?
+		To what extent do you trust each of the following teammates?
 		</text>
-		<choice>
-		Not Sure
-		</choice>
-		<choice>
-		No Personal Friction
-		</choice>
-		<choice>
-		A Little Personal Friction
-		</choice>
-		<choice>
-		A Lot of Personal Friction
-		</choice>
 	</question>
 </survey>
