@@ -46,7 +46,6 @@ function initialize() {
 //  $('#waiting').hide();
 //  $('#game').hide();
   
-  
   $('#example1').append('<img src="'+FILE_PATH+files['instruction_image1.png']+'"/>'+
        '<div class="instruction_words">A traveling salesman needs to visit a series of cities (circles).  '+
        'His preference is to travel as few miles as possible and visit each city only once.</div>');
@@ -352,6 +351,10 @@ function initializeRound(round) {
   $('#round').html('Round '+gameRound+' of '+numRounds);
   $('#submitButton').attr("value","Submit");
 
+  if (gameRound > 1) {
+    $("#prev_solution").attr("disabled", false);
+  }
+
   submitted = false;
   setRound(round); 
   cities = buildMap(round);
@@ -472,6 +475,33 @@ function drawTeamSolution(part, round, index, paper2) {
 //  alert('drawTeam:'+paper2);
   fetchMove(part, round, index, function(val) {
     doDrawTeamSolution(part, round, index, paper2, val);
+  });
+}
+
+function fireEvent(element,event) {
+  if (document.createEventObject) {
+    // dispatch for IE
+    var evt = document.createEventObject();
+    return element.fireEvent('on'+event,evt)
+  } else {
+    // dispatch for firefox + others
+    var evt = document.createEvent("HTMLEvents");
+    evt.initEvent(event, true, true); // event type,bubbling,cancelable
+    return !element.dispatchEvent(evt);
+  }
+}
+    
+function prevSolution() {
+  fetchMove(myid, currentRound-1, 0, function(xmlVal) {
+    if (submitted) return;
+    reset();
+    var teamSolution = $(xmlVal);
+    var val = teamSolution.html();
+    var answer = val.split(",");
+//    alert(answer);
+    for (var idx in answer) {
+      fireEvent(cities[answer[idx]].circle.node, 'click');
+    }
   });
 }
 
@@ -951,6 +981,7 @@ function showResults() {
     
     
     $('#results').show();
+    enablePlayAgain();
 //    quit();
   });
   
@@ -1093,6 +1124,9 @@ function submitFeedback() {
       </td></tr>
       <tr><td>
         <input class="btn-large btn-success dropdown-toggle" type="submit" onclick="reset(); return false;" value="Reset" />
+      </td></tr>
+      <tr><td>
+        <input id="prev_solution" class="btn-large btn-success dropdown-toggle" type="submit" onclick="prevSolution(); return false;" value="Load Previous Solution" disabled="true" style="white-space: normal;" />
       </td></tr>
       <tr><td>
         <input class="btn-large btn-success dropdown-toggle" id="submitButton" type="submit" onclick="pushSolution(); return false;" value="Submit" />
