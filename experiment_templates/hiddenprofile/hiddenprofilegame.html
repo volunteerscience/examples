@@ -1191,7 +1191,7 @@ function hoverIn() {
 // Hover out function
 function hoverOut() {
 	this.animate({
-		r: 25
+		r: 29
 	}, 200);
 }
 
@@ -1444,7 +1444,7 @@ function drawStaticNetwork()
 				circleX=3*canvasWidth/12-20;
 			}
 		}
-		var circle = this.r.circle(circleX, circleY,25);
+		var circle = this.r.circle(circleX, circleY,29);
 		if((g==myid||canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))&&parseInt(variables['chatting_with_everyone'])==1)
 			circle.attr("fill", "#0A4");
 		else
@@ -1461,7 +1461,7 @@ function drawStaticNetwork()
 				this.labels.push(this.r.text(this.xVals[g-1]-23, (this.yVals[g-1]-4)/2, "\u00a0\u00a0\u00a0\u00a0You\n("+getName(myid)+")"));
 			else
 				this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5)/2, getName(g)+""));
-			var c = this.r.circle(circleX, circleY,25);
+			var c = this.r.circle(circleX, circleY,29);
 			c.attr("fill", "red");
 			c.attr("cursor", "pointer");
 			c.attr({opacity: 0});
@@ -1473,7 +1473,7 @@ function drawStaticNetwork()
 				this.labels.push(this.r.text(this.xVals[g-1]-23, (this.yVals[g-1]-4), "\u00a0\u00a0\u00a0\u00a0You\n("+getName(myid)+")"));
 			else
 				this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5), getName(g)+""));
-			var c = this.r.circle(circleX, circleY,25);
+			var c = this.r.circle(circleX, circleY,29);
 			c.attr("fill", "red");
 			c.attr("cursor", "pointer");
 			c.attr({opacity: 0});
@@ -1494,74 +1494,74 @@ function drawStaticNetwork()
 		}
 	}
 	if(numPlayers==1)
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	if(numPlayers==2)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 	if(numPlayers==3)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 	if(numPlayers==4)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 	if(numPlayers==5)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 	if(numPlayers==6)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 	if(numPlayers==7)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 	if(numPlayers==8)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[7].hover(function(){circles[7].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[7].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[7].hover(function(){circles[7].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[7].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 	if(numPlayers==9)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[7].hover(function(){circles[7].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[7].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[8].hover(function(){circles[8].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[8].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[7].hover(function(){circles[7].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[7].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[8].hover(function(){circles[8].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[8].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 
 	circleClick();
@@ -1817,7 +1817,7 @@ function drawDynamicNetwork()
 			}
 		}
 		var circle = new Object();
-		circle=this.r.circle(circleX, circleY,25);
+		circle=this.r.circle(circleX, circleY,29);
 		if((g==myid||canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))&&parseInt(variables['chatting_with_everyone'])==1)
 			circle.attr("fill", "#0A4");
 		else
@@ -1835,7 +1835,7 @@ function drawDynamicNetwork()
 				this.labels.push(this.r.text(this.xVals[g-1]-26, (this.yVals[g-1]-4)/2, "\u00a0\u00a0\u00a0\u00a0You\n("+getName(myid)+")"));
 			else
 				this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5)/2, getName(g)+""));
-			var c = this.r.circle(circleX, circleY,25);
+			var c = this.r.circle(circleX, circleY,29);
 			c.attr("fill", "red");
 			c.attr("cursor", "pointer");
 			c.attr({opacity: 0});
@@ -1847,7 +1847,7 @@ function drawDynamicNetwork()
 				this.labels.push(this.r.text(this.xVals[g-1]-26, (this.yVals[g-1]-4), "\u00a0\u00a0\u00a0\u00a0You\n("+getName(myid)+")"));
 			else
 				this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5), getName(g)+""));
-			var c = this.r.circle(circleX, circleY,25);
+			var c = this.r.circle(circleX, circleY,29);
 			c.attr("fill", "red");
 			c.attr("cursor", "pointer");
 			c.attr({opacity: 0});
@@ -1857,74 +1857,74 @@ function drawDynamicNetwork()
 	}   
 
 	if(numPlayers==1)
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	if(numPlayers==2)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 	if(numPlayers==3)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 	if(numPlayers==4)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 	if(numPlayers==5)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 	if(numPlayers==6)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 	if(numPlayers==7)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 	if(numPlayers==8)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[7].hover(function(){circles[7].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[7].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[7].hover(function(){circles[7].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[7].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 	if(numPlayers==9)
 	{
-		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[7].hover(function(){circles[7].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[7].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
-		this.hiddencircles[8].hover(function(){circles[8].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[8].animate({ r: 25 }, 200);this.animate({ r: 25 }, 200);});
+		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[7].hover(function(){circles[7].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[7].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
+		this.hiddencircles[8].hover(function(){circles[8].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[8].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
 	
 	circleClick();
