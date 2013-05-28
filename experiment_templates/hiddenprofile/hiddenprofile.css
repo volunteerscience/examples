@@ -61,11 +61,12 @@
 
 #descpre
 {
-	background-color:#82FA58;
+	background-color:white;
 	border-collapse: separate;
     border-spacing: 0;
 	font-size: 12px;
 	font-family:"Verdana";
+	color: black;
     border: 1px solid black;
     border-radius: 5px;
     -moz-border-radius: 5px;
@@ -80,8 +81,8 @@
 	font-size: 12px;
 	font-family:"Verdana";
     padding: 5px;
-	background-color:#89BD72;
-	color: white; 
+	background-color:white;
+	color: black; 
 	border: 0px;
 	word-break: normal;
 }
@@ -164,8 +165,8 @@
 }
 
 .gametd { 
-	background-color:#89BD72;
-	color: white; 
+	background-color:white;
+	color: black; 
 	padding:10px;
 	font-size:96%;
 }

@@ -109,7 +109,7 @@
 											<div class="controls"> 
 												<div id="chat_conversation" style="border: 1px solid black; background-color:white; text-align:left; width: 100%; height: 250px; overflow: auto; font-family:'Verdana'; font-size: 10pt;">
 													<div>
-														Welcome to public chat of the experiment!..<br>
+														Welcome to public chat of the experiment!<br>
 													</div>
 												</div>
 											</div>  
@@ -163,7 +163,7 @@
 				<table id="step3" border="0" align="center" width="792">
 					<tr>
 						<td width="798" height="53" colspan="3">
-							<p>Based on the information you have gathered, identify: </p>
+							<p id="basedonthe">Based on the information you have gathered, identify: </p>
 						</td>
 					</tr>
 				</table>
@@ -269,6 +269,7 @@ var currentDiscRound;
 var publicInfo;
 var publicImage;
 var readyCount;
+var myanswer;
 
 function initialize()
 {
@@ -419,7 +420,7 @@ function setCondition()
 		for(var g=1; g<=numPlayers; g++)
 		{
 			if(g==myid)
-				document.getElementById("userlist").innerHTML+=("<li id=\""+g+"\"><a><i class=\"icon-user\"></i>You</a></li>");
+				document.getElementById("userlist").innerHTML+=("<li id=\""+g+"\"><a><i class=\"icon-user\"></i>You ("+getName(myid)+")</a></li>");
 			else
 			{
 				if(canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))
@@ -762,6 +763,7 @@ function newMove(participant, index) {
 	}
 	if(currentRound>=3&&this.currentDiscRound<=parseInt(variables['total_rounds']))
 	{
+		val=val.substring(0, val.indexOf('|'));
 		var tarr=val.split("_");
 		for(var p=0;p<tarr.length;p++)
 		{
@@ -851,12 +853,8 @@ function newMove(participant, index) {
 					var correctCount=0;
 					var wrongCount=0;
 					var arrkey;
-					var neededid="";
 					for (arrkey in this.clueType)
 					{
-
-						if(neededid=="")
-							neededid=arrkey;
 						for(var y=1; y<=this.clueType[arrkey]; y++)
 						{
 							if(step3Options[arrkey+","+y][1]>0)
@@ -892,10 +890,10 @@ function newMove(participant, index) {
 						labels.splice(1, 1);
 					}
 
-					$("#chart_div"+neededid).css({'width':'150px;'});
-					$("#chart_div"+neededid).css({'height':'250px;'});
-					$("#feed0").html("Feedback on your performance appears below.");
-					var r = Raphael("chart_div"+neededid),
+					$("#chart_divindividual").css({'width':'150px;'});
+					$("#chart_divindividual").css({'height':'250px;'});
+					$("#feedindividual").html("Feedback on your performance appears below.");
+					var r = Raphael("chart_divindividual"),
 					pie = r.piechart(190, 75, 50, values, { legend: labels, legendpos: "west"});
 					r.text(90, 20, "Accuracy results of your choices").attr({ font: "10px sans-serif" });
 					pie.hover(function () {
@@ -985,27 +983,34 @@ function loadStep3()
 	$("#step2").hide();  
 	$("#pbar").hide();
 	$("#step3").show();
+	this.myanswer="";
 	$("#pubinfo").css({ 'width': '800px'});
 	$("#pubinfo").show();
 	$("#desc").show();
 	$("#endgameresults").hide();
+	setEnableRadioGroups(false);
 	document.getElementById("stepgoal").innerHTML="Please make your final decision at this step.";
 	document.getElementById("timetext").innerHTML="";
 	$("#helpinfo").hide();
+	$("#step3").html($("#step3").html()+"<tr><td colspan=\"4\"><table id=\"howconftable\" border=\"0\" width=\"456\" style=\"margin-left: auto; margin-right: auto;\"><tr><td width=\"450\"><p>How confident are you that the answers you selected are correct?</p></td></tr><tr><td width=\"450\"><input type=\"radio\" name=\"howconf\" value=\"Very Confident\">Very Confident<br><input type=\"radio\" name=\"howconf\" value=\"Somewhat Confident\">Somewhat Confident<br><input type=\"radio\" name=\"howconf\" value=\"Neither Confident nor Unsure\">Neither Confident nor Unsure<br><input type=\"radio\" name=\"howconf\" value=\"Somewhat Unsure\">Somewhat Unsure<br><input type=\"radio\" name=\"howconf\" value=\"Very Unsure\">Very Unsure<br></td></tr><tr><td width=\"450\"><p align=\"center\"><button id='subconfbut' type=\"submit\" class=\"btn btn-primary\" onClick=\"submitDecision();\"><i class=\"icon-ok icon-white\"></i> Submit</button></p></td></tr></table></td></tr>");
 	var arrkey;
 	var currcount=0;
 	for (arrkey in this.clueType)
 	{
 		if(parseInt(variables["allow_feedback"])==1)
 		{
-			$("#step3").html($("#step3").html()+"<tr><td width=\"280\" height=\"53\" class=\"myfont\" id=\"dectext"+arrkey+"\"></td><td width=\"191\"></td><td width=\"311\" id=\"feed"+currcount+"\"></td><td width=\"2\"></td></tr><tr><td width=\"280\"><p align=\"center\"></p></td><td width=\"191\"><form id=\"rbForm"+arrkey+"\"></form></td><td width=\"311\"><p align=\"center\"><div id='chart_div"+arrkey+"' style='height:150px; width:250px;'></div></p></td><td width=\"2\"><p align=\"center\"></p></td></tr><tr><td width=\"280\" height=\"5\"><p align=\"center\"></p></td><td width=\"191\" height=\"5\"><p align=\"center\"></p></td><td width=\"311\"><p align=\"center\"></p></td><td width=\"2\"><p align=\"center\"></p></td></tr>");
+			$("#step3").html($("#step3").html()+"<tr id=\""+arrkey+"_row1\"><td width=\"280\" height=\"30\" class=\"myfont\" id=\"dectext"+arrkey+"\"></td><td width=\"191\"></td><td width=\"311\" id=\"feed"+currcount+"\"></td><td width=\"2\"></td></tr><tr height=\"150\" id=\""+arrkey+"_row2\"><td width=\"280\"></td><td width=\"191\"><form id=\"rbForm"+arrkey+"\"></form></td><td width=\"311\"><div id='chart_div"+arrkey+"' style='height:150px; width:250px; margin-left: auto; margin-right: auto;'></div></td><td width=\"2\"></td></tr>");
 			currcount++;
 		}
 		else
-			$("#step3").html($("#step3").html()+"<tr><td width=\"291\" height=\"53\" class=\"myfont\" id=\"dectext"+arrkey+"\"></td><td width=\"221\"></td><td width=\"250\"></td><td width=\"22\"></td></tr><tr><td width=\"291\"><p align=\"center\"></p></td><td width=\"221\"><form id=\"rbForm"+arrkey+"\"></form></td><td width=\"250\"><p align=\"center\"></p></td><td width=\"22\"><p align=\"center\"></p></td></tr><tr><td width=\"291\" height=\"5\"><p align=\"center\"></p></td><td width=\"221\" height=\"5\"><p align=\"center\"></p></td><td width=\"250\"><p align=\"center\"></p></td><td width=\"22\"><p align=\"center\"></p></td></tr>");
+			$("#step3").html($("#step3").html()+"<tr id=\""+arrkey+"_row1\"><td width=\"291\" height=\"30\" class=\"myfont\" id=\"dectext"+arrkey+"\"></td><td width=\"221\"></td><td width=\"250\"></td><td width=\"22\"></td></tr><tr height=\"150\" id=\""+arrkey+"_row2\"><td width=\"291\"></td><td width=\"221\"><form id=\"rbForm"+arrkey+"\"></form></td><td width=\"250\"></td><td width=\"22\"></td></tr><tr><td width=\"291\" height=\"5\"></td><td width=\"221\" height=\"5\"></td><td width=\"250\"></td><td width=\"22\"></td></tr>");
 	}
-	$("#step3").html($("#step3").html()+"<tr><td width=\"291\" height=\"41\"><p align=\"center\"></p></td><td width=\"221\" height=\"41\"><p align=\"center\"><button id='subdecbut' type=\"submit\" class=\"btn btn-primary\" onClick=\"submitDecision();\"><i class=\"icon-ok icon-white\"></i> Submit</button></p></td><td width=\"272\" height=\"41\"><p align=\"center\"></p></td></tr><tr><td width=\"809\" colspan=\"4\"><p id=\"submitStatus\" align=\"center\">&nbsp;</p></td></tr>");
+	$("#step3").html($("#step3").html()+"<tr><td width=\"291\" height=\"41\"></td><td width=\"221\" height=\"41\"><p align=\"center\"><button id='subdecbut' type=\"submit\" class=\"btn btn-primary\" onClick=\"showConfidence();\"><i class=\"icon-ok icon-white\"></i> Submit</button></p></td><td width=\"272\" height=\"41\"></td></tr><tr><td width=\"809\" colspan=\"4\"><p id=\"submitStatus\" align=\"center\">&nbsp;</p></td></tr>");
 	$("#subdecbut").show();
+	if(parseInt(variables["feedback_type"])==2)
+	{
+		$("#step3").html($("#step3").html()+"<tr><td colspan=\"4\"><table style='height:150px; width:350px; margin-left: auto; margin-right: auto;'><tr><td width=\"350\" id=\"feedindividual\"></td></tr><tr height=\"150\"><td width=\"350\"><div id='chart_divindividual' style='height:150px; width:250px; margin-left: auto; margin-right: auto;'></div></td></tr></table></td></tr>");
+	}
 	for (arrkey in this.clueType)
 	{
 		$("#dectext"+arrkey).html("The "+arrkey+":");
@@ -1014,7 +1019,7 @@ function loadStep3()
 			document.getElementById("rbForm"+arrkey).innerHTML+=("<input type=\"radio\" name=\"findec"+arrkey+"\" value=\""+arrkey+","+k+"\">"+step3Options[arrkey+","+k][0]+"<br>");
 		}
 	}
-	 
+	$("#howconftable").hide();
 }
 
 function countDownEndGame(){  
@@ -1037,14 +1042,14 @@ function countDownNextRound(){
 		$("#step3").hide();
 		$("#pubinfo").hide();
 		this.Step2Timer=parseInt(variables['Step2Timer']+"")+1;
-		$("#step3").html("<tr><td width=\"792\" height=\"53\" colspan=\"3\"><p>Based on the information you have gathered, identify: </p></td></tr>");
+		$("#step3").html("<tr><td width=\"792\" height=\"53\" colspan=\"3\"><p id=\"basedonthe\">Based on the information you have gathered, identify: </p></td></tr>");
 		this.NextRoundTimer=parseInt(variables['round_interval_timer']+"")+1;
 		var arrkey;
 		for (arrkey in this.clueType)
 			for (var h=1; h<=this.clueType[arrkey]; h++)
 				step3Options[arrkey+","+h][1]=0;
 		loadStep2();
-		$("#chat_conversation").html("<div>Welcome to public chat of the experiment!..<br></div>");
+		$("#chat_conversation").html("<div>Welcome to public chat of the experiment!<br></div>");
 	 }else{  
 		this.NextRoundTimer--;
 		document.getElementById("timerbar").style.width=(this.NextRoundTimer*100/parseInt(variables['round_interval_timer']+""))+"%";
@@ -1077,9 +1082,9 @@ function countDownStep1(){
 	 }  
 } 
 
-function submitDecision()
+function showConfidence()
 {
-	var subm="";
+	this.myanswer="";
 	var arrkey;
 	for (arrkey in this.clueType)
 	{
@@ -1088,11 +1093,66 @@ function submitDecision()
 			document.getElementById("submitStatus").innerHTML="<font color=\"red\">Please select one of the options from each group!</font>";
 			return;
 		}
-		subm+=($("input:radio[name='findec"+arrkey+"']:checked").val()+"_");
+		this.myanswer+=($("input:radio[name='findec"+arrkey+"']:checked").val()+"_");
 	}
+	for (arrkey in this.clueType)
+	{
+		$("#"+arrkey+"_row1").hide();
+		$("#"+arrkey+"_row2").hide();
+	}
+	$("#howconftable").show();
+	$("#submitStatus").html("&nbsp;");
+	$("#basedonthe").html("&nbsp;");
 	$("#subdecbut").hide();
-	submit(subm);
+}
+
+function submitDecision()
+{
+	if($("input:radio[name='howconf']:checked").val()==undefined)
+	{
+		document.getElementById("submitStatus").innerHTML="<font color=\"red\">Please select one of the options!</font>";
+		return;
+	}
+	for (arrkey in this.clueType)
+	{
+		$("#"+arrkey+"_row1").show();
+		$("#"+arrkey+"_row2").show();
+	}
+	$("#basedonthe").html("Based on the information you have gathered, identify: ");
+	$("#subconfbut").hide();
+	$("#howconftable").hide();
+	this.myanswer+=("|"+$("input:radio[name='howconf']:checked").val());
+	submit(this.myanswer);
 	document.getElementById("submitStatus").innerHTML="<font color=\"green\">Thank you! Your choices are sent. Waiting for other participants...</font>";
+	setEnableRadioGroups(true);
+}
+
+function setEnableRadioGroups(en) {
+  var forms, el, radioGroup;
+  var i = end = j = elsEnd = rg = rgEnd = 0;
+  
+  if (document.getElementsByTagName) {
+    forms = document.getElementsByTagName('form');
+    /* Loop through all the FORMs */
+    for (i, end = forms.length; i < end; i++) {
+      /* Loop through each form element */
+      for (j = 0, elsEnd = forms[i].elements.length; j < elsEnd; j++) {
+        el = forms[i].elements[j];
+        /* If this is a checked, enabled radio button in a radio group... */
+        if (!el.disabled
+            && el.nodeName === 'INPUT'
+            && el.type == 'radio'
+            && el.checked
+            && forms[i].elements[el.name].length) {
+          radioGroup = forms[i].elements[el.name];
+          /* Loop through radio group and disable buttons */
+          for (rg = 0, rgEnd = radioGroup.length; rg < rgEnd; rg++) {
+            radioGroup[rg].disabled = en;
+          }
+        }
+      }
+    }
+  }
 }
 
 Raphael.el.hoverInBounds = function(inFunc, outFunc) {
@@ -1398,7 +1458,7 @@ function drawStaticNetwork()
 		if(jQuery.browser.webkit)//if safari or chrome
 		{
 			if(myid==g)
-				this.labels.push(this.r.text(this.xVals[g-1]-9, (this.yVals[g-1]+3.5)/2, "You"));
+				this.labels.push(this.r.text(this.xVals[g-1]-23, (this.yVals[g-1]-4)/2, "\u00a0\u00a0\u00a0\u00a0You\n("+getName(myid)+")"));
 			else
 				this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5)/2, getName(g)+""));
 			var c = this.r.circle(circleX, circleY,25);
@@ -1410,7 +1470,7 @@ function drawStaticNetwork()
 		else
 		{
 			if(myid==g)
-				this.labels.push(this.r.text(this.xVals[g-1]-9, (this.yVals[g-1]+3.5), "You"));
+				this.labels.push(this.r.text(this.xVals[g-1]-23, (this.yVals[g-1]-4), "\u00a0\u00a0\u00a0\u00a0You\n("+getName(myid)+")"));
 			else
 				this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5), getName(g)+""));
 			var c = this.r.circle(circleX, circleY,25);
@@ -1772,7 +1832,7 @@ function drawDynamicNetwork()
 		if(jQuery.browser.webkit)//if safari or chrome
 		{
 			if(myid==g)
-				this.labels.push(this.r.text(this.xVals[g-1]-9, (this.yVals[g-1]+3.5)/2, "You"));
+				this.labels.push(this.r.text(this.xVals[g-1]-26, (this.yVals[g-1]-4)/2, "\u00a0\u00a0\u00a0\u00a0You\n("+getName(myid)+")"));
 			else
 				this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5)/2, getName(g)+""));
 			var c = this.r.circle(circleX, circleY,25);
@@ -1784,7 +1844,7 @@ function drawDynamicNetwork()
 		else
 		{
 			if(myid==g)
-				this.labels.push(this.r.text(this.xVals[g-1]-9, (this.yVals[g-1]+3.5), "You"));
+				this.labels.push(this.r.text(this.xVals[g-1]-26, (this.yVals[g-1]-4), "\u00a0\u00a0\u00a0\u00a0You\n("+getName(myid)+")"));
 			else
 				this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5), getName(g)+""));
 			var c = this.r.circle(circleX, circleY,25);
@@ -2093,7 +2153,7 @@ function chatReceived(from_ids,message,to_ids) {
 	{
 		if (to_ids[2] == to_ids[5]) return;
 		if (to_ids[2] == myid) {
-			$('#chat_conversation').append("<div class='messagesender'>You:</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+			$('#chat_conversation').append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
 		}
 		if (to_ids[5] == myid)
 			$('#chat_conversation').append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
@@ -2107,7 +2167,7 @@ function chatReceived(from_ids,message,to_ids) {
 	{
 		if (to_ids[4] == to_ids[1]) return;
 		if (to_ids[4] == myid) {
-			$('#chat_conversation').append("<div class='messagesender'>You:</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+			$('#chat_conversation').append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
 		}
 		if (to_ids[1] == myid)
 			$('#chat_conversation').append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
