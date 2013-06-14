@@ -1,5 +1,8 @@
 <script>
 
+var orange = "#f7941e";
+var lightOrange = "#f7dab7";
+
 var cWidth = 300; // size of canvas
 var cHeight = 300;
 
@@ -94,7 +97,7 @@ function initialize() {
   pColor[0] = "#AAA";
   pColor[1] = "#F00";
   pColor[2] = "#00F";
-  pColor[3] = "#0F0";
+  pColor[3] = "#75d700"; //"#659A22"; //"#9AC92C";
   
   initializeGame(10,10);
 }
@@ -110,14 +113,27 @@ function initializeGame() {
 
   boxes = new Array();
   lines = new Array();
-  
-  initializeHexGrid();
 
-  background = paper.rect(-10, -10, cWidth+20, cHeight+20, 10).attr({fill: "#FFA", stroke: "none"});  
+  var gridType = Math.floor(Math.random()*3); // 3 = 0-2
+  switch (gridType) {
+  case 1:
+    initializeHexGrid();
+    break;
+  case 2:
+    initializeTriGrid();
+    break;
+  default:
+    initializeSquareGrid();
+  }
+  
+  background = paper.rect(-10, -10, cWidth+20, cHeight+20, 10).attr({fill: lightOrange, stroke: "none"});  
   background.toBack();
 }
 
 function initializeSquareGrid() {
+  xBoxes = 10; //parseInt(variables['xBoxes']);
+  yBoxes = 10; //parseInt(variables['yBoxes']);
+  
   paper.setViewBox(-lineWidth/2, -lineWidth/2, cWidth+lineWidth, cWidth+lineWidth, false);
 
   var boxWidth = cWidth/xBoxes;
@@ -156,6 +172,9 @@ function initializeSquareGrid() {
 }
 
 function initializeHexGrid() {
+  xBoxes = 8; //parseInt(variables['xBoxes']);
+  yBoxes = 6; //parseInt(variables['yBoxes']);
+
   paper.setViewBox(-lineWidth, -lineWidth, cWidth+lineWidth, cWidth+lineWidth, false);
 
   var r3 = Math.sqrt(3)/2.0;
@@ -231,6 +250,92 @@ function initializeHexGrid() {
         }
       }
     }
+  }
+}
+
+function initializeTriGrid() {
+  xBoxes = 11; //parseInt(variables['xBoxes']);
+  yBoxes = 6; //parseInt(variables['yBoxes']);
+
+  paper.setViewBox(-lineWidth, -lineWidth, cWidth+lineWidth, cWidth+lineWidth, false);
+
+  var r3 = Math.sqrt(3)/2.0;
+  var boxWidth = cWidth/(xBoxes/2+1);
+  var dy = boxWidth*r3;
+  
+//  alert(boxWidth+" "+dy);
+  
+  for (var y = 0; y <= yBoxes; y++) {
+    for (var x = 0; x <= xBoxes/2 + y % 2; x++) {
+      var xOff = 0;
+      if (y % 2 == 0) {
+        xOff = 0.5;
+      }
+      
+        var idx = Math.floor((y-1)*xBoxes + x*2 - xBoxes/2 - (y%2) + 1); // box above x,y
+        if (y == 1) {
+          idx = Math.floor(x-1);
+        }
+      
+      
+        var newBoxT = null; // new box above horizontal line
+        var newBoxB = null; // new box below horizontal line
+
+
+
+        // horizontal line
+        if (x < xBoxes/2+(y%2)-1) { // this is false on the right edge       
+        
+          if (y > 0) { // no boxes under the bottom lines
+            newBoxT = new Box(boxes.length, (xOff+x+0.5)*boxWidth, (y-0.333)*dy, boxWidth/6);
+            boxes.push(newBoxT);
+          }
+          if (y < yBoxes) { // no boxes under the bottom lines
+            newBoxB = new Box(boxes.length, (xOff+x+0.5)*boxWidth, (y+0.333)*dy, boxWidth/6);
+            boxes.push(newBoxB);
+          }
+  
+        
+          lines.push( new Line(lines.length, newBoxT, newBoxB, (x+xOff)*boxWidth+gap,y*dy, (x+xOff+1)*boxWidth-gap, y*dy) );
+        }
+        
+        // diagional / right of x 
+        if ( y > 0 &&  // top
+             x < xBoxes/2 // right
+           ) {
+          
+          
+          var a = newBoxT; // lower right -- not created on right side, no prob
+          var b = boxes[idx]; // above x,y
+
+          lines.push( new Line(lines.length, a, b, (x+xOff)*boxWidth+gap/2, (y)*dy-gap*r3, (x+xOff+0.5)*boxWidth-gap/2, (y-1)*dy+gap*r3) );
+        }
+
+        // diagional \ before x 
+        if (y > 0 && (y % 2 == 0 || x > 0)) {
+          var a = null;
+          if (x < xBoxes/2) {
+            a = boxes[idx]; // above x,y
+          }
+          
+          // lower left dot
+          var b = boxes[boxes.length-4]; // 2 before this move -- but we added 2 new boxes
+          if (x - y%2 + 1 > xBoxes/2) { // right side
+            b = boxes[boxes.length-2]; // 2 before this move -- but we didn't add 2 new boxes 
+          } 
+          if (y == yBoxes) { // bottom row
+            b = boxes[boxes.length-2];  // we created 1
+            if ( x > xBoxes/2-1) { // very last virtex
+              b = boxes[boxes.length-1];
+            }
+          }
+          if (x == 0 && y%2==0) {
+            b = null;
+          }
+          lines.push( new Line(lines.length, a, b, (x+xOff-0.5)*boxWidth+gap/2, (y-1)*dy+gap*r3, (x+xOff)*boxWidth-gap/2, y*dy-gap*r3) );
+        }
+      }
+    
   }
 }
 
