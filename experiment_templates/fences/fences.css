@@ -1,3 +1,72 @@
 #canvas {
-  background-color: AAFFFF;
+  background-color: #f7dab7;
+  float: left;
+  margin-right:10px;
+}
+
+.round-corner15 {
+    -webkit-border-radius: 15px; 
+    -moz-border-radius: 15px;
+    -o-border-radius: 15px;
+    border-radius: 15px;
+}
+
+.round-corner5 {
+    -webkit-border-radius: 5px; 
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+}
+   
+.minwidth { 
+  min-width:100px; 
+  width: auto !important; 
+  width: 100px; 
+}
+
+#turnBox {
+  width: 150px;
+  height: 30px;
+  float: left;
+}
+
+.playerRow {
+  width: 100%;
+  height: 30px;
+  float: left;
+  margin-top: 12px;
+}
+
+.turnMarker {
+  width: 5px;
+  height: 5px;
+  border-radius: 12px;
+  border-style:solid;
+  border-width:8px;
+  border-color:#000;
+  margin: 4px 8px 0 20px;
+  float: right;
+  display: none;
+}
+
+.playerIcon {
+  width: 30px;
+  height: 30px;
+  color: #000;
+  font-weight:bold;
+  float: right;
+  text-align: center;
+  line-height: 30px;
+  font-size:250%
+}
+
+.score {
+  width: 60px;
+  height: 30px;
+  color: #000;
+  font-weight:bold;
+  float: right;
+  text-align: center;
+  line-height: 30px;
+  font-size:250%
 }

@@ -3,8 +3,8 @@
 var orange = "#f7941e";
 var lightOrange = "#f7dab7";
 
-var cWidth = 300; // size of canvas
-var cHeight = 300;
+var cWidth = 450; // size of canvas
+var cHeight = 350;
 
 var xBoxes, yBoxes; // size of the grid
 
@@ -37,13 +37,21 @@ function Box(id, x, y, r) {
       var line = myBox.lines[idx];
       if (line.owner == 0) return;
     }
-    myBox.owner = player;
+    myBox.captured(player);
     score[player]++;
+    take.push(myBox.id);
+//    log("incremented score:"+player+" : "+score[player]);
     scored = true;
+  }
+  
+  this.captured = function(player) {
+    myBox.owner = player;
     myBox.circle.attr("fill",pColor[player]);
   }
 }
 
+
+var take = [];
 function Line(id, boxA, boxB, x1, y1, x2, y2) {
   this.id = id;
   
@@ -69,36 +77,94 @@ function Line(id, boxA, boxB, x1, y1, x2, y2) {
   this.line.toFront();
   
   var myLine = this;
-  this.click = function(player) {
-    if (myLine.owner != 0) return;
+  // doSubmit is so feedback doesn't cause a new submit
+  this.click = function(player, doSubmit) {
+    if (myLine.owner != 0) return;  // this fence is taken
     scored = false;   
     
+    log("click("+player+")");
     myLine.line.attr('stroke', pColor[player]);
     myLine.owner = player;
-    myLine.a.update(player);
-    if (myLine.b != null) {
-      myLine.b.update(player);
-    }
-
-    // submit move  
-    if (! scored) {  
-      curPlayer++;
-      if (curPlayer > 3) curPlayer = 1; 
+    
+    if (doSubmit && player == myid) {
+      take = [];
+      myLine.a.update(player);
+      if (myLine.b != null) {
+        myLine.b.update(player);
+      }
+      
+      // submit move  
+      var takeStr = '';      
+      if (take.length > 0) {
+        takeStr = ' score="'+score[myid]+'" take="'+take.join()+'"';
+      } else {
+        curPlayer++;
+        if (curPlayer > numPlayers) curPlayer = 1; 
+      }
+      updateTurn();
+      submit('<click line="'+myLine.id+'"'+takeStr+'>');
     }
   }
   
   this.line.click(function() {
-    myLine.click(curPlayer);
+    if (curPlayer != myid) return;  // wait your turn
+    myLine.click(myid, true);
   });
 }
+
+function newMove(part, index) {
+  fetchMove(part, currentRound, index, function(val) {
+    var theMove = $(val);
+    if (theMove.is("click")) {
+      var line = parseInt(theMove.attr('line'));
+      lines[line].click(part, false); 
+      if (theMove.attr('take') === undefined) {
+        curPlayer = part+1;
+        if (curPlayer > numPlayers) curPlayer = 1; 
+      } else {
+        score[part] = theMove.attr('score');
+        var taken = theMove.attr('take').split(',');
+        for (var i in taken) {
+          boxes[taken[i]].captured(part);
+        }
+        curPlayer = part;
+      }
+      updateTurn();
+    }
+  });
+}
+
+function updateTurn() {
+  // move turn marker
+  $('.turnMarker').hide();
+  $('#player_'+curPlayer+' .turnMarker').show();
+  
+  for (var i = 1; i <= numPlayers; i++) {
+    $('#player_'+i+' .score').html(score[i]);
+  }
+  
+  if (curPlayer == myid) {
+    $("#playerCommand").html("Your turn!");
+    // start clock
+  } else {
+    // stop clock
+    $("#playerCommand").html("Waiting for opponent.");    
+  }
+}
+
 
 function initialize() {
   pColor = new Array();
   pColor[0] = "#AAA";
   pColor[1] = "#F00";
-  pColor[2] = "#00F";
+  pColor[2] = "#33F";
   pColor[3] = "#75d700"; //"#659A22"; //"#9AC92C";
-  
+  pColor[4] = orange;
+    
+  for (var i = 1; i <= numPlayers; i++) {
+    $("#turnBox").append('<div id="player_'+i+'" class="playerRow"><div class="score">0</div><div class="playerIcon round-corner5" style="background-color:'+pColor[i]+';">'+i+'</div><div class="turnMarker"></div></div>');
+  }
+    
   initializeGame(10,10);
 }
 
@@ -106,14 +172,18 @@ function initializeGame() {
   xBoxes = 8; //parseInt(variables['xBoxes']);
   yBoxes = 6; //parseInt(variables['yBoxes']);
 
+  for (var i = 1; i <= numPlayers; i++) {
+    score[i] = 0;
+  }
   
-  paper = Raphael("canvas", cWidth+lineWidth, cHeight+lineWidth);
+  paper = Raphael("canvas", cWidth, cHeight);
   paper.clear();
   // paper.setViewBox(x, y, w, h, fit) // zoom/pan
 
   boxes = new Array();
   lines = new Array();
 
+  Math.seedrandom(seed);
   var gridType = Math.floor(Math.random()*3); // 3 = 0-2
   switch (gridType) {
   case 1:
@@ -126,18 +196,30 @@ function initializeGame() {
     initializeSquareGrid();
   }
   
-  background = paper.rect(-10, -10, cWidth+20, cHeight+20, 10).attr({fill: lightOrange, stroke: "none"});  
-  background.toBack();
+//  background = paper.rect(-10, -10, cWidth+20, cHeight+20, 10).attr({fill: lightOrange, stroke: "none"});  
+//  background.toBack();
+  
+  updateTurn();
+  
 }
 
 function initializeSquareGrid() {
   xBoxes = 10; //parseInt(variables['xBoxes']);
   yBoxes = 10; //parseInt(variables['yBoxes']);
   
-  paper.setViewBox(-lineWidth/2, -lineWidth/2, cWidth+lineWidth, cWidth+lineWidth, false);
 
-  var boxWidth = cWidth/xBoxes;
-  var boxHeight = cHeight/yBoxes;
+  var boxWidth = (cWidth -lineWidth)/xBoxes;
+  var boxHeight= (cHeight-lineWidth)/yBoxes;
+  
+  // make the boxes square
+  boxWidth = Math.min(boxWidth,boxHeight);
+  boxHeight = boxWidth;
+
+  // center
+  var width = boxWidth*xBoxes+lineWidth;
+  var height = boxHeight*xBoxes+lineWidth*2;
+  paper.setViewBox(-(cWidth-width)/2, (cHeight-height)/2, cWidth, cHeight, false);
+  
 
   for (var y = 0; y <= yBoxes; y++) {
     for (var x = 0; x <= xBoxes; x++) {
@@ -173,15 +255,18 @@ function initializeSquareGrid() {
 
 function initializeHexGrid() {
   xBoxes = 8; //parseInt(variables['xBoxes']);
-  yBoxes = 6; //parseInt(variables['yBoxes']);
+  yBoxes = 5; //parseInt(variables['yBoxes']);
 
-  paper.setViewBox(-lineWidth, -lineWidth, cWidth+lineWidth, cWidth+lineWidth, false);
 
   var r3 = Math.sqrt(3)/2.0;
   var boxWidth = cWidth/(xBoxes*1.6);
   var dy = boxWidth*r3;
   
 //  alert(boxWidth+" "+dy);
+
+
+  paper.setViewBox(-lineWidth, -lineWidth, cWidth, cHeight, false);
+
   
   for (var y = 0; y < (yBoxes+1)*2; y++) {
     for (var x = 0; x <= xBoxes*1.5; x++) {
@@ -254,19 +339,29 @@ function initializeHexGrid() {
 }
 
 function initializeTriGrid() {
-  xBoxes = 11; //parseInt(variables['xBoxes']);
-  yBoxes = 6; //parseInt(variables['yBoxes']);
+  xBoxes = 11; //parseInt(variables['xBoxes']); // must be odd
+  yBoxes = 6; //parseInt(variables['yBoxes']);  // must be even
 
-  paper.setViewBox(-lineWidth, -lineWidth, cWidth+lineWidth, cWidth+lineWidth, false);
 
   var r3 = Math.sqrt(3)/2.0;
-  var boxWidth = cWidth/(xBoxes/2+1);
+  var boxWidth = (cWidth-lineWidth)/(xBoxes/2+1);
   var dy = boxWidth*r3;
+
+  var height = lineWidth + dy*(yBoxes+1);
+  if (height > cHeight) {
+     dy = (cHeight-lineWidth)/(yBoxes+1); 
+     boxWidth = dy/r3;
+  }
+  height = lineWidth + dy*(yBoxes);
+  var width = lineWidth + boxWidth*(xBoxes+0.5)/2;
+
+  paper.setViewBox(-(cWidth-width)/2, -(cHeight-height)/2, cWidth, cHeight, false);
+
   
 //  alert(boxWidth+" "+dy);
   
   for (var y = 0; y <= yBoxes; y++) {
-    for (var x = 0; x <= xBoxes/2 + y % 2; x++) {
+    for (var x = 0; x <= xBoxes/2 + (y % 2); x++) {
       var xOff = 0;
       if (y % 2 == 0) {
         xOff = 0.5;
@@ -342,6 +437,11 @@ function initializeTriGrid() {
 
 </script>
 
-<h1>Welcome to Fences</h1>
-
-<div id="canvas"></div>
+<div id="game">
+  <h1>Fences</h1>
+  <div class="minwidth">
+    <div id="canvas" class="round-corner15"></div>
+    <h2 id="playerCommand"></h2>
+    <div id="turnBox"></div>
+  </div>
+</div>
