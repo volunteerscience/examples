@@ -1,3 +1,4 @@
+
 function initializeSquareGrid() {
   xBoxes = 10; //parseInt(variables['xBoxes']);
   yBoxes = 10; //parseInt(variables['yBoxes']);
@@ -13,7 +14,9 @@ function initializeSquareGrid() {
   // center
   var width = boxWidth*xBoxes+lineWidth;
   var height = boxHeight*xBoxes+lineWidth*2;
-  paper.setViewBox(-(cWidth-width)/2, (cHeight-height)/2, cWidth, cHeight, false);
+  x1 = -(cWidth-width)/2;
+  y1 = (cHeight-height)/2;
+  paper.setViewBox(x1, y1, cWidth, cHeight, false);
   
 
   for (var y = 0; y <= yBoxes; y++) {
@@ -60,7 +63,9 @@ function initializeHexGrid() {
 //  alert(boxWidth+" "+dy);
 
 
-  paper.setViewBox(-lineWidth, -lineWidth, cWidth, cHeight, false);
+  x1 = -lineWidth;
+  y1 = -lineWidth;
+  paper.setViewBox(x1,y1, cWidth, cHeight, false);
 
   
   for (var y = 0; y < (yBoxes+1)*2; y++) {
@@ -150,7 +155,9 @@ function initializeTriGrid() {
   height = lineWidth + dy*(yBoxes);
   var width = lineWidth + boxWidth*(xBoxes+0.5)/2;
 
-  paper.setViewBox(-(cWidth-width)/2, -(cHeight-height)/2, cWidth, cHeight, false);
+  x1 = -(cWidth-width)/2;
+  y1 = -(cHeight-height)/2;
+  paper.setViewBox(x1, y1, cWidth, cHeight, false);
 
   
 //  alert(boxWidth+" "+dy);
