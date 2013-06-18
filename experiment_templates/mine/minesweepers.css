@@ -1,0 +1,34 @@
+#canvas {
+  background-color: #f7dab7;
+  float: left;
+  margin-right:10px;
+}
+
+.round-corner15 {
+    -webkit-border-radius: 15px; 
+    -moz-border-radius: 15px;
+    -o-border-radius: 15px;
+    border-radius: 15px;
+}
+
+.minwidth { 
+  min-width:100px; 
+  width: auto !important; 
+  width: 100px; 
+}
+
+.controlTable {
+}
+
+.controlTable a {
+  font-size: 300%;
+  font-weight: bold;
+  text-align: center;
+  color: #00F;
+}
+
+.controlTable a:hover {
+  text-decoration: none;
+  color: #7DAF27;
+  cursor: pointer;
+}
