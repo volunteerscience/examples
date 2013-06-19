@@ -84,88 +84,6 @@ function Line(id, boxA, boxB, x1, y1, x2, y2) {
   }
 }
 
-var SW = 48; // sprite width
-var SW2 = SW/2; // sprite width/2
-var S_IMG_W = SW*6; 
-var S_IMG_H = S_IMG_W; 
-var S_CLIP = 5;
-
-function Avatar(id, x, y) {
-  this.id = id-1+Math.floor(Math.random()*6);;
-  this.x = x;
-  this.y = y;
-  this.stance = 0;
-  this.angle = 90;
-  this.stanceWalk = 0;
-  
-  this.action = function() {
-    this.stance = 3;
-    this.update();
-  }
-  
-  this.move = function(x,y) {
-    this.stanceWalk++;
-    if (this.stanceWalk > 3) {
-      this.stanceWalk = 0;
-    }
-    
-    if (x == 0) {
-      if (y > 0) {
-        this.angle = 180;
-      } else if (y < 0) {
-        this.angle = 0;
-      }
-    } else {
-      var scaler = 1;
-      if (x < 0) scaler = -1;
-      this.angle = Math.atan(y/x) * 180/Math.PI + 90*scaler;
-    }
-    
-//    alert(this.angle);
-    
-    switch(this.stanceWalk) {
-    case 0:
-    case 2:
-      this.stance = 0;
-      break;
-    case 1:
-      this.stance = 1;
-      break;
-    case 3:
-      this.stance = 2;
-      break;
-    }    
-      
-    
-    this.setLocation(this.x+x, this.y+y);
-  }
-  
-  this.setLocation = function(x,y) {
-    this.x=x;
-    this.y=y;
-    this.update();
-  }
-  
-  this.update = function() {
-    // rotate around me
-    var rx = SW2+(this.id-1)*SW;
-    var ry = SW2+(this.stance)*SW;
-
-    var cr = (this.x-SW2+S_CLIP)+" "+(this.y-SW2+S_CLIP)+" "+(SW-2*S_CLIP)+" "+(SW-2*S_CLIP);
-    this.img.attr({
-//    this.img.animate({
-       "clip-rect" : cr,
-       "transform" : 
-         "t"+(this.x-SW2-SW*(this.id-1))+","+(this.y-SW2-SW*this.stance) +
-         "r"+this.angle+","+rx+","+ry
-    });
-  }
-  
-  //  alert(SPRITE_SRC);
-//  this.img = paper.image(SPRITE_SRC, x-SW2, y-SW2, S_IMG_W, S_IMG_H);
-  this.img = paper.image(SPRITE_SRC, 0, 0, S_IMG_W, S_IMG_H);
-  this.update(); //.attr({"clip-rect" : "0 0 48 48"});
-}
 
 function newMove(part, index) {
   fetchMove(part, currentRound, index, function(val) {
@@ -176,7 +94,6 @@ function newMove(part, index) {
 }
 
 function initialize() {
-  SPRITE_SRC = getFile("volunteermen.png");
   initializeGame();
 }
 
@@ -204,7 +121,10 @@ function initializeGame() {
   }
   
   avatars = new Array();
-  avatars[1] = new Avatar(1,boxes[0].x,boxes[0].y);
+  var myAvatarFactory = new AvatarFactory(getFile("volunteermen.png"),48,6,6,5,[0,1,0,2], [3,4,5], paper);
+  
+  var color = Math.floor(Math.random()*6);  
+  avatars[1] = myAvatarFactory.build(color, boxes[0].x, boxes[0].y);
 //  background = paper.rect(-10, -10, cWidth+20, cHeight+20, 10).attr({fill: lightOrange, stroke: "none"});  
 //  background.toBack();
   
@@ -216,7 +136,7 @@ function initializeGame() {
   $('#moveSW').click(function() { avatars[myid].move(-STEP_SIZE/R2,STEP_SIZE/R2); });
   $('#moveW').click(function() { avatars[myid].move(-STEP_SIZE,0); });
   $('#moveNW').click(function() { avatars[myid].move(-STEP_SIZE/R2,-STEP_SIZE/R2); });
-  $('#action').click(function() { avatars[myid].action(); });
+  $('#action').click(function() { avatars[myid].action(0); });
   
   
   $('#zoomIn').click(function() {
