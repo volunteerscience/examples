@@ -1,8 +1,9 @@
 // sprite src (image), width of sprite, number of avatars, number of positions
 // each column is a different color, each row is a different position
 // walkPositions is a looping array of which position to render while walking
+// speed is the default speed in pixels
 // action map converts an action to an icon first action is action 0
-function AvatarFactory(src, width, num, positions, clip, walkPositions, actionMap, paper) {
+function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, actionMap, paper) {
   
   var PAPER = paper;
   var SPRITE_SRC = src;
@@ -13,6 +14,7 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, actionMa
   var S_CLIP = clip;
   var WALK_POSITIONS = walkPositions;
   var ACTION_MAP = actionMap;
+  var SPEED = speed;
   
   // color is a number 0-num
   function Avatar(color, x, y) {
@@ -22,10 +24,47 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, actionMa
     this.stance = 0;
     this.angle = 90;
     this.walkPosition = 0;
+    this.speed = SPEED;
+    this.active = true;
+
+    // call this periodically to make the avatar walk
+    this.step = function() {
+      if (!this.active) return;
+      if (this.path.length > 0) {
+        if ( this.moveToward(this.path[0][0],this.path[0][1]) ) {
+          // we got there
+          this.path.shift();
+        }
+      }
+    }
+
+    this.path = []; // list of coordinates
+    this.setPath = function(path) {
+//      log("setPath:"+path);
+      this.path = path;
+    }
+    this.walkTo = function(x,y) {
+      this.path = [[x,y]];
+    }
     
-    this.action = function(actionNum) {
-      this.stance = ACTION_MAP[actionNum];
-      this.update();
+    this.addWaypoint = function(x,y) {
+      this.path.push([x,y]);
+    }
+    
+    // move towards this coordinate one step by this.speed
+    // returns true when there
+    this.moveToward = function(x,y) {
+//      log('moveToward('+x+','+y+')');
+      var dx = x-this.x;
+      var dy = y-this.y;
+      var len = Math.sqrt(dx*dx+dy*dy);
+//      log('moveToward('+x+','+y+'):('+dx+','+dy+'):'+len);
+      if (len < this.speed) {
+        this.move(dx,dy);
+        return true;
+      }
+      this.move(this.speed*dx/len, this.speed*dy/len);
+      return false;
     }
     
     this.move = function(x,y) {
@@ -50,18 +89,23 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, actionMa
         this.angle = Math.atan(y/x) * 180/Math.PI + 90*scaler;
       }
       
-  //    alert(this.angle);
-      
-      
       this.setLocation(this.x+x, this.y+y);
     }
     
     this.setLocation = function(x,y) {
+//      log('setLocation('+x+','+y+')');
       this.x=x;
       this.y=y;
       this.update();
     }
     
+    // change the stance to the action
+    this.action = function(actionNum) {
+      this.stance = ACTION_MAP[actionNum];
+      this.update();
+    }
+
+    // update the on-screen state
     this.update = function() {
       // rotate around me
       var rx = SW2+(this.color)*SW;
@@ -77,10 +121,8 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, actionMa
       });
     }
     
-    //  alert(SPRITE_SRC);
-  //  this.img = paper.image(SPRITE_SRC, x-SW2, y-SW2, S_IMG_W, S_IMG_H);
     this.img = PAPER.image(SPRITE_SRC, 0, 0, S_IMG_W, S_IMG_H);
-    this.update(); //.attr({"clip-rect" : "0 0 48 48"});
+    this.update();
   }
   
   this.build = function(color, x, y) {
