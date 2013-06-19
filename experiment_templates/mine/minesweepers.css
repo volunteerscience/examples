@@ -17,11 +17,14 @@
   width: 100px; 
 }
 
-.controlTable {
+.controlTable td {
+  width: 60px;
+  border: 1px solid black;
+  text-align: center;
 }
 
 .controlTable a {
-  font-size: 300%;
+  font-size: 250%;
   font-weight: bold;
   text-align: center;
   color: #00F;
