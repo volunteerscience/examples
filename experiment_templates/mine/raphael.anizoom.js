@@ -33,7 +33,7 @@ Raphael.fn.animateViewBox = function(viewX, viewY, width, height, duration, call
                             originals.y + (stepped.y * iterator),
                             originals.width + (stepped.width * iterator),
                             originals.height + (stepped.height * iterator),
-                            true
+                            false
                     );
                     // Run the callback as soon as possible, in sync with the last step
                     if(iterator == stepsNum && callback) {

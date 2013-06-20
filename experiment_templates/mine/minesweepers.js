@@ -185,9 +185,15 @@ function initializeGame() {
   $('#moveNW').click(function() { avatars[myid].move(-STEP_SIZE/R2,-STEP_SIZE/R2); });
   $('#action').click(function() { avatars[myid].action(0); });
   $('#canvas').click('click', function(e) {
+    
     var offset = $(this).offset();
-    var x = e.clientX - offset.left + paper._viewBox[0];
-    var y = e.clientY - offset.top  + paper._viewBox[1];
+    var scaleX = cWidth/paper._viewBox[2];
+    var scaleY = cHeight/paper._viewBox[3];
+    var scale = Math.min(scaleX,scaleY);
+    var oX = e.pageX - offset.left;
+    var oY = e.pageY - offset.top;
+    var x = oX/ scale + paper._viewBox[0];
+    var y = oY/ scale  + paper._viewBox[1];
     canvasClick(parseFloat(x.toFixed(1)),parseFloat(y.toFixed(1))); // 0.1 precision
   });
   
@@ -197,6 +203,27 @@ function initializeGame() {
   
   startAnimation();
 }
+
+var zoomed = false;
+function zoom(box) {
+  if (zoomed) {
+    paper.animateViewBox(x1, y1, cWidth, cHeight, 500,null);
+//    paper.setViewBox(x1, y1, cWidth, cHeight,false);
+  } else {
+    box.icon.attr('text','1');
+    var x = parseFloat(box.icon.attr('cx'));
+    var y = parseFloat(box.icon.attr('cy'));
+    var r = 10; //box.circle.attr('r');
+    var zr = r*4;
+    var aspect = cWidth/cHeight;
+    paper.animateViewBox(x-zr,y-zr*aspect,zr*2,zr*2*aspect,500,null);
+//    paper.setViewBox(x-zr,y-zr*aspect,zr*2,zr*2*aspect,false);
+
+//    log("("+x+","+y+","+r+") ("+(x-zr)+","+(x-zr)+")");
+  }
+  zoomed = !zoomed;
+}
+
 
 var animTimer = null;
 function startAnimation() {
