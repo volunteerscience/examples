@@ -15,7 +15,7 @@ var curPlayer = 1;
 var scored = false;
 var avatars = new Array();
 
-function Box(id, x, y, r) {
+function Box(id, x, y, r, polygon) {
   this.x = x;
   this.y = y;
   this.id = id;
@@ -23,7 +23,7 @@ function Box(id, x, y, r) {
   this.owner = 0; // who won it
   this.bomb = false;
   this.marked = null; // bomb, safe, etc
-  
+  this.polygon = polygon;
   this.icon = paper.text(x,y,"?").attr({'text-anchor': 'middle', 'font': paper.getFont("Vegur"), 'font-size': 30});
   this.icon.toBack();
   
@@ -155,6 +155,7 @@ function initializeGame() {
 
   Math.seedrandom(seed);
   var gridType = Math.floor(Math.random()*3); // 3 = 0-2
+  gridType = 0;
   switch (gridType) {
   case 1:
     initializeHexGrid();
@@ -175,55 +176,135 @@ function initializeGame() {
 //  background = paper.rect(-10, -10, cWidth+20, cHeight+20, 10).attr({fill: lightOrange, stroke: "none"});  
 //  background.toBack();
   
-  $('#moveN').click(function() { avatars[myid].move(0,-STEP_SIZE); });
-  $('#moveNE').click(function() { avatars[myid].move(STEP_SIZE/R2,-STEP_SIZE/R2); });
-  $('#moveE').click(function() { avatars[myid].move(STEP_SIZE, 0); });
-  $('#moveSE').click(function() { avatars[myid].move(STEP_SIZE/R2, STEP_SIZE/R2); });
-  $('#moveS').click(function() { avatars[myid].move(0,STEP_SIZE); });
-  $('#moveSW').click(function() { avatars[myid].move(-STEP_SIZE/R2,STEP_SIZE/R2); });
-  $('#moveW').click(function() { avatars[myid].move(-STEP_SIZE,0); });
-  $('#moveNW').click(function() { avatars[myid].move(-STEP_SIZE/R2,-STEP_SIZE/R2); });
   $('#action').click(function() { avatars[myid].action(0); });
-  $('#canvas').click('click', function(e) {
-    
-    var offset = $(this).offset();
+  $('#canvas').click(function(e) {
+    if (inhibit_click) {
+      inhibit_click = false;
+      return;
+    }
+    findCanvasCoords(this, e);
+    canvasClick(e.canvasX, e.canvasY); 
+  });
+
+  // dragging the canvas
+  $('#canvas').mousedown(function(e) {
+    log("mousedown");
+    fixPageX(e);
     var scaleX = cWidth/paper._viewBox[2];
     var scaleY = cHeight/paper._viewBox[3];
-    var scale = Math.min(scaleX,scaleY);
-    var oX = e.pageX - offset.left;
-    var oY = e.pageY - offset.top;
-    var x = oX/ scale + paper._viewBox[0];
-    var y = oY/ scale  + paper._viewBox[1];
-    canvasClick(parseFloat(x.toFixed(1)),parseFloat(y.toFixed(1))); // 0.1 precision
+    var scaleF = Math.min(scaleX,scaleY);
+    drag = { isDragging: false, 
+             mStartX: e.pageX, mStartY: e.pageY,
+             scale: scaleF,
+             vx: paper._viewBox[0], vy: paper._viewBox[1]
+           };
+    $(window).mousemove(function(e) {
+      log("mousemove");
+      drag.isDragging = true;
+      dragPage(e);
+    });
+    
+    $(window).mouseup(function(e) {
+      log("mouseup");
+      if (drag.isDragging) {
+        dragPage(e);
+        inhibit_click = true; // prevent the click function
+      }
+      drag = null;
+      $(window).unbind("mousemove");
+      $(window).unbind("mouseup");
+    });
+  });
+  
+  $('#canvas').mousewheel(function(e, delta) {
+    findCanvasCoords(this, e);
+    zoom(e.canvasX, e.canvasY, 1-delta*0.1);
+    e.preventDefault();
   });
   
   $('#zoomIn').click(function() {
-    zoom(boxes[0]); 
+    resetZoom(); 
   });   
+
   
   startAnimation();
 }
 
-var zoomed = false;
-function zoom(box) {
-  if (zoomed) {
-    paper.animateViewBox(x1, y1, cWidth, cHeight, 500,null);
-//    paper.setViewBox(x1, y1, cWidth, cHeight,false);
-  } else {
-    box.icon.attr('text','1');
-    var x = parseFloat(box.icon.attr('cx'));
-    var y = parseFloat(box.icon.attr('cy'));
-    var r = 10; //box.circle.attr('r');
-    var zr = r*4;
-    var aspect = cWidth/cHeight;
-    paper.animateViewBox(x-zr,y-zr*aspect,zr*2,zr*2*aspect,500,null);
-//    paper.setViewBox(x-zr,y-zr*aspect,zr*2,zr*2*aspect,false);
+/**
+ * zoom in/out from x,y (canvasX, canvasY)
+ */
+function zoom(x,y,delta) {
+  var newW = paper._viewBox[2]*delta;
+  var newH = paper._viewBox[3]*delta;
+  
+  var dx = x-paper._viewBox[0];
+  var dy = y-paper._viewBox[1];
 
-//    log("("+x+","+y+","+r+") ("+(x-zr)+","+(x-zr)+")");
-  }
-  zoomed = !zoomed;
+  var cX = x-dx*delta;
+  var cY = y-dy*delta;
+  
+  paper.setViewBox(cX,cY,newW,newH);
 }
 
+/**
+ * center on x,y
+ * w is the width the frame should become
+ */
+function zoomTo(x,y,w) {
+  var zr = w/2;
+  var aspect = cWidth/cHeight;
+  paper.animateViewBox(x-zr,y-zr*aspect,zr*2,zr*2*aspect,500,null);
+//  paper.setViewBox(x-zr,y-zr*aspect,zr*2,zr*2*aspect,false);
+
+}
+  
+function resetZoom() {
+  paper.animateViewBox(x1, y1, cWidth, cHeight, 500,null);
+//paper.setViewBox(x1, y1, cWidth, cHeight,false);
+}
+
+
+// set to an object while dragging
+var drag = null;
+var inhibit_click = false; // prevent the "click" event after a drag
+function dragPage(e) {
+  fixPageX(e);
+  var x = drag.vx - (e.pageX-drag.mStartX)/drag.scale;
+  var y = drag.vy - (e.pageY-drag.mStartY)/drag.scale;
+  paper.setViewBox(x,y,paper._viewBox[2], paper._viewBox[3],false);
+}
+
+/**
+ * IE 8 and earlier don't have a pageX variable, synthetically generate it
+ * @param e
+ */
+function fixPageX(e) {
+  if (typeof e.pageX === "undefined") {
+    e.pageX = e.clientX + document.body.scrollLeft;
+    e.pageY = e.clientY + document.body.scrollTop;
+  }  
+}
+
+/**
+ * e is the event
+ * calculates e.canvasX, e.canvasY
+ * 0.1 precision
+ */
+function findCanvasCoords(element, e) {
+  var offset = $(element).offset();
+  var scaleX = cWidth/paper._viewBox[2];
+  var scaleY = cHeight/paper._viewBox[3];
+  var scale = Math.min(scaleX,scaleY);
+
+  fixPageX(e);
+  
+  var oX = e.pageX - offset.left;
+  var oY = e.pageY - offset.top;
+  var x = oX/ scale + paper._viewBox[0];
+  var y = oY/ scale  + paper._viewBox[1];
+  e.canvasX = parseFloat(x.toFixed(1));
+  e.canvasY = parseFloat(y.toFixed(1));
+}
 
 var animTimer = null;
 function startAnimation() {
