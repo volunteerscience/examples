@@ -145,6 +145,9 @@ var NUM_COLORS = 6;
 var STEP_SIZE = 5;
 var R2 = Math.sqrt(2);
 function initializeGame() {
+//  $("#actionRow").html('<td><image id="flag" src="'+getFile("flag.png")+'"/></td><td></td><td><image id="safe" src="'+getFile("check.png")+'"/></td>')
+  $("#flag").attr('src',getFile("flag.png"));
+  $("#safe").attr('src',getFile("check.png"));
   startLoc = new Array();
   paper = Raphael("canvas", cWidth, cHeight);
   paper.clear();
@@ -176,6 +179,11 @@ function initializeGame() {
 //  background = paper.rect(-10, -10, cWidth+20, cHeight+20, 10).attr({fill: lightOrange, stroke: "none"});  
 //  background.toBack();
   
+  // disable drag starting on the canvas
+  $('#canvas').bind("dragstart", function() {
+    return false;
+  });
+
   $('#action').click(function() { avatars[myid].action(0); });
   $('#canvas').click(function(e) {
     if (inhibit_click) {
@@ -222,8 +230,18 @@ function initializeGame() {
     e.preventDefault();
   });
   
-  $('#zoomIn').click(function() {
+  $('#zoomReset').click(function() {
     resetZoom(); 
+  });   
+
+  $('#zoomIn').click(function() {
+    var avatar = avatars[myid];
+    zoom(avatar.x,avatar.y,0.9); 
+  });   
+
+  $('#zoomOut').click(function() {
+    var avatar = avatars[myid];
+    zoom(avatar.x,avatar.y,1.1); 
   });   
 
   
