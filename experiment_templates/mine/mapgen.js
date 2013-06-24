@@ -4,12 +4,14 @@ function initializeSquareGrid() {
   yBoxes = 10; //parseInt(variables['yBoxes']);
   
 
-  var boxWidth = (cWidth -lineWidth)/xBoxes;
-  var boxHeight= (cHeight-lineWidth)/yBoxes;
+  var boxWidth  = (cWidth -lineWidth)/xBoxes;
+  var boxHeight = (cHeight-lineWidth)/yBoxes;
   
   // make the boxes square
   boxWidth = Math.min(boxWidth,boxHeight);
   boxHeight = boxWidth;
+  var w = boxHeight/2;
+  var pts = [-w,-w, w,-w, w,w, -w,w];
 
   // center
   var width = boxWidth*xBoxes+lineWidth;
@@ -24,29 +26,29 @@ function initializeSquareGrid() {
       // add the box
       var newBox = null;
       if (x < xBoxes && y < yBoxes) {
-        newBox = new Box(boxes.length, x*boxWidth+boxWidth/2, y*boxHeight+boxHeight/2,boxWidth/4);
+        newBox = new Box(boxes.length, x*boxWidth+boxWidth/2, y*boxHeight+boxHeight/2,boxWidth/4, pts);
         boxes.push(newBox);
       }
       
-      // horizontal line
-      if (x < xBoxes) {
-        var a = newBox; // the box below the line
-        var b = null;
-        if (y > 0) {
-          b = boxes[x + (y-1)*xBoxes]; // the box above the line
-        }
-        lines.push( new Line(lines.length, a, b, x*boxWidth+gap, y*boxWidth,  (x+1)*boxWidth-gap, y*boxWidth) );
-      }
-      
-      // vertical line
-      if (y < yBoxes) {
-        var a = newBox; // the box to the right of the line
-        var b = null;
-        if (x > 0) {
-          b = boxes[x-1 + y*xBoxes];
-        }
-        lines.push( new Line(lines.length, a, b, x*boxWidth, y*boxWidth+gap, x*boxWidth, (y+1)*boxWidth-gap) );
-      }
+//      // horizontal line
+//      if (x < xBoxes) {
+//        var a = newBox; // the box below the line
+//        var b = null;
+//        if (y > 0) {
+//          b = boxes[x + (y-1)*xBoxes]; // the box above the line
+//        }
+//        lines.push( new Line(lines.length, a, b, x*boxWidth+gap, y*boxWidth,  (x+1)*boxWidth-gap, y*boxWidth) );
+//      }
+//      
+//      // vertical line
+//      if (y < yBoxes) {
+//        var a = newBox; // the box to the right of the line
+//        var b = null;
+//        if (x > 0) {
+//          b = boxes[x-1 + y*xBoxes];
+//        }
+//        lines.push( new Line(lines.length, a, b, x*boxWidth, y*boxWidth+gap, x*boxWidth, (y+1)*boxWidth-gap) );
+//      }
     }
   }
 }

@@ -12,20 +12,107 @@ var lineWidth = 1;
 
 
 var curPlayer = 1;
-var scored = false;
 var avatars = new Array();
 
-function Box(id, x, y, r, polygon) {
+function Box(id, x, y, r, points) {
+  var myBox = this; // for inner functions
   this.x = x;
   this.y = y;
   this.id = id;
-  this.lines = new Array();
   this.owner = 0; // who won it
   this.bomb = false;
   this.marked = null; // bomb, safe, etc
-  this.polygon = polygon;
+  
+  var s = "M ";
+  for (var i = 0; i < points.length; i+=2) {
+    s+=(x+points[i])+","+(y+points[i+1])+" L ";
+  }
+  s+= "Z";
+  this.polygon = paper.path(s).attr('fill','gray');
   this.icon = paper.text(x,y,"?").attr({'text-anchor': 'middle', 'font': paper.getFont("Vegur"), 'font-size': 30});
-  this.icon.toBack();
+
+  this.outline = null;
+  this.draggingOver = []; // since there are multiple elements, keep track of all of them that we are dragging over
+  
+  this.onDragEnter = function(e) {
+    
+    var data = e.originalEvent.dataTransfer.getData("MineDrag");
+    if (data) {
+      myBox.draggingOver.push(e.target);
+      if (myBox.outline == null) {
+        myBox.outline = paper.path(s).attr(
+            {
+              "stroke": "pink",
+              "stroke-width": 3, 
+              "stroke-linejoin": "round", 
+              "transform": "s1.2, 1.2, "+myBox.x+", "+myBox.y
+            });
+      }
+      e.preventDefault();
+    }
+  }
+
+  this.onDragLeave = function(e) {
+    var data = e.originalEvent.dataTransfer.getData("MineDrag");
+    if (data) {
+      var idx;
+        idx = myBox.draggingOver.indexOf(e.target);
+        log(idx+" "+myBox.draggingOver.length);
+        if (idx >= 0) {
+          myBox.draggingOver.splice(idx,1);
+        }        
+      if (myBox.draggingOver.length == 0) { // not over either element
+        if (myBox.outline != null) {
+          myBox.outline.remove();
+          myBox.outline = null;
+        }
+        e.preventDefault();
+      }
+    }
+    
+
+  }
+  
+  this.onDragOver = function(e) {
+    var data = e.originalEvent.dataTransfer.getData("MineDrag");
+    if (data) {
+      e.preventDefault();
+    }
+  };
+
+  
+  this.onDrop = function(e) {
+    var data = e.originalEvent.dataTransfer.getData("MineDrag");
+    if (data) {
+      myBox.draggingOver.length = 0; // clear the array
+      if (myBox.outline != null) {
+        myBox.outline.remove();
+        myBox.outline = null;
+      }
+      if (data == "flag") {
+        myBox.icon.attr("text","B");
+      } else if (data == "safe") {
+        myBox.icon.attr("text","S");
+      }
+      e.preventDefault();
+    }
+  };
+
+  this.onClick = function(e) {
+//    myBox.polygon.attr('fill','red');
+  };
+  
+  
+  $(this.polygon.node).on("dragover", this.onDragOver);
+  $(this.icon.node).on("dragover", this.onDragOver);
+  $(this.polygon.node).on("dragenter", this.onDragEnter);
+  $(this.icon.node).on("dragenter", this.onDragEnter);
+  $(this.polygon.node).on("dragleave", this.onDragLeave);
+  $(this.icon.node).on("dragleave", this.onDragLeave);
+  this.polygon.click(this.onClick);    
+  this.icon.click(this.onClick);    
+  $(this.polygon.node).on("drop", this.onDrop);
+  $(this.icon.node).on("drop", this.onDrop);
   
   // called when a player clicked a neighboring box
   var myBox = this;
@@ -35,53 +122,12 @@ function Box(id, x, y, r, polygon) {
       if (line.owner == 0) return;
     }
     myBox.captured(player);
-    score[player]++;
     take.push(myBox.id);
-//    log("incremented score:"+player+" : "+score[player]);
-    scored = true;
   }
   
   this.analyze = function() {
-//    for (var i : lines) {
-//      line
-//    }
     myBox.icon.attr("text","2");
     myBox.icon.attr("fill","#F00");
-  }
-}
-
-
-var take = [];
-function Line(id, boxA, boxB, x1, y1, x2, y2) {
-  this.id = id;
-  
-  // so you can set either a or b, or both
-  if (boxA == null) {
-    boxA = boxB;
-    boxB = null;
-  }
-  
-  
-  this.a = boxA;
-  this.b = boxB;
-  
-  boxA.lines.push(this);
-  
-  if (boxB != null) {
-    boxB.lines.push(this);
-  }
-  this.owner = 0; // who clicked it
-  
-  this.line = paper.path("M"+x1+","+y1+"L"+x2+","+y2);
-  this.line.attr({'stroke': "#AAA", 'stroke-width': lineWidth, 'stroke-linecap': 'round'});
-  this.line.toFront();
-  
-  var myLine = this;
-  // get the box across the line
-  this.other = function(box) {
-    if (box == a) return b;
-    if (box == b) return a;
-    return null;
   }
 }
 
@@ -145,9 +191,13 @@ var NUM_COLORS = 6;
 var STEP_SIZE = 5;
 var R2 = Math.sqrt(2);
 function initializeGame() {
-//  $("#actionRow").html('<td><image id="flag" src="'+getFile("flag.png")+'"/></td><td></td><td><image id="safe" src="'+getFile("check.png")+'"/></td>')
-  $("#flag").attr('src',getFile("flag.png"));
-  $("#safe").attr('src',getFile("check.png"));
+  $("#flag").attr('src',getFile("flag.png")).bind('dragstart', function(e) {
+      e.originalEvent.dataTransfer.setData("MineDrag",e.target.id);
+  });
+  
+  $("#safe").attr('src',getFile("check.png")).bind('dragstart', function(e) {
+      e.originalEvent.dataTransfer.setData("MineDrag",e.target.id);
+  });
   startLoc = new Array();
   paper = Raphael("canvas", cWidth, cHeight);
   paper.clear();
@@ -344,8 +394,8 @@ function doAnimation() {
 
 function canvasClick(x,y) {
   var avatar = avatars[myid];
-//  avatar.walkTo(x,y); 
-  avatar.addWaypoint(x,y); 
+  avatar.walkTo(x,y); // this tells the avatar to abandon its last action and go where you tell it
+//  avatar.addWaypoint(x,y); // this forces the avatar to first go to all the waypoints you told it 
   var p = [].concat.apply([],avatar.path); // flatten path
   submit('<walkPath l="'+avatar.x.toFixed(1)+','+avatar.y.toFixed(1)+','+avatar.angle.toFixed(1)+'" p="'+p.join()+'"/>');
 }
