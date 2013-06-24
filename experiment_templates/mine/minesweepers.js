@@ -36,7 +36,7 @@ function Box(id, x, y, r, points) {
   
   this.onDragEnter = function(e) {
     
-    var data = e.originalEvent.dataTransfer.getData("MineDrag");
+    var data = e.originalEvent.dataTransfer.getData("Text");
     if (data) {
       myBox.draggingOver.push(e.target);
       if (myBox.outline == null) {
@@ -50,10 +50,10 @@ function Box(id, x, y, r, points) {
       }
       e.preventDefault();
     }
-  }
+  };
 
   this.onDragLeave = function(e) {
-    var data = e.originalEvent.dataTransfer.getData("MineDrag");
+    var data = e.originalEvent.dataTransfer.getData("Text");
     if (data) {
       var idx;
         idx = myBox.draggingOver.indexOf(e.target);
@@ -69,12 +69,10 @@ function Box(id, x, y, r, points) {
         e.preventDefault();
       }
     }
-    
-
-  }
+  };
   
   this.onDragOver = function(e) {
-    var data = e.originalEvent.dataTransfer.getData("MineDrag");
+    var data = e.originalEvent.dataTransfer.getData("Text");
     if (data) {
       e.preventDefault();
     }
@@ -82,7 +80,7 @@ function Box(id, x, y, r, points) {
 
   
   this.onDrop = function(e) {
-    var data = e.originalEvent.dataTransfer.getData("MineDrag");
+    var data = e.originalEvent.dataTransfer.getData("Text");
     if (data) {
       myBox.draggingOver.length = 0; // clear the array
       if (myBox.outline != null) {
@@ -192,11 +190,11 @@ var STEP_SIZE = 5;
 var R2 = Math.sqrt(2);
 function initializeGame() {
   $("#flag").attr('src',getFile("flag.png")).bind('dragstart', function(e) {
-      e.originalEvent.dataTransfer.setData("MineDrag",e.target.id);
+      e.originalEvent.dataTransfer.setData("Text",e.target.id);
   });
   
   $("#safe").attr('src',getFile("check.png")).bind('dragstart', function(e) {
-      e.originalEvent.dataTransfer.setData("MineDrag",e.target.id);
+      e.originalEvent.dataTransfer.setData("Text",e.target.id);
   });
   startLoc = new Array();
   paper = Raphael("canvas", cWidth, cHeight);
