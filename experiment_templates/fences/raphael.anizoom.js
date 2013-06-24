@@ -1,3 +1,14 @@
+// hack to make zoom fast!
+Raphael.fn.setViewBox = function(x,y,w,h,fit) { // orig is line 4753
+  this._viewBox = [x, y, w, h, !!fit];
+  
+  var vb = x + " " + y + " " + w + " " + h;
+  var aspectRatio = fit ? "meet" : "xMinYMin";
+
+  this.canvas.setAttribute("viewBox",vb);
+  this.canvas.setAttribute("preserveAspectRatio",fit);
+}
+
 // http://stackoverflow.com/questions/7736690/raphael-paper-zoom-animation
 Raphael.fn.animateViewBox = function(viewX, viewY, width, height, duration, callback) {
 
