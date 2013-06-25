@@ -6,7 +6,7 @@ Raphael.fn.setViewBox = function(x,y,w,h,fit) { // orig is line 4753
   var aspectRatio = fit ? "meet" : "xMinYMin";
 
   this.canvas.setAttribute("viewBox",vb);
-  this.canvas.setAttribute("preserveAspectRatio",fit);
+  this.canvas.setAttribute("preserveAspectRatio",!!fit);
 }
 
 // http://stackoverflow.com/questions/7736690/raphael-paper-zoom-animation
@@ -22,7 +22,7 @@ Raphael.fn.animateViewBox = function(viewX, viewY, width, height, duration, call
                 width: width - originals.width,
                 height: height - originals.height
         },
-        delay = 13,
+        delay = 100,
         stepsNum = Math.ceil(duration / delay),
         stepped = {
                 x: differences.x / stepsNum,
@@ -44,7 +44,7 @@ Raphael.fn.animateViewBox = function(viewX, viewY, width, height, duration, call
                             originals.y + (stepped.y * iterator),
                             originals.width + (stepped.width * iterator),
                             originals.height + (stepped.height * iterator),
-                            true
+                            false
                     );
                     // Run the callback as soon as possible, in sync with the last step
                     if(iterator == stepsNum && callback) {

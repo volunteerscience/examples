@@ -6,13 +6,14 @@ var xBoxes, yBoxes; // size of the grid
 
 var paper; // raphael
 var boxes; // all the boxes
-var lines; // all the lines
 var gap = 0;
 var lineWidth = 1;
 
 
 var curPlayer = 1;
 var avatars = new Array();
+var pColor = []; // color of players
+var mColor = []; // color of mine analysis
 
 function Box(id, x, y, r, points) {
   var myBox = this; // for inner functions
@@ -22,13 +23,14 @@ function Box(id, x, y, r, points) {
   this.owner = 0; // who won it
   this.bomb = false;
   this.marked = null; // bomb, safe, etc
+  this.neighbor = []; // neighboring boxes
   
   var s = "M ";
   for (var i = 0; i < points.length; i+=2) {
     s+=(x+points[i])+","+(y+points[i+1])+" L ";
   }
   s+= "Z";
-  this.polygon = paper.path(s).attr('fill','gray');
+  this.polygon = paper.path(s).attr('fill',pColor[0]);
   this.icon = paper.text(x,y,"?").attr({'text-anchor': 'middle', 'font': paper.getFont("Vegur"), 'font-size': 30});
 
   this.outline = null;
@@ -97,7 +99,13 @@ function Box(id, x, y, r, points) {
   };
 
   this.onClick = function(e) {
+    // walk over to that box, if possible
 //    myBox.polygon.attr('fill','red');
+    var avatar = avatars[myid];
+    
+    // calculate path as breadth first search
+//    avatar.box
+    
   };
   
   
@@ -112,21 +120,36 @@ function Box(id, x, y, r, points) {
   $(this.polygon.node).on("drop", this.onDrop);
   $(this.icon.node).on("drop", this.onDrop);
   
-  // called when a player clicked a neighboring box
-  var myBox = this;
-  this.update = function(player) {
-    for (var idx in myBox.lines) {
-      var line = myBox.lines[idx];
-      if (line.owner == 0) return;
-    }
-    myBox.captured(player);
-    take.push(myBox.id);
-  }
   
-  this.analyze = function() {
-    myBox.icon.attr("text","2");
-    myBox.icon.attr("fill","#F00");
-  }
+  this.revealed = false;
+  // called when player steps on the square, or neighboring square has no bombs
+  this.reveal = function() {
+    if (myBox.revealed) return;
+    myBox.revealed = true;
+    if (myBox.val == -2) {
+      // I'm the reward
+      myBox.icon.attr("text","$");
+    } else if (myBox.val == 0) {
+      // this is a special case where you reveal your neighbors because you have a val of zero
+      myBox.icon.attr("text","");
+      for (var i in myBox.neighbor) {
+        myBox.neighbor[i].reveal();
+      }
+    } else {
+      myBox.icon.attr("text",myBox.val);
+      myBox.icon.attr("fill",mColor[myBox.val]);      
+    }
+  };
+  
+  this.val = 0;
+  
+  this.addBox = function(b) {
+    if (myBox.val < 0) return; // I'm a bomb or a reward val is already set
+    if (b.val == -1) { // a bomb
+      myBox.val++;
+    }
+    myBox.neighbor.push(b);
+  };
 }
 
 function roundInitialized(round) {
@@ -140,7 +163,7 @@ function roundInitialized(round) {
 var startLoc = new Array();
 function newMove(part, index) {
   fetchMove(part, currentRound, index, function(val) {
-//    log("fetchMove("+part+","+index+")");
+//    log("fetchMove("+part+","+index+"):"+val);
     var theMove = $(val);
     var avatar = avatars[part];
     if (theMove.is('walkPath')) {
@@ -182,6 +205,9 @@ function newMove(part, index) {
 
 
 function initialize() {
+  pColor = ["#96848c", "#f68600","#0070c0","#7dcc15","#f10c0c","#fafa0d","#b402ff"];
+  mColor = ["#849696", "#00F", "#0F0", "#F00", "#b402ff", "#8e220c", "", "#f44c0c", "#0cf1f4", "#1d0cf4", "#849685"];
+  
   initializeGame();
 }
 
@@ -202,7 +228,6 @@ function initializeGame() {
   // paper.setViewBox(x, y, w, h, fit) // zoom/pan
 
   boxes = new Array();
-  lines = new Array();
 
   Math.seedrandom(seed);
   var gridType = Math.floor(Math.random()*3); // 3 = 0-2
@@ -215,14 +240,31 @@ function initializeGame() {
     initializeTriGrid();
     break;
   default:
-    initializeSquareGrid();
+    initializeSquareGrid(10,10,10,seed);
   }
   
   avatars = new Array();
   var myAvatarFactory = new AvatarFactory(getFile("volunteermen.png"),48,NUM_COLORS,6,5, [0,1,0,2],5, [3,4,5], paper);
   
+  // calcluate initial location
+  Math.seedrandom(seed);
+  var startLoc = [];
   for (var i = 1; i <= numPlayers; i++) {
-    avatars[i] = myAvatarFactory.build(i-1, boxes[0].x, boxes[0].y);
+    while(true) {
+      var boxId = Math.floor(Math.random()*boxes.length);
+      var box = boxes[boxId];
+      if (box.val == 0 && startLoc.indexOf(boxId) == -1) {
+        box.reveal();
+        startLoc.push(boxId);
+        avatars[i] = myAvatarFactory.build(i-1, box.x, box.y);   
+        avatars[i].box = box;
+        if (i == myid) {
+          // TODO: don't submit on a refresh
+          submit('<start box="+boxId+"/>');
+        }
+        break;
+      }
+    }
   }
 //  background = paper.rect(-10, -10, cWidth+20, cHeight+20, 10).attr({fill: lightOrange, stroke: "none"});  
 //  background.toBack();
@@ -244,7 +286,6 @@ function initializeGame() {
 
   // dragging the canvas
   $('#canvas').mousedown(function(e) {
-    log("mousedown");
     fixPageX(e);
     var scaleX = cWidth/paper._viewBox[2];
     var scaleY = cHeight/paper._viewBox[3];
@@ -255,13 +296,11 @@ function initializeGame() {
              vx: paper._viewBox[0], vy: paper._viewBox[1]
            };
     $(window).mousemove(function(e) {
-      log("mousemove");
       drag.isDragging = true;
       dragPage(e);
     });
     
     $(window).mouseup(function(e) {
-      log("mouseup");
       if (drag.isDragging) {
         dragPage(e);
         inhibit_click = true; // prevent the click function
@@ -391,6 +430,9 @@ function doAnimation() {
 }
 
 function canvasClick(x,y) {
+  if (true) return;
+  
+  // this allows an avatar to walk around freely on the map
   var avatar = avatars[myid];
   avatar.walkTo(x,y); // this tells the avatar to abandon its last action and go where you tell it
 //  avatar.addWaypoint(x,y); // this forces the avatar to first go to all the waypoints you told it 

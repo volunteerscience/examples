@@ -1,7 +1,5 @@
-
-function initializeSquareGrid() {
-  xBoxes = 10; //parseInt(variables['xBoxes']);
-  yBoxes = 10; //parseInt(variables['yBoxes']);
+function initializeSquareGrid(xBoxes, yBoxes, numMines, seed) {
+  var grid = [];
   
 
   var boxWidth  = (cWidth -lineWidth)/xBoxes;
@@ -21,34 +19,65 @@ function initializeSquareGrid() {
   paper.setViewBox(x1, y1, cWidth, cHeight, false);
   
 
-  for (var y = 0; y <= yBoxes; y++) {
-    for (var x = 0; x <= xBoxes; x++) {
-      // add the box
-      var newBox = null;
-      if (x < xBoxes && y < yBoxes) {
-        newBox = new Box(boxes.length, x*boxWidth+boxWidth/2, y*boxHeight+boxHeight/2,boxWidth/4, pts);
-        boxes.push(newBox);
+  // layout the boxes
+  for (var x = 0; x < xBoxes; x++) {
+    grid[x] = []
+    for (var y = 0; y < yBoxes; y++) {
+      var newBox = new Box(boxes.length, x*boxWidth+boxWidth/2, y*boxHeight+boxHeight/2,boxWidth/4, pts);
+      boxes.push(newBox);
+      grid[x][y] = newBox;
+    }
+  }
+  
+  // set all the bombs
+  Math.seedrandom(seed);
+  var bombCt = -1; // first is the reward
+  while (bombCt < numMines) {
+    var x = Math.floor(Math.random()*xBoxes);
+    var y = Math.floor(Math.random()*yBoxes);
+    if (grid[x][y].val == 0) {
+      if (bombCt == -1) {
+        // set the reward first
+        grid[x][y].val = -2;
+      } else {
+        grid[x][y].val = -1;
+      } 
+      bombCt++;
+    }
+  }
+  
+  // register connections
+  for (var y = 0; y < yBoxes; y++) {
+    for (var x = 0; x < xBoxes; x++) {
+      // row above
+      if (y > 0) {
+        if (x > 0) {
+          grid[x][y].addBox(grid[x-1][y-1]); // NW
+        }
+        grid[x][y].addBox(grid[x][y-1]); // N
+        if (x < xBoxes-1) {
+          grid[x][y].addBox(grid[x+1][y-1]); // NE         
+        }
       }
       
-//      // horizontal line
-//      if (x < xBoxes) {
-//        var a = newBox; // the box below the line
-//        var b = null;
-//        if (y > 0) {
-//          b = boxes[x + (y-1)*xBoxes]; // the box above the line
-//        }
-//        lines.push( new Line(lines.length, a, b, x*boxWidth+gap, y*boxWidth,  (x+1)*boxWidth-gap, y*boxWidth) );
-//      }
-//      
-//      // vertical line
-//      if (y < yBoxes) {
-//        var a = newBox; // the box to the right of the line
-//        var b = null;
-//        if (x > 0) {
-//          b = boxes[x-1 + y*xBoxes];
-//        }
-//        lines.push( new Line(lines.length, a, b, x*boxWidth, y*boxWidth+gap, x*boxWidth, (y+1)*boxWidth-gap) );
-//      }
+      // this row
+      if (x > 0) {
+        grid[x][y].addBox(grid[x-1][y]); // W
+      }
+      if (x < xBoxes-1) {
+        grid[x][y].addBox(grid[x+1][y]); // E         
+      }
+      
+      // row below
+      if (y < yBoxes-1) {
+        if (x > 0) {
+          grid[x][y].addBox(grid[x-1][y+1]); // SW
+        }
+        grid[x][y].addBox(grid[x][y+1]); // S
+        if (x < xBoxes-1) {
+          grid[x][y].addBox(grid[x+1][y+1]); // SE         
+        }
+      }      
     }
   }
 }
