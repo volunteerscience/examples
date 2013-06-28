@@ -15,6 +15,7 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
   var WALK_POSITIONS = walkPositions;
   var ACTION_MAP = actionMap;
   var SPEED = speed;
+  var SIZE = 15; // distance to target before triggering it
   
   // color is a number 0-num
   function Avatar(color, x, y) {
@@ -26,38 +27,48 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
     this.walkPosition = 0;
     this.speed = SPEED;
     this.active = true;
+    this.currentlyOn = null;
 
     // call this periodically to make the avatar walk
     this.step = function() {
       if (!this.active) return;
       if (this.path.length > 0) {
-        if ( this.moveToward(this.path[0][0],this.path[0][1]) ) {
+        if ( this.moveToward(this.path[0]) ) {
           // we got there
           this.path.shift();
         }
       }
-    }
+    };
 
-    this.path = []; // list of coordinates
+    this.path = []; // list of coordinates items with an x,y
     this.setPath = function(path) {
-//      log("setPath:"+path);
       this.path = path;
-    }
-    this.walkTo = function(x,y) {
-      this.path = [[x,y]];
-    }
+    };
+    this.walkTo = function(obj) {
+      this.path = [obj];
+    };
     
-    this.addWaypoint = function(x,y) {
-      this.path.push([x,y]);
-    }
+    this.addWaypoint = function(obj) {
+      this.path.push(obj);
+    };
+    
+    this.steppedOn = function(obj) {
+//      log("steppedOn:"+obj.id);
+    };
+    
     
     // move towards this coordinate one step by this.speed
     // returns true when there
-    this.moveToward = function(x,y) {
+    this.moveToward = function(obj) {
 //      log('moveToward('+x+','+y+')');
-      var dx = x-this.x;
-      var dy = y-this.y;
+      var dx = obj.x-this.x;
+      var dy = obj.y-this.y;
       var len = Math.sqrt(dx*dx+dy*dy);
+      if (len < SIZE && this.currentlyOn != obj) {
+        this.steppedOn(obj);
+        this.currentlyOn = obj;
+      }
+      
 //      log('moveToward('+x+','+y+'):('+dx+','+dy+'):'+len);
       if (len < this.speed) {
         this.move(dx,dy);
@@ -65,7 +76,7 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
       }
       this.move(this.speed*dx/len, this.speed*dy/len);
       return false;
-    }
+    };
     
     this.move = function(x,y) {
       
@@ -90,20 +101,20 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
       }
       
       this.setLocation(this.x+x, this.y+y);
-    }
+    };
     
     this.setLocation = function(x,y) {
 //      log('setLocation('+x+','+y+')');
       this.x=x;
       this.y=y;
       this.update();
-    }
+    };
     
     // change the stance to the action
     this.action = function(actionNum) {
       this.stance = ACTION_MAP[actionNum];
       this.update();
-    }
+    };
 
     // update the on-screen state
     this.update = function() {
@@ -121,11 +132,17 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
       });
     }
     
+    // draw a cartoon bubble
+    this.say = function(text) {
+      
+    };
+    
     this.img = PAPER.image(SPRITE_SRC, 0, 0, S_IMG_W, S_IMG_H);
     this.update();
-  }
+  };
   
   this.build = function(color, x, y) {
     return new Avatar(color,x,y);
-  }
+  };
+  
 }

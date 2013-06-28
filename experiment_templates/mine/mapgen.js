@@ -46,18 +46,12 @@ function initializeSquareGrid(xBoxes, yBoxes, numMines, seed) {
     }
   }
   
-  // register connections
+  // register connections -- cardinal directions need to come first to make the walking algorithm not funky, so we use 2 passes
   for (var y = 0; y < yBoxes; y++) {
     for (var x = 0; x < xBoxes; x++) {
       // row above
       if (y > 0) {
-        if (x > 0) {
-          grid[x][y].addBox(grid[x-1][y-1]); // NW
-        }
         grid[x][y].addBox(grid[x][y-1]); // N
-        if (x < xBoxes-1) {
-          grid[x][y].addBox(grid[x+1][y-1]); // NE         
-        }
       }
       
       // this row
@@ -70,16 +64,36 @@ function initializeSquareGrid(xBoxes, yBoxes, numMines, seed) {
       
       // row below
       if (y < yBoxes-1) {
+        grid[x][y].addBox(grid[x][y+1]); // S
+      }      
+    }
+  }
+
+  for (var y = 0; y < yBoxes; y++) {
+    for (var x = 0; x < xBoxes; x++) {
+      // row above
+      if (y > 0) {
+        if (x > 0) {
+          grid[x][y].addBox(grid[x-1][y-1]); // NW
+        }
+        if (x < xBoxes-1) {
+          grid[x][y].addBox(grid[x+1][y-1]); // NE         
+        }
+      }
+      
+      // row below
+      if (y < yBoxes-1) {
         if (x > 0) {
           grid[x][y].addBox(grid[x-1][y+1]); // SW
         }
-        grid[x][y].addBox(grid[x][y+1]); // S
         if (x < xBoxes-1) {
           grid[x][y].addBox(grid[x+1][y+1]); // SE         
         }
       }      
     }
   }
+  
+  
 }
 
 function initializeHexGrid() {

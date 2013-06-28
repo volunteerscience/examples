@@ -15,6 +15,12 @@ var avatars = new Array();
 var pColor = []; // color of players
 var mColor = []; // color of mine analysis
 
+// marks
+var NONE = 0;
+var SAFE = 1;
+var FLAG = 2;
+var LOOK = 3;
+
 function Box(id, x, y, r, points) {
   var myBox = this; // for inner functions
   this.x = x;
@@ -24,6 +30,7 @@ function Box(id, x, y, r, points) {
   this.bomb = false;
   this.marked = null; // bomb, safe, etc
   this.neighbor = []; // neighboring boxes
+  this.mark = [NONE,0]; // [mark,id of player making the mark]
   
   var s = "M ";
   for (var i = 0; i < points.length; i+=2) {
@@ -35,6 +42,10 @@ function Box(id, x, y, r, points) {
 
   this.outline = null;
   this.draggingOver = []; // since there are multiple elements, keep track of all of them that we are dragging over
+  
+  this.canWalk = function() {
+    return myBox.revealed || myBox.mark[0] == SAFE;
+  };
   
   this.onDragEnter = function(e) {
     
@@ -93,6 +104,7 @@ function Box(id, x, y, r, points) {
         myBox.icon.attr("text","B");
       } else if (data == "safe") {
         myBox.icon.attr("text","S");
+        myBox.mark = [SAFE,myid];
       }
       e.preventDefault();
     }
@@ -103,8 +115,17 @@ function Box(id, x, y, r, points) {
 //    myBox.polygon.attr('fill','red');
     var avatar = avatars[myid];
     
-    // calculate path as breadth first search
-//    avatar.box
+    if (myBox.canWalk()) {
+      // calculate path as breadth first search, recursive
+      var p = doBFS(avatar.currentlyOn.id,myBox.id);
+      var path = p.map(function(id) { return boxes[id] }); // ids => boxes
+      avatar.setPath(path);
+      log(p);
+//      submit('<walkPath l="'+avatar.x.toFixed(1)+','+avatar.y.toFixed(1)+','+avatar.angle.toFixed(1)+'" p="'+p.join()+'"/>');
+
+    } else {
+      avatar.say("I'm not walking there unless you mark it safe!");
+    }
     
   };
   
@@ -123,7 +144,7 @@ function Box(id, x, y, r, points) {
   
   this.revealed = false;
   // called when player steps on the square, or neighboring square has no bombs
-  this.reveal = function() {
+  this.reveal = function(playerId) {
     if (myBox.revealed) return;
     myBox.revealed = true;
     if (myBox.val == -2) {
@@ -133,7 +154,7 @@ function Box(id, x, y, r, points) {
       // this is a special case where you reveal your neighbors because you have a val of zero
       myBox.icon.attr("text","");
       for (var i in myBox.neighbor) {
-        myBox.neighbor[i].reveal();
+        myBox.neighbor[i].reveal(0);
       }
     } else {
       myBox.icon.attr("text",myBox.val);
@@ -203,6 +224,55 @@ function newMove(part, index) {
   });
 }
 
+/**
+ * starter function for bfs()
+ * 
+ * @param start id of first box
+ * @param dest id of last box
+ */
+function doBFS(start, dest) {
+  var m = new Object();
+  m[dest] = -1; // make sure not to reevaluate the dest
+  return bfs(start, dest, m, [dest]);  // first evaluation is dest
+}
+
+/**
+ * Breadth First Search
+ * id of first box, id of last box, map[id] => id, queue: top is nearest to dest
+ * 
+ * start at the dest, then expand until finding start
+ */ 
+function bfs(start, dest, m, q) {
+  if (q.length == 0) return null; // no path
+  var cur = boxes[q.shift()];
+
+  // sort this by closest to dest so they don't take somewhat bizarre choices, this may still be strange going around corners
+  // bias towards cardinal directions?
+  var neighbors = cur.neighbor;
+  
+  for (var i in neighbors) {
+    var n = cur.neighbor[i];
+    if (n.id == start) {
+      // success!, now generate the path from m
+      var ret = new Array();
+      m[n.id] = cur.id;
+      var next = start;
+      do {
+        ret.push(next);
+        next = m[next];
+//        return null;
+      } while (next != dest);
+      ret.push(dest);
+      return ret;
+    }
+    if (n.canWalk() && typeof m[n.id] === "undefined") {
+      m[n.id] = cur.id;
+      q.push(n.id);
+    }
+  }
+
+  return bfs(start, dest, m, q);
+}
 
 function initialize() {
   pColor = ["#96848c", "#f68600","#0070c0","#7dcc15","#f10c0c","#fafa0d","#b402ff"];
@@ -254,11 +324,15 @@ function initializeGame() {
       var boxId = Math.floor(Math.random()*boxes.length);
       var box = boxes[boxId];
       if (box.val == 0 && startLoc.indexOf(boxId) == -1) {
-        box.reveal();
+        box.reveal(0);
         startLoc.push(boxId);
         avatars[i] = myAvatarFactory.build(i-1, box.x, box.y);   
-        avatars[i].box = box;
+        avatars[i].currentlyOn = box;
         if (i == myid) {
+          avatars[i].steppedOn = function(box) {
+            box.reveal(myid);
+          };
+          
           // TODO: don't submit on a refresh
           submit('<start box="+boxId+"/>');
         }
