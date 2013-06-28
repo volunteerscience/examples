@@ -102,6 +102,7 @@ function Box(id, x, y, r, points) {
       }
       if (data == "flag") {
         myBox.icon.attr("text","B");
+        myBox.mark = [FLAG,myid];        
       } else if (data == "safe") {
         myBox.icon.attr("text","S");
         myBox.mark = [SAFE,myid];
@@ -118,7 +119,9 @@ function Box(id, x, y, r, points) {
     if (myBox.canWalk()) {
       // calculate path as breadth first search, recursive
       var p = doBFS(avatar.currentlyOn.id,myBox.id);
-      if (p != null) {
+      if (p == null) {
+        avatar.say("I can't find a way to get there.");
+      } else {
         var path = p.map(function(id) { return boxes[id] }); // ids => boxes
         avatar.setPath(path);        
       }
@@ -126,7 +129,11 @@ function Box(id, x, y, r, points) {
 //      submit('<walkPath l="'+avatar.x.toFixed(1)+','+avatar.y.toFixed(1)+','+avatar.angle.toFixed(1)+'" p="'+p.join()+'"/>');
 
     } else {
-      avatar.say("I'm not walking there unless you mark it safe!");
+      if (myBox.mark[0] == FLAG) {
+        avatar.say("You're joking, right?  I'm not walking there.");
+      } else {
+        avatar.say("I'm not walking there unless you mark it safe!");        
+      }
     }
     
   };
@@ -348,6 +355,9 @@ function initializeGame() {
         avatars[i].currentlyOn = box;
         if (i == myid) {
           avatars[i].steppedOn = function(box) {
+            if (box.val == -2) {
+              avatars[myid].say("Hooray!");
+            } 
             return box.reveal(myid);
           };
           

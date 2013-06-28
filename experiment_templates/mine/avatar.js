@@ -142,7 +142,7 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
     
     // draw a cartoon bubble
     this.say = function(text) {
-      log(text);
+      alert(text);
     };
     
     this.img = PAPER.image(SPRITE_SRC, 0, 0, S_IMG_W, S_IMG_H);
