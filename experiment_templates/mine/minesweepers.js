@@ -230,6 +230,7 @@ function Box(id, x, y, r, points) {
       avatar.action(2);
       avatar.active = false;
       avatar.say("AAH!");
+      revealAllBombs();
       return true;
     case 0:
       // this is a special case where you reveal your neighbors because you have a val of zero
@@ -258,6 +259,27 @@ function Box(id, x, y, r, points) {
       myBox.val++;
     }
   };
+}
+
+function revealAllBombs() {
+  for (var i in boxes) {
+    var box = boxes[i];
+    if (box.revealed) continue;
+    switch (box.val) {
+    case -1:
+      if (box.mark[0] != FLAG) { // if not marked, display the mine
+        box.icon.attr("src",getFile("mine.png")); 
+      }
+      break;
+    case -2:
+      box.icon.attr("src",getFile("prize.png")); // reveal the prize
+      break;
+    default:
+      if (box.mark[0] == FLAG) { // turn bogus flags into checks
+        box.icon.attr("src",getFile("check_s.png"));        
+      }
+    }
+  }
 }
 
 function roundInitialized(round) {
