@@ -21,6 +21,8 @@ var SAFE = 1;
 var FLAG = 2;
 var LOOK = 3;
 
+var mode = "walk"; // which action the user clicked on
+
 function Box(id, x, y, r, points) {
   var myBox = this; // for inner functions
   this.x = x;
@@ -38,7 +40,8 @@ function Box(id, x, y, r, points) {
   }
   s+= "Z";
   this.polygon = paper.path(s).attr('fill',pColor[0]);
-  this.icon = paper.text(x,y,"?").attr({'text-anchor': 'middle', 'font': paper.getFont("Vegur"), 'font-size': 30});
+  this.icon = paper.image("", x-r, y-r, r*2, r*2);
+  this.text = paper.text(x,y,"").attr({'text-anchor': 'middle', 'font': paper.getFont("Vegur"), 'font-size': 30});
 
   this.outline = null;
   this.draggingOver = []; // since there are multiple elements, keep track of all of them that we are dragging over
@@ -69,51 +72,90 @@ function Box(id, x, y, r, points) {
     var data = e.originalEvent.dataTransfer.getData("Text");
     if (data) {
       var idx;
-        idx = myBox.draggingOver.indexOf(e.target);
+      idx = myBox.draggingOver.indexOf(e.target);
 //        log(idx+" "+myBox.draggingOver.length);
-        if (idx >= 0) {
-          myBox.draggingOver.splice(idx,1);
-        }        
-      if (myBox.draggingOver.length == 0) { // not over either element
-        if (myBox.outline != null) {
-          myBox.outline.remove();
-          myBox.outline = null;
-        }
-        e.preventDefault();
+      if (idx >= 0) {
+        myBox.draggingOver.splice(idx,1);
+      }        
+    }
+    if (myBox.draggingOver.length == 0) { // not over either element
+      if (myBox.outline != null) {
+        myBox.outline.remove();
+        myBox.outline = null;
       }
     }
+    e.preventDefault();
   };
   
   this.onDragOver = function(e) {
     var data = e.originalEvent.dataTransfer.getData("Text");
     if (data) {
-      e.preventDefault();
+      if (data == "walk") {
+        if (myBox.revealed || myBox.mark[0] == SAFE) {
+          e.preventDefault();
+        }
+      } else if (!myBox.revealed) {
+        e.preventDefault();
+      }
     }
   };
 
   
-  this.onDrop = function(e) {
-    var data = e.originalEvent.dataTransfer.getData("Text");
-    if (data) {
-      myBox.draggingOver.length = 0; // clear the array
-      if (myBox.outline != null) {
-        myBox.outline.remove();
-        myBox.outline = null;
-      }
-      if (data == "flag") {
-        myBox.icon.attr("text","B");
-        myBox.mark = [FLAG,myid];        
-      } else if (data == "safe") {
-        myBox.icon.attr("text","S");
-        myBox.mark = [SAFE,myid];
-      }
-      e.preventDefault();
+  this.doMark = function(a,id) {
+    if (myBox.revealed) return;
+    
+    if (a == myBox.mark[0]) {
+      a = NONE;
+    }
+    myBox.mark = [a,id];    
+    
+    switch(a) {
+    
+    case FLAG:
+      myBox.icon.attr("src",getFile("flag_s.png"));
+      break;
+      
+    case LOOK:
+      myBox.icon.attr("src",getFile("look_s.png"));
+      break;
+      
+    case SAFE:
+      myBox.icon.attr("src",getFile("check_s.png"));
+      break;
+      
+    case NONE:
+      myBox.icon.attr("src","");
+      break;
     }
   };
+  
+  this.onDrop = function(e) {
+    myBox.draggingOver.length = 0; // clear the array
+    if (myBox.outline != null) {
+      myBox.outline.remove();
+      myBox.outline = null;
+    }
+    var data = e.originalEvent.dataTransfer.getData("Text");
+    if (data) {
+      if (data == "walk") {
+        if (myBox.revealed || myBox.mark[0] == SAFE) {
+          myBox.walkToMe();
+        }
+      } else if (!myBox.revealed) {
+        if (data == "flag") {
+          myBox.doMark(FLAG,myid);
+        } else if (data == "safe") {
+          myBox.doMark(SAFE,myid);
+        } else if (data == "look") {
+          myBox.doMark(LOOK,myid);
+        }
+      }
+    }
+    e.preventDefault();
+  };
 
-  this.onClick = function(e) {
+  this.walkToMe = function() {
     // walk over to that box, if possible
-//    myBox.polygon.attr('fill','red');
     var avatar = avatars[myid];
     
     if (myBox.canWalk()) {
@@ -134,21 +176,38 @@ function Box(id, x, y, r, points) {
       } else {
         avatar.say("I'm not walking there unless you mark it safe!");        
       }
-    }
-    
+    }    
+  };
+  
+  this.onClick = function(e) {
+//    alert('mode:'+mode);
+    if (mode == "walk") {
+      myBox.walkToMe();
+    } else if (mode == "look") {
+      myBox.doMark(LOOK,myid);
+    } else if (mode == "flag") {
+      myBox.doMark(FLAG,myid);
+    } else if (mode == "safe") {
+      myBox.doMark(SAFE,myid);
+    }    
   };
   
   
   $(this.polygon.node).on("dragover", this.onDragOver);
   $(this.icon.node).on("dragover", this.onDragOver);
+  $(this.text.node).on("dragover", this.onDragOver);
   $(this.polygon.node).on("dragenter", this.onDragEnter);
   $(this.icon.node).on("dragenter", this.onDragEnter);
+  $(this.text.node).on("dragenter", this.onDragEnter);
   $(this.polygon.node).on("dragleave", this.onDragLeave);
   $(this.icon.node).on("dragleave", this.onDragLeave);
+  $(this.text.node).on("dragleave", this.onDragLeave);
   this.polygon.click(this.onClick);    
   this.icon.click(this.onClick);    
+  this.text.click(this.onClick);    
   $(this.polygon.node).on("drop", this.onDrop);
   $(this.icon.node).on("drop", this.onDrop);
+  $(this.text.node).on("drop", this.onDrop);
   
   
   this.revealed = false;
@@ -157,14 +216,16 @@ function Box(id, x, y, r, points) {
   this.reveal = function(playerId) {
     if (myBox.revealed) return false;
     myBox.revealed = true;
+    
+    this.polygon.attr('fill',mColor[0]);
     switch(myBox.val) {
     case -2:
       // I'm the reward
-      myBox.icon.attr("text","$");
+      myBox.icon.attr("src",getFile("prize.png"));
       return true;
     case -1:
       // boom
-      myBox.icon.attr("text","!");
+      myBox.icon.attr("src",getFile("mine.png"));
       var avatar = avatars[playerId];
       avatar.action(2);
       avatar.active = false;
@@ -172,7 +233,8 @@ function Box(id, x, y, r, points) {
       return true;
     case 0:
       // this is a special case where you reveal your neighbors because you have a val of zero
-      myBox.icon.attr("text","");
+      myBox.text.attr("text","");
+      myBox.icon.attr("src","");
       for (var i in myBox.neighbor) {
         // TODO: delay this until a later tick, to make it animate
         myBox.neighbor[i].reveal(0);
@@ -180,8 +242,9 @@ function Box(id, x, y, r, points) {
       return false;
     default:
       // set the icon
-      myBox.icon.attr("text",myBox.val);
-      myBox.icon.attr("fill",mColor[myBox.val]);      
+      myBox.icon.attr("src","");
+      myBox.text.attr("text",myBox.val);
+      myBox.text.attr("fill",mColor[myBox.val]);      
       return false;
     }
   };
@@ -300,8 +363,8 @@ function bfs(start, dest, m, q) {
 }
 
 function initialize() {
-  pColor = ["#96848c", "#f68600","#0070c0","#7dcc15","#f10c0c","#fafa0d","#b402ff"];
-  mColor = ["#849696", "#00F", "#0F0", "#F00", "#b402ff", "#8e220c", "", "#f44c0c", "#0cf1f4", "#1d0cf4", "#849685"];
+  pColor = ["#9684fc", "#f68600","#0070c0","#7dcc15","#f10c0c","#fafa0d","#b402ff"];
+  mColor = ["#96848c", "#00F", "#0F0", "#F00", "#b402ff", "#8e220c", "", "#f44c0c", "#0cf1f4", "#1d0cf4", "#849685"];
   
   initializeGame();
 }
@@ -310,13 +373,26 @@ var NUM_COLORS = 6;
 var STEP_SIZE = 5;
 var R2 = Math.sqrt(2);
 function initializeGame() {
+  $("#zoomOut").attr('src',getFile("magnifyOut.png"));
+  $("#zoomReset").attr('src',getFile("magnify.png"));
+  $("#zoomIn").attr('src',getFile("magnifyIn.png"));
+  
   $("#flag").attr('src',getFile("flag.png")).bind('dragstart', function(e) {
       e.originalEvent.dataTransfer.setData("Text",e.target.id);
   });
   
+  $("#look").attr('src',getFile("look.png")).bind('dragstart', function(e) {
+    e.originalEvent.dataTransfer.setData("Text",e.target.id);
+  });
+
   $("#safe").attr('src',getFile("check.png")).bind('dragstart', function(e) {
       e.originalEvent.dataTransfer.setData("Text",e.target.id);
   });
+  
+  $("#walk").attr('src',getFile("walk.png")).bind('dragstart', function(e) {
+    e.originalEvent.dataTransfer.setData("Text",e.target.id);
+  });
+
   startLoc = new Array();
   paper = Raphael("canvas", cWidth, cHeight);
   paper.clear();
@@ -412,6 +488,15 @@ function initializeGame() {
       $(window).unbind("mouseup");
     });
   });
+
+  $('.actionGroup').click(function() {
+//    alert("action");
+    $('.actionGroup').css('border-style','none');
+    $(this).css('border-style','dashed');
+    mode = $(this).attr("id");
+  });
+  $("#walk").css('border-style','dashed');
+  mode = "walk";
   
   $('#canvas').mousewheel(function(e, delta) {
     findCanvasCoords(this, e);

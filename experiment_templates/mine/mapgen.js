@@ -23,7 +23,7 @@ function initializeSquareGrid(xBoxes, yBoxes, numMines, seed) {
   for (var x = 0; x < xBoxes; x++) {
     grid[x] = []
     for (var y = 0; y < yBoxes; y++) {
-      var newBox = new Box(boxes.length, x*boxWidth+boxWidth/2, y*boxHeight+boxHeight/2,boxWidth/4, pts);
+      var newBox = new Box(boxes.length, x*boxWidth+boxWidth/2, y*boxHeight+boxHeight/2,boxWidth/2, pts);
       boxes.push(newBox);
       grid[x][y] = newBox;
     }
