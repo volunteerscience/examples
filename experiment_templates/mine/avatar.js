@@ -52,8 +52,12 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
       this.path.push(obj);
     };
     
+    /**
+     * return true to stop
+     */
     this.steppedOn = function(obj) {
 //      log("steppedOn:"+obj.id);
+      return false;
     };
     
     
@@ -65,7 +69,11 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
       var dy = obj.y-this.y;
       var len = Math.sqrt(dx*dx+dy*dy);
       if (len < SIZE && this.currentlyOn != obj) {
-        this.steppedOn(obj);
+        
+        if (this.steppedOn(obj)) {
+          this.currentlyOn = obj;
+          return false;  
+        }
         this.currentlyOn = obj;
       }
       
@@ -113,6 +121,7 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
     // change the stance to the action
     this.action = function(actionNum) {
       this.stance = ACTION_MAP[actionNum];
+//      log("action("+actionNum+"):"+this.stance);
       this.update();
     };
 
@@ -121,7 +130,6 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
       // rotate around me
       var rx = SW2+(this.color)*SW;
       var ry = SW2+(this.stance)*SW;
-  
       var cr = (this.x-SW2+S_CLIP)+" "+(this.y-SW2+S_CLIP)+" "+(SW-2*S_CLIP)+" "+(SW-2*S_CLIP);
       this.img.attr({
   //    this.img.animate({
@@ -134,7 +142,7 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
     
     // draw a cartoon bubble
     this.say = function(text) {
-      
+      log(text);
     };
     
     this.img = PAPER.image(SPRITE_SRC, 0, 0, S_IMG_W, S_IMG_H);

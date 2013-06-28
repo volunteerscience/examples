@@ -70,7 +70,7 @@ function Box(id, x, y, r, points) {
     if (data) {
       var idx;
         idx = myBox.draggingOver.indexOf(e.target);
-        log(idx+" "+myBox.draggingOver.length);
+//        log(idx+" "+myBox.draggingOver.length);
         if (idx >= 0) {
           myBox.draggingOver.splice(idx,1);
         }        
@@ -118,9 +118,11 @@ function Box(id, x, y, r, points) {
     if (myBox.canWalk()) {
       // calculate path as breadth first search, recursive
       var p = doBFS(avatar.currentlyOn.id,myBox.id);
-      var path = p.map(function(id) { return boxes[id] }); // ids => boxes
-      avatar.setPath(path);
-      log(p);
+      if (p != null) {
+        var path = p.map(function(id) { return boxes[id] }); // ids => boxes
+        avatar.setPath(path);        
+      }
+//      log(p);
 //      submit('<walkPath l="'+avatar.x.toFixed(1)+','+avatar.y.toFixed(1)+','+avatar.angle.toFixed(1)+'" p="'+p.join()+'"/>');
 
     } else {
@@ -144,32 +146,47 @@ function Box(id, x, y, r, points) {
   
   this.revealed = false;
   // called when player steps on the square, or neighboring square has no bombs
+  // return true if avatar should stop there
   this.reveal = function(playerId) {
-    if (myBox.revealed) return;
+    if (myBox.revealed) return false;
     myBox.revealed = true;
-    if (myBox.val == -2) {
+    switch(myBox.val) {
+    case -2:
       // I'm the reward
       myBox.icon.attr("text","$");
-    } else if (myBox.val == 0) {
+      return true;
+    case -1:
+      // boom
+      myBox.icon.attr("text","!");
+      var avatar = avatars[playerId];
+      avatar.action(2);
+      avatar.active = false;
+      avatar.say("AAH!");
+      return true;
+    case 0:
       // this is a special case where you reveal your neighbors because you have a val of zero
       myBox.icon.attr("text","");
       for (var i in myBox.neighbor) {
+        // TODO: delay this until a later tick, to make it animate
         myBox.neighbor[i].reveal(0);
       }
-    } else {
+      return false;
+    default:
+      // set the icon
       myBox.icon.attr("text",myBox.val);
       myBox.icon.attr("fill",mColor[myBox.val]);      
+      return false;
     }
   };
   
   this.val = 0;
   
   this.addBox = function(b) {
+    myBox.neighbor.push(b);
     if (myBox.val < 0) return; // I'm a bomb or a reward val is already set
     if (b.val == -1) { // a bomb
       myBox.val++;
     }
-    myBox.neighbor.push(b);
   };
 }
 
@@ -243,7 +260,9 @@ function doBFS(start, dest) {
  * start at the dest, then expand until finding start
  */ 
 function bfs(start, dest, m, q) {
-  if (q.length == 0) return null; // no path
+  if (q.length == 0) {
+    return null; // no path
+  }
   var cur = boxes[q.shift()];
 
   // sort this by closest to dest so they don't take somewhat bizarre choices, this may still be strange going around corners
@@ -260,7 +279,6 @@ function bfs(start, dest, m, q) {
       do {
         ret.push(next);
         next = m[next];
-//        return null;
       } while (next != dest);
       ret.push(dest);
       return ret;
@@ -330,7 +348,7 @@ function initializeGame() {
         avatars[i].currentlyOn = box;
         if (i == myid) {
           avatars[i].steppedOn = function(box) {
-            box.reveal(myid);
+            return box.reveal(myid);
           };
           
           // TODO: don't submit on a refresh
