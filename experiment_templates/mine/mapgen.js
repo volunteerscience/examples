@@ -7,23 +7,31 @@ function initializeSquareGrid(xBoxes, yBoxes, numMines, seed) {
   
   // make the boxes square
   boxWidth = Math.min(boxWidth,boxHeight);
+  boxWidth = 35;
+  
   boxHeight = boxWidth;
   var w = boxHeight/2;
+//  alert(boxWidth);
   var pts = [-w,-w, w,-w, w,w, -w,w];
 
   // center
   var width = boxWidth*xBoxes+lineWidth;
-  var height = boxHeight*xBoxes+lineWidth*2;
-  x1 = -(cWidth-width)/2;
-  y1 = (cHeight-height)/2;
-  paper.setViewBox(x1, y1, cWidth, cHeight, false);
+  var height = boxHeight*yBoxes+lineWidth;
+  
+  var scale = Math.max(width/cWidth,height/cHeight);
+  w1 = cWidth*scale;
+  h1 = cHeight*scale;
+  x1 = -(w1-width)/2 - lineWidth*scale*2;
+  y1 = -(h1-height)/2;
+//  alert(x1+","+y1+","+w1+","+h1);
+  paper.setViewBox(x1, y1, w1, h1, false);
   
 
   // layout the boxes
   for (var x = 0; x < xBoxes; x++) {
     grid[x] = []
     for (var y = 0; y < yBoxes; y++) {
-      var newBox = new Box(boxes.length, x*boxWidth+boxWidth/2, y*boxHeight+boxHeight/2,boxWidth/2, pts);
+      var newBox = new Box(boxes.length, x*boxWidth+w, y*boxHeight+w,w, pts);
       boxes.push(newBox);
       grid[x][y] = newBox;
     }
@@ -92,8 +100,6 @@ function initializeSquareGrid(xBoxes, yBoxes, numMines, seed) {
       }      
     }
   }
-  
-  
 }
 
 function initializeHexGrid() {

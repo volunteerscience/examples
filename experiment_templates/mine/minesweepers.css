@@ -17,6 +17,10 @@
   width: 100px; 
 }
 
+.controlTable tr {
+  height: 60px;
+}
+
 .controlTable td {
   width: 60px;
   border: 1px solid black;
@@ -34,6 +38,16 @@
   text-decoration: none;
   color: #7DAF27;
   cursor: pointer;
+}
+
+#walkk {
+  width: 48px;
+  height: 48px;
+  margin: 2px;
+  background-repeat:repeat-x;
+  background-position:right top;
+  background-size: 100%;
+  background-image: url('/media/experiment/4/walk.1.png');
 }
 
 .uc1 {
