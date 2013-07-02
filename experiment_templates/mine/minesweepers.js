@@ -458,28 +458,45 @@ function initializeGame() {
   // calcluate initial location
   Math.seedrandom(seed);
   var startLoc = [];
-  for (var i = 1; i <= numPlayers; i++) {
-    while(true) {
+  for (var i = 1; i <= numPlayers+1; i++) { // extra one is for the goal
+    var tries = 0;
+    while (true) { 
+      // pick a random box
       var boxId = Math.floor(Math.random()*boxes.length);
       var box = boxes[boxId];
-      if (box.val == 0 && startLoc.indexOf(boxId) == -1) {
-        box.reveal(0);
-        startLoc.push(boxId);
-        avatars[i] = myAvatarFactory.build(i-1, box.x, box.y);   
-        avatars[i].currentlyOn = box;
-        if (i == myid) {
-          avatars[i].steppedOn = function(box) {
-            if (box.val == -2) {
-              avatars[myid].say("Hooray!");
-            } 
-            return box.reveal(myid);
-          };
-          
-          // TODO: don't submit on a refresh
-          submit('<start box="+boxId+"/>');
+      
+      // if it's empty, and not already a starting location
+//      if (box.val == 0 && startLoc.indexOf(boxId) == -1) {
+      if ((box.val == 0 && box.revealed == false) || // try to put it on a zero that hasn't been revealed
+          (tries > 40 && box.val >= 0 && box.revealed == false) || // if you try for a while, it doesn't have to be a zero
+          (tries > 100 && box.val >= 0)) { // in this case we'll even take a revealed spot, just not a bomb
+        if (i <= numPlayers) {
+          box.reveal(0);
+          startLoc.push(boxId);
+          avatars[i] = myAvatarFactory.build(i-1, box.x, box.y);   
+          avatars[i].currentlyOn = box;
+          if (i == myid) {
+            avatars[i].steppedOn = function(box) {
+              if (box.val == -2) {
+                win(i);
+              } 
+              return box.reveal(myid);
+            };
+            
+            // TODO: don't submit on a refresh
+            submit('<start box="+boxId+"/>');
+          }
+        } else {
+          alert('win is on:'+box.id);
+          box.val = -2;
+          if (box.revealed) {
+            box.revealed = false;
+            box.reveal(0);
+          }
         }
         break;
       }
+      tries++;
     }
   }
 //  background = paper.rect(-10, -10, cWidth+20, cHeight+20, 10).attr({fill: lightOrange, stroke: "none"});  
@@ -562,6 +579,10 @@ function initializeGame() {
 
   
   startAnimation();
+}
+
+function win(id) {
+  avatars[myid].say("Hooray!");
 }
 
 /**

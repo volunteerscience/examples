@@ -39,7 +39,7 @@ function initializeSquareGrid(xBoxes, yBoxes, numMines, seed) {
   
   // set all the bombs
   Math.seedrandom(seed);
-  var bombCt = -1; // first is the reward
+  var bombCt = 0; // first is the reward (set this to -1 for this code to set the reward)
   while (bombCt < numMines) {
     var x = Math.floor(Math.random()*xBoxes);
     var y = Math.floor(Math.random()*yBoxes);
