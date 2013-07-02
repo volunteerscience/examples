@@ -54,6 +54,29 @@ function initializeSquareGrid(xBoxes, yBoxes, numMines, seed) {
     }
   }
   
+  
+  var s = "M ";
+  for (var i = 0; i < pts.length; i+=2) {
+    s+=pts[i]+","+pts[i+1]+" L ";
+  }
+  s+= "Z";
+  outline = paper.path(s).attr(
+      {
+        "stroke": "pink",
+        "stroke-width": 3, 
+        "stroke-linejoin": "round"
+        ,"transform": "s1.2, 1.2, "+0+", "+0
+      }).hide();
+//  outline.onDragEnter = function(e) {
+//    log("outline onDragEnter");
+//    var data = e.originalEvent.dataTransfer.getData("Text");
+//    if (data) {
+//      if (this.box) {
+//        return this.box.onDragEnter(e);
+//      }
+//    }
+//  };
+  
   // register connections -- cardinal directions need to come first to make the walking algorithm not funky, so we use 2 passes
   for (var y = 0; y < yBoxes; y++) {
     for (var x = 0; x < xBoxes; x++) {

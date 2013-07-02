@@ -23,6 +23,7 @@ var LOOK = 3;
 
 var mode = "walk"; // which action the user clicked on
 var BK_GRND = "\u25EF"; //"\u0398"; //"\u06DE"; //"@";
+var outline;
 
 function Box(id, x, y, r, points) {
   var myBox = this; // for inner functions
@@ -42,52 +43,43 @@ function Box(id, x, y, r, points) {
   }
   s+= "Z";
   this.polygon = paper.path(s).attr('fill',pColor[0]);
-  this.text = paper.text(x,y,"").attr({'text-anchor': 'middle', 'font': paper.getFont("Vegur"), 'font-size': 30});
+  this.text = paper.text(x,y,"").attr({'text-anchor': 'middle', 'font': paper.getFont("Vegur"), 'font-size': 30, "font-weight": "bold"});
   this.icon = paper.image("", x-r, y-r, r*2, r*2).hide();
 
-  this.outline = null;
-  this.draggingOver = []; // since there are multiple elements, keep track of all of them that we are dragging over
+//  this.draggingOver = []; // since there are multiple elements, keep track of all of them that we are dragging over
   
   this.canWalk = function() {
     return myBox.revealed || myBox.mark[0] == SAFE;
   };
   
   this.onDragEnter = function(e) {
-    
     var data = e.originalEvent.dataTransfer.getData("Text");
     if (data) {
-      myBox.draggingOver.push(e.target);
-      if (myBox.outline == null) {
-        myBox.outline = paper.path(s).attr(
-            {
-              "stroke": "pink",
-              "stroke-width": 3, 
-              "stroke-linejoin": "round", 
-              "transform": "s1.2, 1.2, "+myBox.x+", "+myBox.y
-            });
-      }
+      outline.box = myBox;
+      outline.show();
+      outline.transform("t"+myBox.x+","+myBox.y+" s1.2,1.2,0,0");
+//      outline.toFront();
       e.preventDefault();
     }
   };
 
-  this.onDragLeave = function(e) {
-    var data = e.originalEvent.dataTransfer.getData("Text");
-    if (data) {
-      var idx;
-      idx = myBox.draggingOver.indexOf(e.target);
-//        log(idx+" "+myBox.draggingOver.length);
-      if (idx >= 0) {
-        myBox.draggingOver.splice(idx,1);
-      }        
-    }
-    if (myBox.draggingOver.length == 0) { // not over either element
-      if (myBox.outline != null) {
-        myBox.outline.remove();
-        myBox.outline = null;
-      }
-    }
-    e.preventDefault();
-  };
+//  this.onDragLeave = function(e) {
+//    var data = e.originalEvent.dataTransfer.getData("Text");
+//    if (data) {
+//      var idx;
+//      idx = myBox.draggingOver.indexOf(e.target);
+//      if (idx >= 0) {
+//        myBox.draggingOver.splice(idx,1);
+//      }        
+//    }
+//    if (myBox.draggingOver.length == 0) { // not over either element
+//      if (myBox.outline != null) {
+//        myBox.outline.remove();
+//        myBox.outline = null;
+//      }
+//    }
+//    e.preventDefault();
+//  };
   
   this.onDragOver = function(e) {
     var data = e.originalEvent.dataTransfer.getData("Text");
@@ -139,11 +131,8 @@ function Box(id, x, y, r, points) {
   };
   
   this.onDrop = function(e) {
-    myBox.draggingOver.length = 0; // clear the array
-    if (myBox.outline != null) {
-      myBox.outline.remove();
-      myBox.outline = null;
-    }
+    log("onDrop");
+    outline.hide();
     var data = e.originalEvent.dataTransfer.getData("Text");
     if (data) {
       if (data == "walk") {
@@ -403,8 +392,8 @@ function bfs(start, dest, m, q) {
 }
 
 function initialize() {
-  pColor = ["#9684fc", "#f68600","#0070c0","#7dcc15","#f10c0c","#fafa0d","#b402ff"];
-  mColor = ["#96848c", "#00F", "#0F0", "#F00", "#b402ff", "#8e220c", "", "#f44c0c", "#0cf1f4", "#1d0cf4", "#849685"];
+  pColor = ["#4960d2", "#f68600","#0070c0","#7dcc15","#f10c0c","#fafa0d","#b402ff"];
+  mColor = ["#c7d4e7", "#414fbc", "#1d6705", "#ac0607", "#010282", "#7b0102", "#05797d", "#f44c0c", "#0cf1f4", "#1d0cf4", "#849685"];
   
   initializeGame();
 }
@@ -459,8 +448,8 @@ function initializeGame() {
     break;
   default:
 //    initializeSquareGrid(10,10,10,seed); // easy
-    initializeSquareGrid(16,16,40,seed); // med
-//    initializeSquareGrid(30,16,99,seed); // hard
+//    initializeSquareGrid(16,16,40,seed); // med
+    initializeSquareGrid(30,16,99,seed); // hard
   }
   
   avatars = new Array();
@@ -495,7 +484,7 @@ function initializeGame() {
   }
 //  background = paper.rect(-10, -10, cWidth+20, cHeight+20, 10).attr({fill: lightOrange, stroke: "none"});  
 //  background.toBack();
-  
+
   // disable drag starting on the canvas
   $('#canvas').bind("dragstart", function() {
     return false;
@@ -558,7 +547,7 @@ function initializeGame() {
   });   
 
   $('#zoomMan').click(function() {
-    zoomToAvatar(myid, boxes[0].r*6); 
+    zoomToAvatar(myid, boxes[0].r*9); 
   });   
 
   $('#zoomIn').click(function() {
