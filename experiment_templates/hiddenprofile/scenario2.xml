@@ -17,8 +17,12 @@ Your goal is to work with your team to successfully identify the Culprit, Target
 	</instructions>
 	<clue visibility="shared">
 The [Culprit,1], [Culprit,2], [Culprit,3], [Culprit,4] and [Culprit,5] organizations may be planning attacks. [Culprit,4] has been unusually active lately.
+	</clue>
+	<clue visibility="shared">
 [Target,1], [Target,2], [Target,3], [Target,4] and [Target,5] are all potential targets. The [Target,1] in Capital City are particularly vulnerable.
-Police informants indicate that the attack will happen on a weekday.
+	</clue>
+	<clue visibility="shared">
+The attack will be on a weekday. Historically, attacks have occurred most often on [Day,1]s. 
 	</clue>
 	<clue visibility="private" type="Culprit" id="1">
 [Culprit,1] has been infiltrated by the police. They are not involved. 
@@ -57,13 +61,13 @@ Attacks are most likely on days when target locations are experiencing high acti
 [Day,1]s and [Day,2]s are especially high-activity days at the target locations. 
 	</clue>
 	<clue visibility="private" type="Day" id="3">
-Due to logistical constraints, it is unlikely that the attack will occur on a [Day,1] or [Day,3]. 
+Police informants indicate that the attack will not occur on a [Day,1] or [Day,3]. 
 	</clue>
 	<clue visibility="private" type="Day" id="4">
 Security is enhanced on [Day,4]s. The attack will not occur on a [Day,4].
 	</clue>
 	<clue visibility="private" type="Day" id="5">
-Historically, attacks are more likely on [Day,2]s and less likely on [Day,5]s.
+Intelligence suggests the attack is most likely to occur on a [Day,2] and least likely on a [Day,5]. 
 	</clue>
 	<option type="Culprit" id="1" answer="false">
 	Lion

@@ -14,6 +14,11 @@
 	</question>
 	<question type="likert-players-selfexclude">
 		<text>
+		To what extent was each of the following teammates willing to share information with you? 
+		</text>
+	</question>
+	<question type="likert-players-selfexclude">
+		<text>
 		To what extent did each of the following teammates provide information that was useful to you?
 		</text>
 	</question>

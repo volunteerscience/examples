@@ -9,9 +9,6 @@
 				<tr>
 					<td width="70"></td>
 					<td width="485">
-					<div class="progress">
-						<div class="bar" style="width:100%;" id="insttimerbar"></div>
-					</div>
 					</td>
 					<td width="1" valign="top">
 						<p align="right"><font face="Verdana"><span style="font-size:14pt;"></span></font></p>
@@ -57,20 +54,23 @@
 				</tr>
 			</table>
 		
-            <div id="helpinfo" class="mybs-docs-example tooltip-demo">
-                <ul>
-					<li id="timetext" style="margin-bottom: 0;"></li>
-                    <li id="comch" style="margin-bottom: 0;">Open a communication channel with your teammate by clicking on the teammate's name. You may chat with as many of your teammates as frequently as you wish, however you may only communicate with one teammate at a time. </li>
-                    <li id="stepgoal" style="margin-bottom: 0;">Please read the provided information at this step.</li>
-                </ul>
-            </div>
+			<table id="helpinfotable">
+				<tr>
+					<td>
+						<div id="helpinfo" class="mybs-docs-example tooltip-demo">
+							<ul>
+								<li id="timetext" style="margin-bottom: 0;"></li>
+								<li id="comch" style="margin-bottom: 0;">Open a communication channel with your teammate by clicking on the teammate's name. You may chat with as many of your teammates as frequently as you wish, however you may only communicate with one teammate at a time. </li>
+								<li id="stepgoal" style="margin-bottom: 0;">Please read the provided information at this step.</li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+			</table>
 		
 			<table id="pbar" border="0" width="800" align="center">
 				<tr id="pbarrow">
 					<td width="440">
-						<div class="progress">
-						<div class="bar" style="width:100%;" id="timerbar"></div>
-						</div>
 					</td>
 					<td width="118">
                         <p align="right" style="font-family:'Verdana';font-size:15pt;">Time Left:
@@ -83,8 +83,34 @@
 			</table>
 		
 			<div id="gamecontent">
-				<div id="pubinfo">
-				</div>
+				<table width="800">
+					<tr>
+						<td colspan="3">
+							<p id='ttl' align='center'></p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div id="pubinfo" style="width: 100%;">
+							</div>
+						</td>
+						<td width="20">&nbsp;</td>
+						<td id="hpnotesvoting">
+							<table border="0" id="notetable">
+								<tr>
+									<td width="294" class="myfont">
+									Notes:
+									</td>
+								</tr>
+								<tr>
+									<td width="294" height="200">
+										<textarea id="noteareavoting"></textarea>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
 
 				<table id="step2" align="center" border="0" width="845">
 					<tr>
@@ -96,33 +122,17 @@
 						</td>
 						<td width="2">	
 						</td>
-						<td width="523">			
-							<table align="center" border="0" width="488" class="myhero-unit" id="chattable">
+						<td width="513">			
+							<table align="center" border="0" width="468" class="myhero-unit" id="chattable">
 								<tr>
-									<td width="476" height="25">
-										<p align="center"><span style="font-family:'Verdana';font-size:14pt;">Discussion</span></p>
-									</td>
+									<td width="455" height="156"></td>
 								</tr>
 								<tr>
-									<td width="476" height="62">
-										<div class="control-group">  
-											<div class="controls"> 
-												<div id="chat_conversation" style="border: 1px solid black; background-color:white; text-align:left; width: 100%; height: 250px; overflow: auto; font-family:'Verdana'; font-size: 10pt;">
-													<div>
-														Welcome to public chat of the experiment!<br>
-													</div>
-												</div>
-											</div>  
-										</div> 
-										<p>
-											<i class="icon-pencil"></i>						
-											<input onFocus="document.getElementById('chat_input').value='';" value="Type something here..." type="text" id="chat_input" style="width: 76%;" class="input-xlarge">
-											<button type="submit" class="btn btn-primary" id="chat_send_button" onClick="sendMessage();">
-											<i class="icon-comment icon-white"></i> Send
-											</button>
-										</p>	
+									<td width="455" height="171">
+										<div style="text-align: center; vertical-align:middle; width: 100%; height: 100%; font-family:'Verdana'; font-size: 12pt;">
+										Please click on a user to start chatting...
+										</div>
 									</td>
-									<td width="0" height="62"></td>
 								</tr>
 							</table>
 						</td>
@@ -131,15 +141,14 @@
 					</tr>
                     <tr>
                         <td colspan="6" width="835" height="20">
-
 						</td>
                     </tr>
                     <tr>
                         <td colspan="6" width="835">
 						<table border="0">
 							<tr>
-								<td width="490" id="pubcontainer"></td>
-								<td width="10">&nbsp;</td>
+								<td width="480" id="pubcontainer"></td>
+								<td width="20">&nbsp;</td>
 								<td width="300" id="hpnotes">
 									<table border="0" id="notetable">
 										<tr>
@@ -162,7 +171,11 @@
 				
 				<table id="step3" border="0" align="center" width="792">
 					<tr>
-						<td width="798" height="53" colspan="3">
+						<td width="798" colspan="5" id="submitStatus">
+						</td>
+					</tr>
+					<tr>
+						<td width="798" height="20" colspan="5">
 							<p id="basedonthe">Based on the information you have gathered, identify: </p>
 						</td>
 					</tr>
@@ -252,6 +265,7 @@ var selectedUser=0;
 var userMessage="";
 var step3Options;
 var clueType;
+var shuffledOptions;
 var infoCounts;
 var endGameResultsCount=0;
 var questions = new Array();
@@ -263,13 +277,15 @@ var currentQuestion=0;
 var surveySelections=new Array();
 var canvasWidth=300;
 var canvasHeight=303;
-var chatContent;
 var condition;
 var currentDiscRound;
 var publicInfo;
 var publicImage;
 var readyCount;
 var myanswer;
+var tabTemplate;
+var tabs;
+var circleColors;
 
 function initialize()
 {
@@ -281,7 +297,9 @@ function initialize()
 	$("#step3").hide();
 	$('#endgamesurvey').hide();
 	$('#notearea').html("");
-	$('#pubinfo').html("<p id='ttl' align='center'></p><div id='desc' class='accordion'></div><div id='step1' class='accordion'></div>");
+	$("#hpnotesvoting").hide();
+	$("#ttl").hide();
+	$('#pubinfo').html("<div id='desc' class='accordion'></div><div id='step1' class='accordion'></div>");
 	document.getElementById("timetext").innerHTML="You have "+variables['Step1Timer']+" seconds before proceeding at next step.";
 	this.InstructionsTimer=parseInt(variables['InstructionsTimer']+"")+1; 
 	this.Step1Timer=parseInt(variables['Step1Timer']+"")+1; 
@@ -289,7 +307,6 @@ function initialize()
 	this.EndGameTimer=parseInt(variables['end_game_timer']+"")+1;
 	this.NextRoundTimer=parseInt(variables['round_interval_timer']+"")+1;
 	parseScenarioXML();
-	this.chatContent=$("#chat_conversation").html();
 }
 
 function arraySize(obj) {
@@ -314,6 +331,7 @@ function parseScenarioXML()
 {
 	this.step3Options = new Array();
 	this.clueType = new Array(); // contains the number of options from each group
+	this.shuffledOptions = new Array();
 	this.infoCounts = new Array(); // contains the number of information from each group
 	xmlDoc=loadXMLDoc(getFile("scenario"+variables['scenario_number']+".xml"));
 
@@ -321,13 +339,16 @@ function parseScenarioXML()
 	{
 		if(this.clueType[$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)]==null||
 		this.clueType[$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)]==undefined)
+		{
 			this.clueType[$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)]=1;
+			this.shuffledOptions[$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)]=new Array();
+			this.shuffledOptions[$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)].push(1);
+		}
 		else
+		{
 			this.clueType[$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)]++;
-		var larray=new Array();
-		larray.push($.trim(xmlDoc.getElementsByTagName("option")[j].childNodes[0].nodeValue));
-		larray.push(0);
-		this.step3Options[$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)+","+$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("id").nodeValue)]=larray;
+			this.shuffledOptions[$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)].push(this.shuffledOptions[$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)][this.shuffledOptions[$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)].length-1]+1);
+		}
 	}
 	
 	for(var j=0; j<xmlDoc.getElementsByTagName("clue").length; j++)
@@ -347,14 +368,8 @@ function parseScenarioXML()
 	}
 	
 	var title = $.trim(xmlDoc.getElementsByTagName("title")[0].childNodes[0].nodeValue);
-	document.getElementById("ttl").innerHTML=title;
-	this.publicInfo="";
-	this.publicImage="";
-	if($.trim(xmlDoc.getElementsByTagName("clue")[0].attributes.getNamedItem("visibility").nodeValue)=="shared")
-		this.publicInfo=preprocess($.trim(xmlDoc.getElementsByTagName("clue")[0].childNodes[0].nodeValue));
-	if(xmlDoc.getElementsByTagName("clue")[0].getElementsByTagName("picture")[0]!=null&&xmlDoc.getElementsByTagName("clue")[0].getElementsByTagName("picture")[0]!=undefined)
-		this.publicImage=getFile($.trim(xmlDoc.getElementsByTagName("clue")[0].getElementsByTagName("picture")[0].childNodes[0].nodeValue));	
-	
+	$("#ttl").html(title);
+
 	//var size = arraySize(this.step3Options);
 	
 	//var size = 0, key;
@@ -396,22 +411,109 @@ function parseScenarioXML()
 			}
 		}
 		if($.trim(variables["visualization_type"])=="1"||$.trim(variables["visualization_type"])=="2"||$.trim(variables["visualization_type"])=="3")
-			this.privateOrder=parseInt(variables["visualization_type"])+" "+this.privateOrder;
+			this.privateOrder=parseInt(variables["visualization_type"])+"| "+this.privateOrder;
 		else
-			this.privateOrder=(Math.floor(Math.random()*3)+1)+" "+this.privateOrder;
+			this.privateOrder=(Math.floor(Math.random()*3)+1)+"| "+this.privateOrder;
+		var key;
+		var optionsOrder="";
+		for (key in this.clueType) 
+			optionsOrder+=(key+"="+shuffle(this.shuffledOptions[key])+" ");
+		this.privateOrder=optionsOrder+"|"+this.privateOrder;
 		submit(this.privateOrder);
+	}
+}
+
+function shuffle(array) {
+    var counter = array.length, temp, index;
+
+    // While there are elements in the array
+    while (counter > 0) {
+        // Pick a random index
+        index = Math.floor(Math.random() * counter);
+
+        // Decrease counter by 1
+        counter--;
+
+        // And swap the last element with it
+        temp = array[counter];
+        array[counter] = array[index];
+        array[index] = temp;
+    }
+
+    return array;
+}
+
+function setEveryoneTab()
+{
+	this.tabTemplate = "<li id='#{tabli}'><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>";
+	if(parseInt(variables['chatting_with_everyone'])==1)
+	{
+		$("#chattable").html("<tr><td width=\"455\" height=\"87\"><div id=\"tabs\"><ul><li id=\"tabli0\"><a href=\"#tabs-0\">Everyone</a></li></ul><div id=\"tabs-0\"><div class=\"control-group\"><div class=\"controls\"> <div id=\"chat_conversation0\" style=\"background-color:white; text-align:left; width: 100%; height: 250px; overflow: auto; font-family:'Verdana'; font-size: 10pt;\"><div></div></div></div></div></div></div><i class=\"icon-pencil\"></i><input onFocus=\"document.getElementById('chat_input').value='';\" value=\"Type something here...\" type=\"text\" id=\"chat_input\" style=\"width: 76%;\" class=\"input-xlarge\"><button type=\"submit\" class=\"btn btn-primary\" id=\"chat_send_button\" onClick=\"sendMessage();\"><i class=\"icon-comment icon-white\"></i> Send</button></td><td width=\"0\" height=\"62\"></td></tr>");
+		 $("#chat_input").keypress(function(event) {
+			if ( event.which == 13 ) {
+				sendMessage();
+				event.preventDefault();
+			}
+		  });
+		this.tabs = $( "#tabs" ).tabs({
+			activate: function( event, ui ) {
+				if($(ui.newTab).text()=="Everyone")
+				{
+					if(getCondition()==1)
+					{
+						setUser(0);
+						removeActives();
+						$('#0').addClass('active');
+					}
+					else
+					{
+						for(var i=1; i<=numPlayers; i++)
+							dehighlightCircle(i);
+						highlightCircle(0);
+					}
+					$("#tabli0").css("background-color", "#FFFFFF");
+				}
+				else
+				{
+					if(getCondition()==1)
+					{
+						setUser(parseInt($(ui.newTab).text().substring(5, 6)));
+						removeActives();
+						$('#'+$(ui.newTab).text().substring(5, 6)).addClass('active');
+					}
+					else
+					{
+						for(var i=1; i<=numPlayers; i++)
+							dehighlightCircle(i);
+						highlightCircle(parseInt($(ui.newTab).text().substring(5, 6)));
+					}
+					$("#tabli"+$(ui.newTab).text().substring(5, 6)).css("background-color", "#FFFFFF");
+				}
+			}
+		});
+		/*this.tabs.find( ".ui-tabs-nav" ).sortable({
+			axis: "x",
+			stop: function() {
+				tabs.tabs( "refresh" );
+			}
+		});*/
+		setupTabs();
 	}
 }
 
 function setCondition()
 {
-	this.condition=parseInt(this.privateOrder.substring(0,1));
+	this.condition=parseInt(this.privateOrder.substring(this.privateOrder.indexOf("|")+1, this.privateOrder.indexOf("|")+2));
+	this.circleColors=["#FE2E2E", "#FE642E", "#2E64FE", "#642EFE", "#FE2E9A", "#2E2EFE", "#0489B1", "#585858", "#0B610B"];
+	
+	setEveryoneTab();
+	
 	if(this.condition==1)
 	{
 		if(parseInt(variables['chatting_with_everyone'])==1)
-			$("#conditiontable").html("<tr><td width=\"190\" height=\"17\"><p class=\"myfont\">Participants List</p></td><td width=\"71\" height=\"17\"></td><td width=\"31\" height=\"17\"></td></tr><tr><td width=\"150\" rowspan=\"2\" height=\"280\" class=\"myhero-unit\" style=\"border-width:1;\"><div><div class=\"span3\" style=\"width:100%;\"><ul id=\"userlist\" class=\"mynav mynav-list\"\"><li id=\"0\" class=\"active\"><a onClick=\"setUser(0); removeActives(); $('#0').addClass('active');\"><i class=\"icon-user\"></i>Everyone</a></li></ul></div></div></td></tr>");
+			$("#conditiontable").html("<tr><td width=\"150\" rowspan=\"2\" height=\"297\" class=\"myhero-unit\" style=\"border-width:1;\"><div><div class=\"span3\" style=\"width:100%;\"><ul id=\"userlist\" class=\"mynav mynav-list\"\"><li id=\"0\" class=\"active\"><a onClick=\"setUser(0); removeActives(); $('#0').addClass('active');\"><i class=\"icon-user\"></i>Everyone</a></li></ul></div></div></td></tr>");
 		else
-			$("#conditiontable").html("<tr><td width=\"190\" height=\"17\"><p class=\"myfont\">Participants List</p></td><td width=\"71\" height=\"17\"></td><td width=\"31\" height=\"17\"></td></tr><tr><td width=\"150\" rowspan=\"2\" height=\"280\" class=\"myhero-unit\" style=\"border-width:1;\"><div><div class=\"span3\" style=\"width:100%;\"><ul id=\"userlist\" class=\"mynav mynav-list\"\"></ul></div></div></td></tr>");
+			$("#conditiontable").html("<tr><td width=\"150\" rowspan=\"2\" height=\"297\" class=\"myhero-unit\" style=\"border-width:1;\"><div><div class=\"span3\" style=\"width:100%;\"><ul id=\"userlist\" class=\"mynav mynav-list\"\"></ul></div></div></td></tr>");
 		$("#conditiontable").css("background-color", "#F2F5A9");
 		$("#conditiontable").css("width", 150);
 		$("#conditiontabletd").css("width", 150);
@@ -432,25 +534,77 @@ function setCondition()
 	}
 	if(this.condition==2)
 	{
-		$("#conditiontable").html("<tr><td width=\"190\" height=\"17\"><p class=\"myfont\">Static Participant Network</p></td><td width=\"71\" height=\"17\"></td><td width=\"31\" height=\"17\"></td></tr><tr><td width=\"300\" height=\"95\" colspan=\"3\"><div id=\"myholder\" align=\"center\"></div></td></tr>");
+		$("#conditiontable").html("<tr><td width=\"300\" height=\"112\" colspan=\"3\"><div id=\"myholder\" align=\"center\"></div></td></tr>");
 		drawStaticNetwork();
 	}
 	if(this.condition==3)
 	{
-		$("#conditiontable").html("<tr><td width=\"190\" height=\"17\"><p class=\"myfont\">Dynamic Participant Network</p></td><td width=\"71\" height=\"17\"></td><td width=\"31\" height=\"17\"></td></tr><tr><td width=\"300\" height=\"95\" colspan=\"3\"><div id=\"myholder\" align=\"center\"></div></td></tr>");
+		$("#conditiontable").html("<tr><td width=\"300\" height=\"112\" colspan=\"3\"><div id=\"myholder\" align=\"center\"></div></td></tr>");
 		drawDynamicNetwork();
+	}
+}
+
+function getCondition()
+{
+	return this.condition;
+}
+
+function setShuffledOptions()
+{
+	var tarr=this.privateOrder.substring(0, this.privateOrder.indexOf("|")).split(" ");
+	for(var p=0;p<tarr.length;p++)
+	{
+		if(tarr[p].length==0) continue;
+		this.shuffledOptions[tarr[p].substring(0, tarr[p].indexOf("="))] = eval("["+tarr[p].substring(tarr[p].indexOf("=")+1)+"]");
+	}
+	
+	xmlDoc=loadXMLDoc(getFile("scenario"+variables['scenario_number']+".xml"));
+	
+	var key;
+	for (key in this.clueType)
+	{
+		for(var i=0; i<xmlDoc.getElementsByTagName("option").length; i++)
+		{
+			for(var j=0; j<this.shuffledOptions[key].length; j++) // the real opt id is changed with shuffled one i.e. initially opt has id=2, when shuffled [3,4,2,5,1] opt has id=4
+			{
+				if($.trim(xmlDoc.getElementsByTagName("option")[i].attributes.getNamedItem("type").nodeValue)==key&&parseInt($.trim(xmlDoc.getElementsByTagName("option")[i].attributes.getNamedItem("id").nodeValue))==j+1)
+				{
+					var larray=new Array();
+					larray.push($.trim(xmlDoc.getElementsByTagName("option")[i].childNodes[0].nodeValue));
+					larray.push(0);
+					//alert($.trim(xmlDoc.getElementsByTagName("option")[i].attributes.getNamedItem("type").nodeValue)+","+this.shuffledOptions[key][j]+" = "+larray)
+					this.step3Options[$.trim(xmlDoc.getElementsByTagName("option")[i].attributes.getNamedItem("type").nodeValue)+","+this.shuffledOptions[key][j]]=larray;
+				}
+			}
+		}
+	}
+	
+	this.publicInfo=new Array();
+	this.publicImage=new Array();
+	for(var j=0; j<xmlDoc.getElementsByTagName("clue").length; j++)
+	{
+		if($.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("visibility").nodeValue)=="shared")
+			this.publicInfo.push(preprocess($.trim(xmlDoc.getElementsByTagName("clue")[j].childNodes[0].nodeValue)));
+		if(xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[j]!=null&&xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0]!=undefined)
+			this.publicImage.push(getFile($.trim(xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0].childNodes[0].nodeValue)));	
 	}
 }
 
 function setPrivateInfo(myident)
 {
+	setShuffledOptions();
 	setCondition();
-	this.privateOrder=this.privateOrder.substring(2);
+	
+	this.privateOrder=this.privateOrder.substring(this.privateOrder.indexOf("|", this.privateOrder.indexOf("|")+1)+2);
 	var tarr=this.privateOrder.split("_");
-		
-	var gameInfo="<pre id=\"descpre\"><ul><li>"+publicInfo+"</li>";
-	if(this.publicImage!="")
-		gameInfo+="<img src=\""+this.publicImage+"\" alt=\"private info picture\">";
+	
+	var publicInfos="";
+	for(var i =0; i < this.publicInfo.length; i++)
+		publicInfos+=("<li>"+this.publicInfo[i]+"</li>");
+	
+	var gameInfo="<pre id=\"descpre\"><ul>"+publicInfos;
+	for(var i=0; i<this.publicImage.length; i++)
+		gameInfo+="<img src=\""+this.publicImage[i]+"\" alt=\"private info picture\">";
 	$(".gametd").html("<pre id=\"inspre\">"+preprocess($.trim(xmlDoc.getElementsByTagName("instructions")[0].childNodes[0].nodeValue))+"</pre>");
 	for(var p=0;p<tarr.length;p++)
 	{
@@ -499,7 +653,6 @@ function countDownInstructions(){
 			submit('Ready');
 	 }else{  
 		this.InstructionsTimer--;
-		document.getElementById("insttimerbar").style.width=(this.InstructionsTimer*100/parseInt(variables['InstructionsTimer']+""))+"%";
 		document.getElementById("insttimer").innerHTML = this.InstructionsTimer+" seconds remaining"; 
 		this.timeoutInst=setTimeout("countDownInstructions()", 1000);
 	 }  
@@ -753,9 +906,11 @@ function newMove(participant, index) {
 		{
 			countDownStep1();
 			$("#helpinfo").show();
+			$("#helpinfotable").css("width", 800);
 			$("#comch").hide();
 			$("#pbar").show();
 			$("#pubinfo").show();
+			$("#ttl").show();
 			$("#gameinstructions").hide();
 			setRound(3);
 		}
@@ -917,12 +1072,12 @@ function newMove(participant, index) {
 			}
 			if(this.currentDiscRound<parseInt(variables['total_rounds']))
 			{
-				document.getElementById("submitStatus").innerHTML="<font color=\"blue\">Next round is about to begin...</font>";
+				document.getElementById("submitStatus").innerHTML="<p align='center'><font color=\"blue\">Next round is about to begin...</font></p>";
 				countDownNextRound();
 			}
 			else
 			{
-				document.getElementById("submitStatus").innerHTML="<font color=\"blue\">You will now be redirected to end game survey...</font>";
+				document.getElementById("submitStatus").innerHTML="<p align='center'><font color=\"blue\">You will now be redirected to end game survey...</font></p>";
 				countDownEndGame();
 			}
 			$("#pbar").show();
@@ -946,16 +1101,29 @@ function loadStep2()
 	$("#step1").hide();  
 	$("#step3").hide();
 	$("#step2").show();
+	$("#hpnotesvoting").hide();
+	$("#notearea").val($("#noteareavoting").val());
 	$("#pubcontainer").html($("#desc").html());
 	$("#pubcontainer").css({'width': '490px'});
 	$("#desc").hide();
 	$("#stepgoal").hide();
 	$("#helpinfo").show();
+	$("#helpinfotable").css("width", 817);
 	$("#comch").show();
 	if(Math.round(parseInt(variables['Step2Timer'])/60) == 1)
-		document.getElementById("timetext").innerHTML="You have "+Math.round((parseInt(variables['Step2Timer'])/60))+" minute and "+((parseInt(variables['Step2Timer'])%60))+" seconds to chat with your teammates. Your goal is to identify correct ";
+	{
+		if((parseInt(variables['Step2Timer'])%60)!=0)
+			document.getElementById("timetext").innerHTML="You have "+Math.round((parseInt(variables['Step2Timer'])/60))+" minute and "+((parseInt(variables['Step2Timer'])%60))+" seconds to chat with your teammates. Your goal is to identify correct ";
+		else
+			document.getElementById("timetext").innerHTML="You have "+Math.round((parseInt(variables['Step2Timer'])/60))+" minute to chat with your teammates. Your goal is to identify correct ";
+	}
 	else if(Math.round(parseInt(variables['Step2Timer'])/60) >= 2)
-		document.getElementById("timetext").innerHTML="You have "+Math.round((parseInt(variables['Step2Timer'])/60))+" minutes and "+((parseInt(variables['Step2Timer'])%60))+" seconds to chat with your teammates. Your goal is to identify correct ";
+	{
+		if((parseInt(variables['Step2Timer'])%60)!=0)
+			document.getElementById("timetext").innerHTML="You have "+Math.round((parseInt(variables['Step2Timer'])/60))+" minutes and "+((parseInt(variables['Step2Timer'])%60))+" seconds to chat with your teammates. Your goal is to identify correct ";
+		else
+			document.getElementById("timetext").innerHTML="You have "+Math.round((parseInt(variables['Step2Timer'])/60))+" minutes to chat with your teammates. Your goal is to identify correct ";
+	}
 	else
 		document.getElementById("timetext").innerHTML="You have "+parseInt(variables['Step2Timer'])+" seconds to chat with your teammates. Your goal is to identify correct ";
 	var arrkey;
@@ -973,18 +1141,20 @@ function loadStep2()
 			$("#timetext").html($("#timetext").html()+", "+arrkey)
 		currentcount++;
 	}
-	$("#pbarrow").html("<td width=\"77\"><p align=\"right\" style=\"font-family:'Verdana';font-size:15pt;\">Round:</p></td><td width=\"89\"><p style=\"font-family:'Verdana';font-size:15pt;\"><font color=\"red\" id=\"roundtext\">"+this.currentDiscRound+" of "+variables['total_rounds']+"</font></p></td><td width=\"440\"><div class=\"progress\"><div class=\"bar\" style=\"width:100%;\" id=\"timerbar\"></div></div></td><td width=\"118\"><p align=\"right\" style=\"font-family:'Verdana';font-size:15pt;\">Time Left:</p></td><td width=\"54\"><p style=\"font-family:'Verdana';font-size:15pt;\"><font color=\"red\" id=\"timer\"></font></p></td>");
+	$("#pbarrow").html("<td width=\"77\"><p align=\"right\" style=\"font-family:'Verdana';font-size:15pt;\">Round:</p></td><td width=\"89\"><p style=\"font-family:'Verdana';font-size:15pt;\"><font color=\"red\" id=\"roundtext\">"+this.currentDiscRound+" of "+variables['total_rounds']+"</font></p></td><td width=\"440\"></td><td width=\"118\"><p align=\"right\" style=\"font-family:'Verdana';font-size:15pt;\">Time Left:</p></td><td width=\"54\"><p style=\"font-family:'Verdana';font-size:15pt;\"><font color=\"red\" id=\"timer\"></font></p></td>");
 	countDownStep2();
 }
 
 function loadStep3()
 {
+	$("#hpnotesvoting").show();
+	$("#noteareavoting").val($("#notearea").val());
 	$("#step1").hide();
 	$("#step2").hide();  
 	$("#pbar").hide();
 	$("#step3").show();
 	this.myanswer="";
-	$("#pubinfo").css({ 'width': '800px'});
+	$("#pubinfo").css({ 'width': '480px'});
 	$("#pubinfo").show();
 	$("#desc").show();
 	$("#endgameresults").hide();
@@ -992,31 +1162,36 @@ function loadStep3()
 	document.getElementById("stepgoal").innerHTML="Please make your final decision at this step.";
 	document.getElementById("timetext").innerHTML="";
 	$("#helpinfo").hide();
-	$("#step3").html($("#step3").html()+"<tr><td colspan=\"4\"><table id=\"howconftable\" border=\"0\" width=\"456\" style=\"margin-left: auto; margin-right: auto;\"><tr><td width=\"450\"><p>How confident are you that the answers you selected are correct?</p></td></tr><tr><td width=\"450\"><input type=\"radio\" name=\"howconf\" value=\"Very Confident\">Very Confident<br><input type=\"radio\" name=\"howconf\" value=\"Somewhat Confident\">Somewhat Confident<br><input type=\"radio\" name=\"howconf\" value=\"Neither Confident nor Unsure\">Neither Confident nor Unsure<br><input type=\"radio\" name=\"howconf\" value=\"Somewhat Unsure\">Somewhat Unsure<br><input type=\"radio\" name=\"howconf\" value=\"Very Unsure\">Very Unsure<br></td></tr><tr><td width=\"450\"><p align=\"center\"><button id='subconfbut' type=\"submit\" class=\"btn btn-primary\" onClick=\"submitDecision();\"><i class=\"icon-ok icon-white\"></i> Submit</button></p></td></tr></table></td></tr>");
+	$("#step3").html($("#step3").html()+"<tr><td colspan=\"5\"><table id=\"howconftable\" border=\"0\" width=\"456\" style=\"margin-left: auto; margin-right: auto;\"><tr><td width=\"450\"><p>How confident are you that the answers you selected are correct?</p></td></tr><tr><td width=\"450\"><input type=\"radio\" name=\"howconf\" value=\"Very Confident\">Very Confident<br><input type=\"radio\" name=\"howconf\" value=\"Somewhat Confident\">Somewhat Confident<br><input type=\"radio\" name=\"howconf\" value=\"Neither Confident nor Unsure\">Neither Confident nor Unsure<br><input type=\"radio\" name=\"howconf\" value=\"Somewhat Unsure\">Somewhat Unsure<br><input type=\"radio\" name=\"howconf\" value=\"Very Unsure\">Very Unsure<br></td></tr><tr><td width=\"450\"><p align=\"center\"><button id='subconfbut' type=\"submit\" class=\"btn btn-primary\" onClick=\"submitDecision();\"><i class=\"icon-ok icon-white\"></i> Submit</button></p></td></tr></table></td></tr>");
 	var arrkey;
 	var currcount=0;
 	for (arrkey in this.clueType)
 	{
 		if(parseInt(variables["allow_feedback"])==1)
 		{
-			$("#step3").html($("#step3").html()+"<tr id=\""+arrkey+"_row1\"><td width=\"280\" height=\"30\" class=\"myfont\" id=\"dectext"+arrkey+"\"></td><td width=\"191\"></td><td width=\"311\" id=\"feed"+currcount+"\"></td><td width=\"2\"></td></tr><tr height=\"150\" id=\""+arrkey+"_row2\"><td width=\"280\"></td><td width=\"191\"><form id=\"rbForm"+arrkey+"\"></form></td><td width=\"311\"><div id='chart_div"+arrkey+"' style='height:150px; width:250px; margin-left: auto; margin-right: auto;'></div></td><td width=\"2\"></td></tr>");
+			$("#step3").html($("#step3").html()+"<tr id=\""+arrkey+"_row1\"><td width=\"120\" height=\"30\"></td><td width=\"220\" height=\"30\" class=\"myfont\" id=\"dectext"+arrkey+"\"></td><td width=\"131\"></td><td width=\"311\" id=\"feed"+currcount+"\"></td><td width=\"2\"></td></tr><tr height=\"150\" id=\""+arrkey+"_row2\"><td width=\"120\"></td><td width=\"220\"></td><td width=\"131\"><form id=\"rbForm"+arrkey+"\"></form></td><td width=\"311\"><div id='chart_div"+arrkey+"' style='height:150px; width:250px; margin-left: auto; margin-right: auto;'></div></td><td width=\"2\"></td></tr>");
 			currcount++;
 		}
 		else
-			$("#step3").html($("#step3").html()+"<tr id=\""+arrkey+"_row1\"><td width=\"291\" height=\"30\" class=\"myfont\" id=\"dectext"+arrkey+"\"></td><td width=\"221\"></td><td width=\"250\"></td><td width=\"22\"></td></tr><tr height=\"150\" id=\""+arrkey+"_row2\"><td width=\"291\"></td><td width=\"221\"><form id=\"rbForm"+arrkey+"\"></form></td><td width=\"250\"></td><td width=\"22\"></td></tr><tr><td width=\"291\" height=\"5\"></td><td width=\"221\" height=\"5\"></td><td width=\"250\"></td><td width=\"22\"></td></tr>");
+			$("#step3").html($("#step3").html()+"<tr id=\""+arrkey+"_row1\"><td width=\"120\" height=\"30\"></td><td width=\"220\" height=\"30\" class=\"myfont\" id=\"dectext"+arrkey+"\"></td></td><td width=\"131\"></td><td width=\"250\"></td><td width=\"22\"></td></tr><tr height=\"150\" id=\""+arrkey+"_row2\"><td width=\"120\"></td><td width=\"231\"></td><td width=\"161\"><form id=\"rbForm"+arrkey+"\"></form></td><td width=\"250\"></td><td width=\"22\"></td></tr><tr><td width=\"120\"></td><td width=\"231\" height=\"5\"></td><td width=\"161\" height=\"5\"></td><td width=\"250\"></td><td width=\"22\"></td></tr>");
 	}
-	$("#step3").html($("#step3").html()+"<tr><td width=\"291\" height=\"41\"></td><td width=\"221\" height=\"41\"><p align=\"center\"><button id='subdecbut' type=\"submit\" class=\"btn btn-primary\" onClick=\"showConfidence();\"><i class=\"icon-ok icon-white\"></i> Submit</button></p></td><td width=\"272\" height=\"41\"></td></tr><tr><td width=\"809\" colspan=\"4\"><p id=\"submitStatus\" align=\"center\">&nbsp;</p></td></tr>");
+	$("#step3").html($("#step3").html()+"<tr><td width=\"120\" height=\"41\"></td><td width=\"220\" height=\"41\"></td><td width=\"131\" height=\"41\"><p align=\"center\"><button id='subdecbut' type=\"submit\" class=\"btn btn-primary\" onClick=\"showConfidence();\"><i class=\"icon-ok icon-white\"></i> Submit</button></p></td><td width=\"311\" height=\"41\"></td></tr><tr><td width=\"809\" colspan=\"5\"><p id=\"errorStatus\" align=\"center\">&nbsp;</p></td></tr>");
 	$("#subdecbut").show();
 	if(parseInt(variables["feedback_type"])==2)
 	{
-		$("#step3").html($("#step3").html()+"<tr><td colspan=\"4\"><table style='height:150px; width:350px; margin-left: auto; margin-right: auto;'><tr><td width=\"350\" id=\"feedindividual\"></td></tr><tr height=\"150\"><td width=\"350\"><div id='chart_divindividual' style='height:150px; width:250px; margin-left: auto; margin-right: auto;'></div></td></tr></table></td></tr>");
+		$("#step3").html($("#step3").html()+"<tr><td colspan=\"5\"><table style='height:150px; width:350px; margin-left: auto; margin-right: auto;'><tr><td width=\"350\" id=\"feedindividual\"></td></tr><tr height=\"150\"><td width=\"350\"><div id='chart_divindividual' style='height:150px; width:250px; margin-left: auto; margin-right: auto;'></div></td></tr></table></td></tr>");
 	}
 	for (arrkey in this.clueType)
 	{
 		$("#dectext"+arrkey).html("The "+arrkey+":");
-		for(var k=1; k<=this.clueType[arrkey]; k++)
+
+		for(var m=1; m<=this.shuffledOptions[arrkey].length; m++)
 		{
-			document.getElementById("rbForm"+arrkey).innerHTML+=("<input type=\"radio\" name=\"findec"+arrkey+"\" value=\""+arrkey+","+k+"\">"+step3Options[arrkey+","+k][0]+"<br>");
+			for(var k=1; k<=this.clueType[arrkey]; k++)
+			{
+				if(k==this.shuffledOptions[arrkey][m-1])
+					document.getElementById("rbForm"+arrkey).innerHTML+=("<input type=\"radio\" name=\"findec"+arrkey+"\" value=\""+arrkey+","+k+"\">"+step3Options[arrkey+","+k][0]+"<br>");
+			}
 		}
 	}
 	$("#howconftable").hide();
@@ -1026,12 +1201,13 @@ function countDownEndGame(){
 	 if (this.EndGameTimer <=0){  
 		$("#pbar").hide();
 		$("#step3").hide();
+		$("#hpnotesvoting").hide();
 		$("#pubinfo").hide();
 		$("#helpinfo").hide();
+		$("#ttl").hide();
 		startSurvey();
 	 }else{  
 		this.EndGameTimer--;
-		document.getElementById("timerbar").style.width=(this.EndGameTimer*100/parseInt(variables['end_game_timer']+""))+"%";
 		document.getElementById("timer").innerHTML = this.EndGameTimer;  
 		setTimeout("countDownEndGame()", 1000);
 	 }  
@@ -1042,17 +1218,19 @@ function countDownNextRound(){
 		$("#step3").hide();
 		$("#pubinfo").hide();
 		this.Step2Timer=parseInt(variables['Step2Timer']+"")+1;
-		$("#step3").html("<tr><td width=\"792\" height=\"53\" colspan=\"3\"><p id=\"basedonthe\">Based on the information you have gathered, identify: </p></td></tr>");
+		$("#step3").html("<tr><td width=\"798\" colspan=\"5\" id=\"submitStatus\"></td></tr><tr><td width=\"792\" height=\"20\" colspan=\"3\"><p id=\"basedonthe\">Based on the information you have gathered, identify: </p></td></tr>");
 		this.NextRoundTimer=parseInt(variables['round_interval_timer']+"")+1;
 		var arrkey;
 		for (arrkey in this.clueType)
 			for (var h=1; h<=this.clueType[arrkey]; h++)
 				step3Options[arrkey+","+h][1]=0;
 		loadStep2();
-		$("#chat_conversation").html("<div>Welcome to public chat of the experiment!<br></div>");
+		if(parseInt(variables['chatting_with_everyone'])==1)
+			setEveryoneTab();
+		else
+			$("#chattable").html("<tr><td width=\"455\" height=\"156\"></td></tr><tr><td width=\"455\" height=\"171\"><div style=\"text-align: center; vertical-align:middle; width: 100%; height: 100%; font-family:'Verdana'; font-size: 12pt;\">Please click on a user to start chatting...</div></td></tr>");
 	 }else{  
 		this.NextRoundTimer--;
-		document.getElementById("timerbar").style.width=(this.NextRoundTimer*100/parseInt(variables['round_interval_timer']+""))+"%";
 		document.getElementById("timer").innerHTML = this.NextRoundTimer;  
 		setTimeout("countDownNextRound()", 1000);
 	 }  
@@ -1064,7 +1242,6 @@ function countDownStep2(){
 		loadStep3();
 	 }else{  
 		this.Step2Timer--;
-		document.getElementById("timerbar").style.width=(this.Step2Timer*100/parseInt(variables['Step2Timer']+""))+"%";
 		document.getElementById("timer").innerHTML = this.Step2Timer;  
 		this.timeoutStep2=setTimeout("countDownStep2()", 1000);
 	 }  
@@ -1076,7 +1253,6 @@ function countDownStep1(){
 		loadStep2();
 	 }else{  
 		this.Step1Timer--;
-		document.getElementById("timerbar").style.width=(this.Step1Timer*100/parseInt(variables['Step1Timer']+""))+"%";
 		document.getElementById("timer").innerHTML = this.Step1Timer; 
 		this.timeoutStep1=setTimeout("countDownStep1()", 1000);
 	 }  
@@ -1090,7 +1266,7 @@ function showConfidence()
 	{
 		if($("input:radio[name='findec"+arrkey+"']:checked").val()==undefined)
 		{
-			document.getElementById("submitStatus").innerHTML="<font color=\"red\">Please select one of the options from each group!</font>";
+			document.getElementById("errorStatus").innerHTML="<font color=\"red\">Please select one of the options from each group!</font>";
 			return;
 		}
 		this.myanswer+=($("input:radio[name='findec"+arrkey+"']:checked").val()+"_");
@@ -1101,7 +1277,8 @@ function showConfidence()
 		$("#"+arrkey+"_row2").hide();
 	}
 	$("#howconftable").show();
-	$("#submitStatus").html("&nbsp;");
+	$("#errorStatus").html("&nbsp;");
+	$("#submitStatus").html("");
 	$("#basedonthe").html("&nbsp;");
 	$("#subdecbut").hide();
 }
@@ -1110,7 +1287,7 @@ function submitDecision()
 {
 	if($("input:radio[name='howconf']:checked").val()==undefined)
 	{
-		document.getElementById("submitStatus").innerHTML="<font color=\"red\">Please select one of the options!</font>";
+		document.getElementById("errorStatus").innerHTML="<font color=\"red\">Please select one of the options!</font>";
 		return;
 	}
 	for (arrkey in this.clueType)
@@ -1123,8 +1300,100 @@ function submitDecision()
 	$("#howconftable").hide();
 	this.myanswer+=("|"+$("input:radio[name='howconf']:checked").val());
 	submit(this.myanswer);
-	document.getElementById("submitStatus").innerHTML="<font color=\"green\">Thank you! Your choices are sent. Waiting for other participants...</font>";
+	document.getElementById("submitStatus").innerHTML="<p align='center'><font color=\"green\">Thank you! Your choices are sent. Waiting for other participants...</font></p>";
 	setEnableRadioGroups(true);
+}
+
+function addTab(tabTitle, tabid) {
+	if($("#chattable").html().indexOf("tabs-")==-1)
+	{
+		$("#chattable").html("<tr><td width=\"455\" height=\"87\"><div id=\"tabs\"><ul><li id=\"tabli"+tabid+"\"><a href=\"#tabs-"+tabid+"\">"+tabTitle+"</a> <span class=\"ui-icon ui-icon-close\" role=\"presentation\">Remove Tab</span></li></ul><div id=\"tabs-"+tabid+"\"><div class=\"control-group\"><div class=\"controls\"> <div id=\"chat_conversation"+tabid+"\" style=\"background-color:white; text-align:left; width: 100%; height: 250px; overflow: auto; font-family:'Verdana'; font-size: 10pt;\"><div></div></div></div></div></div></div><i class=\"icon-pencil\"></i><input onFocus=\"document.getElementById('chat_input').value='';\" value=\"Type something here...\" type=\"text\" id=\"chat_input\" style=\"width: 76%;\" class=\"input-xlarge\"><button type=\"submit\" class=\"btn btn-primary\" id=\"chat_send_button\" onClick=\"sendMessage();\"><i class=\"icon-comment icon-white\"></i> Send</button></td><td width=\"0\" height=\"62\"></td></tr>");
+		 $("#chat_input").keypress(function(event) {
+			if ( event.which == 13 ) {
+				sendMessage();
+				event.preventDefault();
+			}
+		  });
+		this.tabs = $( "#tabs" ).tabs({
+			activate: function( event, ui ) {
+				$("#tabli"+$(ui.newTab).text().substring(5, 6)).css("background-color", "#FFFFFF");
+				if(getCondition()==1)
+				{
+					setUser(parseInt($(ui.newTab).text().substring(5, 6)));
+					removeActives();
+					$('#'+$(ui.newTab).text().substring(5, 6)).addClass('active');
+				}
+				else
+				{
+					dehighlightCircle(parseInt($(ui.oldTab).text().substring(5, 6)));
+					highlightCircle(parseInt($(ui.newTab).text().substring(5, 6)));
+				}
+			}
+		});
+		/*this.tabs.find( ".ui-tabs-nav" ).sortable({
+			axis: "x",
+			stop: function() {
+				tabs.tabs( "refresh" );
+			}
+		});*/
+		setupTabs();
+	}
+	else
+	{
+		if($("#chattable").html().indexOf("tabs-"+tabid)!=-1)
+			return;
+		var label = tabTitle || "Tab " + tabid;
+		var id = "tabs-" + tabid;
+		var li = $( this.tabTemplate.replace( /#\{tabli\}/g, "tabli"+tabid ).replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label ) );
+		this.tabs.find( ".ui-tabs-nav" ).append( li );
+		this.tabs.append( "<div id='" + id + "'><div class=\"control-group\"><div class=\"controls\"> <div id=\"chat_conversation"+tabid+"\" style=\"background-color:white; text-align:left; width: 100%; height: 250px; overflow: auto; font-family:'Verdana'; font-size: 10pt;\"><div></div></div></div></div></div>" );
+		this.tabs.tabs( "refresh" );
+		this.tabs.tabs("option", "active", $('#tabs >ul >li').size()-1);
+	}
+	$('.ui-icon').css('background-image', 'url(' + getFile("ui-icons_222222_256x240.png") + ')');
+}
+
+function refreshTabs()
+{
+	this.tabs.tabs( "refresh" );
+	var panelId = this.tabs.find( ".ui-tabs-active" ).attr( "aria-controls" );
+	if(panelId.indexOf("Everyone")>-1)
+	{
+		if(getCondition()==1)
+		{
+			setUser(0);
+			removeActives();
+			$('#0').addClass('active');
+		}
+		else
+			highlightCircle(0);
+	}
+	else
+	{
+		if(getCondition()==1)
+		{
+			setUser(parseInt(panelId.substring(5)));
+			removeActives();
+			$('#'+parseInt(panelId.substring(5))).addClass('active');
+		}
+		else
+			highlightCircle(parseInt(panelId.substring(5)));
+	}
+}
+
+function setupTabs()
+{
+	// close icon: removing the tab on click
+	this.tabs.delegate( "span.ui-icon-close", "click", function() {
+		var panelId = $( this ).closest( "li" ).remove().attr( "aria-controls" );
+		$( "#" + panelId ).remove();
+		if(getCondition()!=1)
+			dehighlightCircle(parseInt(panelId.substring(5)));
+		if($("#chattable").html().indexOf("#tabs-")==-1)
+			$("#chattable").html("<tr><td width=\"455\" height=\"156\"></td></tr><tr><td width=\"455\" height=\"171\"><div style=\"text-align: center; vertical-align:middle; width: 100%; height: 100%; font-family:'Verdana'; font-size: 12pt;\">Please click on a user to start chatting...</div></td></tr>");
+		else
+			refreshTabs();
+	});
 }
 
 function setEnableRadioGroups(en) {
@@ -1218,50 +1487,50 @@ function drawStaticNetwork()
 		{
 			circleY=canvasHeight/2;
 			if(g==1)
-				circleX=canvasWidth/3;
+				circleX=canvasWidth/3-5;
 			if(g==2)
-				circleX=2*canvasWidth/3;
+				circleX=2*canvasWidth/3+5;
 		}
 		if(numPlayers==3)
 		{
 			if(g>1)
 			{
-				circleY=2*canvasHeight/3;
+				circleY=2*canvasHeight/3+5;
 				if(g==2)
-					circleX=canvasWidth/3;
+					circleX=canvasWidth/3-5;
 				if(g==3)
-					circleX=2*canvasWidth/3;
+					circleX=2*canvasWidth/3+5;
 			}
 			else
 			{
 				circleX=canvasWidth/2;
-				circleY=canvasHeight/3;
+				circleY=canvasHeight/3-5;
 			}
 		}
 		if(numPlayers==4)
 		{
 			if(g>2)
 			{
-				circleY=2*canvasHeight/3;
+				circleY=2*canvasHeight/3-5;
 				if(g==3)
-					circleX=canvasWidth/3;
+					circleX=canvasWidth/3-5;
 				if(g==4)
-					circleX=2*canvasWidth/3;
+					circleX=2*canvasWidth/3+5;
 			}
 			else
 			{
-				circleY=canvasHeight/3;
+				circleY=canvasHeight/3-5;
 				if(g==1)
-					circleX=canvasWidth/3;
+					circleX=canvasWidth/3-5;
 				if(g==2)
-					circleX=2*canvasWidth/3;
+					circleX=2*canvasWidth/3+5;
 			}
 		}
 		if(numPlayers==5)
 		{
 			if(g==1)
 			{
-				circleY=2*canvasHeight/4;
+				circleY=2*canvasHeight/4-5;
 				circleX=canvasWidth/8;
 			}
 			else if(g==2)
@@ -1276,7 +1545,7 @@ function drawStaticNetwork()
 			}
 			else
 			{
-				circleY=3*canvasHeight/4;
+				circleY=3*canvasHeight/4+5;
 				if(g==4)
 					circleX=2*canvasWidth/8;
 				if(g==5)
@@ -1293,12 +1562,12 @@ function drawStaticNetwork()
 			else if(g==2)
 			{
 				circleY=canvasHeight/4;
-				circleX=2*canvasWidth/8;
+				circleX=2*canvasWidth/8+15;
 			}
 			else if(g==3)
 			{
 				circleY=canvasHeight/4;
-				circleX=6*canvasWidth/8;
+				circleX=6*canvasWidth/8-15;
 			}
 			else if(g==4)
 			{
@@ -1309,91 +1578,91 @@ function drawStaticNetwork()
 			{
 				circleY=3*canvasHeight/4;
 				if(g==5)
-					circleX=2*canvasWidth/8;
+					circleX=2*canvasWidth/8+15;
 				if(g==6)
-					circleX=6*canvasWidth/8;
+					circleX=6*canvasWidth/8-15;
 			}
 		}
 		if(numPlayers==7)
 		{
 			if(g==1)
 			{
-				circleY=2*canvasHeight/5;
-				circleX=canvasWidth/5;
+				circleY=2*canvasHeight/5-8;
+				circleX=canvasWidth/5-7;
 			}
 			if(g==2)
 			{
-				circleY=canvasHeight/5;
+				circleY=canvasHeight/5-7;
 				circleX=canvasWidth/2;
 			}
 			if(g==3)
 			{
-				circleY=2*canvasHeight/5;
-				circleX=4*canvasWidth/5;
+				circleY=2*canvasHeight/5-8;
+				circleX=4*canvasWidth/5+7;
 			}
 			if(g==4)
 			{
-				circleY=3*canvasHeight/5;
-				circleX=4*canvasWidth/5;
+				circleY=3*canvasHeight/5+8;
+				circleX=4*canvasWidth/5+7;
 			}
 			if(g==5)
 			{
-				circleY=4*canvasHeight/5;
-				circleX=3*canvasWidth/5;
+				circleY=4*canvasHeight/5+7;
+				circleX=3*canvasWidth/5+7;
 			}
 			if(g==6)
 			{
-				circleY=4*canvasHeight/5;
-				circleX=2*canvasWidth/5;
+				circleY=4*canvasHeight/5+7;
+				circleX=2*canvasWidth/5-7;
 			}
 			if(g==7)
 			{
-				circleY=3*canvasHeight/5;
-				circleX=canvasWidth/5;
+				circleY=3*canvasHeight/5+8;
+				circleX=canvasWidth/5-7;
 			}
 		}
 		if(numPlayers==8)
 		{
 			if(g==1)
 			{
-				circleY=2*canvasHeight/5;
-				circleX=canvasWidth/5;
+				circleY=2*canvasHeight/5-8;
+				circleX=canvasWidth/5-7;
 			}
 			if(g==2)
 			{
-				circleY=canvasHeight/5;
-				circleX=2*canvasWidth/5;
+				circleY=canvasHeight/5-7;
+				circleX=2*canvasWidth/5-7;
 			}
 			if(g==3)
 			{
-				circleY=canvasHeight/5;
-				circleX=3*canvasWidth/5;
+				circleY=canvasHeight/5-7;
+				circleX=3*canvasWidth/5+7;
 			}
 			
 			if(g==4)
 			{
-				circleY=2*canvasHeight/5;
-				circleX=4*canvasWidth/5;
+				circleY=2*canvasHeight/5-8;
+				circleX=4*canvasWidth/5+7;
 			}
 			if(g==5)
 			{
-				circleY=3*canvasHeight/5;
-				circleX=4*canvasWidth/5;
+				circleY=3*canvasHeight/5+8;
+				circleX=4*canvasWidth/5+7;
 			}
 			if(g==6)
 			{
-				circleY=4*canvasHeight/5;
-				circleX=3*canvasWidth/5;
+				circleY=4*canvasHeight/5+7;
+				circleX=3*canvasWidth/5+7;
 			}
 			if(g==7)
 			{
-				circleY=4*canvasHeight/5;
-				circleX=2*canvasWidth/5;
+				circleY=4*canvasHeight/5+7;
+				circleX=2*canvasWidth/5-7;
 			}
 			if(g==8)
 			{
-				circleY=3*canvasHeight/5;
-				circleX=canvasWidth/5;
+				circleY=3*canvasHeight/5+8;
+				circleX=canvasWidth/5-7;
 			}
 		}
 		if(numPlayers==9)
@@ -1401,54 +1670,54 @@ function drawStaticNetwork()
 			if(g==1)
 			{
 				circleY=3*canvasHeight/6;
-				circleX=1*canvasWidth/12;
+				circleX=1*canvasWidth/12+7;
 			}
 			if(g==2)
 			{
-				circleY=2*canvasHeight/6;
+				circleY=2*canvasHeight/6-5;
 				circleX=3*canvasWidth/12;
 			}
 			if(g==3)
 			{
-				circleY=1*canvasHeight/6;
+				circleY=1*canvasHeight/6-10;
 				circleX=canvasWidth/2;
 			}
 			if(g==4)
 			{
-				circleY=2*canvasHeight/6;
+				circleY=2*canvasHeight/6-5;
 				circleX=9*canvasWidth/12;
 			}
 			if(g==5)
 			{
 				circleY=3*canvasHeight/6;
-				circleX=11*canvasWidth/12;
+				circleX=11*canvasWidth/12-7;
 			}
 			if(g==6)
 			{
-				circleY=4*canvasHeight/6;
-				circleX=9*canvasWidth/12+6;
+				circleY=4*canvasHeight/6+5
+				circleX=9*canvasWidth/12+9;
 			}
 			if(g==7)
 			{
-				circleY=5*canvasHeight/6;
-				circleX=7*canvasWidth/12+5;
+				circleY=5*canvasHeight/6+10;
+				circleX=7*canvasWidth/12+8;
 			}
 			if(g==8)
 			{
-				circleY=5*canvasHeight/6;
-				circleX=5*canvasWidth/12-20;
+				circleY=5*canvasHeight/6+10;
+				circleX=5*canvasWidth/12-11;
 			}
 			if(g==9)
 			{
-				circleY=4*canvasHeight/6;
-				circleX=3*canvasWidth/12-20;
+				circleY=4*canvasHeight/6+5;
+				circleX=3*canvasWidth/12-11;
 			}
 		}
 		var circle = this.r.circle(circleX, circleY,29);
 		if((g==myid||canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))&&parseInt(variables['chatting_with_everyone'])==1)
 			circle.attr("fill", "#0A4");
 		else
-			circle.attr("fill", "#00f");
+			circle.attr("fill", getCircleColor(g-1));
 		circle.attr("stroke", "#000");
 		circle.attr("cursor", "pointer");
 		//circle.hover(hoverIn, hoverOut);
@@ -1567,6 +1836,12 @@ function drawStaticNetwork()
 	circleClick();
 }
 
+//circle colors change on each game according to game id, vulnerable due to changes in gameid
+function getCircleColor(index)
+{
+	return this.circleColors[(parseInt($.trim($(".gameid").html().substring($(".gameid").html().indexOf(":")+1, $(".gameid").html().indexOf("<"))))+index)%9];
+}
+
 function drawDynamicNetwork()
 {
 	var canvasWidth=300;
@@ -1590,50 +1865,50 @@ function drawDynamicNetwork()
 		{
 			circleY=canvasHeight/2;
 			if(g==1)
-				circleX=canvasWidth/3;
+				circleX=canvasWidth/3-5;
 			if(g==2)
-				circleX=2*canvasWidth/3;
+				circleX=2*canvasWidth/3+5;
 		}
 		if(numPlayers==3)
 		{
 			if(g>1)
 			{
-				circleY=2*canvasHeight/3;
+				circleY=2*canvasHeight/3+5;
 				if(g==2)
-					circleX=canvasWidth/3;
+					circleX=canvasWidth/3-5;
 				if(g==3)
-					circleX=2*canvasWidth/3;
+					circleX=2*canvasWidth/3+5;
 			}
 			else
 			{
 				circleX=canvasWidth/2;
-				circleY=canvasHeight/3;
+				circleY=canvasHeight/3-5;
 			}
 		}
 		if(numPlayers==4)
 		{
 			if(g>2)
 			{
-				circleY=2*canvasHeight/3;
+				circleY=2*canvasHeight/3-5;
 				if(g==3)
-					circleX=canvasWidth/3;
+					circleX=canvasWidth/3-5;
 				if(g==4)
-					circleX=2*canvasWidth/3;
+					circleX=2*canvasWidth/3+5;
 			}
 			else
 			{
-				circleY=canvasHeight/3;
+				circleY=canvasHeight/3-5;
 				if(g==1)
-					circleX=canvasWidth/3;
+					circleX=canvasWidth/3-5;
 				if(g==2)
-					circleX=2*canvasWidth/3;
+					circleX=2*canvasWidth/3+5;
 			}
 		}
 		if(numPlayers==5)
 		{
 			if(g==1)
 			{
-				circleY=2*canvasHeight/4;
+				circleY=2*canvasHeight/4-5;
 				circleX=canvasWidth/8;
 			}
 			else if(g==2)
@@ -1648,7 +1923,7 @@ function drawDynamicNetwork()
 			}
 			else
 			{
-				circleY=3*canvasHeight/4;
+				circleY=3*canvasHeight/4+5;
 				if(g==4)
 					circleX=2*canvasWidth/8;
 				if(g==5)
@@ -1665,12 +1940,12 @@ function drawDynamicNetwork()
 			else if(g==2)
 			{
 				circleY=canvasHeight/4;
-				circleX=2*canvasWidth/8;
+				circleX=2*canvasWidth/8+15;
 			}
 			else if(g==3)
 			{
 				circleY=canvasHeight/4;
-				circleX=6*canvasWidth/8;
+				circleX=6*canvasWidth/8-15;
 			}
 			else if(g==4)
 			{
@@ -1681,91 +1956,91 @@ function drawDynamicNetwork()
 			{
 				circleY=3*canvasHeight/4;
 				if(g==5)
-					circleX=2*canvasWidth/8;
+					circleX=2*canvasWidth/8+15;
 				if(g==6)
-					circleX=6*canvasWidth/8;
+					circleX=6*canvasWidth/8-15;
 			}
 		}
 		if(numPlayers==7)
 		{
 			if(g==1)
 			{
-				circleY=2*canvasHeight/5;
-				circleX=canvasWidth/5;
+				circleY=2*canvasHeight/5-8;
+				circleX=canvasWidth/5-7;
 			}
 			if(g==2)
 			{
-				circleY=canvasHeight/5;
+				circleY=canvasHeight/5-7;
 				circleX=canvasWidth/2;
 			}
 			if(g==3)
 			{
-				circleY=2*canvasHeight/5;
-				circleX=4*canvasWidth/5;
+				circleY=2*canvasHeight/5-8;
+				circleX=4*canvasWidth/5+7;
 			}
 			if(g==4)
 			{
-				circleY=3*canvasHeight/5;
-				circleX=4*canvasWidth/5;
+				circleY=3*canvasHeight/5+8;
+				circleX=4*canvasWidth/5+7;
 			}
 			if(g==5)
 			{
-				circleY=4*canvasHeight/5;
-				circleX=3*canvasWidth/5;
+				circleY=4*canvasHeight/5+7;
+				circleX=3*canvasWidth/5+7;
 			}
 			if(g==6)
 			{
-				circleY=4*canvasHeight/5;
-				circleX=2*canvasWidth/5;
+				circleY=4*canvasHeight/5+7;
+				circleX=2*canvasWidth/5-7;
 			}
 			if(g==7)
 			{
-				circleY=3*canvasHeight/5;
-				circleX=canvasWidth/5;
+				circleY=3*canvasHeight/5+8;
+				circleX=canvasWidth/5-7;
 			}
 		}
 		if(numPlayers==8)
 		{
 			if(g==1)
 			{
-				circleY=2*canvasHeight/5;
-				circleX=canvasWidth/5;
+				circleY=2*canvasHeight/5-8;
+				circleX=canvasWidth/5-7;
 			}
 			if(g==2)
 			{
-				circleY=canvasHeight/5;
-				circleX=2*canvasWidth/5;
+				circleY=canvasHeight/5-7;
+				circleX=2*canvasWidth/5-7;
 			}
 			if(g==3)
 			{
-				circleY=canvasHeight/5;
-				circleX=3*canvasWidth/5;
+				circleY=canvasHeight/5-7;
+				circleX=3*canvasWidth/5+7;
 			}
 			
 			if(g==4)
 			{
-				circleY=2*canvasHeight/5;
-				circleX=4*canvasWidth/5;
+				circleY=2*canvasHeight/5-8;
+				circleX=4*canvasWidth/5+7;
 			}
 			if(g==5)
 			{
-				circleY=3*canvasHeight/5;
-				circleX=4*canvasWidth/5;
+				circleY=3*canvasHeight/5+8;
+				circleX=4*canvasWidth/5+7;
 			}
 			if(g==6)
 			{
-				circleY=4*canvasHeight/5;
-				circleX=3*canvasWidth/5;
+				circleY=4*canvasHeight/5+7;
+				circleX=3*canvasWidth/5+7;
 			}
 			if(g==7)
 			{
-				circleY=4*canvasHeight/5;
-				circleX=2*canvasWidth/5;
+				circleY=4*canvasHeight/5+7;
+				circleX=2*canvasWidth/5-7;
 			}
 			if(g==8)
 			{
-				circleY=3*canvasHeight/5;
-				circleX=canvasWidth/5;
+				circleY=3*canvasHeight/5+8;
+				circleX=canvasWidth/5-7;
 			}
 		}
 		if(numPlayers==9)
@@ -1773,47 +2048,47 @@ function drawDynamicNetwork()
 			if(g==1)
 			{
 				circleY=3*canvasHeight/6;
-				circleX=1*canvasWidth/12;
+				circleX=1*canvasWidth/12+7;
 			}
 			if(g==2)
 			{
-				circleY=2*canvasHeight/6;
+				circleY=2*canvasHeight/6-5;
 				circleX=3*canvasWidth/12;
 			}
 			if(g==3)
 			{
-				circleY=1*canvasHeight/6;
+				circleY=1*canvasHeight/6-10;
 				circleX=canvasWidth/2;
 			}
 			if(g==4)
 			{
-				circleY=2*canvasHeight/6;
+				circleY=2*canvasHeight/6-5;
 				circleX=9*canvasWidth/12;
 			}
 			if(g==5)
 			{
 				circleY=3*canvasHeight/6;
-				circleX=11*canvasWidth/12;
+				circleX=11*canvasWidth/12-7;
 			}
 			if(g==6)
 			{
-				circleY=4*canvasHeight/6;
-				circleX=9*canvasWidth/12+6;
+				circleY=4*canvasHeight/6+5
+				circleX=9*canvasWidth/12+9;
 			}
 			if(g==7)
 			{
-				circleY=5*canvasHeight/6;
-				circleX=7*canvasWidth/12+5;
+				circleY=5*canvasHeight/6+10;
+				circleX=7*canvasWidth/12+8;
 			}
 			if(g==8)
 			{
-				circleY=5*canvasHeight/6;
-				circleX=5*canvasWidth/12-20;
+				circleY=5*canvasHeight/6+10;
+				circleX=5*canvasWidth/12-11;
 			}
 			if(g==9)
 			{
-				circleY=4*canvasHeight/6;
-				circleX=3*canvasWidth/12-20;
+				circleY=4*canvasHeight/6+5;
+				circleX=3*canvasWidth/12-11;
 			}
 		}
 		var circle = new Object();
@@ -1821,7 +2096,7 @@ function drawDynamicNetwork()
 		if((g==myid||canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))&&parseInt(variables['chatting_with_everyone'])==1)
 			circle.attr("fill", "#0A4");
 		else
-			circle.attr("fill", "#00f");
+			circle.attr("fill", getCircleColor(g-1));
 		circle.attr("stroke", "#000");
 		circle.attr("cursor", "pointer");
 	//	circle.hover(hoverIn, hoverOut);
@@ -2061,6 +2336,8 @@ function circleClick(){
 
 function highlightCircle(gg)
 {
+	if(gg==myid)
+		return;
 	if(gg==0)
 	{
 		for(var g=1; g<=numPlayers; g++)
@@ -2074,19 +2351,36 @@ function highlightCircle(gg)
 	}
 	else
 	{
-		for(var ic=0; ic<numPlayers; ic++)
-			this.circles[ic].attr("fill", "#00f");
-		this.circles[gg-1].attr("fill", "#0A4");
+	
+		if($("#chattable").html().indexOf("tabs-"+gg)==-1)
+			addTab(getName(gg), gg);
+		else
+			this.tabs.tabs("option", "active", $('#tabs-'+gg).tabIndex());
+		if(getCondition()!=1)
+		{
+			for(var ic=0; ic<numPlayers; ic++)
+				this.circles[ic].attr("fill", getCircleColor(ic));
+			this.circles[gg-1].attr("fill", "#0A4");
+		}
 		setUser(gg); 
 		removeActives();
 		$('#'+gg).addClass('active');
 	}
 }
 
+function dehighlightCircle(g)
+{
+	this.circles[g-1].attr("fill", getCircleColor(g-1));
+}
+
 function setUser(nmb)
 {
 	selectedUser=nmb;
 }
+
+    $.fn.tabIndex = function () {
+        return $(this).parent().find(this).index() - 1; 
+    };
 
 function removeActives()
 {
@@ -2096,14 +2390,6 @@ function removeActives()
 			$("#"+g).removeClass("active");
 	}
 }
-  
- $("#chat_input").keypress(function(event) {
-    if ( event.which == 13 ) {
-		sendMessage();
-        event.preventDefault();
-    }
-  });
-  
        
 /*function curve(x, y, ax, ay, bx, by, zx, zy, color) 
 {
@@ -2152,30 +2438,93 @@ function chatReceived(from_ids,message,to_ids) {
 	if(this.condition==3)
 	{
 		if (to_ids[2] == to_ids[5]) return;
-		if (to_ids[2] == myid) {
-			$('#chat_conversation').append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+		if(parseInt(variables['chatting_with_everyone'])==1 && eval(to_ids).length==numPlayers) // everyone
+		{
+			if (parseInt(from_ids) == myid) {
+				$('#chat_conversation0').append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+				jQuery("div#chat_conversation0").scrollTop(jQuery("div#chat_conversation0")[0].scrollHeight);
+			}
+			else
+			{
+				if(this.tabs.find( ".ui-tabs-active" ).attr( "aria-controls" )=="tabs-0")
+					$("#tabli0").css("background-color", "#FFFFFF");
+				else
+					$("#tabli0").css("background-color", "#DBA901");
+				$('#chat_conversation0').append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+				jQuery("div#chat_conversation0").scrollTop(jQuery("div#chat_conversation0")[0].scrollHeight);
+			}
+			for(var i=0; i<eval(to_ids).length; i++)
+			{
+				var path = new Object();
+				path.line = this.r.path("M "+xVals[parseInt(from_ids)-1]+" "+this.yVals[parseInt(from_ids)-1]+" l "+(this.xVals[eval(to_ids)[i]-1]-this.xVals[parseInt(from_ids)-1])+" "+(this.yVals[eval(to_ids)[i]-1]-this.yVals[parseInt(from_ids)-1])+" z");
+				path.line.attr({stroke: '#3b4449','stroke-width': 3});
+				path.line.toBack();
+			}
 		}
-		if (to_ids[5] == myid)
-			$('#chat_conversation').append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
-		$('#chat_conversation').scrollTop = $('#chat_conversation').scrollHeight;
-		var path = new Object();
-		path.line = this.r.path("M "+xVals[to_ids[2]-1]+" "+this.yVals[to_ids[2]-1]+" l "+(this.xVals[to_ids[5]-1]-this.xVals[to_ids[2]-1])+" "+(this.yVals[to_ids[5]-1]-this.yVals[to_ids[2]-1])+" z");
-		path.line.attr({stroke: '#3b4449','stroke-width': 3});
-		path.line.toBack();
+		else
+		{
+			if (to_ids[2] == myid) {
+				$('#chat_conversation'+to_ids[5]).append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+				jQuery("div#chat_conversation"+to_ids[5]).scrollTop(jQuery("div#chat_conversation"+to_ids[5])[0].scrollHeight);
+			}
+			if (to_ids[5] == myid)
+			{
+				addTab(getName(to_ids[2]), to_ids[2]);
+				if(parseInt(this.tabs.find( ".ui-tabs-active" ).attr( "aria-controls" ).substring(5))==to_ids[2])
+				{
+					$("#tabli"+to_ids[2]).css("background-color", "#FFFFFF");
+					highlightCircle(parseInt(to_ids[2]));
+				}
+				else
+					$("#tabli"+to_ids[2]).css("background-color", "#DBA901");
+				$('#chat_conversation'+to_ids[2]).append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+				jQuery("div#chat_conversation"+to_ids[2]).scrollTop(jQuery("div#chat_conversation"+to_ids[2])[0].scrollHeight);
+			}
+			var path = new Object();
+			path.line = this.r.path("M "+xVals[to_ids[2]-1]+" "+this.yVals[to_ids[2]-1]+" l "+(this.xVals[to_ids[5]-1]-this.xVals[to_ids[2]-1])+" "+(this.yVals[to_ids[5]-1]-this.yVals[to_ids[2]-1])+" z");
+			path.line.attr({stroke: '#3b4449','stroke-width': 3});
+			path.line.toBack();
+		}
 	}
 	else
 	{
 		if (to_ids[4] == to_ids[1]) return;
-		if (to_ids[4] == myid) {
-			$('#chat_conversation').append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+		if(parseInt(variables['chatting_with_everyone'])==1 && eval(to_ids).length==numPlayers) // everyone
+		{
+			if (parseInt(from_ids) == myid) {
+				$('#chat_conversation0').append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+				jQuery("div#chat_conversation0").scrollTop(jQuery("div#chat_conversation0")[0].scrollHeight);
+			}
+			else
+			{
+				if(this.tabs.find( ".ui-tabs-active" ).attr( "aria-controls" )=="tabs-0")
+					$("#tabli0").css("background-color", "#FFFFFF");
+				else
+					$("#tabli0").css("background-color", "#DBA901");
+				$('#chat_conversation0').append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+				jQuery("div#chat_conversation0").scrollTop(jQuery("div#chat_conversation0")[0].scrollHeight);
+			}
 		}
-		if (to_ids[1] == myid)
-			$('#chat_conversation').append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
-		$('#chat_conversation').scrollTop = $('#chat_conversation').scrollHeight;
-		var path = new Object();
-		path.line = this.r.path("M "+xVals[to_ids[4]-1]+" "+this.yVals[to_ids[4]-1]+" l "+(this.xVals[to_ids[1]-1]-this.xVals[to_ids[4]-1])+" "+(this.yVals[to_ids[1]-1]-this.yVals[to_ids[4]-1])+" z");
-		path.line.attr({stroke: '#3b4449','stroke-width': 3});
-		path.line.toBack();
+		else
+		{
+			if (to_ids[4] == myid) {
+				$('#chat_conversation'+to_ids[1]).append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+				jQuery("div#chat_conversation"+to_ids[1]).scrollTop(jQuery("div#chat_conversation"+to_ids[1])[0].scrollHeight);
+			}
+			if (to_ids[1] == myid)
+			{
+				addTab(getName(to_ids[4]), to_ids[4]);
+				if(parseInt(this.tabs.find( ".ui-tabs-active" ).attr( "aria-controls" ).substring(5))==to_ids[4])
+				{
+					$("#tabli"+to_ids[4]).css("background-color", "#FFFFFF");
+					highlightCircle(parseInt(to_ids[4]));
+				}
+				else
+					$("#tabli"+to_ids[4]).css("background-color", "#DBA901");
+				$('#chat_conversation'+to_ids[4]).append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+				jQuery("div#chat_conversation"+to_ids[4]).scrollTop(jQuery("div#chat_conversation"+to_ids[4])[0].scrollHeight);
+			}
+		}
 	}
 }
 
@@ -2189,24 +2538,8 @@ function sendMessage()
 		{
 			if(parseInt(variables['chatting_with_everyone'])==1)
 			{
-				var msgArr = new Array();
-				msgArr.push(myid);
-				for(var g=1; g<=numPlayers; g++)
-				{
-					if(canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))
-					{
-						msgArr.push(g);
-						//var path = new Object();
-						//path.line = this.r.path("M "+xVals[myid-1]+" "+this.yVals[myid-1]+" l "+(this.xVals[g-1]-this.xVals[myid-1])+" "+(this.yVals[g-1]-this.yVals[myid-1])+" z");
-						//path.line.attr({stroke: '#3b4449','stroke-width': 3	, 'stroke-dasharray':'-'});
-						//path.line.toBack();
-						//if(this.yVals[myid-1]<=this.yVals[g-1])
-						//	curve(xVals[myid-1], this.yVals[myid-1],xVals[myid-1]+20, this.yVals[myid-1]+(this.yVals[g-1]-this.yVals[myid-1])/3, this.xVals[g-1]+40, this.yVals[g-1]-(this.yVals[g-1]-this.yVals[myid-1])/3, this.xVals[g-1], this.yVals[g-1], "hsb(0, 0, 0)");
-						//else
-						//	curve(xVals[myid-1], this.yVals[myid-1],xVals[myid-1]+20, this.yVals[myid-1]-(this.yVals[g-1]-this.yVals[myid-1])/3, this.xVals[g-1]+40, this.yVals[g-1]+(this.yVals[g-1]-this.yVals[myid-1])/3, this.xVals[g-1], this.yVals[g-1], "hsb(0, 0, 0)"); 
-					}
-				}
-				sendChat($("#chat_input").val(), msgArr);
+
+				sendChat($("#chat_input").val());
 			}
 		}
 		else
