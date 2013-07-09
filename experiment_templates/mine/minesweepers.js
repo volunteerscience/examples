@@ -163,7 +163,7 @@ function Box(id, x, y, r, points) {
   this.walkToMe = function() {
     // walk over to that box, if possible
     var avatar = avatars[myid];
-    
+    avatar.clearSay();
     if (myBox.canWalk()) {
       // calculate path as breadth first search, recursive
       var p = doBFS(avatar.currentlyOn.id,myBox.id);

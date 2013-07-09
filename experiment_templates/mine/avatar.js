@@ -141,12 +141,16 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
     }
     
     this.bubble = null;
-    // draw a cartoon bubble
-    this.say = function(text) {
+    this.clearSay = function() {
       if (this.bubble != null) {
         this.bubble.clear();
         this.bubble = null;
       }
+    }
+    
+    // draw a cartoon bubble
+    this.say = function(text) {
+      this.clearSay();
       this.bubble = new Bubble(text,this.x,this.y);
     };
     
