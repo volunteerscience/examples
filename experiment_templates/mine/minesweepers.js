@@ -469,7 +469,8 @@ function initializeGame() {
   default:
 //    initializeSquareGrid(10,10,10,seed); // easy
 //    initializeSquareGrid(16,16,40,seed); // med
-    initializeSquareGrid(30,16,99,seed); // hard
+//    initializeSquareGrid(30,16,99,seed); // hard
+    initializeSquareGrid(variables['xSquares'],variables['ySquares'],variables['mines'],seed); // custom
   }
   
   avatars = new Array();
