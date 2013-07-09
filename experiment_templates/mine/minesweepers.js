@@ -168,7 +168,7 @@ function Box(id, x, y, r, points) {
       // calculate path as breadth first search, recursive
       var p = doBFS(avatar.currentlyOn.id,myBox.id);
       if (p == null) {
-        avatar.say("I can't find a way to get there.");
+        avatar.say(["I can't find a way to get there."]);
       } else {
         submit('<walkPath p="'+p.join()+'"/>');
         var path = p.map(function(id) { return boxes[id] }); // ids => boxes
@@ -179,9 +179,9 @@ function Box(id, x, y, r, points) {
 
     } else {
       if (myBox.mark[0] == FLAG) {
-        avatar.say("You're joking, right?  I'm not walking there.");
+        avatar.say(["You're joking, right?","I'm not walking there."]);
       } else {
-        avatar.say("I'm not walking there unless you mark it safe!");        
+        avatar.say(["I'm not walking there","unless you mark it safe!"]);        
       }
     }    
   }; 
@@ -247,7 +247,7 @@ function Box(id, x, y, r, points) {
       var avatar = avatars[playerId];
       avatar.action(2);
       avatar.active = false;
-      avatar.say("AAH!");
+      avatar.say(["AAH!"]);
       revealAllBombs();
       return true;
     case 0:
@@ -346,6 +346,10 @@ function newMove(part, index) {
     
     if (theMove.is('mark')) {
       boxes[parseInt(theMove.attr('box'))].doMark(parseInt(theMove.attr('val')),part,false);
+    }
+    
+    if (theMove.is('win') && part != myid) {
+      win(part, parseInt(theMove.attr('box')));
     }
     
     if (index < initialMovesOfRound[part]-1) {
@@ -494,7 +498,7 @@ function initializeGame() {
           if (i == myid) {
             avatars[i].steppedOn = function(box) {
               if (box.val == -2) {
-                win(i);
+                win(i,box.id);
               } 
               return box.reveal(myid);
             };
@@ -597,8 +601,11 @@ function initializeGame() {
   startAnimation();
 }
 
-function win(id) {
-  avatars[myid].say("Hooray!");
+function win(id, boxId) {
+  if (id == myid) {
+    submit('<win box="'+boxId+'"/>')
+  }
+  avatars[id].say(["Hooray!"]);
 }
 
 /**

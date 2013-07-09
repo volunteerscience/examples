@@ -140,9 +140,14 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
       });
     }
     
+    this.bubble = null;
     // draw a cartoon bubble
     this.say = function(text) {
-      alert(text);
+      if (this.bubble != null) {
+        this.bubble.clear();
+        this.bubble = null;
+      }
+      this.bubble = new Bubble(text,this.x,this.y);
     };
     
     this.img = PAPER.image(SPRITE_SRC, 0, 0, S_IMG_W, S_IMG_H);
@@ -153,4 +158,92 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
     return new Avatar(color,x,y);
   };
   
+  // text is an array of strings
+  function Bubble(text,x,y) {
+    x += Math.random()*6-3; // fix problem with the raphael caching bounding box, also to highlight a change
+    y += Math.random()*6-3; // fix problem with the raphael caching bounding box, also to highlight a change
+    var me = this;
+    var H = 25; // text height
+    var set = PAPER.set();
+    
+    var txt = [];
+    var startY = y - text.length*H - 20;
+    var minX = 100000;
+    var minY = 100000;
+    var maxW = -100;
+    for (var i in text) {
+      var t = paper.text(x,startY,text[i]).attr({
+        'text-anchor': 'middle', 
+        'font': paper.getFont("Vegur"), 
+        'font-size': 20, 
+        "fill":"#000000"
+          });
+      txt.push(t);
+      startY += H;
+      
+      var bbox = t.getBBox();
+      if (minX > bbox.x) {
+        minX = bbox.x;
+      }
+      if (minY > bbox.y) {
+        minY = bbox.y;
+      }
+      if (maxW < bbox.width) {
+        maxW = bbox.width;
+      }
+      set.push(t);
+    }
+    
+    var rect = PAPER.rect(minX-3,minY-3,maxW+6,text.length*H+6,10).attr({"fill" : "#FFFFFF", "stroke" : "#000000"});
+    set.push(rect);
+
+    var cleared = false;
+    this.clear = function() {
+      if (cleared) return;
+      cleared = true;
+      
+      set.remove();
+    };
+    
+    this.click = function(e) {
+      me.clear();
+    };
+    
+    for (var i in txt) {
+      txt[i].toFront();
+      txt[i].click(this.click);
+    }
+    rect.click(this.click);
+    
+    this.fit = function() {
+      var bbox = rect.getBBox();
+      var dx = 0;
+      var dy = 0;
+      if (bbox.x + bbox.width > PAPER._viewBox[0] + PAPER._viewBox[2]) { // hanging over the right side
+        dx = (PAPER._viewBox[0] + PAPER._viewBox[2]) - (bbox.x + bbox.width);
+      }
+      
+      if (bbox.x < PAPER._viewBox[0]) { // hanging over the left side
+        dx = PAPER._viewBox[0] - bbox.x;
+      }
+
+      
+      if (bbox.y + bbox.height > PAPER._viewBox[1] + PAPER._viewBox[3]) { // hanging over the bottom
+        dy = (PAPER._viewBox[1] + PAPER._viewBox[3]) - (bbox.y + bbox.height);
+      }
+      
+      if (bbox.y < PAPER._viewBox[1]) { // hanging over the top side
+        dy = PAPER._viewBox[1] - bbox.y;
+      }
+
+      
+      
+      if (dx != 0 || dy != 0) {
+        set.transform("T"+dx+","+dy);
+      }
+    }
+    
+    this.fit();
+  };
 }
+
