@@ -498,7 +498,7 @@ function initializeGame() {
           if (i == myid) {
             avatars[i].steppedOn = function(box) {
               if (box.val == -2) {
-                win(i,box.id);
+                win(myid,box.id);
               } 
               return box.reveal(myid);
             };
@@ -599,11 +599,13 @@ function initializeGame() {
 
   
   startAnimation();
+  avatars[myid].say(["I walk through","minefields!"]);
 }
 
 function win(id, boxId) {
+  log("win:"+id);
   if (id == myid) {
-    submit('<win box="'+boxId+'"/>')
+    submit('<win box="'+boxId+'"/>');
   }
   avatars[id].say(["Hooray!"]);
 }
