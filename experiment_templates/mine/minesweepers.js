@@ -102,7 +102,7 @@ function Box(id, x, y, r, points) {
     if (myBox.revealed) return;
     
     if (localEvent) {
-      if (a == myBox.mark[0]) {
+      if (a == myBox.mark[0] && myBox.mark[1] == myid) { // the 2nd part just changes the mark to your color if someone already marked it the same
         a = NONE;
       }
       submit('<mark box="'+myBox.id+'" val="'+a+'"/>');
@@ -487,8 +487,8 @@ function initializeGame() {
       var box = boxes[boxId];
       
       // if it's empty, and not already a starting location
-//      if (box.val == 0 && startLoc.indexOf(boxId) == -1) {
       if ((box.val == 0 && box.revealed == false) || // try to put it on a zero that hasn't been revealed
+          (box.val >= 0 && box.revealed == false && i == numPlayers+1) || // for the prize, it doesn't have to be on a zero 
           (tries > 40 && box.val >= 0 && box.revealed == false) || // if you try for a while, it doesn't have to be a zero
           (tries > 100 && box.val >= 0)) { // in this case we'll even take a revealed spot, just not a bomb
         if (i <= numPlayers) {
