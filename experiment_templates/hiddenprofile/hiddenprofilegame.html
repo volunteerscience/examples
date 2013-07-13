@@ -20,33 +20,17 @@
 				</tr>
 				<tr>
 					<td width="800" colspan="5">
-						<p align="center"><font face="Verdana" color="#FF3333"><span style="font-size:18pt;">Instructions</span></font></p>
-					</td>
-				</tr>
-				<tr>
-					<td width="800" colspan="5">
 						<table align="center" border="0" width="555" height="450">
 							<tr>
-								<td width="555" height="450" class="gametd">
-								</td>
-							</tr>
-							<tr>
-								<td width="555" height="46">
-								<table align="center" width="555">
-									<tr>			
-										<td width="185" height="46">
-										</td>
-										<td width="185" height="46">
-											<p align="center" id="readyp">
-											<button id="begininsbut" type="submit" class="btn btn-primary" onClick="submit('Ready');$('#begininsbut').hide();$('#readyp').html('Please wait for others...');">
-											<i class="icon-play-circle icon-white"></i> Begin
-											</button>
-											</p>
-										</td>
-										<td width="185" height="46">
-										</td>
-									</tr>
-								</table>
+								<td>
+									<div class="center_everything" id="video_instructions" style="display: none;">
+										<h2>Instructions</h2>
+										<br/>  
+										<div id="VideoHere"></div>
+										<div id="example4">
+											<input id="begininsbut" class="btn-large btn-success dropdown-toggle" type="submit" value="I'm Ready" onclick="submit('Ready');$('#begininsbut').hide();$('#example4').html('Please wait for others...');"/>
+										</div>    
+									</div>
 								</td>
 							</tr>
 						</table>
@@ -595,6 +579,13 @@ function setPrivateInfo(myident)
 	setShuffledOptions();
 	setCondition();
 	
+	var videoName=$.trim(xmlDoc.getElementsByTagName("instructions")[0].childNodes[0].nodeValue);
+	var mp4str = '<source src="'+getFile(videoName+".mp4")+'" type="video/mp4">';
+	if (jQuery.browser.msie)
+	 mp4str = '<source src="'+getFile(videoName+"_ie.mp4")+'" type="video/mp4">';
+	$('#VideoHere').append('<video id="HP_video" width="640" height="360" controls autoplay>'+mp4str+'<source src="'+getFile(videoName+".ogg")+'" type="video/ogg">'+'<source src="'+getFile(videoName+".webm")+'" type="video/webm">'+'Your browser does not support video.'+'</video>');
+	$("#video_instructions").show();  
+	
 	this.privateOrder=this.privateOrder.substring(this.privateOrder.indexOf("|", this.privateOrder.indexOf("|")+1)+2);
 	var tarr=this.privateOrder.split("_");
 	
@@ -605,7 +596,8 @@ function setPrivateInfo(myident)
 	var gameInfo="<pre id=\"descpre\"><ul>"+publicInfos;
 	for(var i=0; i<this.publicImage.length; i++)
 		gameInfo+="<img src=\""+this.publicImage[i]+"\" alt=\"private info picture\">";
-	$(".gametd").html("<pre id=\"inspre\">"+preprocess($.trim(xmlDoc.getElementsByTagName("instructions")[0].childNodes[0].nodeValue))+"</pre>");
+
+		
 	for(var p=0;p<tarr.length;p++)
 	{
 		if(p+1==myident)
@@ -904,6 +896,7 @@ function newMove(participant, index) {
 			this.readyCount++
 		if(this.readyCount==numPlayers)
 		{
+			$("#HP_video").get(0).pause();
 			countDownStep1();
 			$("#helpinfo").show();
 			$("#helpinfotable").css("width", 800);

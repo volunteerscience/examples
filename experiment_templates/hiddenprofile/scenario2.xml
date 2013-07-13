@@ -3,17 +3,7 @@
 	Finding the Terrorists
 	</title>
 	<instructions>
-	Welcome to the Hidden Profile game. In this game, you will work with a team to identify the Culprit, Target and Day of a hypothetically planned terrorist attack. You will be given clues to help you identify the Culprit, Target and Day of the attack, and you will have the chance to communicate with your teammates about the planned attack. 
-
-This game will start with an open chat session where you can communicate with your teammates. You may communicate with as many of your teammates as often as you wish, although you will only be able to communicate with one teammate at a time. You will only see the chats that you are directly involved with. You will not be able to see what your teammates are saying to one another and only the teammate you are communicating with will see what you say. 
-
-During open chat, you may take notes in your 'Notes' window. These notes are private; your teammates will not see your notes. 
-
-Following open chat, you will vote on the Culprit, Target and Day of the attack. Then, you will receive feedback on your vote. 
-
-Voting will be followed by a second round of open chat, and then by a second vote. Finally, you will be asked a few short questions about your team when the game is over. 
-
-Your goal is to work with your team to successfully identify the Culprit, Target and Day of the Attack. Good luck!
+HP_Instructions_v1
 	</instructions>
 	<clue visibility="shared">
 The [Culprit,1], [Culprit,2], [Culprit,3], [Culprit,4] and [Culprit,5] organizations may be planning attacks. [Culprit,4] has been unusually active lately.

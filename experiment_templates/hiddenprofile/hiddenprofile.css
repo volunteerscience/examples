@@ -174,11 +174,14 @@
 	margin-right:auto; 
 }
 
-.gametd { 
-	background-color:white;
-	color: black; 
-	padding:10px;
-	font-size:96%;
+.center_everything {
+  text-align: center;
+}
+
+#example4 {
+  padding-top: 20px;
+  width: 100%;
+  float: left;
 }
 
 #tabs {background-color:#b0c4de;}
