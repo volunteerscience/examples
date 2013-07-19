@@ -28,6 +28,7 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
     this.speed = SPEED;
     this.active = true;
     this.currentlyOn = null;
+    var me = this;
 
     // call this periodically to make the avatar walk
     this.step = function() {
@@ -60,6 +61,15 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
       return false;
     };
     
+    
+    this.onMouseDown = function(e) {
+//      log("avatar onMouseDown:"+me.currentlyOn);
+      // passthrough
+      if (me.currentlyOn != null && typeof me.currentlyOn.onMouseDown == 'function') {
+        me.currentlyOn.onMouseDown(e);
+      }
+    }
+
     
     // move towards this coordinate one step by this.speed
     // returns true when there
@@ -155,6 +165,9 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
     };
     
     this.img = PAPER.image(SPRITE_SRC, 0, 0, S_IMG_W, S_IMG_H);
+    
+    this.img.mousedown(this.onMouseDown);   
+    
     this.update();
   };
   

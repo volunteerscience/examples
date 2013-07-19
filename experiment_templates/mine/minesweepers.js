@@ -201,7 +201,6 @@ function Box(id, x, y, r, points) {
     }
     
     if (leftButtonFlag && rightButtonFlag) {
-      log("bothClick");
       if (myBox.revealed) {
         for (var i in myBox.neighbor) {
           var n = myBox.neighbor[i];
@@ -223,7 +222,6 @@ function Box(id, x, y, r, points) {
     }
     
     if (leftButtonFlag && rightButtonFlag) {
-      log("bothClick release");
       if (myBox.revealed) {
         // step 1: count the flags
         var flags = 0;
@@ -647,7 +645,7 @@ function initializeGame() {
     });
     
     $(window).mouseup(function(e) {
-      log("mouseup "+drag+" "+clickedBox);
+//      log("mouseup "+drag+" "+clickedBox);
       if (drag != null && drag.isDragging) {
         dragPage(e);
         inhibit_click = true; // prevent the click function
@@ -725,6 +723,16 @@ function zoom(x,y,delta) {
 
   var cX = x-dx*delta;
   var cY = y-dy*delta;
+
+  // don't zoom out more than the full map
+  if (newW > w1 || newH > h1) {
+    cX = x1;
+    cY = y1;
+    newW = w1;
+    newH = h1;
+  }
+  
+  if (newW < boxes[0].r * 10) return;
   
   paper.setViewBox(cX,cY,newW,newH);
 }
