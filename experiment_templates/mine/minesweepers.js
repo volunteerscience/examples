@@ -24,6 +24,9 @@ var LOOK = 3;
 var mode = "walk"; // which action the user clicked on
 var BK_GRND = "\u25EF"; //"\u0398"; //"\u06DE"; //"@";
 var outline;
+var clickedBox = null;
+var leftButtonFlag = false;
+var rightButtonFlag = false;
 
 function Box(id, x, y, r, points) {
   var myBox = this; // for inner functions
@@ -186,24 +189,109 @@ function Box(id, x, y, r, points) {
     }    
   }; 
   
+  this.onMouseDown = function(e) {
+    var rightclick = false;
+    if (e.which) rightclick = (e.which == 3);
+    else if (e.button) rightclick = (e.button == 2);
+//    log("onMouseDown right:"+rightclick);
+    if (rightclick) {
+      rightButtonFlag = true;
+    } else {
+      leftButtonFlag = true;
+    }
+    
+    if (leftButtonFlag && rightButtonFlag) {
+      log("bothClick");
+      if (myBox.revealed) {
+        for (var i in myBox.neighbor) {
+          var n = myBox.neighbor[i];
+          if (!n.revealed && n.mark[0] != FLAG) {
+            n.polygon.attr('fill',mColor[0]);
+          }
+        }
+      }
+      
+    }
+    
+    clickedBox = myBox;
+  }
+  
   this.onClick = function(e) {
     if (inhibit_click) {  // this is a result of dragging the page
       inhibit_click = false;
       return;
     }
+    
+    if (leftButtonFlag && rightButtonFlag) {
+      log("bothClick release");
+      if (myBox.revealed) {
+        // step 1: count the flags
+        var flags = 0;
+        for (var i in myBox.neighbor) {
+          var n = myBox.neighbor[i];
+          if (n.mark[0] == FLAG) {
+            flags++
+          }
+        }
+        
+        for (var i in myBox.neighbor) {
+          var n = myBox.neighbor[i];
+          if (!n.revealed) {
+            if (flags == myBox.val) {
+              switch(n.mark[0]) {
+              case NONE:
+              case LOOK:
+                n.doMark(SAFE, myid, true);
+                n.polygon.attr('fill',pColor[0]);
+                break;
+              case SAFE:
+                n.polygon.attr('fill',pColor[0]);
+                break;
+              } 
+            } else {
+              n.polygon.attr('fill',pColor[0]);
+            }
+          }
+        }
+      }
+      return;
+    }
+    
 
+//    var rightclick = false;
+//    if (e.which) rightclick = (e.which == 3);
+//    else if (e.button) rightclick = (e.button == 2);
+    
+    if (rightButtonFlag) {
+      switch(myBox.mark[0]) {
+      case NONE:
+        newMark = FLAG;
+        break;
+      case FLAG:
+        newMark = SAFE;
+        break;
+      case SAFE:
+        newMark = LOOK;
+        break;
+      case LOOK:
+        newMark = NONE;
+        break;
+      }
+      myBox.doMark(newMark,myid,true);
+    } else {
 //    alert('mode:'+mode);
-    if (mode == "walk") {
-      myBox.walkToMe();
-    } else if (mode == "look") {
-      myBox.doMark(LOOK,myid,true);
-    } else if (mode == "flag") {
-      myBox.doMark(FLAG,myid,true);
-    } else if (mode == "safe") {
-      myBox.doMark(SAFE,myid,true);
-    } else if (mode == "clear") {
-      myBox.doMark(NONE,myid,true);
-    }    
+      if (mode == "walk") {
+        myBox.walkToMe();
+      } else if (mode == "look") {
+        myBox.doMark(LOOK,myid,true);
+      } else if (mode == "flag") {
+        myBox.doMark(FLAG,myid,true);
+      } else if (mode == "safe") {
+        myBox.doMark(SAFE,myid,true);
+      } else if (mode == "clear") {
+        myBox.doMark(NONE,myid,true);
+      }    
+    }
   };
   
   
@@ -216,9 +304,9 @@ function Box(id, x, y, r, points) {
   $(this.polygon.node).on("dragleave", this.onDragLeave);
   $(this.icon.node).on("dragleave", this.onDragLeave);
   $(this.text.node).on("dragleave", this.onDragLeave);
-  this.polygon.click(this.onClick);    
-  this.icon.click(this.onClick);    
-  this.text.click(this.onClick);    
+  this.polygon.mousedown(this.onMouseDown);    
+  this.icon.mousedown(this.onMouseDown);    
+  this.text.mousedown(this.onMouseDown);    
   $(this.polygon.node).on("drop", this.onDrop);
   $(this.icon.node).on("drop", this.onDrop);
   $(this.text.node).on("drop", this.onDrop);
@@ -344,7 +432,8 @@ function newMove(part, index) {
       boxes[parseInt(theMove.attr('box'))].reveal(part);
     }
     
-    if (theMove.is('mark')) {
+    // don't re-mark my mark, because this interferes with right-clicking
+    if (theMove.is('mark') && (part != myid || index <= initialMovesOfRound[myid])) { // we're initializing the game, or it's not my mark 
       boxes[parseInt(theMove.attr('box'))].doMark(parseInt(theMove.attr('val')),part,false);
     }
     
@@ -412,6 +501,9 @@ function bfs(start, dest, m, q) {
 }
 
 function initialize() {
+  document.oncontextmenu = function(){ return false; } // disable context menu
+//  $('body').on('contextmenu', 'img', function(e){ return false; });
+  
   pColor = ["#4960d2", "#f68600","#0070c0","#7dcc15","#f10c0c","#fafa0d","#b402ff"];
   mColor = ["#c7d4e7", "#414fbc", "#1d6705", "#ac0607", "#010282", "#7b0102", "#05797d", "#f44c0c", "#aa0809", "#1d0cf4", "#849685"];
   
@@ -555,11 +647,21 @@ function initializeGame() {
     });
     
     $(window).mouseup(function(e) {
-      if (drag.isDragging) {
+      log("mouseup "+drag+" "+clickedBox);
+      if (drag != null && drag.isDragging) {
         dragPage(e);
         inhibit_click = true; // prevent the click function
+      } else {
+        inhibit_click = false;
+        if (clickedBox != null) {
+          clickedBox.onClick(e);
+        }
       }
+      
+      clickedBox = null;
       drag = null;
+      leftButtonFlag = false;
+      rightButtonFlag = false;
       $(window).unbind("mousemove");
       $(window).unbind("mouseup");
     });
