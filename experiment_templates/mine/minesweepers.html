@@ -5,19 +5,24 @@
     <h2 id="playerCommand">Controls</h2>
     <table class="controlTable">
       <tr>
+        <td style="font-size:150%; font-weight:bold;">You:</td>
+        <td><div id="you" title="you" height="48" width="48"/></td>
+      </tr>
+        
+      <tr>
         <td> <a><img id="zoomOut" title="zoom out"/></a> </td>
         <td> <a><img id="zoomReset" title="zoom out full map"/></a></td>
         <td> <a><img id="zoomMan" title="zoom to your avatar"/></a></td>
         <td> <a><img id="zoomIn" title="zoom in"/></a> </td>
       </tr>
       <tr>
-        <td> <img id="flag"  class="actionGroup" title="mark a mine"/>         </td>
-        <td> <img id="safe"  class="actionGroup" title="mark safe"/>           </td>
-        <td> <img id="look"  class="actionGroup" title="look at this square"/> </td>
-        <td> <img id="clear" class="actionGroup" title="clear mark"/>          </td>
+        <td> <img id="flag"  class="actionGroup" draggable="true" title="mark a mine"/>         </td>
+        <td> <img id="safe"  class="actionGroup" draggable="true" title="mark safe"/>           </td>
+        <td> <img id="look"  class="actionGroup" draggable="true" title="look at this square"/> </td>
+        <td> <img id="clear" class="actionGroup" draggable="true" title="clear mark"/>          </td>
       </tr>
       <tr>
-        <td> <img id="walk" class="actionGroup" title="walk to square"/>          </td>
+        <td> <img id="walk" class="actionGroup" draggable="true" title="walk to square"/>          </td>
 <!--        <td colspan="4" > <div id="walk" class="actionGroup" draggable="true" title="walk to square"/>      </td> -->
       </tr>
     </table>

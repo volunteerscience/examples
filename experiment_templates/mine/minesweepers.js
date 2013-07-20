@@ -1,6 +1,6 @@
 var x1,y1,w1,h1; // upper left, width,height when zoomed all the way out
-var cWidth = 450; // size of canvas
-var cHeight = 350;
+var cWidth = 650; // size of canvas
+var cHeight = 450;
 
 var xBoxes, yBoxes; // size of the grid
 
@@ -27,6 +27,7 @@ var outline;
 var clickedBox = null;
 var leftButtonFlag = false;
 var rightButtonFlag = false;
+var data;
 
 function Box(id, x, y, r, points) {
   var myBox = this; // for inner functions
@@ -47,6 +48,7 @@ function Box(id, x, y, r, points) {
   s+= "Z";
   this.polygon = paper.path(s).attr('fill',pColor[0]);
   this.text = paper.text(x,y,"").attr({'text-anchor': 'middle', 'font': paper.getFont("Vegur"), 'font-size': 30, "font-weight": "bold"});
+  this.text.node.setAttribute("pointer-events", "none");
   this.icon = paper.image("", x-r, y-r, r*2, r*2).hide();
 
 //  this.draggingOver = []; // since there are multiple elements, keep track of all of them that we are dragging over
@@ -56,12 +58,14 @@ function Box(id, x, y, r, points) {
   };
   
   this.onDragEnter = function(e) {
-    var data = e.originalEvent.dataTransfer.getData("Text");
+    
+ //     var data = e.dataTransfer.getData("Text");
+//      var data = e.originalEvent.dataTransfer.getData("Text");
+//      alert(data);
     if (data) {
       outline.box = myBox;
       outline.show();
       outline.transform("t"+myBox.x+","+myBox.y+" s1.2,1.2,0,0");
-//      outline.toFront();
       e.preventDefault();
     }
   };
@@ -85,8 +89,11 @@ function Box(id, x, y, r, points) {
 //  };
   
   this.onDragOver = function(e) {
-    var data = e.originalEvent.dataTransfer.getData("Text");
+    // stupid chrome won't let you do jack with getData
+//    var data = e.originalEvent.dataTransfer.getData("Text");
+//      alert(data);
     if (data) {
+//      e.preventDefault(); // need this or the bounding box doesn't go away in chrome
       if (data == "walk") {
         if (myBox.revealed || myBox.mark[0] == SAFE) {
           e.preventDefault();
@@ -140,9 +147,10 @@ function Box(id, x, y, r, points) {
   };
   
   this.onDrop = function(e) {
+    
     log("onDrop");
     outline.hide();
-    var data = e.originalEvent.dataTransfer.getData("Text");
+//    var data = e.originalEvent.dataTransfer.getData("Text");
     if (data) {
       if (data == "walk") {
         if (myBox.revealed || myBox.mark[0] == SAFE) {
@@ -160,6 +168,7 @@ function Box(id, x, y, r, points) {
         }
       }
     }
+    data = null;
     e.preventDefault();
   }; 
 
@@ -422,6 +431,7 @@ function newMove(part, index) {
 //        log("startLoc["+part+"]:"+startLoc[part]);
 //        avatar.angle = parseFloat(startLoc[part][2]);
         var b = boxes[startLoc[part]];
+        avatar.currentlyOn = b;
         avatar.setLocation(b.x, b.y); // calls update
       }
     }
@@ -499,6 +509,7 @@ function bfs(start, dest, m, q) {
 }
 
 function initialize() {
+  document.onselectstart = function(){ return false; } // disabel text cursor in chrome
   document.oncontextmenu = function(){ return false; } // disable context menu
 //  $('body').on('contextmenu', 'img', function(e){ return false; });
   
@@ -517,28 +528,43 @@ function initializeGame() {
   $("#zoomMan").attr('src',getFile("magnifyMan.png"));
   $("#zoomIn").attr('src',getFile("magnifyIn.png"));
   
-  $("#flag").attr('src',getFile("flag.png")).bind('dragstart', function(e) {
+  $("#flag").attr('src',getFile("flag.png")).bind('dragstartt', function(e) {
       e.originalEvent.dataTransfer.setData("Text",e.target.id);
+      data = e.target.id;
   });
   
-  $("#look").attr('src',getFile("look.png")).bind('dragstart', function(e) {
+  $("#look").attr('src',getFile("look.png")).bind('dragstartt', function(e) {
     e.originalEvent.dataTransfer.setData("Text",e.target.id);
+    data = e.target.id;
   });
 
-  $("#safe").attr('src',getFile("check.png")).bind('dragstart', function(e) {
+  $("#safe").attr('src',getFile("check.png")).bind('dragstartt', function(e) {
       e.originalEvent.dataTransfer.setData("Text",e.target.id);
+      data = e.target.id;
   });
   
-  $("#clear").attr('src',getFile("cancel.png")).bind('dragstart', function(e) {
+  $("#clear").attr('src',getFile("cancel.png")).bind('dragstartt', function(e) {
     e.originalEvent.dataTransfer.setData("Text",e.target.id);
+    data = e.target.id;
   });
 
-  $("#walk").attr('src',getFile("walk.png")).bind('dragstart', function(e) {
+  $("#walk").attr('src',getFile("walk.png")).bind('dragstartt', function(e) {
 //  $("#walk").attr('background-image',"url('" + getFile("walk.png") + "')").bind('dragstart', function(e) {
 //  $("#walk").bind('dragstart', function(e) {
     e.originalEvent.dataTransfer.setData("Text",e.target.id);
+    data = e.target.id;
   });
 
+  $(".actionGroup").bind('dragstart', function(e) {
+    e.originalEvent.dataTransfer.setData("Text",e.target.id);
+    data = e.target.id;
+  });
+  
+  $(".actionGroup").bind('dragend', function(e) {
+    data = null;
+    outline.hide();
+  });
+  
   startLoc = new Array();
   paper = Raphael("canvas", cWidth, cHeight);
   paper.clear();
@@ -563,8 +589,12 @@ function initializeGame() {
     initializeSquareGrid(variables['xSquares'],variables['ySquares'],variables['mines'],seed); // custom
   }
   
+  var avatarFile = getFile("volunteermen.png");
+  $("#you").css('background-image','url("'+avatarFile+'")');
+  $("#you").css('background-position',-48*(myid-1)+'px 0px');
+  
   avatars = new Array();
-  var myAvatarFactory = new AvatarFactory(getFile("volunteermen.png"),48,NUM_COLORS,6,5, [0,1,0,2],5, [3,4,5], paper);
+  var myAvatarFactory = new AvatarFactory(avatarFile,48,NUM_COLORS,6,5, [0,1,0,2],5, [3,4,5], paper);
   
   // calcluate initial location
   Math.seedrandom(seed);
@@ -593,10 +623,15 @@ function initializeGame() {
               } 
               return box.reveal(myid);
             };
-            
             // TODO: don't submit on a refresh
             submit('<start box="'+boxId+'"/>');
           }
+          avatars[i].canMoveToward = function(box, dist) {
+            if (dist < box.r*1.5) {
+              return box.canWalk();
+            }
+            return true;
+          };
         } else {
 //          alert('win is on:'+box.id);
           box.val = -2;
@@ -676,7 +711,7 @@ function initializeGame() {
   
   $('#canvas').mousewheel(function(e, delta) {
     findCanvasCoords(this, e);
-    zoom(e.canvasX, e.canvasY, 1-delta*0.1);
+    zoom(e.canvasX, e.canvasY, 1-delta*0.05);
     e.preventDefault();
   });
   
@@ -770,6 +805,7 @@ function dragPage(e) {
   var x = drag.vx - (e.pageX-drag.mStartX)/drag.scale;
   var y = drag.vy - (e.pageY-drag.mStartY)/drag.scale;
   paper.setViewBox(x,y,paper._viewBox[2], paper._viewBox[3],false);
+//  e.originalEvent.preventDefault(); // attempt to disable drag icon in chrome failed
 }
 
 /**

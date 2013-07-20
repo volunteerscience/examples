@@ -15,7 +15,6 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
   var WALK_POSITIONS = walkPositions;
   var ACTION_MAP = actionMap;
   var SPEED = speed;
-  var SIZE = 15; // distance to target before triggering it
   
   // color is a number 0-num
   function Avatar(color, x, y) {
@@ -61,6 +60,16 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
       return false;
     };
     
+    /**
+     * this is called every from moveToward(obj), 
+     * to see if the avatar can still step on this item --- or get any closer
+     * it will just wait until it can, if it cant
+     * return true to stop
+     */
+    this.canMoveToward = function(obj, dist) {
+      return true;
+    };
+    
     
     this.onMouseDown = function(e) {
 //      log("avatar onMouseDown:"+me.currentlyOn);
@@ -78,13 +87,18 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
       var dx = obj.x-this.x;
       var dy = obj.y-this.y;
       var len = Math.sqrt(dx*dx+dy*dy);
-      if (len < SIZE && this.currentlyOn != obj) {
-        
-        if (this.steppedOn(obj)) {
-          this.currentlyOn = obj;
-          return false;  
+      if (this.currentlyOn != obj) {
+        if (!this.canMoveToward(obj, len)) {
+          return false;
         }
-        this.currentlyOn = obj;
+        
+        if (len < obj.r) {
+          if (this.steppedOn(obj)) {
+            this.currentlyOn = obj;
+            return false;  
+          }
+          this.currentlyOn = obj;
+        }
       }
       
 //      log('moveToward('+x+','+y+'):('+dx+','+dy+'):'+len);
