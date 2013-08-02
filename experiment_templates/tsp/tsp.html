@@ -60,17 +60,19 @@ function initialize() {
 }
 
 function launchVideoInstructions() {
-  var mp4str = '<source src="'+FILE_PATH+files["TSP_video.mp4"]+'" type="video/mp4">';
-  if (jQuery.browser.msie) {
-     mp4str = '<source src="'+FILE_PATH+files["TSP_video_ie.mp4"]+'" type="video/mp4">'
-  }
-  $('#VideoHere').append('<video id="TSP_video" width="640" height="360" controls autoplay>'
-     +mp4str
-     +'<source src="'+FILE_PATH+files["TSP_video.ogg"]+'" type="video/ogg">'
-     +'<source src="'+FILE_PATH+files["TSP_video.webm"]+'" type="video/webm">'
-     +'Your browser does not support video.'
-     +'</video>'                    
-                        );
+  $('#VideoHere').append('<iframe id="TSP_video" src="http://player.vimeo.com/video/70876797?title=0&amp;byline=0&amp;portrait=0&amp;autoplay=1" width="640" height="360" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>');
+  
+//  var mp4str = '<source src="'+FILE_PATH+files["TSP_video.mp4"]+'" type="video/mp4">';
+//  if (jQuery.browser.msie) {
+//     mp4str = '<source src="'+FILE_PATH+files["TSP_video_ie.mp4"]+'" type="video/mp4">'
+//  }
+//  $('#VideoHere').append('<video id="TSP_video" width="640" height="360" controls autoplay>'
+//     +mp4str
+//     +'<source src="'+FILE_PATH+files["TSP_video.ogg"]+'" type="video/ogg">'
+//     +'<source src="'+FILE_PATH+files["TSP_video.webm"]+'" type="video/webm">'
+//     +'Your browser does not support video.'
+//     +'</video>'                    
+//                        );
   
 
 //  $('#TSP_video').append('<source src="http://volunteerscience.com/media/experiment/3/TSP_video.2.mp4" type="video/mp4">'+    
@@ -113,8 +115,6 @@ function initializeGameType() {
       break;
   }
   
-  showBest = false; // delme
-
   if (numPlayers < 2) { // delme
     forceBots = 1;
   }
@@ -916,8 +916,10 @@ function doneVideoInstructions() {
   }
   
   clearInterval(clockTimer);
-  submit('video_instructions best:'+showBest+' teamModulo:'+showTeamModulo+' forceBots:'+forceBots+' botType:'+botType);
-  $("#TSP_video").get(0).pause();
+  submit('<startup best="'+showBest+'" teamModulo="'+showTeamModulo+'" forceBots="'+forceBots+'" botType="'+botType+'"/>');
+  
+  $('#TSP_video').attr('src',''); // pause vimeo
+//  $("#TSP_video").get(0).pause();
   $("#video_instructions").hide();
   $("#waiting").show();
   clockTimer = setInterval(ready, 300);
