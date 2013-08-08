@@ -1,0 +1,23 @@
+The purpose of the python programs is to create solutions.txt, which has a format like this:
+
+3;tun,gun,guy
+...
+10;sky,say,pay,pal,pel,eel,ell,elm,olm,ohm
+
+The input file of all english words is wn-data-eng.tab.
+generate a list of valid three letter words:
+  python extract_three.py > valid.txt
+
+manually generate vulgar.txt
+
+generate_problems.py uses valid.txt and vulgar.txt to generate solutions.txt
+
+
+to see the rejected words:
+diff all.tre valid.tre | egrep "^<" > reject.txt
+
+note:
+generate_problems.py requires networkx:
+  easy_install networkx
+  
+  
