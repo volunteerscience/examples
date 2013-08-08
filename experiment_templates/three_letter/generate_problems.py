@@ -41,8 +41,8 @@ for w1 in valid:
 #       print "%s %s" % (w1,w2)
       G.add_edge(w1, w2) # reverse edge will be added on 2nd pass
 
-# print "Nodes: %s" % len(G.nodes())
-# print "Edges: %s" % len(G.edges())
+print "Nodes: %s" % len(G.nodes())
+print "Edges: %s" % len(G.edges())
 
 # dictionary: length => list of problems
 solutions = defaultdict(list)
@@ -60,7 +60,7 @@ for i in range(0,10000):
     fail = False
     for v in vulgar:
       if v in path:
-#         print "vulgar: %s %s" % (v,path)
+        print "vulgar: %s %s" % (v,path)
         fail = True
     if fail:
       continue
@@ -72,7 +72,7 @@ for i in range(0,10000):
     # reject duplicates:
     for solution in my_solutions:
       if solution[0] == w1 and solution[-1] == w2:
-#         print "duplicate: %s %s" % (w1,w2)
+        print "duplicate: %s %s" % (w1,w2)
         fail = True
     if fail:
       continue
@@ -82,7 +82,7 @@ for i in range(0,10000):
     
     
   except Exception,e:
-#     print "error with path: %s => %s ; %s" % (w1, w2, e)
+    print "error with path: %s => %s ; %s" % (w1, w2, e)
     pass
 
 for i in range(3,20):
