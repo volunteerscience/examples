@@ -1,6 +1,7 @@
 import networkx as nx
 import random
 from collections import defaultdict
+import sys
 
 with open('valid.txt') as f:
   valid = f.read().splitlines()
@@ -43,6 +44,7 @@ for w1 in valid:
 
 print "Nodes: %s" % len(G.nodes())
 print "Edges: %s" % len(G.edges())
+# sys.exit(0)
 
 # dictionary: length => list of problems
 solutions = defaultdict(list)
