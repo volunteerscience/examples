@@ -62,7 +62,7 @@ for i in range(0,10000):
     fail = False
     for v in vulgar:
       if v in path:
-        print "vulgar: %s %s" % (v,path)
+#         print "vulgar: %s %s" % (v,path)
         fail = True
     if fail:
       continue
@@ -74,7 +74,7 @@ for i in range(0,10000):
     # reject duplicates:
     for solution in my_solutions:
       if solution[0] == w1 and solution[-1] == w2:
-        print "duplicate: %s %s" % (w1,w2)
+#         print "duplicate: %s %s" % (w1,w2)
         fail = True
     if fail:
       continue
@@ -84,9 +84,10 @@ for i in range(0,10000):
     
     
   except Exception,e:
-    print "error with path: %s => %s ; %s" % (w1, w2, e)
+#     print "error with path: %s => %s ; %s" % (w1, w2, e)
     pass
 
 for i in range(3,20):
   for s in solutions[i]:
-    print "%s;%s" % (i, ",".join(s))
+#     print "%s;%s" % (i, ",".join(s))
+    print "%s;%s;%s;%s" % (i,i,s[0],s[-1])

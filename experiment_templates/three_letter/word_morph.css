@@ -1,0 +1,65 @@
+.solution {
+    border: 2px dashed #444;
+    height: 58px;
+    text-align: justify;
+    -ms-text-justify: distribute-all-lines;
+    text-justify: distribute-all-lines;
+    min-width: 600px;
+    padding: 0 10px;
+}
+
+.solution div {
+    height: 25px;
+    text-align: center;
+    vertical-align: middle;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    top:17%; 
+    position: relative;
+}
+
+#suggestions {
+    height: 50px;
+    text-align: justify;
+    -ms-text-justify: distribute-all-lines;
+    text-justify: distribute-all-lines;
+    min-width: 600px;
+}
+
+#suggestions div {
+    text-align: center;
+    vertical-align: middle;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    top:17%; 
+    position: relative;
+    float: left;
+}
+
+
+.word {
+    margin: 0 3px;
+    cursor: pointer;
+}
+
+.lastWord {
+    cursor: default;
+}
+
+.arrow {
+    width: 10px;
+}
+
+.btn-success {
+  cursor: pointer;
+}
+
+
+.stretch {
+    width: 100%;
+    display: inline-block;
+    font-size: 0;
+    line-height: 0
+}

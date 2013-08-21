@@ -21,3 +21,5 @@ generate_problems.py requires networkx:
   easy_install networkx
   
   
+Word morph. A navigation game in which players are given two three-letter words and asked to find a sequence of words that connects them where the intermediate words only vary by a single letter from the predecessor. Manipulations include selecting word combinations based on difficulty (distance on the graph, flow through central words, etc.) as well as exploration-exploitation designs that expose users to either others’ proposed path lengths or the paths themselves.
+
