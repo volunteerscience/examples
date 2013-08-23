@@ -1,3 +1,44 @@
 .countdown {
-  
+  height: 40px;  
+  padding: 5px;
 }
+
+.countdown-clock {
+  border: 2px solid #444;
+  height: 40px;
+  text-align: center;
+  vertical-align: middle; 
+  border-radius: 5px;
+  background-color: #FFFFFF;
+  font-size: 34px;
+  width: 90px;
+  float: left;
+  z-index:2;
+  position: relative;
+  left:0;
+  top:0;
+}
+
+.countdown-bar {
+  height: 25px;
+  border: 1px solid #444;
+  background-color: #FFFFFF;
+  border-radius: 0 12px 12px 0;
+  position: relative;
+  top: 8px;
+  left: 93px;
+  margin-right:93px;
+  z-index:1;
+}
+
+.countdown-progress { 
+  width:100%;
+  position: absolute;
+  top:0;
+  left:0;
+  background-color: #7DAF27;
+  border-radius: 0 11px 12px 0;
+  height:25px;
+}
+  
+  

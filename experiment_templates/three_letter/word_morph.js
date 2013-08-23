@@ -22,6 +22,24 @@ function initialize() {
   $("#redo").click(function(){
     redo();
   });
+  
+  startAnimation();
+}
+
+var animTimer = null;
+function startAnimation() {
+  if (animTimer != null) return;
+  animTimer = setInterval(doAnimation, 50); // 20FPS
+}
+function stopAnimation() {
+  if (animTimer == null) return;
+  clearInterval(animTimer);
+  animTimer = null;
+}
+
+// called 20x/second
+function doAnimation() {
+  advanceCountdowns();
 }
 
 function undo() {
@@ -100,7 +118,12 @@ function setPuzzle(index) {
   undoIndex = 0;
   initializeSolutions();
   giveSuggestions(curWord);
+  setCountdown("timer",90);
 //  undoIndex = -1;
+}
+
+function countdownExpired(id) {
+  alert("Time's Up!");
 }
 
 
