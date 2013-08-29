@@ -1,6 +1,11 @@
 <div id="game">
+  <div id="instructions" style="display:none;">
+    <h1>Word Morph</h1>
+    <p id="instruction_text"></p>
+  </div>
+  
   <div id="bestGroup" style="display:none;">
-    <h2>Best</h2>
+    <h2 id="best_title">Best</h2>
     <div id="best" class="solution"></div>
   </div>
   
@@ -10,21 +15,26 @@
   </div>
 
   <hr/>
+
+  <div id="timer" class="countdown" style="display:none;"></div>
   
-  <div id="timer" class="countdown"></div>
-  
-  <a id="redo" class="btn-success btn-large right" disabled="disabled">Redo</a>
-  <a id="undo" class="btn-success btn-large right" disabled="disabled">Undo</a> 
+  <a id="redo" class="btn-success btn-large right" disabled="disabled" style="display:none;">Redo</a>
+  <a id="undo" class="btn-success btn-large right" disabled="disabled" style="display:none;">Undo</a> 
   <hr/>
   
-  <h2>Current Solution</h2>
+  <h2 id="current_solution_title" style="display:none;">Current Solution</h2>
   <div id="active_solution" class="solution"></div><br/>
-  <div class="word_input_group">
+  <div id="control_group">
+  <div class="word_input_group" style="display:none;">
     <div id="word_input"></div>
     <div id="word_input_buttons">
       <a id="accept" class="btn-success btn-large">Accept</a>
       <a id="reset" class="btn-success btn-large">Reset</a> 
     </div>
   </div>
-  <div id="suggestions"></div>
+  <div id="play_a_game" class="btn-success btn-large" style="display:none;" onclick="instructionsComplete();">Play a Game</div>
+  <div id="suggestions" style="display:none;"></div>
+  </div>
+  <div id="skip_instructions" class="btn-success btn-large right" style="display:none;" onclick="doneInstructions();">Skip Instructions</div>
+  <div id="no_keyboard" class="btn-success btn-large right" style="display:none;" onclick="instructionsPart3();">I don't have a keyboard.</div>
 </div>

@@ -15,12 +15,23 @@ var undoList = [];
 var curWordSuggestions = [];
 var letterSuggestion = null;
 var fullAlphabetArrow = false; // false means use suggestions for up/down arrows, true means use full alphabet
+var instructions = false;
+var disableArrows = false;
+var hide_ellipsis = false;
 
 function initialize() {
   $('body').prepend("<style> .arrow { background-image: url('"+FILE_PATH+files['transition.png']+"'); } </style>");
   
-  Math.seedrandom(seed);
   loadWords();  
+}
+
+function doneLoading() {
+  initializeWordInput();
+  initializeInstructions();
+  initializeGame();
+}
+
+function initializeGame() {  
   $("#undo").click(function(){
     undo();
   });
@@ -116,23 +127,34 @@ function loadWords() {
 function loadPuzzles() {
   $.get(FILE_PATH+files['puzzles_3.txt'], function(data) {
     puzzles = data.split('\n');
-    setPuzzle(Math.floor(Math.random()*puzzles.length));
+    doneLoading();
   });  
 }
 
-function setPuzzle(index) {
+function setRandomPuzzle(i) {
+  Math.seedrandom(seed^(i+1));
+  setPuzzleByIndex(Math.floor(Math.random()*puzzles.length));  
+}
+
+function setPuzzleByIndex(index) {
   var foo = puzzles[index].split(";");
-  difficulty = foo[0];
-  bestLength = foo[1];
-  firstWord = foo[2];
-  lastWord = foo[3];
+  setPuzzle(foo[0], foo[1], foo[2], foo[3]);
+}
+
+function setPuzzle(diff, best, first, last) {
+  difficulty = diff;
+  bestLength = best;
+  firstWord = first;
+  lastWord = last;
+  
   curWord = firstWord;
   undoList = [[]];
   undoIndex = 0;
   initializeSolutions();
-  initializeWordInput();
   setCurWord(curWord);
-  setCountdown("timer",90);
+  if (!instructions) {
+    setCountdown("timer",90);
+  }
 //  undoIndex = -1;
 }
 
@@ -147,7 +169,7 @@ function initializeSolutions() {
 }
 
 function addLetterInput(i) {
-  $('#word_input').append('<div class="letter"><div id="up_'+i+'" class="upArrow"></div><input id="letter_'+i+'" class="letter_input" type="text" value="'+curWord[i]+'"/><div id="down_'+i+'" class="downArrow"></div></div>');
+  $('#word_input').append('<div class="letter"><div id="up_'+i+'" class="upArrow"></div><input id="letter_'+i+'" class="letter_input" type="text" value="a"/><div id="down_'+i+'" class="downArrow"></div></div>');
 }
 
 function initializeWordInput() {
@@ -222,6 +244,9 @@ function initializeWordInput() {
   });
   
   $('.upArrow').click(function() {
+    if (disableArrows) return;
+    if ($(this).hasClass('upArrow-disabled')) return;
+    
     var index = +$(this).attr('id')[3]; // up_
     var val = $('#letter_'+index).val().toLowerCase()[0];
     var code = val.charCodeAt(0);
@@ -245,6 +270,9 @@ function initializeWordInput() {
   });
   
   $('.downArrow').click(function() {
+    if (disableArrows) return;
+    if ($(this).hasClass('downArrow-disabled')) return;
+
     var index = +$(this).attr('id')[5]; // down_
     var val = $('#letter_'+index).val().toLowerCase()[0];
     var code = val.charCodeAt(0);
@@ -306,10 +334,12 @@ function acceptWordInput() {
   }
   
   if (fail) {
+    if (instructions) {
+      pushWord(newWord);
+    }
     setSolution(curSolution);    
   } else {
-    curSolution.push(newWord);
-    setSolution(curSolution);
+    pushWord(newWord);
   }
 //  for (var i = 0; i < numLetters; i++) {
 //
@@ -340,13 +370,20 @@ function initializeWordClick(solution) {
   });
 }
 
+function pushWord(myWord) {
+  if (instructions) {
+    instructionsPushWord(myWord);
+    return;
+  }
+  
+  curSolution.push(myWord);
+  setSolution(curSolution);  
+}
+
 function initializeNextWordClick(sugg_elt) {
   sugg_elt.children(".word").click(function() {
     var myWord = $(this).html();
-    curSolution.push(myWord);
-    setSolution(curSolution);
-//    alert($(this).html());
-//    alert($(this).prev().html());
+    pushWord(myWord);
   });
 }
 function setCurWord(word) {
@@ -362,7 +399,10 @@ function setCurWord(word) {
 function giveSuggestions(word) {
   var words = suggestions[word];
   curWordSuggestions = words;
+  setSuggestions("Suggestions:",words);
+}  
   
+function setSuggestions(title, words) {  
   var sugg_elt = $('#suggestions');
   
   letterSuggestion = [];
@@ -370,7 +410,7 @@ function giveSuggestions(word) {
     letterSuggestion[i] = new Object();  // each digit uses an Object as a hash table
     letterSuggestion[i][curWord[i]] = true; // make sure to use the current word's letter as valid
   }
-  var elts = "<div><b>Suggestions:</b></div> ";
+  var elts = "<div><b>"+title+"</b></div> ";
   for (var i in words) {
     for (var j = 0; j < numLetters; j++) {
       letterSuggestion[j][words[i][j]] = true; // set a value for the key of the valid letter
@@ -401,6 +441,10 @@ function arrays_equal(a,b) {
 }
 
 function setSolution(words) {
+  if (instructions) {
+    if (instructionsSetSolution(words)) return;
+  }
+  
   if (words.length > 20) {
     alert("Solution is too long.");
     return;
@@ -450,33 +494,16 @@ function setSolution(words) {
     setSolution([]);
   } else {
     // undo/redo:
-//    alert(undoIndex+" "+undoList.length);
     var wordsCopy = words.slice(0);
-//    alert("check undoList["+undoIndex+"]:"+undoList[undoIndex]+" == "+wordsCopy);
+
     if (arrays_equal(undoList[undoIndex],wordsCopy)) {
       // undo/redo... do nothing
-//      alert("undo/redo... do nothing");
     } else {
       undoIndex++;
       undoList.length = undoIndex;
       undoList.push(wordsCopy);
-//      alert("add to undoList["+undoIndex+"]:"+undoList[undoIndex]);
-//      undoList.[undoIndex] = wordsCopy;
     }
     
-    
-//    if (undoIndex == undoList.length-1) {
-////      alert("add to undoList["+undoList.length+"]:"+words.slice(0));
-//      undoIndex++;
-////      undoList.push(words.slice(0));
-//      undoList[undoIndex] = words.slice(0);
-//    } else {
-////      undoList.length = undoIndex;
-////      undoIndex++;
-////      undoList.push(words);      
-//    }
-
-//    alert(undoIndex+" "+undoList.length);
     if (undoIndex > 0) {
       $('#undo').removeAttr("disabled");    
     } else {
@@ -497,6 +524,10 @@ function setSolution(words) {
 function drawSolution(solution, words) {
   var complete = false;
   var filler = '<div class="blank">___</div> <div class="ellipsis">...</div> <div class="arrow"></div> ';
+  if (hide_ellipsis) {
+    filler = '<div class="blank">___</div> <div class="arrow"></div> ';
+  }
+  
   if (words.length > 0) {
     var lastSolWord = words[words.length-1];
     if (link(lastSolWord,lastWord)) {
