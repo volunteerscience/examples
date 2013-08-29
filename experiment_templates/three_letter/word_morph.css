@@ -20,7 +20,7 @@
 }
 
 #suggestions {
-    height: 50px;
+    height: 150px;
     text-align: justify;
     -ms-text-justify: distribute-all-lines;
     text-justify: distribute-all-lines;
@@ -49,11 +49,18 @@
 }
 
 .arrow {
-    width: 10px;
+    width: 24px;
+    height: 16px;
+    cursor: pointer;
+    background-repeat:no-repeat;
 }
 
 .btn-success {
   cursor: pointer;
+}
+
+.blank, .ellipsis {
+  font-weight: 700;
 }
 
 
@@ -62,4 +69,68 @@
     display: inline-block;
     font-size: 0;
     line-height: 0
+}
+
+.word_input_group {
+  border: 2px solid #000;
+  border-radius: 15px;
+  float: left;
+  height: 155px;
+  padding: 8px;
+}
+
+#word_input {
+  float: left;
+}
+
+.letter {
+  float: left;
+}
+
+.upArrow {
+  width:64px;
+  height:64px;
+  background-position: 0% 0%;
+}
+
+.upArrow-disabled {
+  background-position: 100% 0%;
+}
+
+.downArrow {
+  width:64px;
+  height:64px;
+  background-position: 0% 100%;
+}
+
+.downArrow-disabled {
+  background-position: 100% 100%;
+}
+
+.letter_input {
+  text-align: center; 
+  width: 40px;
+  margin: auto;
+  display: block;
+}
+
+#word_input_buttons {
+  float: left;
+  position: relative;
+  height: 90px;
+  width: 78px;
+  margin-top:33px;
+  margin-left:20px;
+}
+
+#accept {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+#reset {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
 }
