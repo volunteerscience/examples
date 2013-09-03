@@ -153,6 +153,7 @@ function setPuzzle(diff, best, first, last) {
   initializeSolutions();
   setCurWord(curWord);
   if (!instructions) {
+    submit("<puzzle>"+first+","+last+"</puzzle>");    
     setCountdown("timer",90);
   }
 //  undoIndex = -1;
@@ -440,6 +441,36 @@ function arrays_equal(a,b) {
   return !(a<b || b<a); 
 }
 
+function setBestSolution(b) {
+  if (b.length == bestLength-2) {
+    $("#num_remaining").html("<p><b>Congratulations!</b>  You found the shortest solution!</p>");
+  } else {
+    $("#num_remaining").html("<p>There is still a shorter solution.</p>");    
+  }
+  bestSolution = b;
+  drawSolution($("#best"), bestSolution);
+  $("#bestGroup").show();
+}
+
+function newMove(player,moveNum) {
+  if (player != myid && moveNum >= initialMovesOfRound[player]) { // only get new moves from other players
+    fetchMove(player, currentRound, moveNum, function(data) {
+      var theMove = $(data);
+      if (theMove.is('solution')) { // the move is a solution
+        var player_solution = theMove.text().split(",");
+        // get/create the solution
+        var theSolution = $('#solution_'+player);
+        if (theSolution.length == 0) {
+          $("#solution_group").prepend('<h2>'+getName(player)+'</h2><div id="solution_'+player+'" class="solution"></div>')
+          theSolution = $('#solution_'+player);
+        }
+        drawSolution(theSolution, player_solution);
+      }
+    });
+  }
+}
+
+
 function setSolution(words) {
   if (instructions) {
     if (instructionsSetSolution(words)) return;
@@ -451,7 +482,13 @@ function setSolution(words) {
   }
 //  alert("setSolution:"+words);
   
-  curSolution = words.slice(0);    
+  curSolution = words.slice(0);
+  
+  if (curSolution.length > 0) {
+//    alert("submit:"+curSolution+" "+words);
+//    submit(curSolution);    
+    submit("<solution>"+curSolution.join(",")+"</solution>");    
+  }
   
   if (words.length == 0) {
     setCurWord(firstWord);
@@ -474,15 +511,11 @@ function setSolution(words) {
   }
   
   if (drawSolution($("#active_solution"),curSolution)) {
-    
     if (bestSolution == null) {
-      bestSolution = curSolution;
-      drawSolution($("#best"), bestSolution);
-      $("#bestGroup").show();
+      setBestSolution(curSolution);
     } else {
       if (curSolution.length < bestSolution.length) {
-        bestSolution = curSolution;
-        drawSolution($("#best"), bestSolution);        
+        setBestSolution(curSolution);
         $("#lastGroup").hide();        
       } else {
         lastSolution = curSolution;

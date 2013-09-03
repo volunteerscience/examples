@@ -193,4 +193,9 @@
   margin: auto;
 }
 
+#num_remaining p {
+  font-size: 120%;
+  font-style:italic;
+  margin-bottom: 0;
+}
 
