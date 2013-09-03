@@ -134,13 +134,28 @@
   left: 0px;
 }
 
-#instructions {
+#wm_title {
   text-align: center;
 }
+
+#instructions {
+  text-align: center;
+  position: relative;
+  height:90px;
+}
+
+.instruction {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
 
 #instructions p {
   font-size: 150%;
   line-height: 1.5em;
+  margin-bottom:0;
 }
 
 

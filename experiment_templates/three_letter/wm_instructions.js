@@ -1,101 +1,49 @@
-(function ($) {
-  // writes the string
-  //
-  // @param jQuery $target
-  // @param String str
-  // @param Numeric cursor
-  // @param Numeric delay
-  // @param Function cb
-  // @return void
-  function typeString($target, str, cursor, delay, cb) {
-    $target.html(function (_, html) {
-      return html + str[cursor];
-    });
-
-    if (cursor < str.length - 1) {
-      setTimeout(function () {
-        typeString($target, str, cursor + 1, delay, cb);
-      }, delay);
-    }
-    else {
-      cb();
+var currentInstruction = null;
+var incomingInstruction = null;
+var instructionCallback = null;
+function fadeInstructions(initial, sentence, cb) {
+  // call the previous callback immeadiately
+  if (instructionCallback != null) {
+    if (typeof(instructionCallback) == "function") {
+      instructionCallback();
+      instructionCallback = null;
     }
   }
-
-  // clears the string
-  //
-  // @param jQuery $target
-  // @param Numeric delay
-  // @param Function cb
-  // @return void
-  function deleteString($target, delay, cb) {
-    var length;
-
-    $target.html(function (_, html) {
-      length = html.length;
-      return html.substr(0, length - 1);
-    });
-
-    if (length > 1) {
-      setTimeout(function () {
-        deleteString($target, delay, cb);
-      }, delay);
-    }
-    else {
-      cb();
-    }
+  instructionCallback = cb;
+  
+  currentInstruction.stop(false, true); // complete the current animation
+  incomingInstruction.stop(false, true);
+  currentInstruction.show();
+  incomingInstruction.hide();
+  
+  if (initial != null && initial.length > 0) {
+    incomingInstruction.html('<p>'+initial+'</p><p>'+sentence+'</p>');    
+  } else {
+    incomingInstruction.html('<p>'+sentence+'</p>');    
   }
+  
+  currentInstruction.fadeOut(500);
+  incomingInstruction.fadeIn(2000);
 
-  // jQuery hook
-  $.fn.extend({
-    teletype: function (opts) {
-      var settings = $.extend({}, $.teletype.defaults, opts);
+  var temp = incomingInstruction;
+  incomingInstruction = currentInstruction;
+  currentInstruction = temp;
 
-      return $(this).each(function () {
-        (function loop($tar, idx) {
-          // type
-          typeString($tar, settings.text[idx], 0, settings.delay, settings.cb);
-
-        }($(this), 0));
-      });
-    }
-  });
-
-  // plugin defaults  
-  $.extend({
-    teletype: {
-      defaults: {
-        delay: 100,
-        pause: 5000,
-        text: [],
-        cb: function () {
-//        // delete
-//        setTimeout(function () {
-//          deleteString($tar, settings.delay, function () {
-//            loop($tar, (idx + 1) % settings.text.length);
-//          });
-//        }, settings.pause);
-        }
-      }
-    }
-  });
-}(jQuery));
-
-function setInstructions(initial, sentence, cb) {
-  if (typeof(cb) != "function") {
-    cb = function() {};
+  if (typeof(cb) == "function") {
+    setTimeout(cb,2000);
+    instructionCallback = null;
   }
-  $('#instruction_text').html(initial);
-  $('#instruction_text').teletype({
-    text: [sentence],
-    delay: 20,
-    cb: cb
-  });  
 }
 
+function setInstructions(initial, sentence, cb) {
+  return fadeInstructions(initial, sentence, cb);
+}
 
-var instruction_text1 = 'Find the shortest path of English words that connects the two words.  Each word in the path may only change 1 letter at a time.';
+var instruction_text1 = 'Find the shortest path of English words that connects the two words.  In this case <b>bet</b> and <b>bad</b>.  Each word in the path may only change <i>1 letter at a time</i>.';
 function initializeInstructions() {
+  currentInstruction = $("#instruction_b");
+  incomingInstruction = $("#instruction_a");
+  
   hide_ellipsis = true;
 
   instructions = true;
@@ -125,15 +73,15 @@ function instructionsPushWord(word) {
   if (word=="xyz") {
     setInstructions(
         instruction_text1,
-        ' "xyz" is not a word.  Try again.');
+        '<b>Xyz</b> is not a word.  Try again.');
   } else if (word=="pet") {
     setInstructions(        
         instruction_text1,
-        ' "pet" is not the best choice.  Try again.');    
+        '<b>Pet</b> is not the best choice.  Try again.');    
   } else if (word=="bed") {
-    setInstructions('','Great!  "bed" is the best choice because it is only 1 letter different from "bet" and "bad"',
+    setInstructions('','Great!  <b>Bed</b> is the best choice because it is only 1 letter different from <b>bet</b> and <b>bad</b>.',
         function() {
-      setTimeout(instructionsPart2,1500);
+      setTimeout(instructionsPart2,2000);
     });      
   }
 }
@@ -145,7 +93,9 @@ function instructionsSetSolution(solution) {
   return false;
 }
 
+var showNoKeyboardButton = true;
 function instructionsPart2() {
+  showNoKeyboardButton = true;
   disableArrows = true;
   $("#suggestions").hide();
   $(".word_input_group").fadeIn();
@@ -153,9 +103,10 @@ function instructionsPart2() {
   
   instructionsPushWord = function(word) {
     if (word=="bed") {
+      showNoKeyboardButton = false;      
       instructionsPart3();
     } else {
-      setInstructions('','You typed "'+word+'"  Try again to type "bed"');
+      setInstructions('','You typed <b>'+word+'</b>  Try again to <i>type</i> <b>bed</b>.');
       setSolution([]);
     }
   }
@@ -163,8 +114,10 @@ function instructionsPart2() {
 
 function instructionsPart2a() {
   $('#letter_0').focus();
-  setInstructions('','This is the word selector.  You can type in a word and it will automatically accept if it is valid.  Try typing "bed"',function() {
-    $("#no_keyboard").fadeIn();
+  setInstructions('','This is the word selector.  You can <i>type</i> in a word and it will automatically accept if it is valid.  Try typing <b>bed</b>.',function() {
+    if (showNoKeyboardButton) {
+      $("#no_keyboard").fadeIn();      
+    }
   });
 }
 
@@ -173,16 +126,20 @@ function instructionsPart3() {
     if (word=="bed") {
       instructionsPart4();
     } else {
-      setInstructions('','You chose "'+word+'"  Try again to choose "bed"');
+      setInstructions('','You chose <b>'+word+'</b>  Try again to choose <b>bed</b>.  Then click <span style="color:green;">Accept</span>.');
       setSolution([]);
     }
   }
   setSolution([]);
   disableArrows = false;
+  $("#no_keyboard").stop();
   $("#no_keyboard").fadeOut();
-  setInstructions('','Great!  You can also use the arrow buttons above and below the letters.  They will only select valid words.  Use the arrows in the 3rd column to select "bed", then press "accept"');
+  setInstructions('','You can also use the <span style="color:blue;">arrow buttons</span> above and below the letters.  They will only select valid words.  Use the arrows in the <i>3rd column</i> to select <b>bed</b>, then press <span style="color:green;">Accept</span>.');
 }
 
+/**
+ * How to load part of a solution.
+ */
 function instructionsPart4() {
   hide_ellipsis = false;
   $("#active_solution .arrow").switchClass("instruction_arrow","");
@@ -194,19 +151,41 @@ function instructionsPart4() {
   $("#current_solution_title").show();
   instructionsSetSolution = function (solution) {
     if (solution.length > 1 && solution[solution.length-1] == 'sat') {
-      setInstructions('','Congratulations, you have completed the instructions.  Additional controls include Undo and Redo buttons.  You will have to complete the puzzle in a fixed timeframe.  Click "Play a Game" to try a puzzle.');
-      $("#play_a_game").fadeIn();
+      instructionsPart5();
       return false;
     }
 
     var foo = "";
     if (solution.length > 1) {
-      foo = 'You chose "'+solution[solution.length-1]+'." ';
+      foo = 'You chose <b>'+solution[solution.length-1]+'</b>. ';
     }
-    setInstructions('',foo+'Choose "sat" to load it as your Current Solution.');
+    setInstructions(foo,'Choose <b>sat</b> to load it as your Current Solution.');
     return true;
   };
-  setInstructions('','You will be able to see your best solution, and in some cases other player\'s solutions.  You can load a part of a solution by clicking on that word.  Here is an example of a poor solution.  Click "sat" to load it as your Current Solution.');
+  setInstructions('After you find a solution, will be able to see your <i>best</i>, and in some cases <i>other Player\'s</i> solutions.  You can load a part of a solution by <b>clicking on that word</b>.',
+          'Click <b>sat</b> to load it as your Current Solution.');
+}
+
+/**
+ * How to reset solution.
+ */
+function instructionsPart5() {
+  $("#current_solution_title").show();
+  instructionsSetSolution = function (solution) {
+    if (solution.length == 0) {
+      setInstructions('Congratulations, you have completed the instructions!','Additional controls include <span style="color:green;">Undo</span> and <span style="color:green;">Redo</span> buttons.  You will have to complete the puzzle in a <i>fixed timeframe</i>.  Click <span style="color:green;">Play a Game</span> to try a puzzle.');
+      $("#play_a_game").fadeIn();
+      return false;
+    }
+
+    var foo = "";
+    if (solution.length > 0) {
+      foo = 'You chose <b>'+solution[solution.length-1]+'</b>.';
+    }
+    setInstructions(foo,'Choose <b>bet</b> to <i>reset</i> your Current Solution.');
+    return true;
+  };
+  setInstructions('','You can <i>reset</i> your current solution by clicking the first word.  Click <b>bet</b> to reset your Current Solution.');
 }
 
 function instructionsComplete() {
@@ -215,6 +194,7 @@ function instructionsComplete() {
 }
 
 function doneInstructions() {
+  
   $("#play_a_game").hide();
   hide_ellipsis = false;
   $("#best_title").html("Best");
@@ -231,6 +211,8 @@ function doneInstructions() {
   $("#instructions").hide();
   $("#skip_instructions").hide();
   $("#suggestions").removeClass("large_suggestions");
+  $("#undo").show();
+  $("#redo").show();
   $("#suggestions").show();
   $(".word_input_group").show();
   setTimeout(setFirstPuzzle, 1000);
