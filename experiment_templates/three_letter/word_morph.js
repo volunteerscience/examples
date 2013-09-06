@@ -441,9 +441,22 @@ function arrays_equal(a,b) {
   return !(a<b || b<a); 
 }
 
+var won = false;
 function setBestSolution(b) {
   if (b.length == bestLength-2) {
     $("#num_remaining").html("<p><b>Congratulations!</b>  You found the shortest solution!</p>");
+    if (!won) {
+      won = true;
+      writeAward("Win");
+      try {
+        
+        if (typeof awards[myid]["Gimmie Five!"] == "undefined" &&
+            awards[myid]["Win"]["count"] >= 4) {
+            writeAward("Gimmie Five!");
+        }
+      } catch(err) {
+      }
+    }
   } else {
     $("#num_remaining").html("<p>There is still a shorter solution.</p>");    
   }
