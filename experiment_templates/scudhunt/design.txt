@@ -1,0 +1,103 @@
+Kornoa
+Gulf of Sabani
+
+
+  1 2 3 4 5
+A
+B
+C
+D
+E
+
+Results:
+  0 - nothing significant 
+  ? - vehicles detected 
+  x - Launchers detected (launchers; deception; civilian)
+  K - Killed in Action
+  E - Team Extracted
+
+Sensors:
+  Recon Satellite - Column -- Hi probability 0 or ? (can't reliably confirm launchers) <satellite>
+  Manned Aircraft - Row, every other turn -- Row E: excellent reliability C, D reduced <SR-71> 
+  UAV - Row - Good search reliability - chance of shot down, random probability of replacement <
+  SIGINT - 1 square - Search any grid square - 0 or ?
+  HUMINT - 1 square - Walk around - chance of execution, unreplacable
+  Spec Ops - distinguish ? and x - compromised: emergency extraction, loss for 1 turn, chance of added back every additional turn
+  Navy SEALS - Spec ops starting on Row E
+
+
+Players:
+  Space Asset Manager: Recon Satellite
+  Air Asset Manager: Manned Air, UAV
+  Spy: SIGINT, HUMINT
+  SpecOps: Spec ops, SEALS
+
+Sensor:
+               Actual
+Report  0   D   X
+
+    0  .7  .2  .1  
+
+    ?  .2  .6  .2
+
+    X  .1  .2  .7
+
+
+Options:
+  Shared Viz - Grid shows all events
+  Chat
+  Turn Length
+  Num turns
+  Moving Scuts
+
+Icons:
+  Scud: scud.png
+  satellite: satellite.png
+  Spec Ops: spec_ops.png
+  HUMINT: spy.png
+  Navy SEALS seals.png
+  SIGINT: headphones.png
+  Manned Air: SR-71.png
+  UAV: uav.png
+  Attack Aircraft: F-117.png
+
+image to icon:
+  http://www.gimp.org/tutorials/Sketch_Effect/
+
+Questions:  Perla page 61
+
+Variables:
+  Sensor Matrix:
+    s_sat
+    s_air
+    s_uav
+    s_sigint
+    s_spy
+    s_sops
+    s_seal
+
+  k_uav
+  k_spy
+  k_sops
+  k_seal
+
+  r_uav
+  r_sops
+  r_seal
+
+  num_rows = 5
+  num_cols = 5
+
+  min_turns = 5
+  max_turns = 5
+
+  num_scuds = 3
+  num_decoys
+
+  shared_vis = true, false, random
+
+auto chat:
+  computer sends info
+
+    
+
