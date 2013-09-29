@@ -4,6 +4,8 @@
 // speed is the default speed in pixels
 // action map converts an action to an icon first action is action 0
 function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, actionMap, paper) {
+  var factory = this;
+  
   
   var PAPER = paper;
   var SPRITE_SRC = src;
@@ -15,6 +17,12 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
   var WALK_POSITIONS = walkPositions;
   var ACTION_MAP = actionMap;
   var SPEED = speed;
+  this.SCALE = 1;
+  this.width = width;
+  
+  this.setPaper = function(paper) {
+    PAPER = paper;
+  }
   
   // color is a number 0-num
   function Avatar(color, x, y) {
@@ -27,6 +35,7 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
     this.speed = SPEED;
     this.active = true;
     this.currentlyOn = null;
+    this.scale = factory.SCALE;
     var me = this;
 
     // call this periodically to make the avatar walk
@@ -160,7 +169,8 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
          "clip-rect" : cr,
          "transform" : 
            "t"+(this.x-SW2-SW*(this.color))+","+(this.y-SW2-SW*this.stance) +
-           "r"+this.angle+","+rx+","+ry
+           "r"+this.angle+","+rx+","+ry+
+           "s"+this.scale+","+this.scale
       });
     }
     

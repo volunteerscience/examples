@@ -1,0 +1,18 @@
+#canvas {
+  background-color: #f7dab7;
+  float: left;
+  margin-right:10px;
+}
+
+.round-corner15 {
+    -webkit-border-radius: 15px; 
+    -moz-border-radius: 15px;
+    -o-border-radius: 15px;
+    border-radius: 15px;
+}
+
+.minwidth { 
+  min-width:100px; 
+  width: auto !important; 
+  width: 100px; 
+}
