@@ -11,6 +11,15 @@
     border-radius: 15px;
 }
 
+.btn-success {
+  cursor: pointer;
+}
+
+.left {
+  float: left;
+  clear: both;
+}
+
 .leftSide {
   width: 420px;
 }
@@ -62,4 +71,14 @@
 
 .situationReport {
   clear: both;  
+}
+
+.sitrep_wrapper {
+  height: 300px; 
+  width: 400px; 
+  overflow: auto;
+}
+  
+#sitrep {
+  width: 400px;
 }

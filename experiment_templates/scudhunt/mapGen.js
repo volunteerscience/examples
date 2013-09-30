@@ -49,13 +49,17 @@ function buildSquareMap(num_rows, num_cols, num_targets, num_decoys) {
       var polygon = paper.path(s); 
       var region = new Region(
           id++, row_name+col_name,
-          X_OFF+x*R_WIDTH+R_WIDTH/2, Y_OFF+y*R_HEIGHT+R_HEIGHT/2, polygon
+          X_OFF+x*R_WIDTH+R_WIDTH/2, Y_OFF+y*R_HEIGHT+R_HEIGHT/2, 
+          X_OFF+x*R_WIDTH, Y_OFF+y*R_HEIGHT,
+          polygon
           );
       regions.push(region);
       regionGroup[COL][x].push(region);
       regionGroup[ROW][y].push(region);
       region.groups[COL] = regionGroup[COL][x];
       region.groups[ROW] = regionGroup[ROW][y];  
+      region.col = x;
+      region.row = y;
     }
   }
   

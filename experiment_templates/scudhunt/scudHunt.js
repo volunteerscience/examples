@@ -30,7 +30,7 @@ var VALUE_DECOY = 1;
 var VALUE_TARGET = 2;
 var VALUE_DISPLAY = ['0','?','X'];
 
-function Region(id,name, x,y,polygon) {
+function Region(id,name, x,y, x1,y1, polygon) {
   var me = this;
   this.id = id;
   this.name = name;
@@ -38,6 +38,7 @@ function Region(id,name, x,y,polygon) {
   this.x = x;
   this.y = y;
   this.polygon = polygon;
+  this.status = paper.text(x1+1,y1+5,"").attr({'text-anchor': 'start'}); //.attr("fill", "#e0e000");
   
   this.groups = new Array(); // the groups I belong to -- ROW, COL, etc
   this.value = VALUE_NOTHING;
@@ -96,6 +97,14 @@ function clearRegionHighlights() {
     region.highlight(false);
   }
 }
+
+function clearRegionStatus() {
+  for (idx in regions) {
+    var region = regions[idx];
+    region.status.attr({text: ''});
+  }
+}
+
 
 /**
  * 
@@ -168,11 +177,28 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
   
   this.doWait = function(region) {
     return 0;
-  }
+  };
   
   this.doSensor = function(region) {
-    return getReport(region.value, reporTable);
-  }
+    return getReport(region.value, this.reportTable);
+  };
+  
+  /**
+   * each is a list of region names
+   */
+  this.buildSituationReport = function(no, possible, confirmed) {
+    var ret = [];
+    if (no.length > 0) {
+      ret.push("No target at "+no.join(","));
+    }
+    if (possible.length > 0) {
+      ret.push("Possible target at "+possible.join(","));
+    }
+    if (confirmed.length > 0) {
+      ret.push("Target confirmed at "+confirmed.join(","));
+    }
+    return ret;
+  };
 }
 
 /**
@@ -257,8 +283,104 @@ function initializeAssets() {
   });
 }
 
+function submitMove() {
+  Math.seedrandom(seed*myid*(currentRound+7));
+  var submission = "";
+  var myUnits = roleUnits[getRole(myid)];
+  for (idx in myUnits) {
+    var unit = myUnits[idx];
+    if (unit.nextRegion == null ) {
+      alert('Please assign '+unit.name+'.');
+      return;
+    } else {
+      var scanned = unit.effect(unit.nextRegion);
+      var id_str = [];
+      var result_str = [];
+      for (var r_idx in scanned) {
+        var reg = scanned[r_idx];
+        var result = unit.doSensor(reg);
+        id_str.push(reg.id);
+        result_str.push(VALUE_DISPLAY[result]);
+      }
+      var wait = unit.doWait(unit.nextRegion);
+      submission+='<command unit="'+unit.id+'" region="'+unit.nextRegion.id+'" scan="'+id_str.join(",")+'" result="'+result_str.join(",")+'" wait="'+wait+'"/>'
+    }
+  }
+  updateBoardFromCommands([submission]);
+  addSituationReports([submission]);
+//  alert(submission);
+}
 
+function clearMoves(these_units) {
+  
+}
 
+function updateUnitFromCommands(moves) {
+  for (var m in moves) {
+    var move = moves[m];
+    var qmove = $('<foo>'+move+'</foo>');
+    qmove.find('command').each(function(index) {
+      var unit = units[$(this).attr('unit')];
+      var region = regions[$(this).attr('region')];
+      unit.nextRegion = null;
+      unit.setCurrentRegion(region);
+    });
+  }
+}
+
+function updateBoardFromCommands(moves) {
+  clearRegionStatus();
+  for (var m in moves) {
+    var move = moves[m];
+    var qmove = $('<foo>'+move+'</foo>');
+//    alert(qmove.find('command').length);
+    qmove.find('command').each(function(index) {
+      
+      var scan = $(this).attr('scan').split(",");
+      var result = $(this).attr('result').split(",");
+      for (var i = 0; i < scan.length; i++) {
+        var region = regions[scan[i]];
+        region.status.attr({text: region.status.attr('text')+' '+result[i]});
+      }
+    });
+  }
+}
+
+function addMoveReports(moves) {
+
+}
+
+function addSituationReports(moves) {
+  for (var m in moves) {
+    var move = moves[m];
+    var qmove = $('<foo>'+move+'</foo>');
+//    alert(qmove.find('command').length);
+    qmove.find('command').each(function(index) {
+      
+      var unit = units[$(this).attr('unit')];
+      var scan = $(this).attr('scan').split(",");
+      var result = $(this).attr('result').split(",");
+      var no = [];
+      var possible = [];
+      var confirmed = [];
+      for (var i = 0; i < scan.length; i++) {
+        var region = regions[scan[i]];
+        if (result[i] == VALUE_DISPLAY[VALUE_NOTHING]) {
+          no.push(region.name);
+        } else if (result[i] == VALUE_DISPLAY[VALUE_DECOY]) {
+          possible.push(region.name);
+        } else if (result[i] == VALUE_DISPLAY[VALUE_TARGET]) {
+          confirmed.push(region.name);
+        }
+      }
+      reports = unit.buildSituationReport(no, possible, confirmed);
+      for (i in reports) {
+        var report = reports[i];
+        $("#sitrep").append('<tr><th>'+unit.name+'</th><td>'+report+'</td></tr>');
+      }
+    });
+  }
+}
 
 
 

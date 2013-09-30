@@ -17,19 +17,29 @@ function initializeUnits() {
     return region.groups[COL];
   };
   
+  if (true) {
   var mannedAircraft = new Unit(1, SPACE_COMMAND, "Manned Aircraft", "Search from the Coast", 
       "May fly only along the Gulf (Row E) outside Koronan airspace.  "+
       "It searches the coastal grid squares with excellent reliability, "+
       "and two rows inland (Rows C and D) with reduced reliablity.  "+
       "Must rest at leat one turn between flights due to crew fatigue and maintenance requirements.", 
       getFile("satellite.png"), 0, 
-      [[0.7,0.2,0.1],[0.2,0.6,0.2],[0.1,0.2,0.7]]);
+      [ 
+        [],
+        [],
+        [[0.4,0.2,0.4],[0.3,0.2,0.5],[0.8,0.1,0.1]],
+        [[0.7,0.2,0.1],[0.2,0.6,0.2],[0.1,0.2,0.7]],
+        [[0.9,0.05,0.05],[0.05,0.9,0.05],[0.05,0.05,0.9]],
+      ]);
   mannedAircraft.effect = function(region) {
-    if (region.id <= 9 ) return []; // can't scan top 2 rows
+    if (region.row <= 1 ) return []; // can't scan top 2 rows
     return region.groups[ROW];
   };
   mannedAircraft.doWait = function(region) {
     return 1;
+  };
+  mannedAircraft.doSensor = function(region) {
+    return getReport(region.value, mannedAircraft.reportTable[region.row]);
   };
   
   var uav = new Unit(2, SPACE_COMMAND, "UAV", "Scan Row", 
@@ -41,11 +51,12 @@ function initializeUnits() {
   uav.effect = function(region) {
     return region.groups[ROW];
   };
-  mannedAircraft.doWait = function(region) {
+  uav.doWait = function(region) {
     if (Math.random() < 0.3) { // 30% chance of death
       return Math.floor(Math.random()*4);  // wait up to 4 days
     }
   };
+  } // delme
   
   var avatarFile = getFile("satellite.png");
 //  var avatarFile = getFile("original_avatars.png");
