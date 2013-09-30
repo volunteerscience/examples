@@ -11,8 +11,55 @@
     border-radius: 15px;
 }
 
+.leftSide {
+  width: 420px;
+}
+
+.rightSide {
+  float: left;
+}
+
 .minwidth { 
   min-width:100px; 
   width: auto !important; 
   width: 100px; 
+}
+
+.asset {
+  -webkit-border-radius: 5px; 
+  -moz-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  background-color: #c7d4e7;
+  border:1px solid black;
+  width: 200px;
+  cursor: pointer;
+  width: 240px;
+  min-height: 64px;
+  margin-bottom: 2px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.asset img {
+  width: 64px;
+  float: left;
+}
+
+.asset .heading {
+  color: black;
+  font-weight: bold;  
+}
+
+.asset p {
+  margin: 0;
+  text-align: center;
+}
+
+.situationReport {
+  clear: both;  
 }
