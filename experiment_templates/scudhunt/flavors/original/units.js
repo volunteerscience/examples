@@ -1,7 +1,7 @@
 var SPACE_COMMAND = 1;
 
 function initializeUnits() {
-  num_unit_types = 1;
+  num_unit_types = 3;
   num_roles = 4;
   
   for (var roleId = 1; roleId < num_roles+1; roleId++) {
@@ -23,7 +23,7 @@ function initializeUnits() {
       "It searches the coastal grid squares with excellent reliability, "+
       "and two rows inland (Rows C and D) with reduced reliablity.  "+
       "Must rest at leat one turn between flights due to crew fatigue and maintenance requirements.", 
-      getFile("satellite.png"), 0, 
+      getFile("SR-71.png"), 1, 
       [ 
         [],
         [],
@@ -47,7 +47,7 @@ function initializeUnits() {
       "For each grid square it enters, there is a chance that it will crash or be shot down, "+
       "which aborts any further search on that turn.  "+
       "There is a variable probability that a lost UAV will be replaced the next day.", 
-      getFile("satellite.png"), 0, [[0.7,0.2,0.1],[0.2,0.6,0.2],[0.1,0.2,0.7]]);
+      getFile("uav.png"), 2, [[0.7,0.2,0.1],[0.2,0.6,0.2],[0.1,0.2,0.7]]);
   uav.effect = function(region) {
     return region.groups[ROW];
   };
@@ -58,7 +58,7 @@ function initializeUnits() {
   };
   } // delme
   
-  var avatarFile = getFile("satellite.png");
+  var avatarFile = getFile("sprites.png");
 //  var avatarFile = getFile("original_avatars.png");
   unitAvatarFactory = new AvatarFactory(avatarFile, 128, num_unit_types, 1, 0, [0], 5, [], null);
 }
