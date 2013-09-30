@@ -8,8 +8,9 @@ var ALT_COL = 2;
 var regions = new Array();
 var regionGroup = new Array();
 var REGION_WIDTH = 20;
+var targetRegions = "";
 
-function buildSquareMap(num_rows, num_cols) {
+function buildSquareMap(num_rows, num_cols, num_targets, num_decoys) {
   var X_OFF = 20;
   var Y_OFF = 20;
   var R_WIDTH =  (MAP_WIDTH -X_OFF)/num_cols;
@@ -55,6 +56,45 @@ function buildSquareMap(num_rows, num_cols) {
       regionGroup[ROW][y].push(region);
       region.groups[COL] = regionGroup[COL][x];
       region.groups[ROW] = regionGroup[ROW][y];  
+    }
+  }
+  
+  Math.seedrandom(seed);
+  var assigned = new Array();
+
+  for (var i = 0; i < num_targets; i++) {
+    // pick unique regionId
+    var regionId = Math.floor(Math.random()*id);
+    while (typeof assigned[regionId] != "undefined") {
+      regionId = Math.floor(Math.random()*id);
+    }
+    
+    regions[regionId].value = VALUE_TARGET;
+    if (i > 0) {
+      targetRegions+=",";
+    }
+    targetRegions+=regionId;
+    
+    assigned[regionId] = true;
+  }
+  
+  if (num_decoys > 0) {
+    targetRegions+=";";
+    
+    for (var i = 0; i < num_decoys; i++) {
+      // pick unique regionId
+      var regionId = Math.floor(Math.random()*id);
+      while (typeof assigned[regionId] != "undefined") {
+        regionId = Math.floor(Math.random()*id);
+      }
+      
+      regions[regionId].value = VALUE_DECOY;
+      if (i > 0) {
+        targetRegions+=",";
+      }
+      targetRegions+=regionId;
+      
+      assigned[regionId] = true;
     }
   }
 }

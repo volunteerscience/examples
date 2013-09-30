@@ -30,7 +30,7 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
     this.x = x;
     this.y = y;
     this.stance = 0;
-    this.angle = 90;
+    this.angle = 0;
     this.walkPosition = 0;
     this.speed = SPEED;
     this.active = true;

@@ -99,38 +99,29 @@ Variables:
 auto chat:
   computer sends info
 
-clearRegionHighlights()
-  for region in regions:
-    highlight(false)
-
-region: (square on the map)
-  row
-  column (NE-SW for hex)
-  alt_column (NW-SE for hex)
-  highlight(boolean) // for a mouseover to show the move
-
-  onMouseEnter()
-    if (selectedUnit != null)
-      clearRegionHighlights()
-      selectedUnit.showEffect(this)
-      
-  onMouseClick()
-    if (selectedUnit != null)
-      for region in regions:
-        highlight(false)
-      selectedUnit.showEffect(this)
-      selectedUnit.nextMove = this
-      selectedUnit = null
-
 unit:
-  var avatar
   doMove() // fly over, move to a square etc
-  showEffect(region) // when mouseover of region, highlight affected regions (use region.row, region.column etc)
-  select()
-    clearRegionHighlights()
-    if nextMove != null
-      showEffect(region)
 
+show status in .asset (on right)
+  (Ready, Dead, Resting, B2, etc)
+
+Turn 1 of 5:
+move button: 
+  "End Turn"
+  click:
+    seedRandom(seed*playerId*turn*round+55)
+    for unit in myUnits:
+      if (nextMove == null) {
+        alert: please assign unit.name
+        return;
+      }
+      calculate result from tables
+    
+  submit move:
+    <command unit="1" region="2" scan="0,1,2,3,4" result="?,0,0,?,0" wait="0"/> // wait is how many turns until back, 0 = available next turn, 1=wait a turn, -1="dead forever" 
+    then says "waiting for team"
+
+wait for moves:
     
   
     

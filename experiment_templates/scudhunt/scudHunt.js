@@ -6,10 +6,11 @@ var MAP_HEIGHT = 420;
 
 var REGION_BACKGROUND_COLOR = "#c7d4e7";
 var REGION_SELECTION_COLOR = "#b7e4d7";
+var REGION_FAIL_COLOR = "#f7d4e7";
 
 var ASSET_BACKGROUND_COLOR = REGION_BACKGROUND_COLOR;
 var ASSET_SELECTION_COLOR = REGION_SELECTION_COLOR;
-var ASSET_HOVER_COLOR = '#f7d4e7'; 
+var ASSET_HOVER_COLOR = REGION_FAIL_COLOR;
 
 var paper = null;
 var selectedUnit = null;
@@ -24,6 +25,11 @@ function getRole(playerId) {
   return playerId;
 }
 
+var VALUE_NOTHING = 0;
+var VALUE_DECOY = 1;
+var VALUE_TARGET = 2;
+var VALUE_DISPLAY = ['0','?','X'];
+
 function Region(id,name, x,y,polygon) {
   var me = this;
   this.id = id;
@@ -34,10 +40,16 @@ function Region(id,name, x,y,polygon) {
   this.polygon = polygon;
   
   this.groups = new Array(); // the groups I belong to -- ROW, COL, etc
+  this.value = VALUE_NOTHING;
   
   polygon.attr('fill',REGION_BACKGROUND_COLOR);
   this.onClick = function() {
     if (selectedUnit != null) {
+      if (selectedUnit.effect(me).length == 0) {
+        alert("You can't move the "+selectedUnit.name+" to this region.");
+        return;
+      }
+      
       selectedUnit.setNextRegion(me);
       deselectAllUnits();
     }
@@ -68,18 +80,42 @@ function Region(id,name, x,y,polygon) {
     }
   };
   
+  this.markInvalid = function() {
+    polygon.attr('fill', REGION_FAIL_COLOR);
+  }
+  
   polygon.click(this.onClick);  
   polygon.mouseover(this.mouseOver);  
   polygon.mouseout(this.mouseOut);  
 }
 
-function deselectAllUnits() {
-  $('.asset').css('background-color',REGION_BACKGROUND_COLOR); 
-  selectedUnit = null;
-  clearRegionHighlights();  
+
+function clearRegionHighlights() {
+  for (idx in regions) {
+    var region = regions[idx];
+    region.highlight(false);
+  }
 }
 
-function Unit(id, ownerId, name, short_description, long_description, icon, avatarId) {
+/**
+ * 
+ * @param id
+ * @param ownerId
+ * @param name
+ * @param short_description
+ * @param long_description
+ * @param icon
+ * @param avatarId
+ * @param reportTable[actual][result_prob] --         
+ *         actual  0  ?  X
+ * report
+ *   0           
+ *   ?
+ *   X
+ * @returns                 
+ *                   
+ */
+function Unit(id, ownerId, name, short_description, long_description, icon, avatarId, reportTable) {
   units[id] = this;
   this.id = id;
   this.ownerId = ownerId; // role that owns it
@@ -88,6 +124,7 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
   this.avatarId = avatarId;
   this.short_description = short_description;
   this.long_description = long_description;
+  this.reportTable = reportTable;
   
   roleUnits[ownerId].push(this);
   
@@ -96,7 +133,7 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
   
   this.buildAvatar = function(avatarFactory) {
     this.avatar = avatarFactory.build(avatarId,-100,-100); // build avatar off screen
-  }
+  };
   
   this.select = function() {
     deselectAllUnits();
@@ -106,13 +143,65 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
       clearRegionHighlights();
       this.showEffect(this.nextRegion);
     }
-  }
+  };
   
   this.setNextRegion = function(region) {
     this.nextRegion = region;
     this.avatar.setLocation(region.x, region.y);
+  };
+  
+  // override me if unit affects more regions than self, return row, col, etc
+  this.effect = function(region) {
+    return [region];
+  };
+  
+  this.showEffect = function(region) {
+    var regions = this.effect(region);
+    for (idx in regions) {
+      var r = regions[idx];
+      r.highlight(true);
+    }
+    if (regions.length == 0) {
+      region.markInvalid();
+    }
+  };
+  
+  this.doWait = function(region) {
+    return 0;
+  }
+  
+  this.doSensor = function(region) {
+    return getReport(region.value, reporTable);
   }
 }
+
+/**
+ * return the report from the table
+ * @param actual
+ * @param table
+ * @returns {Number}
+ */
+function getReport(actual, table) {
+  var possibilities = table[actual];
+  var roll = Math.random();
+  
+  var totalChance = 0;
+  for (var ret = 0; ret <= 2; ret++) {
+    totalChance+=table[actual][ret];
+    if (roll < totalChance) {
+      return ret;
+    }
+  }
+  return 2;
+}
+
+function deselectAllUnits() {
+  $('.asset').css('background-color',REGION_BACKGROUND_COLOR); 
+  selectedUnit = null;
+  clearRegionHighlights();  
+}
+
+
 
 function initialize() {
   initializeUnits();
@@ -123,7 +212,7 @@ function initialize() {
 function initializeGameBoard() {
   paper = Raphael("canvas", MAP_WIDTH, MAP_HEIGHT);
   paper.clear();
-  buildSquareMap(5,5);
+  buildSquareMap(5, 5, 4, 0);
   initializeAvatars();
   initializeAssets();
 }
@@ -166,16 +255,11 @@ function initializeAssets() {
       $(this).css('background-color',ASSET_BACKGROUND_COLOR); 
     }
   });
-
 }
 
 
-function clearRegionHighlights() {
-  for (idx in regions) {
-    var region = regions[idx];
-    region.highlight(false);
-  }
-}
+
+
 
 
 
