@@ -164,6 +164,8 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
       var rx = SW2+(this.color)*SW;
       var ry = SW2+(this.stance)*SW;
       var cr = (this.x-SW2+S_CLIP)+" "+(this.y-SW2+S_CLIP)+" "+(SW-2*S_CLIP)+" "+(SW-2*S_CLIP);
+//      var cr = ((this.x-SW2+S_CLIP)*this.scale)+" "+((this.y-SW2+S_CLIP)*this.scale)+" "+((SW-2*S_CLIP)*this.scale)+" "+((SW-2*S_CLIP)*this.scale);
+
       this.img.attr({
   //    this.img.animate({
          "clip-rect" : cr,

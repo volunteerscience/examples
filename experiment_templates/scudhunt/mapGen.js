@@ -1,8 +1,9 @@
 
 var ROW = 0;
 var COL = 1;
-var ALT_COL = 2;
-
+var CARDINAL_NEIGHBORS = 2;
+var ORDINAL_NEIGHBORS = 3;
+var ALT_COL = 4; // used for hex
 
 
 var regions = new Array();
@@ -60,6 +61,32 @@ function buildSquareMap(num_rows, num_cols, num_targets, num_decoys) {
       region.groups[ROW] = regionGroup[ROW][y];  
       region.col = x;
       region.row = y;
+      
+      // build the Cardinal, Ordinal neighbors
+      region.groups[CARDINAL_NEIGHBORS] = new Array();
+      region.groups[ORDINAL_NEIGHBORS] = new Array();
+      if (y > 0) {
+        var n = regions[region.id-num_cols];
+        region.groups[CARDINAL_NEIGHBORS].push(n); // north
+        n.groups[CARDINAL_NEIGHBORS].push(region); // south
+
+        if (x > 0) {
+          var nw = regions[region.id-num_cols-1];
+          region.groups[CARDINAL_NEIGHBORS].push(nw); // north-west
+          nw.groups[CARDINAL_NEIGHBORS].push(region); // south-east
+        }
+        
+        if (x < num_cols-1) {
+          var ne = regions[region.id-num_cols+1];
+          region.groups[CARDINAL_NEIGHBORS].push(ne); // north-east
+          ne.groups[CARDINAL_NEIGHBORS].push(region); // south-west
+        }
+      }
+      if (x > 0) {
+        var w = regions[region.id-1];
+        region.groups[CARDINAL_NEIGHBORS].push(w); // west
+        w.groups[CARDINAL_NEIGHBORS].push(region); // east
+      }
     }
   }
   

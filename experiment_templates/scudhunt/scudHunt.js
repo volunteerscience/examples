@@ -20,6 +20,8 @@ var num_roles = 4;
 var roleUnits = new Array(); // units indexed by role, then first/second etc
 var unitAvatarFactory = null;
 var units = new Array(); // unit indexed by id
+var story = null; // array of strings
+var rules = null; // array of strings
 
 function getRole(playerId) {
   return playerId;
@@ -134,6 +136,7 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
   this.short_description = short_description;
   this.long_description = long_description;
   this.reportTable = reportTable;
+  this.wait = 0;
   
   roleUnits[ownerId].push(this);
   
@@ -159,6 +162,10 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
     this.avatar.setLocation(region.x, region.y);
   };
   
+  this.setCurrentRegion = function(region) {
+    this.currentRegion = region;
+  }
+  
   // override me if unit affects more regions than self, return row, col, etc
   this.effect = function(region) {
     return [region];
@@ -179,6 +186,10 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
     return 0;
   };
   
+  this.setWait = function(wait) {
+    this.wait = wait;
+  }
+  
   this.doSensor = function(region) {
     return getReport(region.value, this.reportTable);
   };
@@ -198,6 +209,29 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
       ret.push("Target confirmed at "+confirmed.join(","));
     }
     return ret;
+  };
+  
+  this.initTurn = function() {
+    if (this.wait > 0) {
+      this.wait--;
+      if (this.wait == 0) {
+        this.resurrect();
+      }
+    }
+    
+    if (this.wait == 0) {
+      // enable button
+      var myUnits = roleUnits[getRole(myid)];
+      
+    } else {
+      // disable button      
+      var myUnits = roleUnits[getRole(myid)];
+      
+    }
+  };
+  
+  this.resurrect = function() {
+    
   };
 }
 
@@ -290,8 +324,8 @@ function submitMove() {
   for (idx in myUnits) {
     var unit = myUnits[idx];
     if (unit.nextRegion == null ) {
-      alert('Please assign '+unit.name+'.');
-      return;
+//      alert('Please assign '+unit.name+'.');
+//      return;
     } else {
       var scanned = unit.effect(unit.nextRegion);
       var id_str = [];
@@ -306,9 +340,20 @@ function submitMove() {
       submission+='<command unit="'+unit.id+'" region="'+unit.nextRegion.id+'" scan="'+id_str.join(",")+'" result="'+result_str.join(",")+'" wait="'+wait+'"/>'
     }
   }
+  
+  // TODO: move this to something that saves up the moves
   updateBoardFromCommands([submission]);
   addSituationReports([submission]);
+  updateUnitFromCommands([submission]);
+  initRound();
 //  alert(submission);
+}
+
+function initRound() {
+  for (var unit_idx in units) {
+    var unit = units[unit_idx];
+    unit.initTurn();
+  }
 }
 
 function clearMoves(these_units) {
@@ -322,8 +367,10 @@ function updateUnitFromCommands(moves) {
     qmove.find('command').each(function(index) {
       var unit = units[$(this).attr('unit')];
       var region = regions[$(this).attr('region')];
+      var wait = parseInt($(this).attr('wait'));
       unit.nextRegion = null;
       unit.setCurrentRegion(region);
+      unit.setWait(wait); 
     });
   }
 }

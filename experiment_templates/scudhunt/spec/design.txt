@@ -17,14 +17,17 @@ Results:
   E - Team Extracted
 
 Sensors:
-  Recon Satellite - Column -- Hi probability 0 or ? (can't reliably confirm launchers) <satellite>
-  Manned Aircraft - Row, every other turn -- Row E: excellent reliability C, D reduced <SR-71> 
-  UAV - Row - Good search reliability - chance of shot down, random probability of replacement <
-  SIGINT - 1 square - Search any grid square - 0 or ?
-  HUMINT - 1 square - Walk around - chance of execution, unreplacable
-  Spec Ops - distinguish ? and x - compromised: emergency extraction, loss for 1 turn, chance of added back every additional turn
-  Navy SEALS - Spec ops starting on Row E
-
+  0 Recon Satellite - Column -- Hi probability 0 or ? (can't reliably confirm launchers) <satellite>
+  1 Manned Aircraft - Row, every other turn -- Row E: excellent reliability C, D reduced <SR-71> 
+  2 UAV - Row - Good search reliability - chance of shot down, random probability of replacement <
+  3 SIGINT - 1 square - Search any grid square - 0 or ?
+  4 HUMINT - 1 square - Walk around - chance of execution, unreplacable
+  5 Spec Ops - distinguish ? and x - compromised: emergency extraction, loss for 1 turn, chance of added back every additional turn
+  6 Navy SEALS - Spec ops starting on Row E
+  
+  7 scud (icon)
+  8 explosion
+  9 attack aircraft
 
 Players:
   Space Asset Manager: Recon Satellite
