@@ -1,3 +1,29 @@
+Todo:
+  game:    
+    display unit location on right side of button
+    make death work:
+      is wait called?
+      disable button
+    Make avatar scaling work
+    ability to review past info
+    make multiplayer work
+    
+    
+  opening:
+    find a cool font for the instructions
+    do the fade-in stuff
+    reward for watching story
+    skip story
+    rewards for watching rules for each player type
+    skip instructions
+
+  end:
+    click for where scuds are (place them on map as avatars)
+    survey for certainty
+    show results
+  
+
+
 Kornoa
 Gulf of Sabani
 
