@@ -100,6 +100,37 @@
   </div>
 </div>
 
+<div id="interactiveInstructions1" style="display: none;">
+  <h2>Interactive Instructions</h2>
+  <br/>  
+  <div class="leftPanel">
+    <table class="leftTable">
+      <tr"><td>
+        <div>
+          <div id="iiclock" class="clock_cls" style="display: none;">45</div>
+        </div>
+      </td></tr>
+      <tr><td>
+        <input id="iireset" class="btn-large btn-success dropdown-toggle" type="submit" onclick="reset(); return false;" value="Reset" style="display: none;"/>
+      </td></tr>
+      <tr><td>
+        <input id="ii_prev_solution" class="btn-large btn-success dropdown-toggle" type="submit" onclick="prevSolution(); return false;" value="Load Previous Solution" disabled="true" style="white-space: normal; display: none;"/>
+      </td></tr>
+      <tr><td>
+        <input id="iisubmitButton" class="btn-large btn-success dropdown-toggle" type="submit" onclick="pushSolution(); return false;" value="Submit" style="display: none;"/>
+      </td></tr>
+      <tr><td></td></tr>
+    </table>
+  </div>      
+  <div class="leftPanel">
+    <div id="iiText"></div>
+    <div id="interactiveMap"></div>
+    <input class="btn-large btn-success dropdown-toggle" type="submit" value="Next" onclick="interactiveInstructionsNext();"/>
+    <input class="btn-large btn-success dropdown-toggle" type="submit" value="Skip Instructions" onclick="doneInteractiveInstructions1();"/>
+  </div>
+</div>
+
+
 <div class="center_everything" id="waiting" style="display: none;">
 <h2>Waiting</h2>
   Waiting for the other players.  The game will begin shortly.
@@ -119,8 +150,8 @@
   <div class="leftPanel">
     <table class="leftTable">
       <tr><td>
-        <div id="clock_box">
-          <div id="clock">45</div>
+        <div>
+          <div id="clock" class="clock_cls">45</div>
         </div>
       </td></tr>
       <tr><td>

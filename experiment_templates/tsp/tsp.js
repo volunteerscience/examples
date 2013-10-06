@@ -55,7 +55,9 @@ function initialize() {
        '<div class="instruction_words">You can undo moves by clicking on a previously travelled city, or start over by hitting reset.  '+
        "Once you're done, click Submit.  You have "+variables['round_duration']+' seconds to complete the itinerary.</div>');
   
-  launchVideoInstructions();
+//  launchVideoInstructions();
+  $("#instructions1").show();
+
 }
 
 function launchVideoInstructions() {
@@ -100,10 +102,10 @@ function initializeGameType() {
       showTeamModulo = 1;
       break;
   }
-//  showTeamModulo = 1;  // delme
+  showTeamModulo = 1;  // delme
   
   var best = Math.floor(Math.random()*2);
-//  best = 1;
+  best = 1; // delme
 //  alert('best:'+best);
   switch (best) {
     case 0:
@@ -137,7 +139,8 @@ function initializeGameType() {
 }
 
 function initializeGame() {
-
+  width = 570;
+  height = 460;
 
   distScale = parseInt(variables['scale']);
   antiScale = parseInt(variables['antiscale']);
@@ -221,9 +224,12 @@ function buildMap(round) {
   
 function buildMapFromIndex(mapIndex) {
 //  alert(mapSeed+" "+mapIndex+" "+map[mapIndex][0].length+" "+map[mapIndex][0]);
-  var myMap = map[mapIndex][0];
-  var num = myMap.length;
+//  var myMap = map[mapIndex][0];
+  return buildMapFromArray(map[mapIndex][0]);
+}
   
+function buildMapFromArray(myMap) {
+  var num = myMap.length;
 //  alert(num+" "+myMap+" "+myMap[0][1]);
   
   var ret = new Array();
@@ -357,6 +363,12 @@ function initializeRound(round) {
   submitted = false;
   setRound(round); 
   cities = buildMap(round);
+  initializeMainMap(cities);
+  setClockTimeout(new Date().getTime()+variables['round_duration']*1000);
+  showTeamSolutions(round);
+} 
+
+function initializeMainMap(cities) {
   numCities = cities.length;
   paths = new Array();
   cityOrder = new Array();
@@ -370,11 +382,10 @@ function initializeRound(round) {
     addInteractiveCity(cities[i]);
   }
   reset();
+}
 
-  setClockTimeout(new Date().getTime()+variables['round_duration']*1000);
-
+function showTeamSolutions(round) {
   if (round > FIRST_ACTUAL_ROUND) {
-    //alert("forceBots:"+forceBots);
     for (var i = 1; i <= numPlayers+forceBots; i++) {
       if (i != myid) {
         if ((showTeamModulo > 0) && ((gameRound) % showTeamModulo == 0)) {
@@ -898,13 +909,61 @@ function doneInstructions1() {
 }
 
 function doneInstructions2() {
-  submit('doneInstructions');
   $("#instructions2").hide();
-  $("#waiting").show();
-  clockTimer = setInterval(ready, 300);
+  interactiveInstructions1();
+}
+
+
+var iiState = 0;
+function interactiveInstructions1() {
+  $("#iiText").html("A traveling salesman needs to visit a series of cities (circles). His preference is to travel as few miles as possible and visit each city only once.");
+  $("#interactiveInstructions1").show();
+  //   doneAllInstructions();
+}
+
+function interactiveInstructionsNext() {
+  switch(iiState) {
+  case 0:
+    $("#iiText").html("Your job is to create an itinerary by left-clicking on the cities in order so that he visits each city once and minimizes the total miles he travels.");  
+    iiState++;
+    break;
+  case 1:
+    $("#iiText").html("The field below is your map.");  
+    width = 300;
+    height = 200;
+    paper = Raphael("interactiveMap", width+cityRad*2, height+cityRad*2);
+    cities = buildMapFromArray([[20,20],[20,60],[60,60],[60,20]]);
+    initializeMainMap(cities);
+    iiState++;
+    break;    
+  case 2:
+    $("#iiclock").show();
+    $("#iireset").show();
+    $("#ii_prev_solution").show();
+    $("#iisubmitButton").show();
+    iiState++;
+    break;    
+  case 3:
+    doneInteractiveInstructions1();
+    break;    
+  }
+}
+
+function doneInteractiveInstructions1() {
+  paper.remove();
+  paper = null;
+  $("#interactiveInstructions1").hide();  
+  doneAllInstructions();  
 }
 
 function doneVideoInstructions() {
+  $('#TSP_video').attr('src',''); // pause vimeo
+  $("#video_instructions").hide();
+  clearInterval(clockTimer);
+  doneAllInstructions();
+}  
+  
+function doneAllInstructions() {
   submitted=true;
   if (iControlBots) {
     for (var i = 1; i <= numPlayers; i++) {
@@ -914,12 +973,8 @@ function doneVideoInstructions() {
     }
   }
   
-  clearInterval(clockTimer);
   submit('<startup best="'+showBest+'" teamModulo="'+showTeamModulo+'" forceBots="'+forceBots+'" botType="'+botType+'"/>');
   
-  $('#TSP_video').attr('src',''); // pause vimeo
-//  $("#TSP_video").get(0).pause();
-  $("#video_instructions").hide();
   $("#waiting").show();
   clockTimer = setInterval(ready, 300);
 }

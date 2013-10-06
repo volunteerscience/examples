@@ -25,7 +25,7 @@
   color: #000;
 }
 
-#clock {
+.clock_cls {
   font-size: 500%;
   color: #000;
 }
@@ -56,6 +56,11 @@
   width: 130px;
   border-radius: 15px;
   margin-right: 4px;
+}
+
+.leftTable input[type="submit"] {
+  width: 128px;
+  height: 58px;
 }
 
 .leftTable td {
@@ -113,11 +118,6 @@
   margin-left:10px;
 }
 
-#submitButton {
-  white-space: normal;
-  max-width: 94px; 
-}
-
 .blank_row {
   height: 20px !important;
  }
@@ -163,6 +163,11 @@
   float:right;
   text-align: left;
   padding:1% 0 0 1%;
+}
+
+#iiText {
+  width: 300px;
+  height: 190px;
 }
 
 
