@@ -47,6 +47,7 @@
 .leftPanel {
   float: left;
   border-radius: 15px;
+  height: 480px;
 }
 
 .leftTable {
@@ -61,6 +62,7 @@
 .leftTable input[type="submit"] {
   width: 128px;
   height: 58px;
+  white-space: normal;
 }
 
 .leftTable td {
@@ -69,10 +71,6 @@
 
 #solution_table td {
   border: 1px solid black;
-}
-
-.bottomPanel {
-  display: none;
 }
 
 #results {
@@ -165,11 +163,28 @@
   padding:1% 0 0 1%;
 }
 
-#iiText {
-  width: 300px;
-  height: 190px;
+#instructions {
+  text-align: center;
+  position: relative;
+  height:190px;
 }
 
+.instruction {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.instruction p {
+  font-size: 140%;
+}
+
+.bottomPanel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
 
 #example1 {
   width: 70%;

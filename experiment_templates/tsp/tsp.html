@@ -101,7 +101,7 @@
 </div>
 
 <div id="interactiveInstructions1" style="display: none;">
-  <h2>Interactive Instructions</h2>
+  <h2>Instructions</h2>
   <br/>  
   <div class="leftPanel">
     <table class="leftTable">
@@ -111,22 +111,27 @@
         </div>
       </td></tr>
       <tr><td>
-        <input id="iireset" class="btn-large btn-success dropdown-toggle" type="submit" onclick="reset(); return false;" value="Reset" style="display: none;"/>
+        <input id="iireset" class="btn-large btn-success dropdown-toggle" type="submit" onclick="iireset(); return false;" value="Reset" style="display: none;"/>
       </td></tr>
       <tr><td>
-        <input id="ii_prev_solution" class="btn-large btn-success dropdown-toggle" type="submit" onclick="prevSolution(); return false;" value="Load Previous Solution" disabled="true" style="white-space: normal; display: none;"/>
+        <input id="ii_prev_solution" class="btn-large btn-success dropdown-toggle" type="submit" onclick="iiLoadPrev(); return false;" value="Load Previous Solution" style="white-space: normal; display: none;"/>
       </td></tr>
       <tr><td>
-        <input id="iisubmitButton" class="btn-large btn-success dropdown-toggle" type="submit" onclick="pushSolution(); return false;" value="Submit" style="display: none;"/>
+        <input id="iisubmitButton" class="btn-large btn-success dropdown-toggle" type="submit" onclick="iiSubmit(); return false;" value="Submit" style="display: none;"/>
       </td></tr>
       <tr><td></td></tr>
     </table>
   </div>      
-  <div class="leftPanel">
-    <div id="iiText"></div>
-    <div id="interactiveMap"></div>
-    <input class="btn-large btn-success dropdown-toggle" type="submit" value="Next" onclick="interactiveInstructionsNext();"/>
-    <input class="btn-large btn-success dropdown-toggle" type="submit" value="Skip Instructions" onclick="doneInteractiveInstructions1();"/>
+  <div class="leftPanel" style="min-width:60%; width:auto; position:relative;">
+    <div id="instructions">
+      <div id="instruction_a" class="instruction" style="display:none;"></div>
+      <div id="instruction_b" class="instruction" style="display:none;"></div>
+    </div>
+    <div id="interactiveMap" style="display: none; float: left; width: 330px;"></div>
+    <div class="bottomPanel">
+      <input id="iiskip_instructions" class="btn-large btn-success dropdown-toggle" type="submit" value="Skip Instructions" onclick="doneInteractiveInstructions1();"/>
+      <input id="iinext" class="btn-large btn-success dropdown-toggle" type="submit" value="Next" onclick="interactiveInstructionsNext();"/>
+    </div>
   </div>
 </div>
 
