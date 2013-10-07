@@ -250,4 +250,30 @@
   width: 80%;
 }
 
+.mainPanel {
+  position: relative;
+}
+
+#midRoundPopup {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 90%;
+  margin-left: 1%;
+  background-color: #aaaaaa;
+  z-index: 30;
+  opacity: 0.90;
+  height: 480px;
+  border-radius: 15px;
+  padding: 40px;
+}
+
+#midRoundOk {
+    position: absolute;
+    bottom: 40%;
+    width: 25%;
+    left: 38%;
+    height: 80px;
+}
+
 

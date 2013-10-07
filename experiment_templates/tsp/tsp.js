@@ -540,6 +540,8 @@ function addInteractiveCity(city) {
 
 var gameRound = 0;
 function initializeRound(round) {
+  $("#midRoundPopup").hide();
+
 //  alert('initRound:'+round);
   gameRound = 1+round-FIRST_ACTUAL_ROUND;
   $('#round').html('Round '+gameRound+' of '+numRounds);
@@ -561,7 +563,7 @@ function initializeMainMap(cities) {
   numCities = cities.length;
   paths = new Array();
   cityOrder = new Array();
-  if (paper === undefined) {
+  if (typeof paper == "undefined") {
   } else {
     paper.clear();
     background = paper.rect(0, 0, width+cityRad*2, height+cityRad*2, 10).attr({fill: fieldColor, stroke: "none"});
@@ -704,6 +706,10 @@ function prevSolution() {
   });
 }
 
+function getHumanReadableScore(score) {
+  return Math.round(score/antiscale);
+}
+
 var myBestScore = 1000000;
 function updateScore(round, xmlVal) {
 //   alert(round+" "+xmlVal);
@@ -732,6 +738,7 @@ function doDrawTeamSolution(part, round, index, paper2, xmlVal) {
    if (part == myid) {
      var score = updateScore(round, xmlVal);
      if (showBest && score >= myBestScore) {
+//       alert("score:"+score+" myBestScore:"+myBestScore);
        return;
      }
      myBestScore = score;
@@ -941,12 +948,42 @@ function pushSolution() {
   $('#submitButton').attr("value","Waiting for other players");
   
   var dist = getDist(cityOrder);
-  
-//  alert(dist);
   var millis = new Date().getTime() - clockStartTime;
+  if (clockTimer != null) {
+    clearInterval(clockTimer);
+    clockTimer = null;
+  }
+  showMidRoundPopup(dist, millis);
+  
+}
+
+var doSubmitLock = true;
+var midRoundClock = null;
+function showMidRoundPopup(dist, millis) {
+  doSubmitLock = false;
+  var remainingRounds = FIRST_ACTUAL_ROUND+numRounds-currentRound-1;
+  if (remainingRounds > 0 && dist > 0) {
+    $("#midRoundText").html("Your distance was "+getHumanReadableScore(dist)+", can you make it shorter?");  
+    $("#midRoundOk").attr("value","Proceed to next round...");
+    $("#midRoundOk").click(function() { doSubmit(dist, millis); return false;});
+    $("#midRoundPopup").fadeIn();
+    midRoundClock = setInterval(function() {doSubmit(dist, millis)}, 3000);
+  } else {
+    doSubmit(dist, millis);
+  }
+}
+
+function doSubmit(dist, millis) {
+  if (doSubmitLock) return;
+  doSubmitLock = true;
+  $("#midRoundOk").attr("value","Waiting for Other Players");
+  if (midRoundClock != null) {
+    clearInterval(midRoundClock);
+    midRoundClock = null;
+  }
   var solutionXML = '<solution map="'+getMapIndex(currentRound)+'" dist="'+dist+'" millis="'+millis+'">'+cityOrder.join()+'</solution>';
 //  alert(solutionXML);
-  submit(solutionXML);
+  submit(solutionXML);  
 }
 
 function getDist(cityOrder) {
@@ -983,6 +1020,7 @@ function setClockTimeout(tick) {
   timeout = tick;
   if (clockTimer != null) {
     clearInterval(clockTimer);
+    clockTimer = null;
   }
   clockTimer = setInterval(updateClock, 300);
 }
