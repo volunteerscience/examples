@@ -325,6 +325,8 @@ function initializeGameType() {
 }
 
 function initializeGame() {
+  $("#interactiveInstructions1").hide();  
+  
   width = 570;
   height = 460;
 
@@ -651,7 +653,11 @@ function newMove(participant, index) {
     }
   }
   if (done) {
-    startNextRound();
+    if (currentRound < FIRST_ACTUAL_ROUND) {
+      initializeGame();
+    } else {
+      startNextRound();      
+    }
   }
 }
 
@@ -1169,22 +1175,6 @@ function doneAllInstructions() {
   submit('<startup best="'+showBest+'" teamModulo="'+showTeamModulo+'" forceBots="'+forceBots+'" botType="'+botType+'"/>');
   
   $("#waiting").show();
-  clockTimer = setInterval(ready, 300);
-}
-
-function ready() {
-  var done = true;
-//    alert('moves:'+moves);
-  for (var i = 1; i <= numPlayers; i++) {
-    if (moves[i] < 1) {
-      done = false;
-    }
-  }
-  if (done) {
-    clearInterval(clockTimer);
-    clockTimer = null;
-    initializeGame();
-  }
 }
 
 var hidingGame = false;
