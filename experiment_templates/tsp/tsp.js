@@ -1,4 +1,21 @@
-
+/**
+ * Maps with a unique best solution are generated offline with a java program into a file called maps.js
+ * 
+ * We use Raphael JS (google it) for the graphics.
+ * 
+ * There is a main "paper" for the big map, and 0 or more small ones for the "team solutions"
+ * 
+ * A team solution is a small rendering of a previous solution, 
+ * such as your best one so far, or a bot or another player's/
+ * 
+ * There are 2 kinds of bots:
+ *   1) Bots for if a player drops out
+ *   2) Forcebot is a bot for if we want to add fake players from the beginning.
+ *   
+ * Note: under the hood the distances are measured with much higher precision, but these numbers are ugly to the players, 
+ * so we divide it by a variable called: "antiscale"  
+ *   
+ */
 var BUTTON = 1;
 var CLICK = 2;
 var COMPLETE = 3;
@@ -41,242 +58,18 @@ var botType = 0;
 function initialize() {
   initializeGameType();
   interactiveInstructions1();
-//  $('#player_status_box').hide();
-//  $('#q1').hide();
-//  $('#q2').hide();
-//  $('#waiting').hide();
-//  $('#game').hide();
 }
 
-
-var currentInstruction = null;
-var incomingInstruction = null;
-var instructionCallback = null;
-function fadeInstructions(sentence, cb) {
-  // call the previous callback immeadiately
-  if (instructionCallback != null) {
-    if (typeof(instructionCallback) == "function") {
-      instructionCallback();
-      instructionCallback = null;
-    }
-  }
-  instructionCallback = cb;
-  
-  currentInstruction.stop(false, true); // complete the current animation
-  incomingInstruction.stop(false, true);
-  currentInstruction.show();
-  incomingInstruction.hide();
-  
-  incomingInstruction.html(sentence);    
-  
-  currentInstruction.fadeOut(500);
-  incomingInstruction.fadeIn(2000);
-
-  var temp = incomingInstruction;
-  incomingInstruction = currentInstruction;
-  currentInstruction = temp;
-
-  if (typeof(cb) == "function") {
-    setTimeout(cb,2000);
-    instructionCallback = null;
-  }
-}
-
-function setInstructions(initial, sentence, cb) {
-  return fadeInstructions(initial, sentence, cb);
-}
-
-var interactiveInstructions = false;
-var iiState = 0;
-var demoMap = [[20,20],[20,160],[260,160],[260,20]];
-function interactiveInstructions1() {
-  interactiveInstructions = true;
-  currentInstruction = $("#instruction_b");
-  incomingInstruction = $("#instruction_a");
-  $("#interactiveInstructions1").show();
-  setInstructions('<p>A traveling salesperson needs to visit a series of cities.</p>'+
-      '<p>Your job is to create an itinerary that <i>minimizes the total miles traveled</i> and <i>visit each city only once</i>.</p>'+
-      '<p>Click <span style="color:'+greenButtonColor+'">Next</span> to continue.</p>');
-  //   doneAllInstructions();
-}
-
-var demoPaper = null;
-
-function interactiveInstructionsNext() {
-//  You can undo moves by clicking on a previously travelled city, or start over by hitting reset. Once you're done, click Submit. You have 945 seconds to complete the itinerary.
-// At the end of each round you will see your best solution and score and the other players' solution and scores from the previous round.
-//  You will have 9 rounds to improve your score by suggesting alternative itineraries on the same map.
-  switch(iiState) {
-  case 0:
-    width = 300;
-    height = 184;
-    paper = Raphael("interactiveMap", width+cityRad*2, height+cityRad*2);
-    cities = buildMapFromArray(demoMap);
-    initializeMainMap(cities);
-    setInstructions('<p>The blue area below is your <span style="color:'+fieldColor+'">map</span>.</p>'+
-        '<p>Each green circle is a <span style="color:'+greenButtonColor+'">City</span>.</p>'+
-        '<p>Click on all '+cities.length+' cities below to generate a path.</p>');  
-    $("#interactiveMap").fadeIn(1500);
-    $("#iinext").fadeOut();
-    iiState++;
-    break;    
-  case 1:
-    setInstructions('<p>Great!  You can undo a path by clicking on a previous red <span style="color:'+usedCityColor+'">city</span> '+
-        'in the path.  Do that now.</p>');  
-    iiState++;
-    break;    
-  case 2:
-    setInstructions('<p>This is the clock.  It shows how many seconds you have to complete this itinerary.</p>'+
-        '<p>When the clock expires, you will be told the length of your path.</p>'+
-        '<p>Each round has the same map.  -- You should try to improve your solution each round.</p>'+  
-        '<p>Click <span style="color:'+greenButtonColor+'">Next</span> to continue.</p>');
-    $("#iiclock").fadeIn(1500);
-    $("#iinext").fadeIn();
-    iiState++;
-    break;    
-  case 3:
-    setInstructions('<p>This is the <span style="color:'+greenButtonColor+'">Reset</span> button.  Use it to clear your current solution.</p>'+
-        '<p>Click it now.</p>');  
-    $("#iireset").show();
-    $("#iinext").fadeOut();
-    iiState++;
-    break;    
-  case 4:
-    setInstructions('<p>This button will <span style="color:'+greenButtonColor+'">Load your Previous Solution</span>.  '+
-        '<p>It is disabled on the first round.</p>'+
-        '<p>Click it now.</p>');  
-    $("#ii_prev_solution").show();
-    iiState++;
-    break;    
-  case 5:
-    setInstructions('<p>This button lets you  <span style="color:'+greenButtonColor+'">Submit</span> your solution when you are ready.  '+
-        '<p>Click it now.</p>');  
-    $("#iisubmitButton").show();
-    iiState++;
-    break;    
-    
-  case 6:
-    setInstructions("<p>In some cases you will be able to see <i>other player's solutions</i> or your <i>best</i> or <i>previous</i> solution.</p>"+
-        '<p>These appear as a smaller map to the side of your main map.</p>'+
-        '<p>Click <span style="color:'+greenButtonColor+'">Next</span> to continue.</p>');
-    $('#interactiveMap').after('<div id="solution_99" class="teamSolution" style="display:none; margin:0;"><h4 class="gameLabel">Player 2</h4><div id="canvas_99"></div><div id="score_99" class="score">789</div></div>');
-    width = 570;
-    height = 460;
-    demoPaper = Raphael("canvas_99", (width+cityRad*2)*tFac, (height+cityRad*2)*tFac);
-    var myCities = buildMapFromArray(demoMap);
-    doDrawTeamMap(demoPaper, myCities, [0,1,2,3]);
-    $("#solution_99").fadeIn(1500);
-    $("#iinext").fadeIn(1500);
-    iiState++;
-    break;    
-  case 7:
-    setInstructions('<p>Congratulations!</p><p>You are now qualified to generate travel itineraries.</p>'+  
-      '<p>Click <span style="color:'+greenButtonColor+'">Next</span> to begin.</p>');
-    iiState++;
-    break;    
-  case 8:
-    doneInteractiveInstructions1();
-    break;    
-  }
-}
-
-function iireset() {
-  reset();
-  if (iiState == 4) {
-    interactiveInstructionsNext();
-  }
-}
-
-function iiLoadPrev() {
-  if (iiState == 5) {
-    interactiveInstructionsNext();
-  }
-}
-
-function iiSubmit() {
-  if (iiState == 6) {
-    interactiveInstructionsNext();
-  }
-}
-
-function doneInteractiveInstructions1() {
-  try {
-    paper.remove();
-    paper = null;
-  } catch (err) {}
-  try {
-    demoPaper.remove();
-    demoPaper = null;
-  } catch (err) {}
-  $("#interactiveInstructions1").hide();  
-  interactiveInstructions = false;
-  doneAllInstructions();  
-}
-
-function pathComplete() {
-  if (!interactiveInstructions) return;
-  
-  if (iiState == 1) {
-    interactiveInstructionsNext();
-  }
-}
-
-function undoComplete() {
-  if (!interactiveInstructions) return;
-
-  if (iiState == 2) {
-    interactiveInstructionsNext();
-  }
-}
-
-
-function initializeInstructions1() {
-  $('#example1').append('<img src="'+FILE_PATH+files['instruction_image1.png']+'"/>'+
-       '<div class="instruction_words">A traveling salesman needs to visit a series of cities (circles).  '+
-       'His preference is to travel as few miles as possible and visit each city only once.</div>');
-  $('#example2').append('<img src="'+FILE_PATH+files['instruction_image2.png']+'"/>'+
-       '<div class="instruction_words">Your job is to create an itinerary by left-clicking on the cities in order '+
-       'so that he visits each city once and minimizes the total miles he travels.</div>');
-  $('#example3').append('<img src="'+FILE_PATH+files['instruction_image3.png']+'"/>'+
-       '<div class="instruction_words">You can undo moves by clicking on a previously travelled city, or start over by hitting reset.  '+
-       "Once you're done, click Submit.  You have "+variables['round_duration']+' seconds to complete the itinerary.</div>');
-  
-//  launchVideoInstructions();
-  $("#instructions1").show();
-
-}
-
-function launchVideoInstructions() {
-  $('#VideoHere').append('<iframe id="TSP_video" src="http://player.vimeo.com/video/70876797?title=0&amp;byline=0&amp;portrait=0&amp;autoplay=1" width="640" height="360" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>');
-  
-//  var mp4str = '<source src="'+FILE_PATH+files["TSP_video.mp4"]+'" type="video/mp4">';
-//  if (jQuery.browser.msie) {
-//     mp4str = '<source src="'+FILE_PATH+files["TSP_video_ie.mp4"]+'" type="video/mp4">'
-//  }
-//  $('#VideoHere').append('<video id="TSP_video" width="640" height="360" controls autoplay>'
-//     +mp4str
-//     +'<source src="'+FILE_PATH+files["TSP_video.ogg"]+'" type="video/ogg">'
-//     +'<source src="'+FILE_PATH+files["TSP_video.webm"]+'" type="video/webm">'
-//     +'Your browser does not support video.'
-//     +'</video>'                    
-//                        );
-  
-
-//  $('#TSP_video').append('<source src="http://volunteerscience.com/media/experiment/3/TSP_video.2.mp4" type="video/mp4">'+    
-//                         '<source src="http://volunteerscience.com/media/experiment/3/TSP_video.2.ogg" type="video/ogg">'+
-//                         '<source src="http://volunteerscience.com/media/experiment/3/TSP_video.1.webm" type="video/webm">');
-    
-  $("#video_instructions").show();  
-//  $('#TSP_video').get(0).play();
-
-  setClockTimeout(new Date().getTime()+variables['instruction_duration']*1000);
-}
-
+/**
+ * this function sets up the different kinds of additional information the player can see.
+ * Ex: other player's solutions, player's best, or previous solution, etc.
+ * 
+ * Also, set's up the bot behavior.
+ */
 function initializeGameType() {
   Math.seedrandom(seed);
   
   var info = Math.floor(Math.random()*3);
-//  alert('info:'+info);
   switch (info) {
     case 0:
       showTeamModulo = -1;
@@ -324,6 +117,9 @@ function initializeGameType() {
 
 }
 
+/**
+ * Set up the game board and the smaller windows for "team solutions"
+ */
 function initializeGame() {
   $("#interactiveInstructions1").hide();  
   
@@ -376,46 +172,38 @@ function initializeGame() {
   }
 }
 
-function buildRandomMap(mapSeed, num) {
-  Math.seedrandom(mapSeed);
-
-  var ret = new Array();
-  for (var i = 0; i < num; i++) {
-    var city = new Object();
-    city.index = i;
-    city.x = cityRad+Math.random()*width;
-    city.y = cityRad+Math.random()*height;
-    ret.push(city);
-  }
-  return ret;
-}
-
+/**
+ * Maps are generated with a program and stored in maps.js.  This function picks a random one.
+ */
 function getMapIndex(round) {
   Math.seedrandom(seed);
 
   var mapSeed = seed+round;
   var numMaps = map.length;
   
-//  var mapIndex = mapSeed%numMaps;
   var mapIndex = Math.floor(Math.random()*numMaps);
-//  alert(mapIndex);
-  
-//  mapIndex = 7; // delme
   
   return mapIndex;
 }
 
+/**
+ * Indirection in case we want different maps on different rounds.
+ */
 function buildMap(round) {
   var mapIndex = getMapIndex(round);
   return buildMapFromIndex(mapIndex);
 }
   
+/**
+ * Select a map
+ */
 function buildMapFromIndex(mapIndex) {
-//  alert(mapSeed+" "+mapIndex+" "+map[mapIndex][0].length+" "+map[mapIndex][0]);
-//  var myMap = map[mapIndex][0];
   return buildMapFromArray(map[mapIndex][0]);
 }
-  
+
+/** 
+ * generates a list of cities from the array.
+ */
 function buildMapFromArray(myMap) {
   var num = myMap.length;
 //  alert(num+" "+myMap+" "+myMap[0][1]);
@@ -431,6 +219,9 @@ function buildMapFromArray(myMap) {
   return ret;
 }
 
+/**
+ * Adds all the click behavior to the city.
+ */
 function addInteractiveCity(city) {
 //    alert('addICity():'+city.x);
     city.circle = paper.circle(city.x,city.y,cityRad);
@@ -541,6 +332,10 @@ function addInteractiveCity(city) {
 }
 
 var gameRound = 0;
+/**
+ * Called before every round, clears the map etc.
+ * @param round
+ */
 function initializeRound(round) {
   $("#midRoundPopup").hide();
 
@@ -561,6 +356,10 @@ function initializeRound(round) {
   showTeamSolutions(round);
 } 
 
+/**
+ * Clear the paper, and draw the main map, sans connections.
+ * @param cities
+ */
 function initializeMainMap(cities) {
   numCities = cities.length;
   paths = new Array();
@@ -577,6 +376,10 @@ function initializeMainMap(cities) {
   reset();
 }
 
+/**
+ * Render all the team solutions for a particular round.
+ * @param round
+ */
 function showTeamSolutions(round) {
   if (round > FIRST_ACTUAL_ROUND) {
     for (var i = 1; i <= numPlayers+forceBots; i++) {
@@ -611,12 +414,20 @@ function showTeamSolutions(round) {
 
 var tFac = 0.33;
 var tPaper = new Array();
+/**
+ * Adds a new Raphael "paper" for team solutions.
+ * @param idx
+ * @param name
+ */
 function addSolution(idx, name) {
   //alert("addSolution("+idx+","+name+")");
   $('#canvas').after('<div id="solution_'+idx+'" class="teamSolution" style="display:none;"><h4 class="gameLabel">'+name+'</h4><div id="canvas_'+idx+'"></div><div id="score_'+idx+'" class="score">10,000</div></div>');
   tPaper[idx] = Raphael("canvas_"+idx, (width+cityRad*2)*tFac, (height+cityRad*2)*tFac);
 }
 
+/**
+ * Reset button behavior.
+ */
 function reset() {
   if (submitted) return;
   for (idx in cities) {
@@ -635,6 +446,11 @@ function reset() {
   $('#score').html('Score: ');
 }
 
+/**
+ * Incoming move from another player.  
+ * @param participant
+ * @param index
+ */
 function newMove(participant, index) {
   // don't do anything with this after the game is over
   var remainingRounds = FIRST_ACTUAL_ROUND+numRounds-currentRound;
@@ -661,6 +477,13 @@ function newMove(participant, index) {
   }
 }
 
+/**
+ * Forcebots 
+ * @param part
+ * @param round
+ * @param index
+ * @param paper2
+ */
 function drawForceBotSolution(part, round, index, paper2) {
   //alert("drawForceBotSolution");
 //  doDrawTeamSolution(part, round, index, paper2, perfectBot());  
@@ -678,6 +501,13 @@ function drawForceBotSolution(part, round, index, paper2) {
   }
 }
 
+/**
+ * Fetch a move and render it.
+ * @param part the player
+ * @param round the round
+ * @param index this should always be zero unless we allow users to submit more than one solution per round
+ * @param paper2 where to render it
+ */
 function drawTeamSolution(part, round, index, paper2) {
 //  alert('drawTeam:'+paper2);
   fetchMove(part, round, index, function(val) {
@@ -685,6 +515,15 @@ function drawTeamSolution(part, round, index, paper2) {
   });
 }
 
+/**
+ * Helper for clicking for old verisons of IE.  
+ * 
+ * this may be obsolete code, but it is used to load the prevSolution()
+ * 
+ * @param element
+ * @param event
+ * @returns
+ */
 function fireEvent(element,event) {
   if (document.createEventObject) {
     // dispatch for IE
@@ -698,6 +537,9 @@ function fireEvent(element,event) {
   }
 }
     
+/**
+ * Load a previous solution by simulating clicking on each of the cities.
+ */
 function prevSolution() {
   fetchMove(myid, currentRound-1, 0, function(xmlVal) {    
     if (submitted) return;
@@ -712,10 +554,19 @@ function prevSolution() {
   });
 }
 
+/**
+ * Divide the distance by antiscale to make it prettier to humans.
+ * 
+ * @param score
+ * @returns
+ */
 function getHumanReadableScore(score) {
   return Math.round(score/antiscale);
 }
 
+/**
+ * Update my score... used for the award page at the end.
+ */
 var myBestScore = 1000000;
 function updateScore(round, xmlVal) {
 //   alert(round+" "+xmlVal);
@@ -733,6 +584,9 @@ function updateScore(round, xmlVal) {
 //   alert(round+" "+scoreTable[round]);
 }  
   
+/**
+ * Helper to draw the solution on the paper.
+ */
 // <solution map="2" dist="3">1,3,2,5,7,4,6</map>
 function doDrawTeamSolution(part, round, index, paper2, xmlVal) {
    
@@ -778,6 +632,9 @@ function doDrawTeamSolution(part, round, index, paper2, xmlVal) {
     doDrawTeamMap(paper2, myCities, answer);
 }
     
+/**
+ * Draw just the map, don't update the score etc.
+ */
 function doDrawTeamMap(paper2, myCities, answer) {
   try {
     var num = myCities.length;
@@ -837,6 +694,9 @@ function doDrawTeamMap(paper2, myCities, answer) {
   }
 }
 
+/**
+ * Initialize a bot.
+ */
 var iControlBots = false;
 function playerDisconnect(playerNum) {
 //  alert('playerDisconnect '+playerNum);
@@ -855,7 +715,10 @@ function playerDisconnect(playerNum) {
   }
 }
 
-
+/**
+ * When someone drops out, we have to submit solutions for the player.
+ * @param playerId
+ */
 function submitBotSolution(playerId) {
   if (currentRound < FIRST_ACTUAL_ROUND) {
 //    alert('auto_submit');
@@ -870,6 +733,11 @@ function submitBotSolution(playerId) {
   }
 } 
 
+/**
+ * Behavior for a random bot, who just places random city order.
+ * @param numSwaps
+ * @returns
+ */
 function randomBot(numSwaps) {
   // this just generates 0,1,2... essentially a random order on the map
   var solution = new Array();
@@ -879,6 +747,10 @@ function randomBot(numSwaps) {
   return XMLizeBotSolution(solution);
 }
 
+/**
+ * Behavior for a perfect bot, who just places the optimal solution.
+ * @returns
+ */
 function perfectBot() {
   // this is the optimal solution
   var optimal = map[getMapIndex(currentRound)][1];
@@ -891,7 +763,13 @@ function perfectBot() {
   return XMLizeBotSolution(solution);
 }
 
-// from the optimal solution, swap numSwaps amount of cities
+/**
+ * some distance from the from the optimal solution -- swap numSwaps amount of cities
+ * 
+ * @param playerId
+ * @param numSwaps
+ * @returns
+ */
 function deviantBot(playerId, numSwaps) {
     
   // this is the optimal solution
@@ -914,7 +792,12 @@ function deviantBot(playerId, numSwaps) {
   return XMLizeBotSolution(solution);
 }
 
-// a variant on deviantbot who keeps getting better with every round
+/**
+ * a variant on deviantbot who keeps getting better with every round
+ * 
+ * @param playerId
+ * @returns
+ */
 function progressiveBot(playerId) {
   var remainingRounds = numRounds-gameRound;
   Math.seedrandom(playerId+currentRound*100);
@@ -923,7 +806,12 @@ function progressiveBot(playerId) {
   return deviantBot(playerId, remainingRounds+additionalMistakes);
 }
 
-// actually do the submission, solution is an array of city indexes
+/**
+ * actually do the submission, solution is an array of city indexes
+ * 
+ * @param solution
+ * @returns {String}
+ */
 function XMLizeBotSolution(solution) {    
     solution = String(solution);
     var dist = getDist(solution.split(","));
@@ -933,6 +821,12 @@ function XMLizeBotSolution(solution) {
 }
 
 var scoreTable = new Array();
+/**
+ * This is called when the timer runs out, or the user presses "submit"
+ * 
+ * Display the result in showMidRoundPopup(), which then delays for 3 seconds before calling doSubmit()
+ *  
+ */
 function pushSolution() {
 
   if (submitted) return;
@@ -965,6 +859,12 @@ function pushSolution() {
 
 var doSubmitLock = true;
 var midRoundClock = null;
+/**
+ * Display the score popup, then call doSubmit() to acutally submit the solution.
+ * 
+ * @param dist
+ * @param millis
+ */
 function showMidRoundPopup(dist, millis) {
   doSubmitLock = false;
   var remainingRounds = FIRST_ACTUAL_ROUND+numRounds-currentRound-1;
@@ -980,6 +880,11 @@ function showMidRoundPopup(dist, millis) {
   }
 }
 
+/**
+ * Submit the solution (after the mid round popup)
+ * @param dist
+ * @param millis
+ */
 function doSubmit(dist, millis) {
   if (doSubmitLock) return;
   doSubmitLock = true;
@@ -993,6 +898,11 @@ function doSubmit(dist, millis) {
   submit(solutionXML);  
 }
 
+/**
+ * Calculate the "real" (not human readable) distance (aka score) from the city order.
+ * @param cityOrder
+ * @returns {Number}
+ */
 function getDist(cityOrder) {
   var dist = 0;
   
@@ -1022,6 +932,10 @@ function getDist(cityOrder) {
 var clockTimer = null;
 var timeout = 0;
 var clockStartTime = 0;
+/**
+ * Reset the clock
+ * @param tick
+ */
 function setClockTimeout(tick) {
   clockStartTime = new Date().getTime();
   timeout = tick;
@@ -1033,6 +947,9 @@ function setClockTimeout(tick) {
 }
 
 var submitted = false;
+/**
+ * A clock tick.
+ */
 function updateClock() {
   var delta = timeout - new Date().getTime();
   if (delta < 0) delta = 0;
@@ -1057,6 +974,9 @@ function updateClock() {
   }
 }
 
+/**
+ * Initialize the round or survey question.
+ */
 function startNextRound() {
 //  alert("snr:"+currentRound);
   var remainingRounds = FIRST_ACTUAL_ROUND+numRounds-currentRound-1;
@@ -1071,98 +991,16 @@ function startNextRound() {
   }
 }
 
-function submitAuthorization() {
-  submit('accept');
-  $("#authorize").hide();
-  $("#q1").show();
-  setRound(1);
-}
-
 // called when done with survey question
 function q1(val) {
   submit(val);
   $("#q1").hide();
-//  $("#q2").show();  
-//  setRound(2);
   showResults();
 }
 
-function q2(val) {
-  submit(val);
-  $("#q2").hide();
-  $("#instructions1").show();
-  setRound(3);
-}
-
-function doneInstructions1() {
-  $("#instructions1").hide();
-  
-  var iText = "";
-  var pic1 = null;
-  var pic2 = null;
-  if (showTeamModulo == -1) {
-    if (showBest) {
-      iText = "At the end of each round you will see your best solution and score."
-      pic1 = 'example_best.png'    
-    } else {
-      iText = "At the end of each round you will see your previous solution and score."
-      pic1 = 'example_me.png'
-    }
-  } else if (showTeamModulo == 1) {
-    if (showBest) {
-      iText = "At the end of each round you will see your best solution and score and "+
-              "the other players' solution and scores from the previous round."
-      pic1 = 'example_best.png'    
-      pic2 = 'example_user2.png'    
-    } else {
-      iText = "At the end of each round, you will see all players' scores from the previous round."
-      pic1 = 'example_me.png'
-      pic2 = 'example_user2.png'    
-    }
-  } else {
-    if (showBest) {
-      iText = "At the end of each round you will see your best solution and score.  "+
-              "After some rounds you will see the other player's previous solution and score."
-      pic1 = 'example_best.png'    
-      pic2 = 'example_user2.png'    
-    } else {
-      iText = "At the end of each round you will see your previous solution and score.  "+
-              "After some rounds you will see the other player's previous solution and score."
-      pic1 = 'example_me.png'
-      pic2 = 'example_user2.png'    
-    }
-  }  
-  
-  iText+="<br/><br/>You will have "+variables['num_rounds']+" rounds to improve your score by suggesting alternative itineraries on the same map.";
-  
-  $('#example').append('<img src="'+FILE_PATH+files['example_map2.png']+'"/>');
-  $('#solution_e1').append('<img src="'+FILE_PATH+files['example_best.png']+'"/>');
-  $('#solution_e1').show();
-  
-  if (pic2 != null) {
-    $('#solution_e2').append('<img src="'+FILE_PATH+files[pic2]+'"/>');
-    $('#solution_e2').show();
-  }
-  
-  $('#instruction_words2').append(iText);
-    
-  $("#instructions2").show();
-}
-
-function doneInstructions2() {
-  $("#instructions2").hide();
-  interactiveInstructions1();
-}
-
-
-
-function doneVideoInstructions() {
-  $('#TSP_video').attr('src',''); // pause vimeo
-  $("#video_instructions").hide();
-  clearInterval(clockTimer);
-  doneAllInstructions();
-}  
-  
+/**
+ * Wait to start the first round.
+ */
 function doneAllInstructions() {
   submitted=true;
   if (iControlBots) {
@@ -1186,8 +1024,11 @@ function hideGame() {
   $('#game').hide();
 }
   
+/**
+ * Score screen at the end
+ */
 function showResults() {
-  var star = '<img src="'+FILE_PATH+'/small_gold_star.1.png"/>';
+  var star = '<img src="'+FILE_PATH+files['small_gold_star.png']+'"/>';
   fetchMove(myid, currentRound-1, 0, function(val) {
     updateScore(currentRound-1, val); // get the final score
     
@@ -1227,6 +1068,9 @@ function showResults() {
   
 }
 
+/**
+ * Button on last page to submit feedback.
+ */
 function submitFeedback() {
 //  alert($('#feedback_text').val());
   submit('<feedback>'+$('#feedback_text').val()+'</feedback>');

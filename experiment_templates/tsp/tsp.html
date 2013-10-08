@@ -26,13 +26,6 @@
   <input class="btn-success right" type="submit" value="Submit Feedback" onclick="$('#feedback').show();"/>
 </div>
 
-<div id="authorize" style="display: none;">
-<h2>Authorization</h2>
-  I authorize you to use my test results and questions.<br/><br/>
-
-  <input class="button1" type="submit" value="Authorize" onclick="submitAuthorization();"/>
-</div>
-
 <div id="q1" style="display: none;">
 <h2>Survey</h2>
   How confident were you that tyou had the best possible solution to this Traveling Salesperson Problem?<br/><br/>
@@ -43,61 +36,6 @@
   <br/><div><input class="btn-success" type="submit" value="Somewhat unsure" onclick="q1('4')"/></div>
   <br/><div><input class="btn-success" type="submit" value="Very unsure" onclick="q1('5')"/></div>
 
-</div>
-
-<div id="q2" style="display: none;">
-<h2>Survey</h2>
-  What is your level of education?<br/><br/>
-
-  <input class="button1" type="submit" value="None" onclick="q2('none')"/>
-  <input class="button1" type="submit" value="High School" onclick="q2('hs')"/>
-  <input class="button1" type="submit" value="Undergraduate" onclick="q2('ba')"/>
-  <input class="button1" type="submit" value="Masters" onclick="q2('ma')"/>
-  <input class="button1" type="submit" value="PhD" onclick="q2('phd')"/>
-
-</div>
-
-
-<div class="center_everything" id="video_instructions" style="display: none;">
-  <h2>Instructions</h2>
-  <br/>  
-  <div id="VideoHere"></div>
-  <div id="example4">
-    <input class="btn-large btn-success dropdown-toggle" type="submit" value="Continue" onclick="doneVideoInstructions()"/>
-  </div>    
-  <div>
-    Time Remaining:<div id="instruction_clock" style="display:inline-block;">45</div>
-  </div>
-</div>
-
-
-<div class="center_everything" id="instructions1" style="display: none;">
-  <h2>Instructions</h2>
-  <br/>  
-  <div class="instruction_wrapper">
-    <div id="example1" class="instruction_pic"></div>  
-    <div id="example2" class="instruction_pic"></div>  
-    <div id="example3" class="instruction_pic"></div>  
-    <div id="example4">
-      <input class="btn-large btn-success dropdown-toggle" type="submit" value="Continue" onclick="doneInstructions1()"/>
-    </div>
-  </div>
-</div>
-
-<div class="center_everything" id="instructions2" style="display: none;">
-  <h2>Instructions - Part II</h2>
-  <br/>  
-  <div class="instruction_wrapper">
-    <div id="example"></div>  
-    <div id="team_examples">
-      <div id="solution_e1" class="teamSolutionEx" style="display:none;"></div>
-      <div id="solution_e2" class="teamSolutionEx" style="display:none;"></div>
-    </div>
-    <div id="instruction_words2"></div>
-    <div id="example4">
-      <input class="btn-large btn-success dropdown-toggle" type="submit" value="Begin Play!" onclick="doneInstructions2()"/>
-    </div>
-  </div>
 </div>
 
 <div id="interactiveInstructions1" style="display: none;">
