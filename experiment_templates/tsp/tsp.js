@@ -699,7 +699,7 @@ function fireEvent(element,event) {
 }
     
 function prevSolution() {
-  fetchMove(myid, currentRound-1, 0, function(xmlVal) {
+  fetchMove(myid, currentRound-1, 0, function(xmlVal) {    
     if (submitted) return;
     reset();
     var teamSolution = $(xmlVal);
@@ -971,7 +971,8 @@ function showMidRoundPopup(dist, millis) {
   if (remainingRounds > 0 && dist > 0) {
     $("#midRoundText").html("Your distance was "+getHumanReadableScore(dist)+", can you make it shorter?");  
     $("#midRoundOk").attr("value","Proceed to next round...");
-    $("#midRoundOk").click(function() { doSubmit(dist, millis); return false;});
+    $("#midRoundOk").unbind( "click" );
+    $("#midRoundOk").bind( "click", function() { doSubmit(dist, millis); return false;});
     $("#midRoundPopup").fadeIn();
     midRoundClock = setInterval(function() {doSubmit(dist, millis)}, 3000);
   } else {

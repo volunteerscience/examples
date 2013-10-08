@@ -1,13 +1,12 @@
 Todo:
   game:    
+    Make avatar scaling work
     display unit location on right side of button
     make death work:
       is wait called?
       disable button
-    Make avatar scaling work
     ability to review past info
     make multiplayer work
-    
     
   opening:
     find a cool font for the instructions
@@ -20,7 +19,7 @@ Todo:
   end:
     click for where scuds are (place them on map as avatars)
     survey for certainty
-    show results
+    show results/airstrikes
   
 
 
