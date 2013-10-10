@@ -22,16 +22,17 @@
 
 .leftSide {
   width: 420px;
+  float: left;
 }
 
 .rightSide {
   float: left;
+  margin-left: 5px;
 }
 
 .minwidth { 
-  min-width:100px; 
+  min-width:720px; 
   width: auto !important; 
-  width: 100px; 
 }
 
 .asset {
@@ -41,9 +42,8 @@
   border-radius: 5px;
   background-color: #c7d4e7;
   border:1px solid black;
-  width: 200px;
   cursor: pointer;
-  width: 240px;
+  width: 290px;
   min-height: 64px;
   margin-bottom: 2px;
   -webkit-touch-callout: none;
@@ -69,16 +69,13 @@
   text-align: center;
 }
 
-.situationReport {
-  clear: both;  
-}
-
 .sitrep_wrapper {
-  height: 300px; 
-  width: 400px; 
+  height: 400px; 
+  width: auto; 
   overflow: auto;
+  min-width: 300px;
 }
   
 #sitrep {
-  width: 400px;
+  width: auto;
 }

@@ -1,6 +1,5 @@
 Todo:
   game:    
-    Make avatar scaling work
     display unit location on right side of button
     make death work:
       is wait called?

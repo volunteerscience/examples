@@ -4,19 +4,22 @@
   <div class="minwidth">
     <div class="leftSide">
       <div id="canvas" class="round-corner15"></div>
+      <div id="go" class="btn-success btn-large left" onclick="submitMove();">End Turn</div>
     </div>
     <div class="rightSide">
       <div class="playerControls">
         <h2 id="playerAssetsTitle">Your Assets</h2>
         <div id="assets"></div>
       </div>
-      <div class="situationReport">
-        <h2 id="sitRepTitle">Situation Reports</h2>
-        <div class="sitrep_wrapper">
-          <table id="sitrep"></table>
-        </div>
+    </div>
+      
+    <div class="situationReport rightSide">
+      <h2 id="sitRepTitle">Situation Reports</h2>
+      <div class="sitrep_wrapper">
+        <table id="sitrep"></table>
       </div>
     </div>
+      
+    
   </div>
-  <div id="go" class="btn-success btn-large left" onclick="submitMove();">End Turn</div>
 </div>
