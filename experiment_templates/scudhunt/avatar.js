@@ -163,16 +163,16 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
       // rotate around me
       var rx = SW2+(this.color)*SW;
       var ry = SW2+(this.stance)*SW;
-      var cr = (this.x-SW2+S_CLIP)+" "+(this.y-SW2+S_CLIP)+" "+(SW-2*S_CLIP)+" "+(SW-2*S_CLIP);
-//      var cr = ((this.x-SW2+S_CLIP)*this.scale)+" "+((this.y-SW2+S_CLIP)*this.scale)+" "+((SW-2*S_CLIP)*this.scale)+" "+((SW-2*S_CLIP)*this.scale);
+      var cr = (this.x-(SW2+S_CLIP)*this.scale)+" "+(this.y-(SW2+S_CLIP)*this.scale)+" "+((SW-2*S_CLIP)*this.scale)+" "+((SW-2*S_CLIP)*this.scale);
 
       this.img.attr({
   //    this.img.animate({
          "clip-rect" : cr,
          "transform" : 
-           "t"+(this.x-SW2-SW*(this.color))+","+(this.y-SW2-SW*this.stance) +
-           "r"+this.angle+","+rx+","+ry+
-           "s"+this.scale+","+this.scale
+           "t"+(this.x-rx)+","+(this.y-ry) + // move the image start left/up (-SW2 -SW*this.color), then add x
+           "s"+this.scale+","+this.scale+","+rx+","+ry+
+           "r"+this.angle+","+rx+","+ry +
+           ""
       });
     }
     

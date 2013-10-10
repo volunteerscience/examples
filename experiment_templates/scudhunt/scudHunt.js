@@ -278,7 +278,7 @@ function initializeGameBoard() {
 }
 
 function initializeAvatars() {
-//  unitAvatarFactory.SCALE = REGION_WIDTH/unitAvatarFactory.width; //0.6;
+  unitAvatarFactory.SCALE = REGION_WIDTH/unitAvatarFactory.width; //0.6;
   unitAvatarFactory.setPaper(paper);
   var factory = new AvatarFactory()
   for (var units_idx in roleUnits) {
