@@ -3,6 +3,7 @@ var SPACE_COMMAND = 1;
 function initializeUnits() {
   num_unit_types = 5;
   num_roles = 4;
+  roundNoun = "Day"
   
   for (var roleId = 1; roleId < num_roles+1; roleId++) {
     roleUnits[roleId] = new Array();
@@ -67,6 +68,7 @@ function initializeUnits() {
   mannedAircraft.doSensor = function(region) {
     return getReport(region.value, mannedAircraft.reportTable[region.row]);
   };
+  mannedAircraft.waitString = "Resting";
   
   var uav = new Unit(2, SPACE_COMMAND, "UAV", "Scan Row", 
       "May enter Koronan airspace to search any row.  It has good search reliability.  "+
@@ -78,10 +80,12 @@ function initializeUnits() {
     return region.groups[ROW];
   };
   uav.doWait = function(region) {
-    if (Math.random() < 0.3) { // 30% chance of death
-      alert("Your UAV has been shot down.");
-      return Math.floor(Math.random()*4);  // wait up to 4 days
+    if (Math.random() < 0.7) { // 30% chance of death
+      var days = Math.floor(Math.random()*4); 
+      alert("Your UAV has been shot down and will return in "+days+" days.");
+      return days  // wait up to 4 days
     }
+    return 0;
   };
   
   var sigint = new Unit(3, SPACE_COMMAND, "SigInt", "Scan Square", 
@@ -89,7 +93,7 @@ function initializeUnits() {
       "but cannot reliably distinguish launcher from deception operations.", 
       getFile("headphones.png"), 3, [[0.7,0.2,0.1],[0.2,0.6,0.2],[0.1,0.2,0.7]]);
   
-  var humint = new Unit(4, SPACE_COMMAND, "HumInt", "Scan Square", 
+  var humint = new Unit(4, SPACE_COMMAND, "HumInt", "Deploy anywhere; Walk from there.", 
       "We can deploy our spy to search any region with excellent reliablity.  "+
       "The agent has limited mobility; after initial placement on any square, " +
       "he may only remain in the same square or move to an adjacent grid square." +
@@ -113,11 +117,14 @@ function initializeUnits() {
     }
     return [];
   };
+  humint.remainsOnBoard = true;
+  
   humint.doWait = function(region) {
     if (Math.random() < 0.3) { // 30% chance of death
       alert("Your spy had been caught!");
       return -1;  
     }
+    return 0;
   };
 
   

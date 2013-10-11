@@ -1,11 +1,9 @@
 Todo:
   game:    
-    display unit location on right side of button
-    make death work:
-      is wait called?
-      disable button
     ability to review past info
+    create the rest of the units
     make multiplayer work
+    auto-advance situation report slider
     
   opening:
     find a cool font for the instructions
