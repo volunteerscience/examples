@@ -1,5 +1,9 @@
 Todo:
   game:    
+    var TARGET_NAME = "Target"; "SCUD"
+    var TARGET_NAME_PLURAL = "Targets"; "SCUDs"
+    var ROUND_NAME_PLURAL = "Rounds"; "Days"
+    change HumInt to Spy
     create the rest of the units
     make multiplayer work:
       mine:
@@ -12,12 +16,20 @@ Todo:
       
     submit units as you place them, record them on the other side (so people can see the planned next move)
       <place unit="" region="" />
-    auto-advance situation report slider
-    ability to place 2 units in same square:
-      click on unit causes pass-through to the square behind (look at minesweepers)
     timeout clock (steal from word-morph)
       auto-submit if not clicked
+      
+    ability to place 2 units in same square:
+      click on unit causes pass-through to the square behind (look at minesweepers)
+      display the units side by side (and scaled down)
+        Use this to indicate which reading corresponds to which unit
+    auto-advance situation report slider
     chat
+    
+    to support touch-screens:
+      clicking a unit on a region should fade out the color for all affected regions:
+        ex: if red, then don't place the unit, but fade out the color 
+            if green, fade out all the affected regions
     
   opening:
     find a cool font for the instructions
@@ -26,9 +38,86 @@ Todo:
     skip story
     rewards for watching rules for each player type
     skip instructions
+    
+    instructions:
+      load the instructions variables
+      initFlavorInstructions(); // can modify any of the instruction rules
+      
+      this is the game board
+      these are your assets:
+        < create a Spy asset >
+        You place an asset by selecting the asset, then clicking a region on the game board.
+        Place the Spy anywhere on the game board.
+        <blink asset button until they click on it>
+        Now that you've placed the Spy you can see its status on the right (blink status 3 times)
+        
+      Some assets can scan multiple regions:          
+        < create Satellite Unit >
+        The Satellite can scan an entire column.
+        When you click the column, you will see the entire column <span style="color:green;">light up</span>.
+         
+      Some units have restricted movement:          
+        < create Manned Aircraft Unit >
+        The Manned Aircraft cannot fly in rows A nor B.
+        Try placing the Manned Aircraft in a restricted area.
+        Note that the <red>region turns red</red> to indicate that the unit can't be placed there
+        <wait for placing in restricted square>
+        Great, now place the Manned Aircraft into a <green>valid<green> square
+        
+      When you have placed your units, click <green>End Turn</green> at below the game board
+        <display End Turn>
+
+      Each Asset has shown you the results of their search:
+        X indicates the unit positively identified the target in the region
+        0 indicates that the unit did not see any evidence of the target in the region
+        ? indicates the unit found some evidence of the target but is not sure
+        Note: <i>Any of these readings may be wrong.  Each Asset has different accuracy for each situation.</>
+        
+      Some units can become disabled at the end of the turn:
+        Your Manned Aircraft is Resting (blink Aircraft status)
+
+      Some units remain on the board after the turn:
+        Note that your spy can only move 1 square per move after it is initially placed.
+        Move the Spy and the Recon satellite, then press "End Turn" to continue.
+
+      if (showMapHistory)        
+        The tabs above the map allow you to review the results of previous rounds.
+          <show #roundHistory>
+          Click "1" to see the results of round 1.        
+          <wait for click>
+          Now Click "Current" to see the Current game state.
+          Note: <i>If you place a unit while viewing a previous round, the map will switch to "Current"</i>
+
+      Your team has a limited amount of time each <Round> to select your moves.  
+        <show countdown clock>
+
+      After XXX <Round>s, you must give your best guess about the location of the targets.
+        <change assets to 2 "Target" assets>
+        You indicate the targets location the same way you place assets.  
+        Place each <target> on the board now.
+
+      You are part of a team and can only control some of the Assets. <always show this, even after skip instructions>              
+        <show situation reports if not skipped instructions>
+        <ul>
+          * You will see the results of (autochat ? all : your) assets in the Situation Reports window.
+        
+        if (showAllScans)
+          * You can see the result of all player's Assets in the map.
+        else:
+          * You can only see the results of _your_ Assets in the map.
+
+        if (clickChat)
+          * You can communicate your unit's report with your team by clicking their statement. 
+       
+        if (chat)
+          * You can chat with your team in the field below the situation report.
+        
+        if (showLiveMoves)
+          * You can see your team's moves while they are deciding where to place their unit.
+        </ul>
 
   end:
-    click for where scuds are (place them on map as avatars)
+    change assets to targts
     survey for certainty
     show results/airstrikes
   
