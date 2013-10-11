@@ -94,4 +94,21 @@
   font-size: 150%;
 }
 
+#roundHistory {
+  padding-left: 12px;
+}
 
+.roundTab {
+  border-radius: 5px 5px 0 0;
+  border-style: solid solid none;
+  border-width: 2px;
+  cursor: pointer;
+  display: inline-block;
+  margin: 0 1px;
+  padding: 0 4px;
+  text-align: center;
+}
+
+.selectedTab {
+  background-color: #c7d4e7;
+}

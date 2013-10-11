@@ -1,9 +1,23 @@
 Todo:
   game:    
-    ability to review past info
     create the rest of the units
-    make multiplayer work
+    make multiplayer work:
+      mine:
+        unit.mine = false; // set to true on all my units
+        getMyUnits() // in case player has multiple roles
+        only display your assets
+      wait for incoming moves:
+        newMove(): check if contains "<command>" from player, wait for all players
+      
+      
+    submit units as you place them, record them on the other side (so people can see the planned next move)
+      <place unit="" region="" />
     auto-advance situation report slider
+    ability to place 2 units in same square:
+      click on unit causes pass-through to the square behind (look at minesweepers)
+    timeout clock (steal from word-morph)
+      auto-submit if not clicked
+    chat
     
   opening:
     find a cool font for the instructions

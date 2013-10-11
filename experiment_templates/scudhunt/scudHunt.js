@@ -4,6 +4,9 @@
 var MAP_WIDTH = 420;
 var MAP_HEIGHT = 420;
 
+var ROUND_ZERO = 100;
+var FIRST_ACTUAL_ROUND = 101;
+
 var REGION_BACKGROUND_COLOR = "#c7d4e7";
 var REGION_SELECTION_COLOR = "#b7e4d7";
 var REGION_FAIL_COLOR = "#f7d4e7";
@@ -161,15 +164,24 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
     }
   };
   
+  this.clearLocation = function() {
+    this.avatar.setLocation(-200, -200);    
+  }
+  
+  this.setLocation = function(region) {
+    this.avatar.setLocation(region.x, region.y);
+  }
+  
   this.setNextRegion = function(region) {
     this.nextRegion = region;
     if (region == null) {
-      this.avatar.setLocation(-200, -200);
+      this.clearLocation();
       this.setStatus("");
     } else {
-      this.avatar.setLocation(region.x, region.y);
+      this.setLocation(region);
       this.setStatus(region.name);
     }
+    showCurrentBoard();
   };
   
   this.setCurrentRegion = function(region) {
@@ -347,6 +359,7 @@ function initializeGameBoard() {
   buildSquareMap(5, 5, 4, 0);
   initializeAvatars();
   initializeAssets();
+  setRound(FIRST_ACTUAL_ROUND);
   initRound();
 }
 
@@ -407,6 +420,11 @@ function initializeAssets() {
   });
 }
 
+/**
+ * maps round => role => list of commands
+ */
+var commandHistory = new Array();
+
 function submitMove() {
   Math.seedrandom(seed*myid*(currentRound+7));
   var submission = "";
@@ -443,8 +461,13 @@ function submitMove() {
     }
   }
   
+  
   // TODO: move this to something that saves up the moves
+  commandHistory[currentRound] = new Array();
+  commandHistory[currentRound][getRole(myid)] = submission;
+  addRoundTab(currentRound-ROUND_ZERO);
   setRound(currentRound+1);
+  
   updateBoardFromCommands([submission]);
   addSituationReports([submission]);
   initRound();
@@ -452,16 +475,59 @@ function submitMove() {
 //  alert(submission);
 }
 
+function addRoundTab(round) {
+  $('#currentRound').before('<span round="'+round+'" class="roundTab" onclick="showBoardFromRound('+round+');">'+round+'</span>')
+}
+
+function showBoardFromRound(round) {
+  $(".roundTab").removeClass('selectedTab'); 
+  $('.roundTab[round="'+round+'"]').addClass('selectedTab'); 
+  round+=ROUND_ZERO;
+  clearUnitsFromBoard();
+  updateBoardFromCommands(commandHistory[round]);
+  var moves = commandHistory[round];
+  for (var m in moves) {
+    var move = moves[m];
+    var qmove = $('<foo>'+move+'</foo>');
+    qmove.find('command').each(function(index) {
+      if ($(this).attr('region')) {
+        var unit = units[$(this).attr('unit')];
+        var region = regions[$(this).attr('region')];
+        unit.setLocation(region);
+      }
+    });
+  }
+}
+
+function showCurrentBoard() {
+  $(".roundTab").removeClass('selectedTab'); 
+  $("#currentRound").addClass('selectedTab'); 
+  if (currentRound > FIRST_ACTUAL_ROUND) {
+    updateBoardFromCommands(commandHistory[currentRound-1]); // show the last round's moves
+  }
+  clearUnitsFromBoard();
+  for (var unit_idx in units) {
+    var unit = units[unit_idx];
+    if (unit.nextRegion != null) {
+      unit.setLocation(unit.nextRegion);
+    }
+  }
+}
+
+
 function initRound() {
-  addBeginTurnSitRep(currentRound+1, 5);
+  addBeginTurnSitRep(currentRound-ROUND_ZERO, 5);
   for (var unit_idx in units) {
     var unit = units[unit_idx];
     unit.initTurn();
   }
 }
 
-function clearMoves(these_units) {
-  
+function clearUnitsFromBoard() {
+  for (var unit_idx in units) {
+    var unit = units[unit_idx];
+    unit.clearLocation();
+  }
 }
 
 function updateUnitFromCommands(moves) {
@@ -495,7 +561,7 @@ function updateBoardFromCommands(moves) {
     var qmove = $('<foo>'+move+'</foo>');
 //    alert(qmove.find('command').length);
     qmove.find('command').each(function(index) {
-      if (typeof $(this).attr('region') !== 'undefined') {
+      if ($(this).attr('region')) {
         var scan = $(this).attr('scan').split(",");
         var result = $(this).attr('result').split(",");
         for (var i = 0; i < scan.length; i++) {
@@ -527,7 +593,7 @@ function addSituationReports(moves) {
       var confirmed = [];
       var wait = parseInt($(this).attr('wait'));
       
-      if (typeof $(this).attr('region') !== 'undefined') {
+      if ($(this).attr('region')) {
         var scan = $(this).attr('scan').split(",");
         var result = $(this).attr('result').split(",");
         for (var i = 0; i < scan.length; i++) {
