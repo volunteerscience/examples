@@ -20,6 +20,11 @@ function initializeUnits() {
     roleUnits[roleId] = new Array();
   }
   
+  roleName[SPACE_COMMAND] = "Space Command";
+  roleName[AIR_COMMAND] = "Air Command";
+  roleName[SPY_MASTER] = "Spy Master";
+  roleName[SPEC_OPS] = "Special Ops";
+  
   
   story = [
     "The rogue state of Korona has acquired mobile ballistic missiles and weapons of mass destruction.",
@@ -163,7 +168,7 @@ function initializeUnits() {
     return [];
   };
   specOps.remainsOnBoard = true;
-  specOps.waitString = "Resting";  
+  specOps.waitString = "Extracted";  
   specOps.doWait = function(region) {
     if (Math.random() < 0.3) { // 30% chance of death
 //      alert("Your spy had been caught!");
@@ -199,7 +204,7 @@ function initializeUnits() {
     return [];
   };
   seals.remainsOnBoard = true;
-  seals.waitString = "Resting";  
+  seals.waitString = "Extracted";  
   seals.cantMoveAlert = function(region) {
     return "You must deploy the "+seals.name+" from the coast (row E).";
   };

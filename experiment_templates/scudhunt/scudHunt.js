@@ -1,7 +1,14 @@
 /**
- * 
+ * communication features
  */
-var useChat = true;
+var playerChat = true; // players can chat
+var allyUnitPlacement = true; // can see ally's unit placement if it remains on map, and in history
+var realTimeUnitPlacement = true; // can see ally's unit placement as they do it -- in other words, for the current turn
+var localSitRep = true; // situation reports show your local reports (overridden if global is true)
+var globalSitRep = true; // situation reports show everyone's reports
+var localMapScans = true; // show your assets' scans on the map
+var globalMapScans = true; // show everyone's assets' scans on the map
+var allowMapHistory = true; // allow players to view previous states of the board
 
 var MAP_WIDTH = 420;
 var MAP_HEIGHT = 420;
@@ -140,6 +147,10 @@ function clearRegionStatus() {
 }
 
 
+function isMyUnit(unit) {
+  return roleToPlayer[unit.ownerId] == myid;
+}
+
 /**
  * 
  * @param id
@@ -183,7 +194,7 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
     this.avatar.origMouseDown = this.avatar.onMouseDown;
     this.avatar.onMouseDown = function(e) {
       if (selectedUnit == null) {
-        if (roleToPlayer[unitMe.ownerId] == myid) {
+        if (isMyUnit(unitMe)) {
           unitMe.select();
           return;
         }
@@ -208,12 +219,19 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
   };
   
   this.clearLocation = function() {
+    this.avatar.currentlyOn = null;
     this.avatar.setLocation(-200, -200);    
   }
   
   this.setLocation = function(region) {
-    this.avatar.currentlyOn = region;
-    this.avatar.setLocation(region.x, region.y);
+    if (region == null) {
+      this.clearLocation();
+      return;
+    }
+    if (allyUnitPlacement || isMyUnit(unitMe)) {
+      this.avatar.currentlyOn = region;
+      this.avatar.setLocation(region.x, region.y);
+    }
   }
   
   this.setNextRegion = function(region) {
@@ -221,9 +239,15 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
     if (region == null) {
       this.clearLocation();
       this.setStatus("");
+      if (isMyUnit(unitMe)) {
+        submit('<place unit="'+unitMe.id+'" region=""/>');
+      }
     } else {
       this.setLocation(region);
       this.setStatus(region.name);
+      if (isMyUnit(unitMe)) {
+        submit('<place unit="'+unitMe.id+'" region="'+region.id+'"/>');
+      }
     }
     showCurrentBoard();
   };
@@ -536,27 +560,51 @@ function submitMove() {
  */
 function newMove(participant, index) {
   fetchMove(participant, currentRound, index, function(val) {
-    commandHistory[currentRound][participant] = val;
-//    alert(commandHistory[currentRound].length+" "+val);
+    var tagName = $(val).prop("tagName");
     
-    var done = true;
-    for (var pid = 1; pid <= numPlayers; pid++) {
-      if (typeof commandHistory[currentRound][pid] === "undefined") {
-        done = false;
+    if (tagName == "COMMAND") {
+      // this contains 1 or more commands
+      commandHistory[currentRound][participant] = val;
+      var done = true;
+      for (var pid = 1; pid <= numPlayers; pid++) {
+        if (typeof commandHistory[currentRound][pid] === "undefined") {
+          done = false;
+        }
       }
-    }
-    
-    if (done) {
-      endRound();
+      
+      if (done) {
+        endRound();
+      }
+    } else if (tagName == "PLACE") {
+      if (!realTimeUnitPlacement) return;
+      var place = $(val);
+      var unit = units[place.attr('unit')];
+      if (isMyUnit(unit)) return;  // prevent feedback
+      var region_id = place.attr('region');
+      var region = null;
+      if (region_id != "") {
+        region = regions[region_id];
+      }
+      unit.setNextRegion(region);
     }
   });
 }
 
 function endRound() {
-  addRoundTab(currentRound-ROUND_ZERO);
+  if (allowMapHistory) {
+    addRoundTab(currentRound-ROUND_ZERO);
+  }
   setRound(currentRound+1);
-  updateBoardFromCommands(commandHistory[currentRound-1]);
-  addSituationReports(commandHistory[currentRound-1]);
+  if (globalMapScans) {
+    updateBoardFromCommands(commandHistory[currentRound-1]);
+  } else if (localMapScans) {
+    updateBoardFromCommands([commandHistory[currentRound-1][myid]]);
+  }
+  if (globalSitRep) {
+    addSituationReports(commandHistory[currentRound-1]);
+  } else if (localSitRep) {
+    addSituationReports([commandHistory[currentRound-1][myid]]);
+  }
   initRound();
   updateUnitFromCommands(commandHistory[currentRound-1]);
 }
@@ -587,7 +635,11 @@ function showBoardFromRound(round) {
   $('.roundTab[round="'+round+'"]').addClass('selectedTab'); 
   round+=ROUND_ZERO;
   clearUnitsFromBoard();
-  updateBoardFromCommands(commandHistory[round]);
+  if (globalMapScans) {
+    updateBoardFromCommands(commandHistory[round]);
+  } else if (localMapScans) {
+    updateBoardFromCommands([commandHistory[round][myid]]);
+  }
   var moves = commandHistory[round];
   for (var m in moves) {
     var move = moves[m];
@@ -606,7 +658,11 @@ function showCurrentBoard() {
   $(".roundTab").removeClass('selectedTab'); 
   $("#currentRound").addClass('selectedTab'); 
   if (currentRound > FIRST_ACTUAL_ROUND) {
-    updateBoardFromCommands(commandHistory[currentRound-1]); // show the last round's moves
+    if (globalMapScans) {
+      updateBoardFromCommands(commandHistory[currentRound-1]);
+    } else if (localMapScans) {
+      updateBoardFromCommands([commandHistory[currentRound-1][myid]]);
+    }
   }
   clearUnitsFromBoard();
   for (var unit_idx in units) {
@@ -726,20 +782,28 @@ function appendSitRep(title,value) {
 
 var DEFAULT_CHAT = "<send communication here>";
 function initChat() {
-  if (useChat) {
+  if (playerChat) {
     $("#chatPanel").show();
+    
     $("#chatInput").val(DEFAULT_CHAT);
     $("#chatInput").focusin(function() {
-//      alert("focusin:"+($(this).val() == DEFAULT_CHAT));
       if ($(this).val() == DEFAULT_CHAT) {
         $(this).val("");
       }
     });
-    
     $("#chatInput").focusout(function() {
       if ($(this).val() == "") {
         $(this).val(DEFAULT_CHAT);
       }
+    });
+    
+    $("#chatInput").keypress(function(e) {
+      if (e.which == 13) {
+        callSendChat();
+        $("#chatInput").val("");
+        return false;
+      }
+      return true;
     });
   }
 }
