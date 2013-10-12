@@ -20,16 +20,29 @@ var paper = null;
 var selectedUnit = null;
 
 // initialized in initializeUnits;
+var TARGET_ROLE = 0;
 var num_roles = 4;
 var roleUnits = new Array(); // units indexed by role, then first/second etc
 var unitAvatarFactory = null;
 var units = new Array(); // unit indexed by id
 var story = null; // array of strings
 var rules = null; // array of strings
-var roundNoun = "Round"; // what you call a Round: Day, Hour, Turn... etc
+var ROUND_NOUN = "Round"; // what you call a Round: Day, Hour, Turn... etc
+var ROUND_NOUN_PLURAL = "Rounds"; 
+var TARGET_NOUN = "Target"; 
+var TARGET_NOUN_PLURAL = "Targets";
 
-function getRole(playerId) {
-  return playerId;
+var roleToPlayer = new Array();
+
+function getUnits(playerId) {
+  var ret = [];
+  for (var role = 1; role <= num_roles; role++) {
+    if (roleToPlayer[role] == playerId) {
+      ret = ret.concat(roleUnits[role]);
+    }
+  }
+
+  return ret;
 }
 
 var VALUE_NOTHING = 0;
@@ -54,7 +67,7 @@ function Region(id,name, x,y, x1,y1, polygon) {
   this.onClick = function() {
     if (selectedUnit != null) {
       if (selectedUnit.effect(me).length == 0) {
-        alert("You can't move the "+selectedUnit.name+" to this region.");
+        alert(selectedUnit.cantMoveAlert(me));
         return;
       }
       
@@ -236,7 +249,7 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
       $('.asset[asset="'+this.id+'"]').css('background-color',ASSET_BACKGROUND_COLOR); // enable button
     } else {
       // disable button      
-      var myUnits = roleUnits[getRole(myid)];
+      var myUnits = getUnits(myid);
       $('.asset[asset="'+this.id+'"]').css('background-color',ASSET_WAIT_COLOR); // disable button
     }
     this.setWaitStatus(wait);
@@ -309,6 +322,10 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
   this.resurrect = function() {
     this.setStatus("");
   };
+  
+  this.cantMoveAlert = function(region) {
+    return "You can't move the "+this.name+" to this region.";
+  };
 }
 
 /**
@@ -349,6 +366,13 @@ function deselectAllUnits() {
 
 function initialize() {
   initializeUnits();
+  
+  // TODO: fix me
+  roleToPlayer = new Array();
+  for (var r = 1; r <= num_roles; r++) {
+    roleToPlayer[r] = 1;
+  }
+  
 //  alert(roleUnits[1][0].name);
   initializeGameBoard();
 }
@@ -377,7 +401,7 @@ function initializeAvatars() {
 }
 
 function initializeAssets() {
-  var myUnits = roleUnits[getRole(myid)];
+  var myUnits = getUnits(myid);
   var assetWrapper = $('#assets');
   for (idx in myUnits) {
     var unit = myUnits[idx];
@@ -428,7 +452,7 @@ var commandHistory = new Array();
 function submitMove() {
   Math.seedrandom(seed*myid*(currentRound+7));
   var submission = "";
-  var myUnits = roleUnits[getRole(myid)];
+  var myUnits = getUnits(myid);
 
   for (idx in myUnits) {
     var unit = myUnits[idx];
@@ -461,10 +485,16 @@ function submitMove() {
     }
   }
   
+  simulateEndOfTurn(submission);
+}
   
+/**
+ * Used by instructions.
+ */
+function simulateEndOfTurn(submission) {
   // TODO: move this to something that saves up the moves
   commandHistory[currentRound] = new Array();
-  commandHistory[currentRound][getRole(myid)] = submission;
+  commandHistory[currentRound][myid] = submission;
   addRoundTab(currentRound-ROUND_ZERO);
   setRound(currentRound+1);
   
@@ -578,7 +608,7 @@ function addMoveReports(moves) {
 }
 
 function addBeginTurnSitRep(round, numRounds) {
-  $("#sitrep").append('<tr><th class="roundHeading">'+roundNoun+' '+round+' of '+numRounds+':</th></tr>');
+  $("#sitrep").append('<tr><th class="roundHeading">'+ROUND_NOUN+' '+round+' of '+numRounds+':</th></tr>');
 }
 
 function addSituationReports(moves) {

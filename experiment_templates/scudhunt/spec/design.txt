@@ -1,10 +1,11 @@
 Todo:
   game:    
-    var TARGET_NAME = "Target"; "SCUD"
-    var TARGET_NAME_PLURAL = "Targets"; "SCUDs"
-    var ROUND_NAME_PLURAL = "Rounds"; "Days"
-    change HumInt to Spy
-    create the rest of the units
+    layout the sitrep on bottom if most thin:
+      set the min_width to be slightly less than the smallest snap
+      make sitRep a little too big
+      make assets a little smaller
+    clicking on unit on board selects the unit
+    
     make multiplayer work:
       mine:
         unit.mine = false; // set to true on all my units
@@ -16,6 +17,8 @@ Todo:
       
     submit units as you place them, record them on the other side (so people can see the planned next move)
       <place unit="" region="" />
+      newMove() if (placeUnit)...
+      
     timeout clock (steal from word-morph)
       auto-submit if not clicked
       

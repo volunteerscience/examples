@@ -1,11 +1,22 @@
 var SPACE_COMMAND = 1;
+var AIR_COMMAND = 2;
+var SPY_MASTER = 3;
+var SPEC_OPS = 4;
 
+/**
+ * May be called twice (again after instructions)
+ */
 function initializeUnits() {
   num_unit_types = 5;
   num_roles = 4;
-  roundNoun = "Day"
   
-  for (var roleId = 1; roleId < num_roles+1; roleId++) {
+  ROUND_NOUN = "Day";
+  ROUND_NOUN_PLURAL = "Days";
+  TARGET_NOUN = "SCUD";
+  TARGET_NOUN_PLURAL = "SCUDs";
+
+  
+  for (var roleId = 0; roleId <= num_roles; roleId++) { // roles + target
     roleUnits[roleId] = new Array();
   }
   
@@ -45,7 +56,7 @@ function initializeUnits() {
   };
   
   if (true) { // delme
-  var mannedAircraft = new Unit(1, SPACE_COMMAND, "Manned Aircraft", "Search from the Coast", 
+  var mannedAircraft = new Unit(1, AIR_COMMAND, "Manned Aircraft", "Search from the Coast", 
       "May fly only along the Gulf (Row E) outside Koronan airspace.  "+
       "It searches the coastal grid squares with excellent reliability, "+
       "and two rows inland (Rows C and D) with reduced reliablity.  "+
@@ -70,7 +81,7 @@ function initializeUnits() {
   };
   mannedAircraft.waitString = "Resting";
   
-  var uav = new Unit(2, SPACE_COMMAND, "UAV", "Scan Row", 
+  var uav = new Unit(2, AIR_COMMAND, "UAV", "Scan Row", 
       "May enter Koronan airspace to search any row.  It has good search reliability.  "+
       "For each grid square it enters, there is a chance that it will crash or be shot down, "+
       "which aborts any further search on that turn.  "+
@@ -80,20 +91,20 @@ function initializeUnits() {
     return region.groups[ROW];
   };
   uav.doWait = function(region) {
-    if (Math.random() < 0.7) { // 30% chance of death
+    if (Math.random() < 0.3) { // 30% chance of death
       var days = Math.floor(Math.random()*4); 
-      alert("Your UAV has been shot down and will return in "+days+" days.");
+//      alert("Your UAV has been shot down and will return in "+days+" days.");
       return days  // wait up to 4 days
     }
     return 0;
   };
   
-  var sigint = new Unit(3, SPACE_COMMAND, "SigInt", "Scan Square", 
+  var sigint = new Unit(3, SPY_MASTER, "SigInt", "Scan Square", 
       "Signals Intelligence can examine a region for increased communications chatter, " +
       "but cannot reliably distinguish launcher from deception operations.", 
       getFile("headphones.png"), 3, [[0.7,0.2,0.1],[0.2,0.6,0.2],[0.1,0.2,0.7]]);
   
-  var humint = new Unit(4, SPACE_COMMAND, "HumInt", "Deploy anywhere; Walk from there.", 
+  var humint = new Unit(4, SPY_MASTER, "Spy", "Deploy anywhere; Walk from there", 
       "We can deploy our spy to search any region with excellent reliablity.  "+
       "The agent has limited mobility; after initial placement on any square, " +
       "he may only remain in the same square or move to an adjacent grid square." +
@@ -121,21 +132,94 @@ function initializeUnits() {
   
   humint.doWait = function(region) {
     if (Math.random() < 0.3) { // 30% chance of death
-      alert("Your spy had been caught!");
+//      alert("Your spy had been caught!");
       return -1;  
     }
     return 0;
   };
 
-  
-  
-  
-  
+  specOps = new Unit(5, SPEC_OPS, "Spec Ops", "Deply anywhere; Walk from there",
+      "May be inserted to search any grid square with excellent reliability.  "+
+      "Can reliably distinguish between deception and launchers.  "+
+      "Each turn that the Spec Ops team is in play, there is a chance the team "+
+      "will be compromised and forced to perform an emergency extraction.  "+
+      "If extracted, the team will be unavailable for 1 or more days to rest and refit.", 
+      getFile("spec_ops.png"), 5, [[0.95,0.2,0.1],[0.1,0.8,0.1],[0.1,0.2,0.95]]);
+  specOps.effect = function(region) {
+    if (specOps.currentRegion == null) {
+      return [region];
+    }
+    
+    // only current, cardinal, or ordinal
+    if (region == specOps.currentRegion) {
+      return [region];
+    }    
+    if (specOps.currentRegion.groups[CARDINAL_NEIGHBORS].indexOf(region) != -1) {
+      return [region];
+    }
+    if (specOps.currentRegion.groups[ORDINAL_NEIGHBORS].indexOf(region) != -1) {
+      return [region];
+    }
+    return [];
+  };
+  specOps.remainsOnBoard = true;
+  specOps.waitString = "Resting";  
+  specOps.doWait = function(region) {
+    if (Math.random() < 0.3) { // 30% chance of death
+//      alert("Your spy had been caught!");
+      var days = Math.floor(Math.random()*4); 
+      return days;  
+    }
+    return 0;
+  };
+
+  seals = new Unit(6, SPEC_OPS, "Navy SEALS", "Deploy on Cost; Walk from there",
+      "May only be inserted on the coast (row E).  Searchs grid square with excellent reliability.  "+
+      "Can reliably distinguish between deception and launchers.  "+
+      "Each turn that the Navy SEALS team is in play, there is a chance the team "+
+      "will be compromised and forced to perform an emergency extraction.  "+
+      "If extracted, the team will be unavailable for 1 or more days to rest and refit.", 
+      getFile("seals.png"), 6, [[0.95,0.2,0.1],[0.1,0.8,0.1],[0.1,0.2,0.95]]);
+  seals.effect = function(region) {
+    if (seals.currentRegion == null) {
+      if (region.row <= 3 ) return []; // can't start in top 4 rows
+      return [region];
+    }
+    
+    // only current, cardinal, or ordinal
+    if (region == seals.currentRegion) {
+      return [region];
+    }    
+    if (seals.currentRegion.groups[CARDINAL_NEIGHBORS].indexOf(region) != -1) {
+      return [region];
+    }
+    if (seals.currentRegion.groups[ORDINAL_NEIGHBORS].indexOf(region) != -1) {
+      return [region];
+    }
+    return [];
+  };
+  seals.remainsOnBoard = true;
+  seals.waitString = "Resting";  
+  seals.cantMoveAlert = function(region) {
+    return "You must deploy the "+seals.name+" from the coast (row E).";
+  };
+
+  seals.doWait = function(region) {
+    if (Math.random() < 0.2) { // 20% chance of death
+//      alert("Your spy had been caught!");
+      var days = Math.floor(Math.random()*4); 
+      return days;  
+    }
+    return 0;
+  };
   
   
   } // delme
   
-  
+  var scud = new Unit(7, TARGET_ROLE, "SCUD", "Hidden Target", 
+      "Based on your operations over the previous days, place each the SCUD in the most likely location.", 
+      getFile("scud.png"), 7, null);
+
   
   
   var avatarFile = getFile("sprites.png");
