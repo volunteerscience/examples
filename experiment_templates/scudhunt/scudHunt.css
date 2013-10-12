@@ -31,7 +31,7 @@
 }
 
 .minwidth { 
-  min-width:720px; 
+  min-width:710px; 
   width: auto !important; 
 }
 
@@ -43,7 +43,7 @@
   background-color: #c7d4e7;
   border:1px solid black;
   cursor: pointer;
-  width: 290px;
+  width: 280px;
   min-height: 64px;
   margin-bottom: 2px;
   -webkit-touch-callout: none;
@@ -78,7 +78,7 @@
   height: 400px; 
   width: auto; 
   overflow: auto;
-  min-width: 300px;
+  min-width: 290px;
 }
   
 #sitrep {
@@ -88,6 +88,24 @@
 #sitrep th {
   text-align: left;
   min-width: 120px;
+}
+
+#chatPanel {
+  width:100%;
+}
+
+#chatInput {
+  width: calc(100% - 60px);
+  display:block;
+}
+
+#sendChat {
+  float: right;
+  height: 17px;
+  margin: 0;
+  padding: 5px;
+  width: 34px;
+  text-align: center;
 }
 
 .roundHeading {
@@ -112,3 +130,4 @@
 .selectedTab {
   background-color: #c7d4e7;
 }
+

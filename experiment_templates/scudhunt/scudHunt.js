@@ -1,6 +1,8 @@
 /**
  * 
  */
+var useChat = true;
+
 var MAP_WIDTH = 420;
 var MAP_HEIGHT = 420;
 
@@ -33,6 +35,7 @@ var TARGET_NOUN = "Target";
 var TARGET_NOUN_PLURAL = "Targets";
 
 var roleToPlayer = new Array();
+var roleName = new Array();
 
 function getUnits(playerId) {
   var ret = [];
@@ -43,6 +46,15 @@ function getUnits(playerId) {
   }
 
   return ret;
+}
+
+function getFirstRole(playerId) {
+  for (var role = 1; role <= num_roles; role++) {
+    if (roleToPlayer[role] == playerId) {
+      return role;
+    }
+  }
+  return -1;
 }
 
 var VALUE_NOTHING = 0;
@@ -75,6 +87,8 @@ function Region(id,name, x,y, x1,y1, polygon) {
       deselectAllUnits();
     }
   };
+  
+  this.onMouseDown = this.onClick;
   
   this.mouseOver = function() {
     // highlight effected squares
@@ -145,6 +159,7 @@ function clearRegionStatus() {
  *                   
  */
 function Unit(id, ownerId, name, short_description, long_description, icon, avatarId, reportTable) {
+  var unitMe = this;
   units[id] = this;
   this.id = id;
   this.ownerId = ownerId; // role that owns it
@@ -165,11 +180,26 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
   
   this.buildAvatar = function(avatarFactory) {
     this.avatar = avatarFactory.build(avatarId,-100,-100); // build avatar off screen
+    this.avatar.origMouseDown = this.avatar.onMouseDown;
+    this.avatar.onMouseDown = function(e) {
+      if (selectedUnit == null) {
+        if (roleToPlayer[unitMe.ownerId] == myid) {
+          unitMe.select();
+          return;
+        }
+      }
+      unitMe.avatar.origMouseDown(e);
+    }
+    
+    // unbind the original
+    this.avatar.img.unmousedown(this.avatar.origMouseDown);
+    this.avatar.img.mousedown(this.avatar.onMouseDown);   
   };
   
   this.select = function() {
     deselectAllUnits();
     selectedUnit = this;
+    this.avatar.img.toFront();
     $('.asset[asset="'+this.id+'"]').css('background-color',ASSET_SELECTION_COLOR);
     if (this.nextRegion != null) {
       clearRegionHighlights();
@@ -182,6 +212,7 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
   }
   
   this.setLocation = function(region) {
+    this.avatar.currentlyOn = region;
     this.avatar.setLocation(region.x, region.y);
   }
   
@@ -362,16 +393,23 @@ function deselectAllUnits() {
   clearRegionHighlights();  
 }
 
+function assignPlayersRoundRobin() {
+  roleToPlayer = new Array();
+  var pid = 1;
+  for (var r = 1; r <= num_roles; r++) {
+    roleToPlayer[r] = pid;
+    pid++;
+    if (pid > numPlayers) {
+      pid = 1;
+    }
+  }
+}
 
 
 function initialize() {
   initializeUnits();
   
-  // TODO: fix me
-  roleToPlayer = new Array();
-  for (var r = 1; r <= num_roles; r++) {
-    roleToPlayer[r] = 1;
-  }
+  assignPlayersRoundRobin();
   
 //  alert(roleUnits[1][0].name);
   initializeGameBoard();
@@ -384,6 +422,7 @@ function initializeGameBoard() {
   initializeAvatars();
   initializeAssets();
   setRound(FIRST_ACTUAL_ROUND);
+  initChat();
   initRound();
 }
 
@@ -485,15 +524,49 @@ function submitMove() {
     }
   }
   
-  simulateEndOfTurn(submission);
+//simulateEndOfTurn(submission); 
+  submit(submission);
 }
-  
+
+/**
+ * Wait until we got a command move from everyone in the round.
+ * 
+ * @param participant
+ * @param index
+ */
+function newMove(participant, index) {
+  fetchMove(participant, currentRound, index, function(val) {
+    commandHistory[currentRound][participant] = val;
+//    alert(commandHistory[currentRound].length+" "+val);
+    
+    var done = true;
+    for (var pid = 1; pid <= numPlayers; pid++) {
+      if (typeof commandHistory[currentRound][pid] === "undefined") {
+        done = false;
+      }
+    }
+    
+    if (done) {
+      endRound();
+    }
+  });
+}
+
+function endRound() {
+  addRoundTab(currentRound-ROUND_ZERO);
+  setRound(currentRound+1);
+  updateBoardFromCommands(commandHistory[currentRound-1]);
+  addSituationReports(commandHistory[currentRound-1]);
+  initRound();
+  updateUnitFromCommands(commandHistory[currentRound-1]);
+}
+
+
 /**
  * Used by instructions.
  */
 function simulateEndOfTurn(submission) {
   // TODO: move this to something that saves up the moves
-  commandHistory[currentRound] = new Array();
   commandHistory[currentRound][myid] = submission;
   addRoundTab(currentRound-ROUND_ZERO);
   setRound(currentRound+1);
@@ -546,6 +619,7 @@ function showCurrentBoard() {
 
 
 function initRound() {
+  commandHistory[currentRound] = new Array();
   addBeginTurnSitRep(currentRound-ROUND_ZERO, 5);
   for (var unit_idx in units) {
     var unit = units[unit_idx];
@@ -640,13 +714,49 @@ function addSituationReports(moves) {
       reports = unit.buildSituationReport(no, possible, confirmed, wait);
       for (i in reports) {
         var report = reports[i];
-        $("#sitrep").append('<tr><th>&nbsp;&nbsp;'+unit.name+'</th><td>'+report+'</td></tr>');
+        appendSitRep(unit.name,report);
       }
     });
   }
 }
 
+function appendSitRep(title,value) {
+  $("#sitrep").append('<tr><th>&nbsp;&nbsp;'+title+'</th><td>'+value+'</td></tr>');  
+}
 
+var DEFAULT_CHAT = "<send communication here>";
+function initChat() {
+  if (useChat) {
+    $("#chatPanel").show();
+    $("#chatInput").val(DEFAULT_CHAT);
+    $("#chatInput").focusin(function() {
+//      alert("focusin:"+($(this).val() == DEFAULT_CHAT));
+      if ($(this).val() == DEFAULT_CHAT) {
+        $(this).val("");
+      }
+    });
+    
+    $("#chatInput").focusout(function() {
+      if ($(this).val() == "") {
+        $(this).val(DEFAULT_CHAT);
+      }
+    });
+  }
+}
+
+function callSendChat() {
+  if ($("#chatInput").val() == DEFAULT_CHAT) {
+    return;
+  }
+  
+  sendChat($("#chatInput").val());
+  
+  $("#chatInput").val(DEFAULT_CHAT);
+}
+
+function chatReceived(tid,val) {
+  appendSitRep(roleName[getFirstRole(tid)], val);
+}
 
 
 
