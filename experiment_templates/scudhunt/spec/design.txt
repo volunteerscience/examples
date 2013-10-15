@@ -1,33 +1,13 @@
 Todo:
   game:    
-    layout the sitrep on bottom if most thin:
-      set the min_width to be slightly less than the smallest snap
-      make sitRep a little too big
-      make assets a little smaller
-    clicking on unit on board selects the unit
-    
-    make multiplayer work:
-      mine:
-        unit.mine = false; // set to true on all my units
-        getMyUnits() // in case player has multiple roles
-        only display your assets
-      wait for incoming moves:
-        newMove(): check if contains "<command>" from player, wait for all players
-      
-      
-    submit units as you place them, record them on the other side (so people can see the planned next move)
-      <place unit="" region="" />
-      newMove() if (placeUnit)...
-      
+    button changes to "Waiting for Team" when pressed (maybe even a timout thing?)
     timeout clock (steal from word-morph)
       auto-submit if not clicked
       
     ability to place 2 units in same square:
-      click on unit causes pass-through to the square behind (look at minesweepers)
       display the units side by side (and scaled down)
         Use this to indicate which reading corresponds to which unit
     auto-advance situation report slider
-    chat
     
     to support touch-screens:
       clicking a unit on a region should fade out the color for all affected regions:

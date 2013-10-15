@@ -8,7 +8,7 @@
  * 
  * Routinely call advanceCountdowns();
  * 
- * Implement countdownExpried(id) to be notified when it's done.
+ * Implement countdownExpired(id) to be notified when it's done.
  * 
  */
 

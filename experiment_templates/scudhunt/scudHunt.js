@@ -448,6 +448,7 @@ function initializeGameBoard() {
   setRound(FIRST_ACTUAL_ROUND);
   initChat();
   initRound();
+  startAnimation();
 }
 
 function initializeAvatars() {
@@ -511,8 +512,12 @@ function initializeAssets() {
  * maps round => role => list of commands
  */
 var commandHistory = new Array();
-
+var submitted = false;
 function submitMove() {
+  if (submitted) return;
+  $('#go').html("Waiting for Team");
+  submitted = true;
+  
   Math.seedrandom(seed*myid*(currentRound+7));
   var submission = "";
   var myUnits = getUnits(myid);
@@ -564,7 +569,13 @@ function newMove(participant, index) {
     
     if (tagName == "COMMAND") {
       // this contains 1 or more commands
-      commandHistory[currentRound][participant] = val;
+      if (typeof commandHistory[currentRound][participant] === "undefined") {
+        commandHistory[currentRound][participant] = val; // don't allow repeat moves
+      }
+      if (participant == myid) {
+        $('#go').html("Waiting for Team");
+        submitted = true;
+      }
       var done = true;
       for (var pid = 1; pid <= numPlayers; pid++) {
         if (typeof commandHistory[currentRound][pid] === "undefined") {
@@ -681,6 +692,9 @@ function initRound() {
     var unit = units[unit_idx];
     unit.initTurn();
   }
+  $('#go').html("End Turn");
+  submitted = false;
+  setCountdown("timer",60);
 }
 
 function clearUnitsFromBoard() {
@@ -822,5 +836,24 @@ function chatReceived(tid,val) {
   appendSitRep(roleName[getFirstRole(tid)], val);
 }
 
+var animTimer = null;
+function startAnimation() {
+  if (animTimer != null) return;
+  animTimer = setInterval(doAnimation, 50); // 20FPS
+}
+function stopAnimation() {
+  if (animTimer == null) return;
+  clearInterval(animTimer);
+  animTimer = null;
+}
+
+// called 20x/second
+function doAnimation() {
+  advanceCountdowns();
+}
+
+function countdownExpired(id) {
+  submitMove(); // automatically bypasses if already submitted
+}
 
 
