@@ -9,6 +9,7 @@ var SPEC_OPS = 4;
 function initializeUnits() {
   num_unit_types = 5;
   num_roles = 4;
+  choiceAvatarId = 8; // explosion
   
   ROUND_NOUN = "Day";
   ROUND_NOUN_PLURAL = "Days";
@@ -221,9 +222,11 @@ function initializeUnits() {
   
   } // delme
   
-  var scud = new Unit(7, TARGET_ROLE, "SCUD", "Hidden Target", 
-      "Based on your operations over the previous days, place each the SCUD in the most likely location.", 
-      getFile("scud.png"), 7, null);
+  for (var i = 0; i < numTargets; i++) {
+    var scud = new Unit(7+i, TARGET_ROLE, "SCUD", "Hidden Target", 
+        "Based on your operations over the previous days, place each the SCUD in the most likely location.", 
+        getFile("scud.png"), 7, null);
+  }
 
   
   

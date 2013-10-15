@@ -2,6 +2,16 @@
   <h1 id="gameTitle">SCUD Hunt</h1>
   
   <div class="minwidth">
+    <div id="q1" class="modalQuestion" style="display: none;">
+      <h2>How confident are you that you found the targets?</h2>
+      <br/><br/>
+      <br/><div><input class="btn-success" type="submit" value="Very confident" onclick="q1('1')"/></div>
+      <br/><div><input class="btn-success" type="submit" value="Somewhat confident" onclick="q1('2')"/></div>
+      <br/><div><input class="btn-success" type="submit" value="Neither confident nor unsure" onclick="q1('3')"/></div>
+      <br/><div><input class="btn-success" type="submit" value="Somewhat unsure" onclick="q1('4')"/></div>
+      <br/><div><input class="btn-success" type="submit" value="Very unsure" onclick="q1('5')"/></div>
+    </div>
+    
     <div id="timer" class="countdown"></div>
     <div class="leftSide">
       <div id="roundHistory"><span id="currentRound" class="roundTab selectedTab" onclick="showCurrentBoard();">Current</span></div>

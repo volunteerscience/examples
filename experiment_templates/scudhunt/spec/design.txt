@@ -1,9 +1,5 @@
 Todo:
   game:    
-    button changes to "Waiting for Team" when pressed (maybe even a timout thing?)
-    timeout clock (steal from word-morph)
-      auto-submit if not clicked
-      
     ability to place 2 units in same square:
       display the units side by side (and scaled down)
         Use this to indicate which reading corresponds to which unit
