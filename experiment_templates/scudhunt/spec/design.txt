@@ -11,8 +11,6 @@ Todo:
             if green, fade out all the affected regions
     
   opening:
-    find a cool font for the instructions
-    do the fade-in stuff
     reward for watching story
     skip story
     rewards for watching rules for each player type
@@ -96,10 +94,7 @@ Todo:
         </ul>
 
   end:
-    change assets to targts
-    survey for certainty
-    show results/airstrikes
-  
+    animation for airstrikes  
 
 
 Kornoa

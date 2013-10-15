@@ -9,7 +9,7 @@ var globalSitRep = true; // situation reports show everyone's reports
 var localMapScans = true; // show your assets' scans on the map
 var globalMapScans = true; // show everyone's assets' scans on the map
 var allowMapHistory = true; // allow players to view previous states of the board
-var showNumberOfRounds = false;  // do we tell the players how many rounds they have?
+var showNumberOfRounds = true;  // do we tell the players how many rounds they have?
 var allowGroupTargetPlace = true; // true if the group decides where the targets go
 
 var MAP_WIDTH = 420;
@@ -36,13 +36,15 @@ var num_roles = 4;
 var roleUnits = new Array(); // units indexed by role, then first/second etc
 var unitAvatarFactory = null;
 var units = new Array(); // unit indexed by id
-var story = null; // array of strings
-var rules = null; // array of strings
+var story = [""]; // array of html strings
+var mapRules = [""]; // array of html strings
+var assetRules = [""] // array of html strings
+var instructionAssets = [] // array of assets
 var ROUND_NOUN = "Round"; // what you call a Round: Day, Hour, Turn... etc
 var ROUND_NOUN_PLURAL = "Rounds"; 
 var TARGET_NOUN = "Target"; 
 var TARGET_NOUN_PLURAL = "Targets";
-var numRounds = 2;
+var numRounds = 5;
 var numTargets = 4;
 var choiceAvatarId = 1; // what to render as the user's choice
 
@@ -95,8 +97,10 @@ function Region(id,name, x,y, x1,y1, polygon) {
         return;
       }
       
-      submit('<place unit="'+selectedUnit.id+'" region="'+me.id+'"/>');
-      showCurrentBoard();
+      if (!inInstructions) {
+        submit('<place unit="'+selectedUnit.id+'" region="'+me.id+'"/>');
+        showCurrentBoard();
+      }
       selectedUnit.setNextRegion(me);
 
       deselectAllUnits();
@@ -252,7 +256,7 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
   }
   
   this.setNextRegion = function(region) {
-    log(this.id+".setNextRegion("+region+")");
+//    log(this.id+".setNextRegion("+region+")");
     this.nextRegion = region;
     if (region == null) {
       this.clearLocation();
@@ -450,20 +454,22 @@ function initialize() {
   
 //  alert(roleUnits[1][0].name);
   initializeGameBoard();
+  
+  runAllInstructions();
 }
 
+
 function initializeGameBoard() {
-  paper = Raphael("canvas", MAP_WIDTH, MAP_HEIGHT);
+  if (paper == null) {
+    paper = Raphael("canvas", MAP_WIDTH, MAP_HEIGHT);
+  }
   paper.clear();
   buildSquareMap(5, 5, numTargets, 0);
   if (myid == 1) {
     submit('<game targets="'+targetRegions+'"/>');
   }
   initializeAvatars();
-  initializeMyAssets();
-  setRound(FIRST_ACTUAL_ROUND);
   initChat();
-  initRound();
   startAnimation();
 }
 
@@ -540,7 +546,7 @@ function submitMove() {
   submitted = true;
   if (currentRound-ROUND_ZERO > numRounds) {
     $('#go').fadeOut();
-    $(".playerControls").fadeOut();
+    $("#playerControls").fadeOut();
     $("#q1").fadeIn();
     return;
   }  
@@ -633,7 +639,7 @@ function newMove(participant, index) {
   fetchMove(participant, currentRound, index, function(val) {
     var tagName = $(val).prop("tagName");
     
-    if (tagName == "COMMAND" || tagName == "CONFIDENCE") {
+    if (tagName == "COMMAND" || tagName == "CONFIDENCE"|| tagName=="READY") {
       // this contains 1 or more commands
       if (typeof commandHistory[currentRound][participant] === "undefined") {
         commandHistory[currentRound][participant] = val; // don't allow repeat moves
@@ -675,7 +681,15 @@ function newMove(participant, index) {
 }
 
 function endRound() {
+  if (currentRound < FIRST_ACTUAL_ROUND) {
+    clearInstructions();
+    setRound(FIRST_ACTUAL_ROUND);
+    initRound();
+    return;
+  }
+
   if (currentRound > ROUND_ZERO+numRounds) {
+    showCurrentBoard();
     showAirstrike();
     setRound(currentRound+1);
     return;
@@ -769,7 +783,6 @@ function showCurrentBoard() {
 
 function initRound() {
   log("initRound:"+currentRound);
-
   commandHistory[currentRound] = new Array();
   if (currentRound-ROUND_ZERO <= numRounds) {
     // normal round
@@ -791,6 +804,7 @@ function initRound() {
     initializeAssets(roleUnits[TARGET_ROLE]);
     log("answerRound: done");
   }
+  showCurrentBoard();
   $('#go').html("End Turn");
   submitted = false;
   setCountdown("timer",60);
@@ -959,5 +973,4 @@ function doAnimation() {
 function countdownExpired(id) {
   submitMove(); // automatically bypasses if already submitted
 }
-
 

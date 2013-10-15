@@ -31,6 +31,7 @@
 }
 
 .minwidth { 
+  min-height: 460px;
   min-width:710px; 
   width: auto !important; 
 }
@@ -150,4 +151,55 @@
 
 .modalQuestion h2 {
   font-size: 200%;
+}
+
+#game {
+}
+
+#gameTitle {
+  font-family: 'Coda Caption', sans-serif;  
+}
+
+#instructions {
+  margin-top: 20px;
+  font-family: 'Coda Caption', sans-serif;  
+  text-align: center;
+  position: relative;
+  height:190px;
+  padding: 20px;
+}
+
+.instruction {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.instruction p {
+  font-family: 'Coda Caption', sans-serif;  
+  font-size: 160%;
+  line-height: 32px;
+  margin: 20px;
+  max-width: 700px;
+}
+
+.instruction ul {
+  list-style-type: none;
+  text-align: left; 
+  font-size: 120%;
+}
+
+.instruction ul li {
+  font-size: 110%;
+}
+
+#bottomPanel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+#inext {
+  
 }
