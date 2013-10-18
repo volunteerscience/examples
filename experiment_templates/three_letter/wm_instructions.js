@@ -215,7 +215,7 @@ function doneInstructions() {
   $("#redo").show();
   $("#suggestions").show();
   $(".word_input_group").show();
-  setTimeout(setFirstPuzzle, 1000);
+  setTimeout(setFirstPuzzle, 1);
 }
 
 function setFirstPuzzle() {

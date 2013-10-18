@@ -8,7 +8,7 @@
  * 
  * Routinely call advanceCountdowns();
  * 
- * Implement countdownExpired(id) to be notified when it's done.
+ * Implement countdownExpried(id) to be notified when it's done.
  * 
  */
 
@@ -61,6 +61,10 @@ function updateCountdown(id) {
     }
     delete countdowns[id];
   }
+}
+
+function stopCountdown(id) {
+  delete countdowns[id];
 }
 
 

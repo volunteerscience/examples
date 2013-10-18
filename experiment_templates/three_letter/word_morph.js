@@ -1,3 +1,5 @@
+var showDifficulty = true;
+
 var numLetters = 3;
 var difficulty = 0;
 var bestLength = 0;
@@ -18,11 +20,37 @@ var fullAlphabetArrow = false; // false means use suggestions for up/down arrows
 var instructions = false;
 var disableArrows = false;
 var hide_ellipsis = false;
+var expired = false;
+var maxDifficulty = 3;
+
 
 function initialize() {
+  chooseDifficulty();
+  log("maxDifficulty:"+maxDifficulty);
   $('body').prepend("<style> .arrow { background-image: url('"+FILE_PATH+files['transition.png']+"'); } </style>");
   
   loadWords();  
+}
+
+/**
+ * Set maxDifficulty based on the highest level everyone has
+ * @returns
+ */
+function chooseDifficulty() {
+  for (var lvl = 1; lvl < 10; lvl++) {
+    try {
+      for (var i = 1; i <= numPlayers; i++) {
+        if (awards[i]["Level "+lvl]["count"] > 0) {
+          // continue  
+        } else {
+          return;
+        }
+      }
+      maxDifficulty = lvl+3; // 1=>4; 2=>5 etc
+    } catch (err) {
+      return; // no award
+    }
+  }
 }
 
 function doneLoading() {
@@ -131,17 +159,34 @@ function loadPuzzles() {
   });  
 }
 
+/**
+ * i = round (usually 1)
+ * Use max difficulty
+ */
 function setRandomPuzzle(i) {
   Math.seedrandom(seed^(i+1));
-  setPuzzleByIndex(Math.floor(Math.random()*puzzles.length));  
+  var index = Math.floor(Math.random()*puzzles.length);
+  while (getPuzzleByIndex(index)[0] > maxDifficulty) {
+    index = Math.floor(Math.random()*puzzles.length);
+  }
+  setPuzzleByIndex(index);  
+}
+
+/**
+ * return difficulty; bestLength; first-word; last-word;
+ */
+function getPuzzleByIndex(index) {
+  return puzzles[index].split(";");
 }
 
 function setPuzzleByIndex(index) {
-  var foo = puzzles[index].split(";");
+  var foo = getPuzzleByIndex(index);
   setPuzzle(foo[0], foo[1], foo[2], foo[3]);
 }
 
 function setPuzzle(diff, best, first, last) {
+  log("setPuzzle("+diff+")");
+  expired = false;
   difficulty = diff;
   bestLength = best;
   firstWord = first;
@@ -152,6 +197,13 @@ function setPuzzle(diff, best, first, last) {
   undoIndex = 0;
   initializeSolutions();
   setCurWord(curWord);
+  if (showDifficulty) {
+    $("#num_remaining").html("<p>Best solution chain is "+difficulty+" words long.</p>");
+    $("#num_remaining").fadeIn();
+  } else {
+    $("#num_remaining").fadeOut();
+  }
+  $("#bestGroup").fadeOut();
   if (!instructions) {
     submit("<puzzle>"+first+","+last+"</puzzle>");    
     setCountdown("timer",90);
@@ -160,7 +212,9 @@ function setPuzzle(diff, best, first, last) {
 }
 
 function countdownExpired(id) {
-  alert("Time's Up!");
+  enablePlayAgain();
+  expired = true;
+  alert("You ran out of time.  You may continue to try to solve the puzzle, but it won't count as a win.");
 }
 
 
@@ -445,11 +499,19 @@ var won = false;
 function setBestSolution(b) {
   if (b.length == bestLength-2) {
     $("#num_remaining").html("<p><b>Congratulations!</b>  You found the shortest solution!</p>");
-    if (!won) {
+    $("#num_remaining").fadeIn();
+    if (!expired && !won) {
+      stopCountdown("timer");
+      enablePlayAgain();
       won = true;
+      try {
+        if (typeof awards[myid]["Level "+(difficulty-2)] == "undefined") {
+          writeAward("Level "+(difficulty-2));
+        }
+      } catch(err) {
+      }
       writeAward("Win");
       try {
-        
         if (typeof awards[myid]["Gimmie Five!"] == "undefined" &&
             awards[myid]["Win"]["count"] >= 4) {
             writeAward("Gimmie Five!");
@@ -458,7 +520,13 @@ function setBestSolution(b) {
       }
     }
   } else {
-    $("#num_remaining").html("<p>There is still a shorter solution.</p>");    
+    if (showDifficulty) {
+      $("#num_remaining").html("<p>There is still a shorter solution that is "+difficulty+" words long.</p>"); 
+      $("#num_remaining").fadeIn();
+    } else {
+      $("#num_remaining").html("<p>There is still a shorter solution.</p>");          
+      $("#num_remaining").fadeIn();
+    }
   }
   bestSolution = b;
   drawSolution($("#best"), bestSolution);
