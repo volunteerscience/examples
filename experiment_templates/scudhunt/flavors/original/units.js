@@ -114,7 +114,7 @@ function initializeUnits() {
   var sigint = new Unit(3, SPY_MASTER, "SigInt", "Scan Square", 
       "Signals Intelligence can examine a region for increased communications chatter, " +
       "but cannot reliably distinguish launcher from deception operations.", 
-      getFile("headphones.png"), 3, [[0.7,0.2,0.1],[0.2,0.6,0.2],[0.1,0.2,0.7]]);
+      getFile("headphones.png"), 3, [[0.6,0.35,0.05],[0.2,0.6,0.2],[0.1,0.3,0.6]]);
   
   var humint = new Unit(4, SPY_MASTER, "Spy", "Deploy anywhere; Walk from there", 
       "We can deploy our spy to search any region with excellent reliablity.  "+
@@ -122,7 +122,7 @@ function initializeUnits() {
       "he may only remain in the same square or move to an adjacent grid square." +
       "Each turn the agent is on the board, there is a chance he will be caught and executed."+
       "He cannot be replaced.", 
-      getFile("spy.png"), 4, [[0.7,0.2,0.1],[0.2,0.6,0.2],[0.1,0.2,0.7]]);
+      getFile("spy.png"), 4, [[0.90,0.05,0.05],[0.2,0.6,0.2],[0.1,0.4,0.5]]);
   humint.effect = function(region) {
     if (humint.currentRegion == null) {
       return [region];
@@ -156,7 +156,7 @@ function initializeUnits() {
       "Each turn that the Spec Ops team is in play, there is a chance the team "+
       "will be compromised and forced to perform an emergency extraction.  "+
       "If extracted, the team will be unavailable for 1 or more days to rest and refit.", 
-      getFile("spec_ops.png"), 5, [[0.95,0.2,0.1],[0.1,0.8,0.1],[0.1,0.2,0.95]]);
+      getFile("spec_ops.png"), 5, [[0.5,0.3,0.2],[0.1,0.8,0.1],[0.05,0.15,0.8]]);
   specOps.effect = function(region) {
     if (specOps.currentRegion == null) {
       return [region];
@@ -191,7 +191,7 @@ function initializeUnits() {
       "Each turn that the Navy SEALS team is in play, there is a chance the team "+
       "will be compromised and forced to perform an emergency extraction.  "+
       "If extracted, the team will be unavailable for 1 or more days to rest and refit.", 
-      getFile("seals.png"), 6, [[0.95,0.2,0.1],[0.1,0.8,0.1],[0.1,0.2,0.95]]);
+      getFile("seals.png"), 6, [[0.6,0.3,0.1],[0.1,0.8,0.1],[0.05,0.15,0.8]]);
   seals.effect = function(region) {
     if (seals.currentRegion == null) {
       if (region.row <= 3 ) return []; // can't start in top 4 rows
