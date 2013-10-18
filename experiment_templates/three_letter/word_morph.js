@@ -22,9 +22,13 @@ var disableArrows = false;
 var hide_ellipsis = false;
 var expired = false;
 var maxDifficulty = 3;
-
+var isMobile = false;
 
 function initialize() {
+  if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+    isMobile = true;
+  }
+  
   chooseDifficulty();
   log("maxDifficulty:"+maxDifficulty);
   $('body').prepend("<style> .arrow { background-image: url('"+FILE_PATH+files['transition.png']+"'); } </style>");
@@ -197,7 +201,7 @@ function setPuzzle(diff, best, first, last) {
   undoIndex = 0;
   initializeSolutions();
   setCurWord(curWord);
-  if (showDifficulty) {
+  if (showDifficulty && !instructions) {
     $("#num_remaining").html("<p>Best solution chain is "+difficulty+" words long.</p>");
     $("#num_remaining").fadeIn();
   } else {
@@ -233,9 +237,11 @@ function initializeWordInput() {
   }
   $('.upArrow').css("background-image","url('"+FILE_PATH+files['arrow.png']+"')");
   $('.downArrow').css("background-image","url('"+FILE_PATH+files['arrow.png']+"')");
-  $('.letter_input').focus(function(){
-    this.select();
-  });
+  if (!isMobile) {
+    $('.letter_input').focus(function(){
+      this.select();
+    });
+  }
   
   /**
    * This is what happens when they type in a letter input box
@@ -267,7 +273,9 @@ function initializeWordInput() {
       var prevLetterInput = $(this).parents('.letter').prev().find('.letter_input');
       if (prevLetterInput.length == 1) {
         $(this).val(curWord[index]);
-        prevLetterInput.focus();
+        if (!isMobile) {
+          prevLetterInput.focus();
+        }
         return;
       } else {
         setCurWord(curWord);
@@ -283,7 +291,9 @@ function initializeWordInput() {
     if (code > 'z'.charCodeAt(0) || code < 'a'.charCodeAt(0)) { // not a letter
       // reset letter and refocus
       $(this).val(curWord[index]); 
-      $(this).focus();
+      if (!isMobile) {
+        $(this).focus();
+      }
       return;
     } else {
       $(this).val(myVal);      
@@ -292,7 +302,9 @@ function initializeWordInput() {
     // ok we set a valid letter, go to next field or accept
     var nextLetterInput = $(this).parents('.letter').next().find('.letter_input');
     if (nextLetterInput.length == 1) {
-      nextLetterInput.focus();
+      if (!isMobile) {
+        nextLetterInput.focus();
+      }
     } else {
       acceptWordInput();
     }
@@ -448,7 +460,9 @@ function setCurWord(word) {
   }
 
   giveSuggestions(word);
-  $('#letter_0').focus();
+  if (!isMobile) {
+    $('#letter_0').focus();
+  }
 }
 
 function giveSuggestions(word) {
@@ -498,8 +512,10 @@ function arrays_equal(a,b) {
 var won = false;
 function setBestSolution(b) {
   if (b.length == bestLength-2) {
-    $("#num_remaining").html("<p><b>Congratulations!</b>  You found the shortest solution!</p>");
-    $("#num_remaining").fadeIn();
+    if (!instructions) {
+      $("#num_remaining").html("<p><b>Congratulations!</b>  You found the shortest solution!</p>");
+      $("#num_remaining").fadeIn();
+    }
     if (!expired && !won) {
       stopCountdown("timer");
       enablePlayAgain();
@@ -520,11 +536,12 @@ function setBestSolution(b) {
       }
     }
   } else {
-    if (showDifficulty) {
-      $("#num_remaining").html("<p>There is still a shorter solution that is "+difficulty+" words long.</p>"); 
-      $("#num_remaining").fadeIn();
-    } else {
-      $("#num_remaining").html("<p>There is still a shorter solution.</p>");          
+    if (!instructions) {
+      if (showDifficulty) {
+        $("#num_remaining").html("<p>There is still a shorter solution that is "+difficulty+" words long.</p>"); 
+      } else {
+        $("#num_remaining").html("<p>There is still a shorter solution.</p>");          
+      }
       $("#num_remaining").fadeIn();
     }
   }
