@@ -47,6 +47,7 @@ function runAllInstructions() {
   commandHistory[1] = new Array();
   setRound(1);
   runInstructions(story);
+//  doneInstructions();
 }
 
 var section = 0;
@@ -64,6 +65,7 @@ function runInstruction() {
     clearInterval(storyTimer);
     storyTimer = null;
   }
+  if (!inInstructions) return;
   if (curStory >= curInstructions.length) {
     doneSection();
     return;
@@ -134,6 +136,7 @@ function doneSection() {
  * Submit ready on round 1 to begin (this fixes a refresh problem)
  */
 function doneInstructions() {
+  if (!inInstructions) return;
   $("#iskip").attr('value',"Waiting for Team");
   submit('<ready />');
 }

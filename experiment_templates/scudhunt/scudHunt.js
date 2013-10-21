@@ -11,6 +11,7 @@ var globalMapScans = true; // show everyone's assets' scans on the map
 var allowMapHistory = true; // allow players to view previous states of the board
 var showNumberOfRounds = true;  // do we tell the players how many rounds they have?
 var allowGroupTargetPlace = true; // true if the group decides where the targets go
+var roundDuration = 6000;
 
 var MAP_WIDTH = 420;
 var MAP_HEIGHT = 420;
@@ -237,7 +238,7 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
   };
   
   this.clearLocation = function() {
-    log(this.id+" clearLocation");
+//    log(this.id+" clearLocation");
     this.avatar.currentlyOn = null;
     this.avatar.setLocation(-200, -200);    
   }
@@ -389,6 +390,9 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
   }
   
   this.initTurn = function() {
+    if (this.wait != 0) {
+      this.currentRegion = null;
+    }
   };
   
   this.resurrect = function() {
@@ -448,6 +452,10 @@ function assignPlayersRoundRobin() {
 
 
 function initialize() {
+  for (var r = ROUND_ZERO; r <= FIRST_ACTUAL_ROUND+numRounds; r++) { // also the submission round
+    commandHistory[r] = new Array();
+  }
+
   initializeUnits();
   
   assignPlayersRoundRobin();
@@ -622,12 +630,64 @@ function showAirstrike() {
       }
     }
   }
-  
-
- 
-  
 }
 
+/**
+ * to handle refresh, get all the previous moves
+ * @param round
+ */
+function roundInitialized(round) {
+  for (var participant in initialMovesOfRound) {
+    for (var index = 0; index < initialMovesOfRound[participant]; index++) {
+      fetchMove(participant, round, index, fetchResponse);
+    }
+  }
+}
+
+function fetchResponse(val,participant,round,index) {
+  var tagName = $(val).prop("tagName");
+  log("fetchReturn("+tagName+" r:"+round+") cr:"+currentRound);
+  if (tagName == "COMMAND" || tagName == "CONFIDENCE"|| tagName=="READY") {
+    // this contains 1 or more commands
+    if (typeof commandHistory[round][participant] === "undefined") {
+      commandHistory[round][participant] = val; // don't allow repeat moves
+    }
+    if (participant == myid && round == currentRound) {
+      $('#go').html("Waiting for Team");
+      submitted = true;
+    }
+    var done = true;
+    for (var pid = 1; pid <= numPlayers; pid++) {
+      if (typeof commandHistory[currentRound][pid] === "undefined") {
+        done = false;
+      }
+    }
+    
+    if (done) {
+      endRound();
+    }
+  } else if (tagName == "PLACE") {
+    if (currentRound > ROUND_ZERO+numRounds) {
+      // target choosing round
+      if (!allowGroupTargetPlace) return; // don't show the unit placement
+    } else {
+      // normal round
+      if (!realTimeUnitPlacement) return; // don't show the unit placement
+    }
+    var place = $(val);
+    var unit = units[place.attr('unit')];
+    if (isMyUnit(unit)) return;  // prevent feedback
+    var region_id = place.attr('region');
+    var region = null;
+    if (region_id != "") {
+      region = regions[region_id];
+    }
+    log("place:"+unit.id+" "+region);
+    if (round == currentRound) {
+      unit.setNextRegion(region);
+    }
+  }
+}
 
 /**
  * Wait until we got a command move from everyone in the round.
@@ -635,49 +695,9 @@ function showAirstrike() {
  * @param participant
  * @param index
  */
-function newMove(participant, index) {
-  fetchMove(participant, currentRound, index, function(val) {
-    var tagName = $(val).prop("tagName");
-    
-    if (tagName == "COMMAND" || tagName == "CONFIDENCE"|| tagName=="READY") {
-      // this contains 1 or more commands
-      if (typeof commandHistory[currentRound][participant] === "undefined") {
-        commandHistory[currentRound][participant] = val; // don't allow repeat moves
-      }
-      if (participant == myid) {
-        $('#go').html("Waiting for Team");
-        submitted = true;
-      }
-      var done = true;
-      for (var pid = 1; pid <= numPlayers; pid++) {
-        if (typeof commandHistory[currentRound][pid] === "undefined") {
-          done = false;
-        }
-      }
-      
-      if (done) {
-        endRound();
-      }
-    } else if (tagName == "PLACE") {
-      if (currentRound > ROUND_ZERO+numRounds) {
-        // target choosing round
-        if (!allowGroupTargetPlace) return; // don't show the unit placement
-      } else {
-        // normal round
-        if (!realTimeUnitPlacement) return; // don't show the unit placement
-      }
-      var place = $(val);
-      var unit = units[place.attr('unit')];
-      if (isMyUnit(unit)) return;  // prevent feedback
-      var region_id = place.attr('region');
-      var region = null;
-      if (region_id != "") {
-        region = regions[region_id];
-      }
-      log("place:"+unit.id+" "+region);
-      unit.setNextRegion(region);
-    }
-  });
+function newMove(participant, index, round) {
+  log("newMove("+participant+" i:"+index+" r:"+round+") cr:"+currentRound);
+  fetchMove(participant, currentRound, index, fetchResponse);
 }
 
 function endRound() {
@@ -783,7 +803,6 @@ function showCurrentBoard() {
 
 function initRound() {
   log("initRound:"+currentRound);
-  commandHistory[currentRound] = new Array();
   if (currentRound-ROUND_ZERO <= numRounds) {
     // normal round
     addBeginTurnSitRep(currentRound-ROUND_ZERO, numRounds);
@@ -807,7 +826,7 @@ function initRound() {
   showCurrentBoard();
   $('#go').html("End Turn");
   submitted = false;
-  setCountdown("timer",60);
+  setCountdown("timer",roundDuration);
 }
 
 function clearUnitsFromBoard() {
