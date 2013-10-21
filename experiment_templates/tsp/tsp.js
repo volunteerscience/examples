@@ -1067,14 +1067,3 @@ function showResults() {
   });
   
 }
-
-/**
- * Button on last page to submit feedback.
- */
-function submitFeedback() {
-//  alert($('#feedback_text').val());
-  submit('<feedback>'+$('#feedback_text').val()+'</feedback>');
-  $('#feedback').hide();
-  $('#feedback_thanks').show();
-}
-
