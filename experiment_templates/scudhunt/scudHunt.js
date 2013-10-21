@@ -13,7 +13,7 @@ var showNumberOfRounds = true;  // do we tell the players how many rounds they h
 var allowGroupTargetPlace = true; // true if the group decides where the targets go
 var roundDuration = 6000;
 
-var MAP_WIDTH = 420;
+var MAP_WIDTH = 440;
 var MAP_HEIGHT = 420;
 
 var ROUND_ZERO = 100;

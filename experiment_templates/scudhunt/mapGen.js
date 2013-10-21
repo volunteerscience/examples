@@ -14,7 +14,7 @@ var targetRegions = "";
 function buildSquareMap(num_rows, num_cols, num_targets, num_decoys) {
   var X_OFF = 20;
   var Y_OFF = 20;
-  var R_WIDTH =  (MAP_WIDTH -X_OFF)/num_cols;
+  var R_WIDTH =  (MAP_WIDTH -2*X_OFF)/num_cols; // border on left and right
   var R_HEIGHT = (MAP_HEIGHT-Y_OFF)/num_rows;
   REGION_WIDTH = R_WIDTH;
   // build labels
@@ -22,11 +22,23 @@ function buildSquareMap(num_rows, num_cols, num_targets, num_decoys) {
   regionGroup[ROW] = new Array();
   
   for (var x = 0; x < num_cols; x++) {
-    paper.text(X_OFF+x*R_WIDTH+R_WIDTH/2,Y_OFF/2,String.fromCharCode('1'.charCodeAt(0)+x));
+    var chromeBug = paper.text(X_OFF+x*R_WIDTH+R_WIDTH/2,2+Y_OFF/2,String.fromCharCode('1'.charCodeAt(0)+x));
+    try {
+      if (chromeBug.node.childNodes[0].attributes[0].name == "dy") {
+        chromeBug.node.childNodes[0].attributes[0].value = 0;        
+      }
+    } catch (err) {}
     regionGroup[COL][x] = new Array();
   }
   for (var y = 0; y < num_rows; y++) {
-    paper.text(X_OFF/2,Y_OFF+y*R_HEIGHT+R_HEIGHT/2,String.fromCharCode('A'.charCodeAt(0)+y));    
+    var chromeBug = paper.text(X_OFF/2,Y_OFF+y*R_HEIGHT+R_HEIGHT/2,String.fromCharCode('A'.charCodeAt(0)+y));    
+    // raphael has a bug in chrome such that if rendered offscreen, it adds a an extra tspan with a dy, that effectively doubles the dy: set it to zero.
+    try {
+      if (chromeBug.node.childNodes[0].attributes[0].name == "dy") {
+        chromeBug.node.childNodes[0].attributes[0].value = 0;        
+      }
+    } catch (err) {}
+//    paper.text(X_OFF/2,Y_OFF+y*R_HEIGHT+R_HEIGHT/2,String.fromCharCode('A'.charCodeAt(0)+y)).attr({fill: "#ff7000", "font-size" : "16px", "font-family" : "Verdana", "font-weight" : "bold"});    
     regionGroup[ROW][y] = new Array();
   }
     

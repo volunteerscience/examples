@@ -21,7 +21,7 @@
 }
 
 .leftSide {
-  width: 420px;
+  width: 440px;
   float: left;
 }
 
@@ -44,7 +44,7 @@
   background-color: #c7d4e7;
   border:1px solid black;
   cursor: pointer;
-  width: 280px;
+  width: 260px;
   min-height: 64px;
   margin-bottom: 2px;
   -webkit-touch-callout: none;
