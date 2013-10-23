@@ -75,22 +75,6 @@
   text-align: center;
 }
 
-.sitrep_wrapper {
-  height: 400px; 
-  width: auto; 
-  overflow: auto;
-  min-width: 290px;
-}
-  
-#sitrep {
-  width: auto;
-}
-
-#sitrep th {
-  text-align: left;
-  min-width: 120px;
-}
-
 #chatPanel {
   width:100%;
 }
@@ -203,3 +187,34 @@
 #inext {
   
 }
+
+.sitrep_wrapper {
+  height: 400px;
+  min-width: 290px;
+  overflow: hidden;
+  width: auto;
+  border: solid 1px;
+  background-color: #CCCCCC;
+  color: #222222;
+}
+
+#sitrep {
+  width: auto;
+}
+
+#sitrep th {
+  text-align: left;
+  min-width: 120px;
+}
+
+.scroll-pane { float:left; }
+.scroll-content { float: left; }
+.scroll-bar-wrap {
+  clear: left;
+  float: right;
+  height: 389px;
+  margin: 0 -1px;
+  padding: 4px 2px 7px;
+}
+.ui-slider-vertical { height: 100%; }
+.ui-slider-range { background-color: #FFFFFF;} 

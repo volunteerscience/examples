@@ -38,8 +38,11 @@
         <div id="sendChat" class="btn-success btn-large" onclick="callSendChat();">Send</div>
         <input id="chatInput" type="text"/>
       </div>
-      <div class="sitrep_wrapper">
-        <table id="sitrep"></table>
+      <div class="sitrep_wrapper scroll-pane ui-corner-all">
+         <div class="scroll-bar-wrap ui-widget-content ui-corner-bottom">
+           <div class="scroll-bar"></div>
+         </div>
+        <table class="scroll-content" id="sitrep"></table>
       </div>
     </div>
   </div>

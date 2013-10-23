@@ -478,6 +478,7 @@ function initializeGameBoard() {
   }
   initializeAvatars();
   initChat();
+  initScrollPane();
   startAnimation();
 }
 
@@ -928,7 +929,8 @@ function addSituationReports(moves) {
 }
 
 function appendSitRep(title,value) {
-  $("#sitrep").append('<tr><th>&nbsp;&nbsp;'+title+'</th><td>'+value+'</td></tr>');  
+  $("#sitrep").append('<tr><th>&nbsp;&nbsp;'+title+'</th><td>'+value+'</td></tr>'); 
+  sitRepScrollbar.slider("value",0);
 }
 
 var DEFAULT_CHAT = "<send communication here>";
@@ -991,5 +993,82 @@ function doAnimation() {
 
 function countdownExpired(id) {
   submitMove(); // automatically bypasses if already submitted
+}
+
+var sitRepScrollbar = null;
+
+function initScrollPane() {
+  //scrollpane parts
+  var scrollPane = $( ".scroll-pane" ),
+  scrollContent = $( ".scroll-content" );
+  
+  function updateContent(event, ui) {
+    if ( scrollContent.height() > scrollPane.height() ) {
+      scrollContent.css( "margin-top", 
+          Math.round( (100-ui.value) / 100 * ( scrollPane.height() - scrollContent.height())
+      ) + "px" );
+    } else {
+      scrollContent.css( "margin-top", 0 );
+    }
+  }
+  
+  //build slider
+  sitRepScrollbar = $( ".scroll-bar" ).slider({
+    orientation: "vertical",
+    range: "min",
+    min: 0,
+    max: 100,
+    value: 100,
+    slide: updateContent,
+    change: updateContent
+  });
+//  //append icon to handle
+//  var handleHelper = scrollbar.find( ".ui-slider-handle" )
+//    .mousedown(function() {
+//      scrollbar.height( handleHelper.height() );
+//    })
+//    .mouseup(function() {
+//      scrollbar.height( "100%" );
+//    })
+//    .append( "<span class='ui-icon ui-icon-grip-dotted-vertical'></span>" )
+//    .wrap( "<div class='ui-handle-helper-parent'></div>" ).parent();
+//  //change overflow to hidden now that slider handles the scrolling
+//  scrollPane.css( "overflow", "hidden" );
+//    //size scrollbar and handle proportionally to scroll distance
+//  function sizeScrollbar() {
+//    var remainder = scrollContent.width() - scrollPane.width();
+//    var proportion = remainder / scrollContent.width();
+//    var handleSize = scrollPane.width() - ( proportion * scrollPane.width() );
+//    scrollbar.find( ".ui-slider-handle" ).css({
+//      height: handleSize,
+//      "margin-top": -handleSize / 2
+//    });
+//    handleHelper.height( "" ).height( scrollbar.height() - handleSize );
+//  }
+  
+//reset slider value based on scroll content position
+//function resetValue() {
+//var remainder = scrollPane.width() - scrollContent.width();
+//var leftVal = scrollContent.css( "margin-left" ) === "auto" ? 0 :
+//parseInt( scrollContent.css( "margin-left" ) );
+//var percentage = Math.round( leftVal / remainder * 100 );
+//scrollbar.slider( "value", percentage );
+//}
+////if the slider is 100% and window gets larger, reveal content
+//function reflowContent() {
+//var showing = scrollContent.width() + parseInt( scrollContent.css( "margin-left" ), 10 );
+//var gap = scrollPane.width() - showing;
+//if ( gap > 0 ) {
+//scrollContent.css( "margin-left", parseInt( scrollContent.css( "margin-left" ), 10 ) + gap );
+//}
+//}
+////change handle position on window resize
+//$( window ).resize(function() {
+//resetValue();
+//sizeScrollbar();
+//reflowContent();
+//});
+////init scrollbar size
+//setTimeout( sizeScrollbar, 10 );//safari wants a timeout
 }
 
