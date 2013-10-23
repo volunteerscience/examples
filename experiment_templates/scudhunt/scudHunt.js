@@ -7,7 +7,8 @@ var realTimeUnitPlacement = true; // can see ally's unit placement as they do it
 var localSitRep = true; // situation reports show your local reports (overridden if global is true)
 var globalSitRep = true; // situation reports show everyone's reports
 var localMapScans = true; // show your assets' scans on the map
-var globalMapScans = true; // show everyone's assets' scans on the map
+var globalMapScans = true; // show everyone's assets' scans on the map (overrides local)
+var cumulativeMapScans = true; // if true, current round shows cumulation of all scans so far, not just yesterday
 var allowMapHistory = true; // allow players to view previous states of the board
 var showNumberOfRounds = true;  // do we tell the players how many rounds they have?
 var allowGroupTargetPlace = true; // true if the group decides where the targets go
@@ -76,6 +77,68 @@ var VALUE_NOTHING = 0;
 var VALUE_DECOY = 1;
 var VALUE_TARGET = 2;
 var VALUE_DISPLAY = ['0','?','X'];
+var VALUE_COLOR = ['#44CC44','#FFFF44','#CC4444'];
+
+
+var popupDelay = null;
+function hidePopup(delay) {
+  popup.txt.hide();
+  popup.hide();
+  clearInterval(popupDelay);
+  popupDelay = null;
+}
+
+function showPopup(x,y,txt,delay) {
+  if (delay > 0) {
+    if (popupDelay != null) {
+      clearInterval(popupDelay);
+      popupDelay = null;
+    }
+    popupDelay = setInterval(function() {
+      showPopup(x,y,txt,0);     
+    }, delay);
+    return;
+  }
+  
+//  log("showPopup("+x+","+y+")");
+  popup.txt.transform('T'+x+','+y);
+  popup.txt.attr({text: txt});
+  var boundsOrig = popup.txt.getBBox();
+  var bounds = {
+      x: boundsOrig.x-5, 
+      y: boundsOrig.y-3, 
+      width: boundsOrig.width+10,
+      height: boundsOrig.height+6
+  };
+  
+  var newX = x;
+  var newY = y;
+  if (bounds.x < 20) {
+    newX = x+(20-bounds.x);
+  } else if (bounds.x+bounds.width > MAP_WIDTH-20) {
+    newX = x-(bounds.x+bounds.width - (MAP_WIDTH-20));
+  }
+  
+  if (bounds.y < 20) {
+    newY = y+(20-bounds.y);
+  } else if (bounds.y > MAP_HEIGHT-20) {
+    newY = y-(bounds.y - (MAP_HEIGHT-20));
+  }
+
+  if (newX != x || newY != y) {
+    showPopup(newX,newY,txt,0);
+    return;
+  }
+  
+  popup.attr(bounds);
+  popup.toFront();
+  popup.txt.toFront();
+  popup.show();
+  popup.txt.show();
+}
+
+var STATI_PER_ROW = 4;
+var STATI_PER_COL = 4;
 
 function Region(id,name, x,y, x1,y1, polygon) {
   var me = this;
@@ -85,7 +148,50 @@ function Region(id,name, x,y, x1,y1, polygon) {
   this.x = x;
   this.y = y;
   this.polygon = polygon;
-  this.status = paper.text(x1+1,y1+5,"").attr({'text-anchor': 'start'}); //.attr("fill", "#e0e000");
+  this.status = []; // text element on the region: 0,?,X
+  this.addStatus = function(letter, unitName) {
+    // tX, tY are where the letter goes, based on how many there are already
+    var xOff = Math.floor(this.status.length/(STATI_PER_ROW*STATI_PER_COL))*10; // if we fill up the whole square, start putting more in between the letters
+    var tX = x1 + xOff +// left side
+      20*(this.status.length % STATI_PER_ROW); // this makes the text word wrap
+    var tY = 10+y1 + // top
+      20* (Math.floor(this.status.length/STATI_PER_ROW) % STATI_PER_COL);
+
+    // add a new txt element
+    var txt = paper.text(tX,tY,letter).attr({'text-anchor': 'start', 'font-size': '20px', 'font-weight':'bold', 'fill': VALUE_COLOR[VALUE_DISPLAY.indexOf(letter)]});
+
+    // this is the popup behavior to determine which unit claimed the status
+    txt.click(function() {
+      if (selectedUnit == null) {
+        var dY = -30;
+        if (me.row == 0) {
+          dY = 30;
+        }
+        showPopup(tX,tY+dY,unitName,0);
+      } else {
+        me.onClick();
+      }
+    });
+    txt.mouseover(function() {
+      if (selectedUnit == null) {
+        var dY = -30;
+        if (me.row == 0) {
+          dY = 30;
+        }
+        showPopup(tX,tY+dY,unitName,700);
+      } else {
+        me.mouseOver();
+      }      
+    });
+    txt.mouseout(function() {
+      if (selectedUnit == null) {
+        hidePopup(0);
+      }
+    });
+    
+    this.status.push(txt);
+  }
+
   
   this.groups = new Array(); // the groups I belong to -- ROW, COL, etc
   this.value = VALUE_NOTHING;
@@ -155,7 +261,10 @@ function clearRegionHighlights() {
 function clearRegionStatus() {
   for (idx in regions) {
     var region = regions[idx];
-    region.status.attr({text: ''});
+    for (var s in region.status) {
+      region.status[s].remove();
+    }
+    region.status = []; 
   }
 }
 
@@ -472,6 +581,11 @@ function initializeGameBoard() {
     paper = Raphael("canvas", MAP_WIDTH, MAP_HEIGHT);
   }
   paper.clear();
+  popup = paper.rect(0,0,50,30,5).attr({'fill':'#CCCCCC','opacity':0.5});
+  popup.hide();
+  popup.txt = paper.text(0,0,"").attr({'text-anchor': 'middle', 'font-size': '20px', 'font-weight':'bold', 'fill': '#222222'});
+  popup.txt.hide();
+  
   buildSquareMap(5, 5, numTargets, 0);
   if (myid == 1) {
     submit('<game targets="'+targetRegions+'"/>');
@@ -647,7 +761,7 @@ function roundInitialized(round) {
 
 function fetchResponse(val,participant,round,index) {
   var tagName = $(val).prop("tagName");
-  log("fetchReturn("+tagName+" r:"+round+") cr:"+currentRound);
+//  log("fetchReturn("+tagName+" r:"+round+") cr:"+currentRound);
   if (tagName == "COMMAND" || tagName == "CONFIDENCE"|| tagName=="READY") {
     // this contains 1 or more commands
     if (typeof commandHistory[round][participant] === "undefined") {
@@ -697,7 +811,7 @@ function fetchResponse(val,participant,round,index) {
  * @param index
  */
 function newMove(participant, index, round) {
-  log("newMove("+participant+" i:"+index+" r:"+round+") cr:"+currentRound);
+//  log("newMove("+participant+" i:"+index+" r:"+round+") cr:"+currentRound);
   fetchMove(participant, currentRound, index, fetchResponse);
 }
 
@@ -782,14 +896,30 @@ function showBoardFromRound(round) {
 }
 
 function showCurrentBoard() {
-  log("showCurrentBoard()");
+//  log("showCurrentBoard()");
   $(".roundTab").removeClass('selectedTab'); 
   $("#currentRound").addClass('selectedTab'); 
   if (currentRound > FIRST_ACTUAL_ROUND) {
     if (globalMapScans) {
-      updateBoardFromCommands(commandHistory[currentRound-1]);
+      if (cumulativeMapScans) {
+        var allScans = new Array();
+        for (var round = FIRST_ACTUAL_ROUND; round < currentRound; round++) {
+          allScans = allScans.concat(commandHistory[round]);
+        }
+        updateBoardFromCommands(allScans);
+      } else {
+        updateBoardFromCommands(commandHistory[currentRound-1]);
+      }
     } else if (localMapScans) {
-      updateBoardFromCommands([commandHistory[currentRound-1][myid]]);
+      if (cumulativeMapScans) {
+        var allScans = new Array();
+        for (var round = FIRST_ACTUAL_ROUND; round < currentRound; round++) {
+          allScans.push(commandHistory[round][myid]);
+        }
+        updateBoardFromCommands(allScans);
+      } else {
+        updateBoardFromCommands([commandHistory[currentRound-1][myid]]);
+      }
     }
   }
   clearUnitsFromBoard();
@@ -871,10 +1001,11 @@ function updateBoardFromCommands(moves) {
     qmove.find('command').each(function(index) {
       if ($(this).attr('region')) {
         var scan = $(this).attr('scan').split(",");
+        var unit = units[$(this).attr('unit')];
         var result = $(this).attr('result').split(",");
         for (var i = 0; i < scan.length; i++) {
           var region = regions[scan[i]];
-          region.status.attr({text: region.status.attr('text')+' '+result[i]});
+          region.addStatus(result[i],unit.name);
         }
       }
     });
