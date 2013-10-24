@@ -189,12 +189,22 @@ function instructionsPart5() {
 }
 
 function instructionsComplete() {
+  $("#skip_instructions").hide();
   writeAward("instructions",0);
-  doneInstructions();
+  doneInstructions(true);
 }
 
-function doneInstructions() {
-  
+function doneInstructions(doSubmit) {
+  if (!instructions) return;
+  $("#play_a_game").html("Waiting for Team");
+  $("#skip_instructions").html("Waiting for Team");
+  if (doSubmit) submit('<ready />');
+}
+
+/**
+ * called from newMove()
+ */
+function clearInstructions() {
   $("#play_a_game").hide();
   hide_ellipsis = false;
   $("#best_title").html("Best");
@@ -211,6 +221,8 @@ function doneInstructions() {
   $("#instructions").hide();
   $("#skip_instructions").hide();
   $("#suggestions").removeClass("large_suggestions");
+  setRound(1);
+
   $("#undo").show();
   $("#redo").show();
   $("#suggestions").show();

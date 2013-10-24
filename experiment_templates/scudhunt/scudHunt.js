@@ -759,6 +759,26 @@ function roundInitialized(round) {
   }
 }
 
+/**
+ * if someone drops out durning the instructions, submit a ready for them
+ */
+function playerDisconnect(playerNum) {
+//alert('playerDisconnect '+playerNum);
+
+  // see if I have the lowest live id
+  for (var i = 1; i < myid; i++) {
+    if (activePlayers[i]) {
+      // someone lower than me is still active
+      return;
+    }
+  }
+  // get past the instructions; TODO: activate bot
+  if (currentRound < ROUND_ZERO) {
+    submitBot(playerNum, currentRound, '<ready />');
+  }
+}
+
+
 function fetchResponse(val,participant,round,index) {
   var tagName = $(val).prop("tagName");
 //  log("fetchReturn("+tagName+" r:"+round+") cr:"+currentRound);
@@ -775,6 +795,7 @@ function fetchResponse(val,participant,round,index) {
     for (var pid = 1; pid <= numPlayers; pid++) {
       if (typeof commandHistory[currentRound][pid] === "undefined") {
         done = false;
+        break;
       }
     }
     

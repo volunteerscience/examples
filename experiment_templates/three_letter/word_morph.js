@@ -17,14 +17,22 @@ var undoList = [];
 var curWordSuggestions = [];
 var letterSuggestion = null;
 var fullAlphabetArrow = false; // false means use suggestions for up/down arrows, true means use full alphabet
-var instructions = false;
+var instructions = false; // true during instructions
 var disableArrows = false;
 var hide_ellipsis = false;
 var expired = false;
 var maxDifficulty = 3;
 var isMobile = false;
 
+var INSTRUCTION_ROUND = 0;
+var FIRST_ACTUAL_ROUND = 1;
+
 function initialize() {
+  // this is used to synchronzie all the players starting at the same time after instructions
+  playerIsReady = new Array(numPlayers+1);
+  for (var i = 1; i <= numPlayers; i++) {
+    playerIsReady[i] = false;
+  }
   if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
     isMobile = true;
   }
@@ -550,24 +558,61 @@ function setBestSolution(b) {
   $("#bestGroup").show();
 }
 
-function newMove(player,moveNum) {
-  if (player != myid && moveNum >= initialMovesOfRound[player]) { // only get new moves from other players
-    fetchMove(player, currentRound, moveNum, function(data) {
-      var theMove = $(data);
-      if (theMove.is('solution')) { // the move is a solution
-        var player_solution = theMove.text().split(",");
-        // get/create the solution
-        var theSolution = $('#solution_'+player);
-        if (theSolution.length == 0) {
-          $("#solution_group").prepend('<h2>'+getName(player)+'</h2><div id="solution_'+player+'" class="solution"></div>')
-          theSolution = $('#solution_'+player);
-        }
-        drawSolution(theSolution, player_solution);
-      }
-    });
+/**
+ * if someone drops out durning the instructions, submit a ready for them
+ */
+function playerDisconnect(playerNum) {
+//alert('playerDisconnect '+playerNum);
+
+  // see if I have the lowest live id
+  for (var i = 1; i < myid; i++) {
+    if (activePlayers[i]) {
+      // someone lower than me is still active
+      return;
+    }
+  }
+  if (currentRound == INSTRUCTION_ROUND) {
+    submitBot(playerNum, currentRound, '<ready />');
   }
 }
 
+function newMove(player,moveNum) {
+  if (currentRound < FIRST_ACTUAL_ROUND || (player != myid && moveNum >= initialMovesOfRound[player])) { // only get new moves from other players
+    fetchMove(player, currentRound, moveNum, fetchResponse);
+  }
+}
+
+var playerIsReady = null;
+function fetchResponse(data,player,round,index) {
+  var theMove = $(data);
+  if (theMove.is('solution')) { // the move is a solution
+    var player_solution = theMove.text().split(",");
+    // get/create the solution
+    var theSolution = $('#solution_'+player);
+    if (theSolution.length == 0) {
+      $("#solution_group").prepend('<h2>'+getName(player)+'</h2><div id="solution_'+player+'" class="solution"></div>')
+      theSolution = $('#solution_'+player);
+    }
+    drawSolution(theSolution, player_solution);
+  } else if (theMove.is('ready')) {
+    playerIsReady[player] = true;
+    
+    if (player == myid && round == INSTRUCTION_ROUND) {
+      doneInstructions(false); // for browser refresh
+    }
+    var done = true;
+    for (var pid = 1; pid <= numPlayers; pid++) {
+      if (playerIsReady[pid] == false) {
+        done = false;
+        break;
+      }
+    }
+    
+    if (done) {
+      clearInstructions();
+    }
+  }
+}
 
 function setSolution(words) {
   if (instructions) {
@@ -585,7 +630,9 @@ function setSolution(words) {
   if (curSolution.length > 0) {
 //    alert("submit:"+curSolution+" "+words);
 //    submit(curSolution);    
-    submit("<solution>"+curSolution.join(",")+"</solution>");    
+    if (!instructions) { // don't submit solution during instructions
+      submit("<solution>"+curSolution.join(",")+"</solution>");    
+    }
   }
   
   if (words.length == 0) {
