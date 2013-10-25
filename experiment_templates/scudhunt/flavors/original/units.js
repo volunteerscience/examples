@@ -6,23 +6,22 @@ var SPEC_OPS = 4;
 /**
  * May be called twice (again after instructions)
  */
-function initializeUnits() {
+function initializeUnits(minPlayers) {
   num_unit_types = 5;
   num_roles = 4;
   choiceAvatarId = 8; // explosion
   
   ROUND_NOUN = "Day";
   ROUND_NOUN_PLURAL = "Days";
-  TARGET_NOUN = "SCUD";
-  TARGET_NOUN_PLURAL = "SCUDs";
+  TARGET_NOUN = "Scud";
+  TARGET_NOUN_PLURAL = "Scuds";
 
-  instructionUnits = new Array();
-  
   roleName[SPACE_COMMAND] = "Space Command";
   roleName[AIR_COMMAND] = "Air Command";
   roleName[SPY_MASTER] = "Spy Master";
   roleName[SPEC_OPS] = "Special Ops";
   
+  var actualNumPlayers = Math.max(numPlayers, minPlayers);
   
   story = [
     "<p>The rogue state of Korona has acquired mobile ballistic missiles and weapons of mass destruction.</p>",
@@ -31,23 +30,68 @@ function initializeUnits() {
     "<p>The elite fanatical Koronan Revolutionary Guard Special Artillery Regiment (KRGSAR), with a number of mobile missile launchers, "+
       "has deployed from its depot to a secret hide site.</p>",
     "<p>This deployment is supported by deception operations that may confuse our sensors.</p>",
-    "<p>Your team of "+numPlayers+" joint operations commanders must identify the locations of "+numTargets+" mobile SCUD missile launchers"+(showNumberOfRounds ? " in the next "+numRounds+" days" : "")+".</p>",
+    "<p>"+(actualNumPlayers == 1 ? "You " : ("Your team of "+numPlayers+" joint operations commanders"))+" must identify the locations of "+
+      (showNumberOfTargets ? numTargets : "one or more")+" mobile "+TARGET_NOUN+" missile launchers"+(showNumberOfRounds ? " in the next "+numRounds+" days" : "")+".</p>",
     "<p>The fate of hundreds of thousands of Kartunans depend on your success.</p>"
   ];        
   
+  var bottomRow = String.fromCharCode('A'.charCodeAt(0)+numRows-1);
+  
   mapRules = [
-    "<p>The Koronian deployment zone is divided into 25 squares identified by columns numbered from 1 to 5 and rows lettered from A to E.</p>"+
-      "<p>Row E is the coastline of the Gulf of Sabani.</p>",
-    "<p>Each of the targets is hidden in a different grid square.</p>"
+    "<p>The Koronian deployment zone is divided into "+(numRows*numCols)+" squares identified by columns numbered from 1 to "+numCols+" and rows lettered from A to "+bottomRow+".</p>"+
+      "<p>Row "+bottomRow+" is the coastline of the Gulf of Sabani.</p>",
+    "<p>Each of the "+TARGET_NOUN_PLURAL+" is hidden in a different grid square.</p>"
   ];
   
-  assetRules = [
+  placeSpyRules = [
     "<p>Each day you will coordiante with your team to control one or more intelligence, surveillance, or reconnaissance assets.</p>"+
-    "<p>Each asset has different reliablity and risk of failure.</p>",
+      "<p>Here is your first asset.</p>",
+    "<p>You place an asset by <i>selecting</i> the asset, then <i>clicking a region</i> on the game board.</p>"+
+      "<p><i>Place the Spy anywhere on the game board.</i></p>",
+    "<p>Now that you've placed the Spy you can see its <i>status</i> on the right.</p>"
+  ];
+  
+  placeSatelliteRules = [
+    '<p>Some assets can scan multiple regions.</p>'+          
+    '<p>The Satellite can scan an entire column.</p>',
+    '<p>When you choose the target region, you will see the entire column <span style="color:#20C050;">highlight green</span>.</p>'+
+    "<p><i>Place the Satellite anywhere on the game board.</i></p>"
+  ];
+                                    
+  placeAirRules = [
+    '<p>Some assets have restricted movement.</p>'+          
+      '<p>The Manned Aircraft <i>cannot fly in rows <span style="color:red;">A</span> nor <span style="color:red;">B</span></i>.</p>'+
+      '<p><i>Try placing the Manned Aircraft in a <span style="color:red;">restricted region</span>.</i></p>',
+    '<p>Note that the <span style="color:red;">region turns red</span> to indicate that the unit can\'t be placed there.</p>'+
+      '<p><i>Now place the Manned Aircraft into a <span style="color:#20C050;">valid</span> region.</i></p>',
+  ];
+                                    
+  endTurnRules = [
+    '<p>When you have placed your units, click <span style="color:green;"><b>End Turn</b></span> at below the game board.</p>'+
+      '<p><i>Click click <span style="color:green;"><b>End Turn</b></span> now.</i></p>',
     "<p>After each day, if your asset survives, it will indicate one of 3 basic search results for each affected square:</p><ul>"+
-    "<li>0 - nothing significant to report</li>"+
-    "<li>? - vehicles detected (may be launchers, deception operations, or routine civilian traffic)</li>"+
-    "<li>X - launchers detected</li></ul>",
+      '<li><span style="color:'+VALUE_COLOR[0]+'; font-style:bold;">0</span> - nothing significant to report</li>'+
+      '<li><span style="color:#B4B415; font-style:bold;">?</span> - vehicles detected (may be launchers, deception operations, or routine civilian traffic)</li>'+
+      '<li><span style="color:'+VALUE_COLOR[2]+'; font-style:bold;">X</span> - launchers detected</li></ul>'+
+      '<p>Click <span style="color:green;">Next</span> to continue.</p>',
+    '<p>Each asset has different reliablity and risk of failure.</p>'+
+      '<p><i>Click or Mouse-Over</i> a scan indicator ('+
+      '<span style="color:'+VALUE_COLOR[0]+'; font-style:bold;">0</span>,'+
+      '<span style="color:#B4B415; font-style:bold;">?</span>,'+
+      '<span style="color:'+VALUE_COLOR[2]+'; font-style:bold;">X</span>'+
+        ') to see which unit placed it.</p>',
+    '<p>Some units remain on the board after their turn.</p>'+
+      '<p>The spy may only move one square after the inital placement.</p>'+
+      '<p><i>Move your Spy</i> to a valid square to continue.</p>',
+    '<p>Some units are removed from the board after each turn.</p>'+
+      '<p>Your Satellite is ready to be placed anywhere.</p>'+
+      '<p><i>Place your Satellite</i> to continue.</p>',
+    '<p>Some units can become disabled at the end of the turn.</p>'+
+      '<p>Your Manned Aircraft is Resting.</p>'+
+      '<p>Click <span style="color:green;">Next</span> to continue.</p>'
+  ];
+                
+  endRules = [  
     "<p>Reported search results may be true or erroneous, depending on the number and type of assets assigned to search a given grid square.</p>",
     "<p>After "+(showNumberOfRounds ? (""+numRounds) : "a few")+" days, you must designate the most probable locations of each mobile missile launcher.</p>"
   ];
@@ -241,5 +285,7 @@ function initializeUnits() {
   unitAvatarFactory = new AvatarFactory(avatarFile, 128, num_unit_types+5, 1, 0, [0], 5, [], null);
   
   instructionAssets.push(humint);
+  instructionAssets.push(satellite);
+  instructionAssets.push(mannedAircraft);
   
 }

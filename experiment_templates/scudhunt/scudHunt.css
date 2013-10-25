@@ -181,7 +181,8 @@
 #bottomPanel {
   position: absolute;
   bottom: 0;
-  left: 0;
+  left: 300px;
+  width: 450px;
 }
 
 #inext {

@@ -11,8 +11,11 @@ var globalMapScans = true; // show everyone's assets' scans on the map (override
 var cumulativeMapScans = true; // if true, current round shows cumulation of all scans so far, not just yesterday
 var allowMapHistory = true; // allow players to view previous states of the board
 var showNumberOfRounds = true;  // do we tell the players how many rounds they have?
+var showNumberOfTargets = true;  // do we tell the players how many targets they have?
 var allowGroupTargetPlace = true; // true if the group decides where the targets go
 var roundDuration = 6000;
+var numRows = 5;
+var numCols = 5;
 
 var MAP_WIDTH = 440;
 var MAP_HEIGHT = 420;
@@ -98,6 +101,10 @@ function showPopup(x,y,txt,delay) {
       showPopup(x,y,txt,0);     
     }, delay);
     return;
+  }
+
+  if (inInstructions) {
+    instructionShowPopup(txt);
   }
   
 //  log("showPopup("+x+","+y+")");
@@ -200,6 +207,11 @@ function Region(id,name, x,y, x1,y1, polygon) {
   this.onClick = function() {
     if (selectedUnit != null) {
       if (selectedUnit.effect(me).length == 0) {
+        if (inInstructions) {
+          if (instructionCantMove(selectedUnit, me)) {
+            return;
+          } 
+        }
         alert(selectedUnit.cantMoveAlert(me));
         return;
       }
@@ -367,6 +379,14 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
   
   this.setNextRegion = function(region) {
 //    log(this.id+".setNextRegion("+region+")");
+
+    if (inInstructions) {
+      if (instructionSetNextRegion(this,region)) {
+        return;
+      }
+    }
+
+    
     this.nextRegion = region;
     if (region == null) {
       this.clearLocation();
@@ -376,6 +396,7 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
       if (this.ownerId == TARGET_ROLE && !$("#currentRound").hasClass('selectedTab')) return; // if target moves, only change it on if we're on the currentRoundTab
       this.setLocation(region);
     }
+    
   };
   
   this.setCurrentRegion = function(region) {
@@ -517,7 +538,7 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
  * return the report from the table
  * @param actual
  * @param table
- * @returns {Number}
+ * @returns 0, 1, or 2
  */
 function getReport(actual, table) {
   var possibilities = table[actual];
@@ -565,7 +586,7 @@ function initialize() {
     commandHistory[r] = new Array();
   }
 
-  initializeUnits();
+  initializeUnits(1);
   
   assignPlayersRoundRobin();
   
@@ -586,7 +607,7 @@ function initializeGameBoard() {
   popup.txt = paper.text(0,0,"").attr({'text-anchor': 'middle', 'font-size': '20px', 'font-weight':'bold', 'fill': '#222222'});
   popup.txt.hide();
   
-  buildSquareMap(5, 5, numTargets, 0);
+  buildSquareMap(numRows, numCols, numTargets, 0);
   if (myid == 1) {
     submit('<game targets="'+targetRegions+'"/>');
   }
@@ -619,7 +640,10 @@ function initializeAssets(myUnits) {
   assetWrapper.html("");
   for (idx in myUnits) {
     var unit = myUnits[idx];
-    var assetDiv = assetWrapper.append('<div class="asset" asset="'+unit.id+'" title="'+unit.long_description+'"><img src="'+unit.icon+'"/><div class="status"></div><p class="heading">'+unit.name+'</p><p>'+unit.short_description+'</p></div>');
+    var assetDiv = assetWrapper.append(
+        '<div class="asset" asset="'+unit.id+'" title="'+unit.long_description+'"><img src="'+unit.icon+'"/>'+
+          '<div class="status">'+(unit.nextRegion == null ? "" : unit.nextRegion.name)+'</div>'+
+          '<p class="heading">'+unit.name+'</p><p>'+unit.short_description+'</p></div>');
   }
   $('.asset').click(function() {
     var unitId = $(this).attr('asset');
@@ -665,6 +689,11 @@ var commandHistory = new Array();
 var submitted = false;
 var guess = new Array();
 function submitMove() {
+  if (inInstructions) {
+    instructionSubmitMove();
+    return;
+  }
+  
   if (submitted) return;
   submitted = true;
   if (currentRound-ROUND_ZERO > numRounds) {
@@ -711,7 +740,6 @@ function submitMove() {
     }
   }
   
-//simulateEndOfTurn(submission); 
   submit(submission);
 }
 
@@ -872,22 +900,6 @@ function endRound() {
 }
 
 
-/**
- * Used by instructions.
- */
-function simulateEndOfTurn(submission) {
-  // TODO: move this to something that saves up the moves
-  commandHistory[currentRound][myid] = submission;
-  addRoundTab(currentRound-ROUND_ZERO);
-  setRound(currentRound+1);
-  
-  updateBoardFromCommands([submission]);
-  addSituationReports([submission]);
-  initRound();
-  updateUnitFromCommands([submission]);
-//  alert(submission);
-}
-
 function addRoundTab(round) {
   $('#currentRound').before('<span round="'+round+'" class="roundTab" onclick="showBoardFromRound('+round+');">'+round+'</span>')
 }
@@ -1038,6 +1050,7 @@ function addMoveReports(moves) {
 }
 
 function addBeginTurnSitRep(round, numRounds) {
+  log("addBeginTurnSitRep("+round+")");
   if (showNumberOfRounds) {
     $("#sitrep").append('<tr><th class="roundHeading">'+ROUND_NOUN+' '+round+' of '+numRounds+':</th></tr>');
   } else {
