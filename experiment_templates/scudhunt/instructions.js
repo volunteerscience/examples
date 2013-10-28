@@ -63,6 +63,9 @@ var inInstructions = true;
 function runAllInstructions() {
   inInstructions = true;
   initializeInstructions();
+  initializeRoleSpecificInstructions();
+  initializeSpecialRules();
+  
   commandHistory[1] = new Array();
   setRound(1);
   runInstructions(story);
@@ -129,6 +132,9 @@ function skipInstructions() {
     section = ROLE_RULE_SECTION; // skip general
   } else if (section < SPECIAL_RULE_SECTION) {
     section = SPECIAL_RULE_SECTION; // skip specific
+  } else {
+    doneSection();
+    return;
   }
   initializeSection();
 }
@@ -200,6 +206,8 @@ function initializeSection() {
     runInstructions(clockHistoryRules);
     break;
   case S_END_RULES:
+    $("#instructions").css('min-height','200px');
+    $("#iskip").attr('value',"Skip General Instructions");
     clearUnitsFromBoard();
     initializeAssets([roleUnits[TARGET_ROLE][0],roleUnits[TARGET_ROLE][1]]);
     $("#playerControls").fadeIn();
@@ -211,12 +219,16 @@ function initializeSection() {
     break;
     
   case ROLE_RULE_SECTION:
+    $("#iskip").attr('value',"Skip Role Specific Instructions");
     $("#userBoard").fadeOut();
     $("#playerControls").fadeOut();
+    $("#instructions").css('min-height','300px');
     runInstructions(roleRules);
     break;
     
   case SPECIAL_RULE_SECTION:
+    $("#instructions").css('min-height','300px');
+    $("#iskip").attr('value',"Start Game");
     runInstructions(specialRules);
     break;
     
@@ -316,6 +328,8 @@ function updateInstruction(section,curStory) {
     case 0: // click round 1
       return [false,false]; // place the targets
     }
+  case SPECIAL_RULE_SECTION:
+    return [false,true];
   }
   return [true,true];
 }
@@ -461,7 +475,72 @@ function simulateDeath() {
   simulatingDeath = false;
 }
 
+function initializeRoleSpecificInstructions() {
+  // rules specific to the player's role(s)
+  roleRules = [];
+  var myUnits = getUnits(myid);
+  for (var i = 0; i < myUnits.length; i++) {
+    var unit = myUnits[i];
+    roleRules.push('<h2>'+roleName[unit.ownerId]+'</h2>'+
+        '<div class="role_instruction" style="max-width:200px;"><h3>'+unit.name+'</h3><img src="'+unit.icon+'"/></div>'+
+        '<div class="role_instruction" style="max-width:500px;"><p>'+unit.long_description+'</p></div>');
+  }
+}
 
+function initializeSpecialRules() {
+  specialRules = "<h1>This Game's Rules</h1><h3>(May change from game to game)</h3><br/><ul>";
+
+  if (realTimeUnitPlacement) {
+    specialRules += "<li>You can see your teammates' assets as they place them.</li>";
+  } else if (allyUnitPlacement) {
+    specialRules += "<li>You can see your teammates' assets at the end of each turn.</li>";
+  } else {
+    specialRules += "<li>You cant see your teammates' assets.</li>";
+  }
+  
+  if (globalMapScans) {
+    specialRules += "<li>You can see results of all team assets on the map.</li>";    
+  } else if (localMapScans) {
+    specialRules += "<li>You can see results of only your assets on the map.</li>";        
+  } else {
+    specialRules += "<li>Unit scans are not shown on the map.</li>";            
+  }
+
+  if (cumulativeMapScans) {
+    specialRules += "<li>You can see the cumulative scans of all visible assets on the <i>Current</i> view.</li>";        
+  } else if (allowMapHistory) {
+    specialRules += "<li>You can see the results of previous scans with the history tabs.</li>";            
+  } else {
+    specialRules += "<li>You can't see the results of previous scans on the map.</li>";                    
+  }
+
+  if (globalSitRep) {
+    specialRules += "<li>You can see results of all team assets in the situation report.</li>";        
+  } else if (localSitRep) {
+    specialRules += "<li>You can see results of your assets in the situation report.</li>";            
+  } else {
+    specialRules += "<li>Unit specific situation reports are not available.</li>";                
+  }
+  
+  if (playerChat) {
+    specialRules += "<li>You may use chat to communicate with the other commanders.</li>";                    
+  } else {
+    specialRules += "<li>You may not use chat to communicate with the other commanders.</li>";                    
+  }
+
+  
+  if (allowGroupTargetPlace) {
+    specialRules += "<li>Final targets are selected as a team.</li>";
+  } else {
+    specialRules += "<li>Each team chooses taget locations individually.</li>"; 
+  }
+  
+  specialRules += "<li>You have "+roundDuration+" seconds each round.</li>";
+
+  specialRules += "</ul>";
+  
+  specialRules = [specialRules]; 
+}
 
 /**
  * Submit ready on round 1 to begin (this fixes a refresh problem)

@@ -168,13 +168,30 @@
 }
 
 .instruction ul {
-  list-style-type: none;
   text-align: left; 
   font-size: 120%;
 }
 
 .instruction ul li {
   font-size: 110%;
+}
+
+.role_instruction {
+  float: left;
+  font-size: 80%;
+  text-align: left;
+}
+
+.role_instruction img {
+  
+}
+
+.role_instruction p {
+  line-height: 1.5em;
+}
+
+.role_instruction h3 {
+  text-align: center;
 }
 
 #bottomPanel {

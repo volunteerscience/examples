@@ -108,16 +108,6 @@ function initializeUnits(minPlayers) {
       '<p>Next, we will review the units that you control.</p>'
   ];
 
-  // rules specific to the player's role(s)
-  roleRules = [  
-    '<p>You control these units: TBD</p>'
-  ];
-
-  // rules specific to today's game
-  specialRules = [  
-    "<p>Today's rules are: TBD</p>"
-  ];
-
   
   
   for (var roleId = 0; roleId <= num_roles; roleId++) { // roles + target
@@ -133,7 +123,6 @@ function initializeUnits(minPlayers) {
     return region.groups[COL];
   };
   
-  if (true) { // delme
   var mannedAircraft = new Unit(1, AIR_COMMAND, "Manned Aircraft", "Search from the Coast", 
       "May fly only along the Gulf (Row E) outside Koronan airspace.  "+
       "It searches the coastal grid squares with excellent reliability, "+
@@ -290,9 +279,6 @@ function initializeUnits(minPlayers) {
     }
     return 0;
   };
-  
-  
-  } // delme
   
   for (var i = 0; i < numTargets; i++) {
     var scud = new Unit(7+i, TARGET_ROLE, "SCUD", "Hidden Target", 

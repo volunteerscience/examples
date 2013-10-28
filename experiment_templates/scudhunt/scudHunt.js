@@ -13,7 +13,7 @@ var allowMapHistory = true; // allow players to view previous states of the boar
 var showNumberOfRounds = true;  // do we tell the players how many rounds they have?
 var showNumberOfTargets = true;  // do we tell the players how many targets they have?
 var allowGroupTargetPlace = true; // true if the group decides where the targets go
-var roundDuration = 6000;
+var roundDuration = 90;
 var numRows = 5;
 var numCols = 5;
 
