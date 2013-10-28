@@ -145,11 +145,10 @@
 }
 
 #instructions {
-  margin-top: 20px;
   font-family: 'Coda Caption', sans-serif;  
   text-align: center;
   position: relative;
-  height:190px;
+  height:200px;
   padding: 20px;
 }
 
@@ -179,10 +178,16 @@
 }
 
 #bottomPanel {
+  position: relative;
+  clear: both;
+}
+
+.pushUpPanel {
+  top: -40px;
+  height: 20px;
+  left: 200px;
   position: absolute;
-  bottom: 0;
-  left: 300px;
-  width: 450px;
+  width: 400px;
 }
 
 #inext {

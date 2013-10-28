@@ -18,12 +18,13 @@
       <br/><div><input class="btn-success" type="submit" value="Somewhat unsure" onclick="q1('4')"/></div>
       <br/><div><input class="btn-success" type="submit" value="Very unsure" onclick="q1('5')"/></div>
     </div>
-    
     <div id="timer" class="countdown" style="display: none;"></div>
     <div class="leftSide">
-      <div id="roundHistory" style="display: none;"><span id="currentRound" class="roundTab selectedTab" onclick="showCurrentBoard();">Current</span></div>
-      <div id="canvas" class="round-corner15"></div>
-      <div id="go" class="btn-success btn-large left" onclick="submitMove();" style="display: none;">End Turn</div>
+      <div id="roundHistory" style="display: none;"></div>
+      <div style="min-height:460px;">
+        <div id="canvas" class="round-corner15"></div>
+        <div id="go" class="btn-success btn-large left" onclick="submitMove();" style="display: none;">End Turn</div>
+      </div>
     </div>
     <div class="rightSide">
       <div id="playerControls" style="display: none;">
@@ -47,8 +48,11 @@
     </div>
   </div>
   <div id="bottomPanel">
-    <input id="iback" class="btn-large btn-success dropdown-toggle" type="submit" value="Back" onclick="interactiveInstructionsBack();"/>
-    <input id="inext" class="btn-large btn-success dropdown-toggle" type="submit" value="Next" onclick="interactiveInstructionsNext();"/>
-    <input id="iskip" class="btn-large btn-success dropdown-toggle" type="submit" value="Skip Story" onclick="skipInstructions();" style="float: right;"/>
+    <div class="pushUpPanel">
+      <input id="iback" class="btn-large btn-success dropdown-toggle" type="submit" value="Back" onclick="interactiveInstructionsBack();"/>
+      <input id="inext" class="btn-large btn-success dropdown-toggle" type="submit" value="Next" onclick="interactiveInstructionsNext();"/>
+      <input id="iskip" class="btn-large btn-success dropdown-toggle" type="submit" value="Skip Story" onclick="skipInstructions();" style="float: right;"/>
+    </div>
   </div>
+  
 </div>

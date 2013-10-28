@@ -41,9 +41,6 @@ var num_roles = 4;
 var roleUnits = new Array(); // units indexed by role, then first/second etc
 var unitAvatarFactory = null;
 var units = new Array(); // unit indexed by id
-var story = [""]; // array of html strings
-var mapRules = [""]; // array of html strings
-var assetRules = [""] // array of html strings
 var instructionAssets = [] // array of assets
 var ROUND_NOUN = "Round"; // what you call a Round: Day, Hour, Turn... etc
 var ROUND_NOUN_PLURAL = "Rounds"; 
@@ -393,7 +390,7 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
       this.setStatus("");
     } else {
       this.setStatus(region.name);
-      if (this.ownerId == TARGET_ROLE && !$("#currentRound").hasClass('selectedTab')) return; // if target moves, only change it on if we're on the currentRoundTab
+      if (this.ownerId == TARGET_ROLE && !inInstructions && !$("#currentRound").hasClass('selectedTab')) return; // if target moves, only change it on if we're on the currentRoundTab
       this.setLocation(region);
     }
     
@@ -611,10 +608,15 @@ function initializeGameBoard() {
   if (myid == 1) {
     submit('<game targets="'+targetRegions+'"/>');
   }
+  initializeHistory();
   initializeAvatars();
   initChat();
   initScrollPane();
   startAnimation();
+}
+
+function initializeHistory() {
+  $('#roundHistory').html('<span id="currentRound" class="roundTab selectedTab" onclick="showCurrentBoard();">Current</span>');
 }
 
 function initializeAvatars() {

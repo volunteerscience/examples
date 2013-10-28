@@ -69,7 +69,7 @@ function initializeUnits(minPlayers) {
   endTurnRules = [
     '<p>When you have placed your units, click <span style="color:green;"><b>End Turn</b></span> at below the game board.</p>'+
       '<p><i>Click click <span style="color:green;"><b>End Turn</b></span> now.</i></p>',
-    "<p>After each day, if your asset survives, it will indicate one of 3 basic search results for each affected square:</p><ul>"+
+    "<p>After each day your asset will indicate one of 3 search results for each affected square:</p><ul>"+
       '<li><span style="color:'+VALUE_COLOR[0]+'; font-style:bold;">0</span> - nothing significant to report</li>'+
       '<li><span style="color:#B4B415; font-style:bold;">?</span> - vehicles detected (may be launchers, deception operations, or routine civilian traffic)</li>'+
       '<li><span style="color:'+VALUE_COLOR[2]+'; font-style:bold;">X</span> - launchers detected</li></ul>'+
@@ -91,9 +91,31 @@ function initializeUnits(minPlayers) {
       '<p>Click <span style="color:green;">Next</span> to continue.</p>'
   ];
                 
+  clockHistoryRules = [
+    '<p>The tabs above the map allow you to review the results of previous rounds.</p>'+
+      '<p>Click <i>1</i>&nbsp; to see the results of round 1.</p>',
+    '<p>If you place a unit while viewing a previous round, the map will switch to <i>Current"</i>.</p>'+                       
+      '<p>Now Click <i>Current</i> to see the Current game state.</p>',
+    '<p>Your team has a limited amount of time each '+ROUND_NOUN+' to select your moves.</p>'+
+      '<p>When the clock reaches zero, your current actions will automatically be submitted.</p>'   
+  ];
+  
+  
   endRules = [  
-    "<p>Reported search results may be true or erroneous, depending on the number and type of assets assigned to search a given grid square.</p>",
-    "<p>After "+(showNumberOfRounds ? (""+numRounds) : "a few")+" days, you must designate the most probable locations of each mobile missile launcher.</p>"
+    '<p>After '+(showNumberOfRounds ? (''+numRounds) : 'a few')+' '+ROUND_NOUN_PLURAL+', you must designate the most probable locations of each mobile missile launcher.</p>'+
+      '<p>Place all of the '+TARGET_NOUN_PLURAL+' to continue.</p>',
+    '<p>Very good.  You now know the basic rules of the game.</p>'+
+      '<p>Next, we will review the units that you control.</p>'
+  ];
+
+  // rules specific to the player's role(s)
+  roleRules = [  
+    '<p>You control these units: TBD</p>'
+  ];
+
+  // rules specific to today's game
+  specialRules = [  
+    "<p>Today's rules are: TBD</p>"
   ];
 
   

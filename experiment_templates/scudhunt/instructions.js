@@ -125,10 +125,10 @@ function interactiveInstructionsBack() {
 function skipInstructions() {
   if (section <= LAST_STORY_SECTION) {
     section = LAST_STORY_SECTION+1; // skip story
-  } else if (section <= LAST_GENERAL_SECTION) {
-    section = LAST_GENERAL_SECTION+1; // skip general
-  } else if (section < NEW_RULE_SECTION) {
-    section = NEW_RULE_SECTION; // skip specific
+  } else if (section < ROLE_RULE_SECTION) {
+    section = ROLE_RULE_SECTION; // skip general
+  } else if (section < SPECIAL_RULE_SECTION) {
+    section = SPECIAL_RULE_SECTION; // skip specific
   }
   initializeSection();
 }
@@ -145,11 +145,14 @@ var S_SPY = 2;
 var S_SAT = 3;
 var S_AIR = 4;
 var S_END_TURN = 5;
+var S_CLOCK_HISTORY = 6;
+var S_END_RULES = 7;
 
 // helpers for skip instructions button
 var LAST_STORY_SECTION = S_STORY;
-var LAST_GENERAL_SECTION = S_END_TURN; // TODO: update me
-var NEW_RULE_SECTION = 20; // TODO: set me
+var LAST_GENERAL_SECTION = S_END_RULES; // TODO: update me
+var ROLE_RULE_SECTION = 8; // role specific rules
+var SPECIAL_RULE_SECTION = 9; // TODO: set me
 
 
 
@@ -182,15 +185,63 @@ function initializeSection() {
     runInstructions(placeAirRules);
     break;
   case S_END_TURN: 
+    $("#timer").fadeOut();
+    stopCountdown("#timer");
+    $('#roundHistory').fadeOut();
     $("#go").fadeIn();
     // TODO: render a bunch of assets
     runInstructions(endTurnRules);
     break;
+  case S_CLOCK_HISTORY:
+    $("#timer").fadeOut();
+    stopCountdown("#timer");
+    $('#roundHistory').html('<span round="1" class="roundTab" onclick="instructionClickRoundHistory(1);">1</span><span round="2" class="roundTab" onclick="instructionClickRoundHistory(2);">2</span><span round="0" class="roundTab selectedTab" onclick="instructionClickRoundHistory(0);">Current</span>');
+    $('#roundHistory').fadeIn();
+    runInstructions(clockHistoryRules);
+    break;
+  case S_END_RULES:
+    clearUnitsFromBoard();
+    initializeAssets([roleUnits[TARGET_ROLE][0],roleUnits[TARGET_ROLE][1]]);
+    $("#playerControls").fadeIn();
+    $("#timer").fadeOut();
+    stopCountdown("#timer");
+    $('#roundHistory').fadeOut();
+    $("#userBoard").fadeIn();
+    runInstructions(endRules);
+    break;
     
+  case ROLE_RULE_SECTION:
+    $("#userBoard").fadeOut();
+    $("#playerControls").fadeOut();
+    runInstructions(roleRules);
+    break;
+    
+  case SPECIAL_RULE_SECTION:
+    runInstructions(specialRules);
+    break;
     
   default:
     doneInstructions();
     break;
+  }
+}
+
+function instructionClickRoundHistory(round) {
+  $(".roundTab").removeClass('selectedTab'); 
+  $('.roundTab[round="'+round+'"]').addClass('selectedTab'); 
+  
+  switch(section) {
+  case S_CLOCK_HISTORY: 
+    switch(curStory) {
+    case 0:
+      if (round == 1) {
+        runInstruction();
+      }
+    case 1:
+      if (round == 0) {
+        runInstruction();
+      }
+    }
   }
 }
 
@@ -212,7 +263,6 @@ function updateInstruction(section,curStory) {
       return [false,false];
     case 2:
       blink($('.asset[asset="'+instructionAssets[0].id+'"] .status'), 800, 5);
-//      return [true,true];
       return [true,true];
     }
     break;
@@ -247,6 +297,24 @@ function updateInstruction(section,curStory) {
       return [false,false];
     case 5: // click next
       return [false,true];
+    }
+  case S_CLOCK_HISTORY:
+    switch(curStory) {
+    case 0: // click round 1
+      return [false,false];
+    case 1: // click current round
+      $("#timer").fadeOut();
+      stopCountdown("#timer");
+      return [false,false];
+    case 2: // show clock
+      setCountdown("timer",roundDuration);
+      $("#timer").fadeIn();
+    }  
+    break;
+  case S_END_RULES:
+    switch(curStory) {
+    case 0: // click round 1
+      return [false,false]; // place the targets
     }
   }
   return [true,true];
@@ -297,6 +365,12 @@ function instructionSetNextRegion(unit,region) {
         runInstruction();
       }
       break;
+    }
+    break;
+  case S_END_RULES: 
+    unit.nextRegion = region; // because actually setting it happens after this call
+    if (roleUnits[TARGET_ROLE][0].nextRegion != null && roleUnits[TARGET_ROLE][1].nextRegion != null) {
+      runInstruction();      
     }
   }
   return false;
@@ -412,7 +486,7 @@ function clearInstructions() {
     unit.wait = 0;
   }
   clearRegionStatus();
-  
+  initializeHistory();
   initializeMyAssets();
 
   inInstructions = false;
