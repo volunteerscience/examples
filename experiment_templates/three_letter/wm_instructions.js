@@ -113,6 +113,7 @@ function instructionsPart2() {
 }
 
 function instructionsPart2a() {
+  if (!instructions) return;
   $('#letter_0').focus();
   setInstructions('','This is the word selector.  You can <i>type</i> in a word and it will automatically accept if it is valid.  Try typing <b>bed</b>.',function() {
     if (showNoKeyboardButton) {
@@ -220,6 +221,7 @@ function clearInstructions() {
   instructions = false;
   $("#instructions").hide();
   $("#skip_instructions").hide();
+  $("#no_keyboard").hide();
   $("#suggestions").removeClass("large_suggestions");
   setRound(1);
 
