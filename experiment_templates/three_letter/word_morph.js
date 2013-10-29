@@ -319,7 +319,10 @@ function initializeWordInput() {
   });
   
   $('.upArrow').click(function() {
-    if (disableArrows) return;
+    if (disableArrows) {
+      instructionsPressedDisabledArrow();
+      return;
+    }
     if ($(this).hasClass('upArrow-disabled')) return;
     
     var index = +$(this).attr('id')[3]; // up_

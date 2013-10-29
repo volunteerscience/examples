@@ -69,6 +69,7 @@ function initializeInstructions() {
 }
 
 function instructionsPushWord(word) {
+  if (!instructions) return;
 //  alert(word); 
   if (word=="xyz") {
     setInstructions(
@@ -93,8 +94,14 @@ function instructionsSetSolution(solution) {
   return false;
 }
 
+
+function instructionsPressedDisabledArrow() {
+  alert("Please type your solution.  -- We will demonstrate the arrows next.");    
+}
+
 var showNoKeyboardButton = true;
 function instructionsPart2() {
+  if (!instructions) return;
   showNoKeyboardButton = true;
   disableArrows = true;
   $("#suggestions").hide();
@@ -123,6 +130,7 @@ function instructionsPart2a() {
 }
 
 function instructionsPart3() {
+  if (!instructions) return;
   instructionsPushWord = function(word) {
     if (word=="bed") {
       instructionsPart4();
@@ -142,6 +150,7 @@ function instructionsPart3() {
  * How to load part of a solution.
  */
 function instructionsPart4() {
+  if (!instructions) return;
   hide_ellipsis = false;
   $("#active_solution .arrow").switchClass("instruction_arrow","");
   $("#active_solution").switchClass("instruction_solution","");
@@ -171,6 +180,7 @@ function instructionsPart4() {
  * How to reset solution.
  */
 function instructionsPart5() {
+  if (!instructions) return;
   $("#current_solution_title").show();
   instructionsSetSolution = function (solution) {
     if (solution.length == 0) {
