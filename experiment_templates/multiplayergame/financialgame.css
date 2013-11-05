@@ -90,6 +90,22 @@
 	font-size:125%;
 }
 
+.smalldyninst{
+	font-size:125%;
+    -webkit-animation: fadi 3s 1;
+    -moz-animation: fadi 3s 1;
+}
+
+@-webkit-keyframes fadi {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@-moz-keyframes fadi {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+}
+
 .smallinfo{
 	font-size:100%;
 }

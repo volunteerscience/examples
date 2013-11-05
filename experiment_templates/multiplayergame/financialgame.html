@@ -385,15 +385,15 @@ function newMove(participant, index) {
 			readyCount++
 		if(readyCount==numPlayers)
 		{
-			setRound(2+expRoundNum+this.plus30Count);
+			setRound(2+this.expRoundNum+this.plus30Count);
 	//		if(this.roundText[0].attr['text']=="")
 	//		{
 				if(parseInt(variables['Enable Polling'])==1)
 				{
 					this.waitThisRound=true;
-					for(var i=0; i<this.playersForRound[expRoundNum-1].length; i++)
+					for(var i=0; i<this.playersForRound[this.expRoundNum-1].length; i++)
 					{
-						if(this.playersForRound[expRoundNum-1][i]==myid)
+						if(this.playersForRound[this.expRoundNum-1][i]==myid)
 							this.waitThisRound=false;
 					}
 					if(waitThisRound)
@@ -424,7 +424,7 @@ function newMove(participant, index) {
 		{
 			userArr.push(parseInt(participant));
 			userArr.push(val.substring(val.indexOf(">")+1,val.indexOf("</")));
-			this.prevRoundChoices[expRoundNum].push(userArr);
+			this.prevRoundChoices[this.expRoundNum].push(userArr);
 		}
 		else
 		{
@@ -440,7 +440,7 @@ function newMove(participant, index) {
 						var chcArr=new Array();
 						chcArr.push(curpt);
 						chcArr.push(curdir);
-						this.prevRoundChoices[expRoundNum].push(chcArr);
+						this.prevRoundChoices[this.expRoundNum].push(chcArr);
 					}
 				}
 			}
@@ -448,17 +448,17 @@ function newMove(participant, index) {
 			{
 				userArr.push(parseInt(participant));
 				userArr.push(val);
-				this.prevRoundChoices[expRoundNum].push(userArr);
+				this.prevRoundChoices[this.expRoundNum].push(userArr);
 			}
 		}
-		
-		if(this.prevRoundChoices[expRoundNum].length==minimumParticipants)
+
+		if(this.prevRoundChoices[this.expRoundNum].length==minimumParticipants)
 		{
 			updateStatTables();
 			clearTimeout(this.timeoutStep2);
 			this.Step2Timer=parseInt(variables['experiment_round_timer']);
 			$('#step2').hide();
-			if(waitThisRound)
+			if(waitThisRound&&parseInt(variables["Enable Polling"])==1)
 			{
 				$('#step3').hide();
 				$('#polling').show();
@@ -497,9 +497,9 @@ function submitBotAnswer()
 		if (!activePlayers[i])
 		{
 			var botWaitThisRound=true;
-			for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+			for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 			{
-				if(this.playersForRound[expRoundNum-1][j]==i)
+				if(this.playersForRound[this.expRoundNum-1][j]==i)
 					botWaitThisRound=false;
 			}
 			if(!botWaitThisRound)
@@ -510,10 +510,10 @@ function submitBotAnswer()
 
 function botAnswer()
 {
-	if(parseInt(variables['Bot_Type'])==1||expRoundNum==1)
+	if(parseInt(variables['Bot_Type'])==1||this.expRoundNum==1)
 		return variables['Button_'+(Math.floor(Math.random()*parseInt(variables['Button_Count']))+1)+'_Text'];
-	if(parseInt(variables['Bot_Type'])==2&&expRoundNum>1)
-		return this.prevRoundChoices[expRoundNum-1][Math.floor(Math.random()*this.minimumParticipants)][1];
+	if(parseInt(variables['Bot_Type'])==2&&this.expRoundNum>1)
+		return this.prevRoundChoices[this.expRoundNum-1][Math.floor(Math.random()*this.minimumParticipants)][1];
 	return "";
 }
 
@@ -569,20 +569,20 @@ function updateStatTables()
 	prevRoundPayoffs = new Array();
 	for(var i=1; i<=numPlayers+parseInt(variables['Bot_Count']); i++)
 		prevRoundPayoffs[i]=parseFloat("0").toFixed(2);
-	for(var u=0; u<prevRoundChoices[expRoundNum].length; u++)
+	for(var u=0; u<prevRoundChoices[this.expRoundNum].length; u++)
 	{
 		var figuredComb=new Array();
 		var userChoice;
 		for(var i=0; i<minimumParticipants; i++)
 		{
-			if(this.prevRoundChoices[expRoundNum][i][0]!=this.prevRoundChoices[expRoundNum][u][0])
-				figuredComb.push(this.prevRoundChoices[expRoundNum][i][1]);
+			if(this.prevRoundChoices[this.expRoundNum][i][0]!=this.prevRoundChoices[this.expRoundNum][u][0])
+				figuredComb.push(this.prevRoundChoices[this.expRoundNum][i][1]);
 			else
-				userChoice=this.prevRoundChoices[expRoundNum][i][1];
+				userChoice=this.prevRoundChoices[this.expRoundNum][i][1];
 		}
 		var mcri=matchedCombRowIndex(userChoice);
 		var mcci=matchedCombColumnIndex(figuredComb, true);
-		if(this.prevRoundChoices[expRoundNum][u][0]==myid)
+		if(this.prevRoundChoices[this.expRoundNum][u][0]==myid)
 		{
 			for(var i=1; i<=parseInt(variables['information_row_count']); i++)
 			{
@@ -597,9 +597,9 @@ function updateStatTables()
 				}
 			}
 		}
-		prevRoundPayoffs[this.prevRoundChoices[expRoundNum][u][0]]=parseFloat(variables['payoff'][mcri][mcci]).toFixed(2);
-		totalPayoffs[this.prevRoundChoices[expRoundNum][u][0]]=(parseFloat(totalPayoffs[this.prevRoundChoices[expRoundNum][u][0]])+parseFloat(variables['payoff'][mcri][mcci])).toFixed(2);
-		averagePayoffs[this.prevRoundChoices[expRoundNum][u][0]]=parseFloat(parseFloat(totalPayoffs[this.prevRoundChoices[expRoundNum][u][0]])/(expRoundNum)).toFixed(2);
+		prevRoundPayoffs[this.prevRoundChoices[this.expRoundNum][u][0]]=parseFloat(variables['payoff'][mcri][mcci]).toFixed(2);
+		totalPayoffs[this.prevRoundChoices[this.expRoundNum][u][0]]=(parseFloat(totalPayoffs[this.prevRoundChoices[this.expRoundNum][u][0]])+parseFloat(variables['payoff'][mcri][mcci])).toFixed(2);
+		averagePayoffs[this.prevRoundChoices[this.expRoundNum][u][0]]=parseFloat(parseFloat(totalPayoffs[this.prevRoundChoices[this.expRoundNum][u][0]])/(this.expRoundNum)).toFixed(2);
 	}	
 	
 	this.scores=new Array();
@@ -613,7 +613,7 @@ function updateStatTables()
 	
 	$('#earnresult').html(prevRoundPayoffs[myid]);
 
-	if(this.prevRoundChoices[expRoundNum].length==minimumParticipants)
+	if(this.prevRoundChoices[this.expRoundNum].length==minimumParticipants)
 	{
 		var resulttablehtml="<thead><tr style=\"height:25px; line-height:25px;\"><th><span style='padding-left:7px;'>Rank</span></th><th><span style='padding-left:7px;'>Players</span></th><th><span style='padding-left:7px;'>Prev. Round Payoff</span></th><th><span style='padding-left:7px;'>Score Board</span></th></tr></thead><tbody>";
 		for(var i=0; i<numPlayers+parseInt(variables['Bot_Count']); i++)
@@ -683,7 +683,7 @@ function countDownStep1(){
 	 }  
 }
 
-function getInstructions(instpage)
+function getStaticInstructions(instpage)
 {
 	$('#insttitle').html("Instructions - Part "+instpage+"/"+Math.ceil(parseInt(variables['instruction_count'])/3));
 	var instructionhtml="";
@@ -695,10 +695,59 @@ function getInstructions(instpage)
 		else
 			instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td width=\"400\" height=\"150\"><div id=\"instructiontextdiv\"><div style=\"word-wrap:break-word; width: 385px; height: 130px; margin-left:7.5px; margin-right:7.5px; margin-top:5px; margin-bottom:5px;\"><small id=\"instructiontext"+i+"\" class='smallinst'>"+preprocess(variables['instruction_text_'+i])+"</small></div></div></td><td width=\"15\" height=\"150\"></td><td width=\"140\" height=\"150\"><img src=\""+getFile(instimg)+"\" class=\"img-inst\"></td></tr></table></td></tr>"
 	}
-	//instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage--;getInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage++;getInstructions(instructionsPage);;\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
-	instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage--;getInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"><font face=\"Verdana\"><span style=\"font-size:10pt; color:black\" id=\"readyp\"><button id=\"begininsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"setRound(2+getPlus30Count());submit('Ready');$('#begininsbut').hide();$('#readyp').html('Please wait for others...');$('#addtimebut').hide();readySignal();\">I'm Ready</button></span></font></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage++;getInstructions(instructionsPage);\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
+	//instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage--;getStaticInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage++;getStaticInstructions(instructionsPage);;\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
+	instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage--;getStaticInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"><font face=\"Verdana\"><span style=\"font-size:10pt; color:black\" id=\"readyp\"><button id=\"begininsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"setRound(2+getPlus30Count());submit('Ready');$('#begininsbut').hide();$('#readyp').html('Please wait for others...');$('#addtimebut').hide();readySignal();\">I'm Ready</button></span></font></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage++;getStaticInstructions(instructionsPage);\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
 	$("#instructiontable").html(instructionhtml);
 	if(instpage==Math.ceil(parseInt(variables['instruction_count'])/3))
+	{
+		$('#nextinsbut').hide();
+		if(!this.iAmReady)
+			$('#begininsbut').show();
+		else
+		{
+			$('#begininsbut').hide();
+			$('#readyp').html('Please wait for others...');
+		}
+	}
+	else
+		$('#begininsbut').hide();
+	if(instpage>1)
+		$('#previnsbut').show();
+	else
+		$('#previnsbut').hide();
+}
+
+function getDynamicInstructions(instpage)
+{
+	$('#insttitle').html("Instructions - "+instpage+"/"+variables["instruction_count"]);
+	var instructionhtml="";
+	
+	//<--CUSTOM HTML START-->
+	if(instpage==3)
+		instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td width=\"77\"></td><td><img src=\""+getFile("barnfeedlarge.gif")+"\"></td><td width=\"77\"></td></tr></table></td></tr>";
+	if(instpage==4)
+		instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td><img src=\""+getFile("bringtocommonsmedium.gif")+"\"></td><td width=\"25\"></td><td><img src=\""+getFile("bringtocommonsmedium.gif")+"\"></td></tr></table></td></tr>";
+	if(instpage==5 || instpage==6)
+		instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td width=\"77\"></td><td><img src=\""+getFile("bringtocommonslarge.gif")+"\"></td><td width=\"77\"></td></tr></table></td></tr>";
+	//<--CUSTOM HTML END-->
+	
+	var instimg=(variables['instruction_image_'+instpage]&&variables['instruction_image_'+instpage].length>0)?variables['instruction_image_'+instpage]:"nophoto.png";
+	if(instpage%2==1)
+		instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td width=\"140\" height=\"150\"><img src=\""+getFile(instimg)+"\" class=\"img-inst\"></td><td width=\"15\" height=\"150\"></td><td width=\"400\" height=\"150\" colspan=\"4\"><div id=\"instructiontextdiv\"><div style=\"word-wrap:break-word; width: 385px; height: 130px; margin-left:7.5px; margin-right:7.5px; margin-top:5px; margin-bottom:5px;\"><small id=\"instructiontext"+instpage+"\" class='smalldyninst'>"+preprocess(variables['instruction_text_'+instpage])+"</small></div></div></td></tr></table></td></tr>"
+	else
+		instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td width=\"400\" height=\"150\"><div id=\"instructiontextdiv\"><div style=\"word-wrap:break-word; width: 385px; height: 130px; margin-left:7.5px; margin-right:7.5px; margin-top:5px; margin-bottom:5px;\"><small id=\"instructiontext"+instpage+"\" class='smalldyninst'>"+preprocess(variables['instruction_text_'+instpage])+"</small></div></div></td><td width=\"15\" height=\"150\"></td><td width=\"140\" height=\"150\"><img src=\""+getFile(instimg)+"\" class=\"img-inst\"></td></tr></table></td></tr>"
+	//instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage--;getStaticInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage++;getStaticInstructions(instructionsPage);;\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
+	
+	//<--CUSTOM HTML START-->
+	if(instpage==5)
+		instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td><img src=\""+getFile("barnfeedmedium.gif")+"\"></td><td width=\"25\"></td><td><img src=\""+getFile("barnfeedmedium.gif")+"\"></td></tr></table></td></tr>";
+	if(instpage==6)
+		instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td><img src=\""+getFile("bringtocommonsmedium.gif")+"\"></td><td width=\"25\"></td><td><img src=\""+getFile("bringtocommonsmedium.gif")+"\"></td></tr></table></td></tr>";
+	//<--CUSTOM HTML END-->
+	
+	instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage--;getDynamicInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"><font face=\"Verdana\"><span style=\"font-size:10pt; color:black\" id=\"readyp\"><button id=\"begininsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"setRound(2+getPlus30Count());submit('Ready');$('#begininsbut').hide();$('#readyp').html('Please wait for others...');$('#addtimebut').hide();readySignal();\">I'm Ready</button></span></font></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage++;getDynamicInstructions(instructionsPage);\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
+	$("#instructiontable").html(instructionhtml);
+	if(instpage==parseInt(variables["instruction_count"]))
 	{
 		$('#nextinsbut').hide();
 		if(!this.iAmReady)
@@ -728,7 +777,7 @@ function countDownStep2()
 		updateStatTables();
 		clearTimeout(this.timeoutStep2);
 	 	this.Step2Timer=parseInt(variables['experiment_round_timer']);
-		if(!(parseInt(variables['Enable Polling'])==1&&this.waitThisRound==true))
+		if((parseInt(variables['Enable Polling'])==1&&this.waitThisRound==false)||(parseInt(variables['Enable Polling'])==0))
 		{
 			if($('#selectedbuttext').html()=="&nbsp;") // in case of incomplete participation send the prespecified choice.
 			{
@@ -945,17 +994,17 @@ function matchedCombColumnIndex(arr, ratiovalid)
 function countDownStep3(){  
 	 if (this.Step3Timer <=0){
 		clearTimeout(this.timeoutStep3);
-		if(expRoundNum<parseInt(variables['total_rounds_count']))
+		if(this.expRoundNum<parseInt(variables['total_rounds_count']))
 		{
 			this.Step3Timer=parseInt(variables['result_timer']);
-			expRoundNum++;
-			setRound(2+expRoundNum+this.plus30Count);
+			this.expRoundNum++;
+			setRound(2+this.expRoundNum+this.plus30Count);
 			if(parseInt(variables['Enable Polling'])==1)
 			{
 				this.waitThisRound=true;
-				for(var i=0; i<this.playersForRound[expRoundNum-1].length; i++)
+				for(var i=0; i<this.playersForRound[this.expRoundNum-1].length; i++)
 				{
-					if(this.playersForRound[expRoundNum-1][i]==myid)
+					if(this.playersForRound[this.expRoundNum-1][i]==myid)
 						this.waitThisRound=false;
 				}
 				$('#pollingtext').html(preprocess(variables['Polling_Text']));
@@ -1151,7 +1200,7 @@ function fillStatsContainer()
 		else
 		{
 			this.startRank=1;
-			if(!waitThisRound)
+			if(!waitThisRound&&parseInt(variables["Enable Polling"])==1)
 				placeArrowButtons();
 			break;
 		}
@@ -1265,17 +1314,17 @@ function participantStatTable(rank, playerId)
 	var prevRndChc;
 	if((parseInt(variables['Self_Prev_Rnd_Choice'])==1 && myid == playerId) || (parseInt(variables['Others_Prev_Rnd_Choice'])==1 && myid!=playerId))
 	{
-		if(expRoundNum==1||this.prevRoundChoices[expRoundNum-1].length<minimumParticipants)
+		if(this.expRoundNum==1||this.prevRoundChoices[this.expRoundNum-1].length<minimumParticipants)
 			prevRndChc=this.paper.text(locX+62, 41, "N/A");
 		else
 		{
 			var choiceFound=false;
-			for(var k=0; k<this.prevRoundChoices[expRoundNum-1].length; k++)
+			for(var k=0; k<this.prevRoundChoices[this.expRoundNum-1].length; k++)
 			{
-				if(this.prevRoundChoices[expRoundNum-1][k][0]==playerId)
+				if(this.prevRoundChoices[this.expRoundNum-1][k][0]==playerId)
 				{
 					choiceFound=true;
-					prevRndChc=this.paper.text(locX+62, 41, this.prevRoundChoices[expRoundNum-1][k][1]+"");
+					prevRndChc=this.paper.text(locX+62, 41, this.prevRoundChoices[this.expRoundNum-1][k][1]+"");
 					break;
 				}
 			}
@@ -1346,7 +1395,7 @@ function beginExpRound()
 			this.arrowButs[i].remove();
 	if(this.roundText==undefined)
 		this.roundText=this.paper.text(400, 149, "");
-	this.roundText.attr({text: "Round "+(expRoundNum)+" of "+variables['total_rounds_count']});
+	this.roundText.attr({text: "Round "+(this.expRoundNum)+" of "+variables['total_rounds_count']});
 	this.roundText.attr({'font-size': 24, 'font-family': 'Verdana'});
 	this.roundText.attr("fill", "#0e76bc");
 
@@ -1390,7 +1439,7 @@ function beginExpRound()
 	$("#resultimage").attr("src", getFile("nophoto.png"));
 	$("#resulttext").html("");
 	
-	if(iControlBots&&waitThisRound)
+	if(iControlBots&&waitThisRound&&parseInt(variables["Enable Polling"])==1)
 	{
 		if(parseInt(variables['Bot_Count'])==0) // send bot answer for disconnected player
 			submitBotAnswer();
@@ -1400,13 +1449,13 @@ function beginExpRound()
 			for(var i=1; i<=parseInt(variables['Bot_Count']); i++)
 			{
 				var botIncluded=false;
-				for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+				for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 				{
-					if(this.playersForRound[expRoundNum-1][j]==numPlayers+i)
+					if(this.playersForRound[this.expRoundNum-1][j]==numPlayers+i)
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 			submit(botVal);
 		}
@@ -1459,7 +1508,7 @@ function initializeExperimentDetails()
 	$('#pollingtext').html(preprocess(variables['Polling_Text']));
 	$("#pollingimage").attr("src", getFile("wait.gif"));
 
-	expRoundNum=1;
+	this.expRoundNum=1;
 	this.Step1Timer=parseInt(variables['instruction_timer'])+1;
 	this.Step2Timer=parseInt(variables['experiment_round_timer'])+1;
 	this.Step3Timer=parseInt(variables['result_timer'])+1;
@@ -1497,7 +1546,10 @@ function initializeExperimentDetails()
 	$('#resulttable').html(resulttablehtml);
 	$('#resulttable').fixedHeaderTable({ altClass: 'odd'});
 
-	getInstructions(instructionsPage);
+	if(parseInt(variables["instruction_type"])==1)
+		getStaticInstructions(instructionsPage);
+	if(parseInt(variables["instruction_type"])==2)
+		getDynamicInstructions(instructionsPage);
 	$('#insttimer').html(variables['instruction_timer']);
 	countDownStep1();
 
@@ -1583,17 +1635,17 @@ function but2_2Pressed()
 			for(var i=1; i<=parseInt(variables['Bot_Count']); i++)
 			{
 				var botIncluded=false;
-				for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+				for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 				{
-					if(this.playersForRound[expRoundNum-1][j]==numPlayers+i)
+					if(this.playersForRound[this.expRoundNum-1][j]==numPlayers+i)
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_1_Text'])+"</answer>"+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+this.expRoundNum+"\">"+preprocess(variables['Button_1_Text'])+"</answer>"+botVal);
 	$('#but2').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_1_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_1_Text']));
 	$("#but2").animate({left:'155px'});
@@ -1611,17 +1663,17 @@ function but4_2Pressed()
 			for(var i=1; i<=parseInt(variables['Bot_Count']); i++)
 			{
 				var botIncluded=false;
-				for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+				for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 				{
-					if(this.playersForRound[expRoundNum-1][j]==numPlayers+i)
+					if(this.playersForRound[this.expRoundNum-1][j]==numPlayers+i)
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_2_Text'])+"</answer>"+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+this.expRoundNum+"\">"+preprocess(variables['Button_2_Text'])+"</answer>"+botVal);
 	$('#but4').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_2_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_2_Text']));
 	$("#but4").animate({right:'155px'});
@@ -1639,17 +1691,17 @@ function but2_3Pressed()
 			for(var i=1; i<=parseInt(variables['Bot_Count']); i++)
 			{
 				var botIncluded=false;
-				for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+				for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 				{
-					if(this.playersForRound[expRoundNum-1][j]==numPlayers+i)
+					if(this.playersForRound[this.expRoundNum-1][j]==numPlayers+i)
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_1_Text'])+"</answer>"+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+this.expRoundNum+"\">"+preprocess(variables['Button_1_Text'])+"</answer>"+botVal);
 	$('#but2').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_1_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_1_Text']));
 	$("#but2").animate({left:'155px'});
@@ -1667,17 +1719,17 @@ function but3_3Pressed()
 			for(var i=1; i<=parseInt(variables['Bot_Count']); i++)
 			{
 				var botIncluded=false;
-				for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+				for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 				{
-					if(this.playersForRound[expRoundNum-1][j]==numPlayers+i)
+					if(this.playersForRound[this.expRoundNum-1][j]==numPlayers+i)
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_2_Text'])+"</answer>"+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+this.expRoundNum+"\">"+preprocess(variables['Button_2_Text'])+"</answer>"+botVal);
 	$('#but3').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_2_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_2_Text']));
 }
@@ -1694,17 +1746,17 @@ function but4_3Pressed()
 			for(var i=1; i<=parseInt(variables['Bot_Count']); i++)
 			{
 				var botIncluded=false;
-				for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+				for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 				{
-					if(this.playersForRound[expRoundNum-1][j]==numPlayers+i)
+					if(this.playersForRound[this.expRoundNum-1][j]==numPlayers+i)
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_3_Text'])+"</answer>"+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+this.expRoundNum+"\">"+preprocess(variables['Button_3_Text'])+"</answer>"+botVal);
 	$('#but4').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_3_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_3_Text']));
 	$("#but4").animate({right:'155px'});
@@ -1722,17 +1774,17 @@ function but1_4Pressed()
 			for(var i=1; i<=parseInt(variables['Bot_Count']); i++)
 			{
 				var botIncluded=false;
-				for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+				for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 				{
-					if(this.playersForRound[expRoundNum-1][j]==numPlayers+i)
+					if(this.playersForRound[this.expRoundNum-1][j]==numPlayers+i)
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_1_Text'])+"</answer>"+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+this.expRoundNum+"\">"+preprocess(variables['Button_1_Text'])+"</answer>"+botVal);
 	$('#but1').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_1_Text']+"</a></p>"));
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_1_Text']));
 	$("#but1").animate({left:'282px'});
@@ -1750,17 +1802,17 @@ function but2_4Pressed()
 			for(var i=1; i<=parseInt(variables['Bot_Count']); i++)
 			{
 				var botIncluded=false;
-				for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+				for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 				{
-					if(this.playersForRound[expRoundNum-1][j]==numPlayers+i)
+					if(this.playersForRound[this.expRoundNum-1][j]==numPlayers+i)
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_2_Text'])+"</answer>"+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+this.expRoundNum+"\">"+preprocess(variables['Button_2_Text'])+"</answer>"+botVal);
 	$('#but2').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_2_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_2_Text']));
 	$("#but2").animate({left:'95px'});
@@ -1778,17 +1830,17 @@ function but4_4Pressed()
 			for(var i=1; i<=parseInt(variables['Bot_Count']); i++)
 			{
 				var botIncluded=false;
-				for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+				for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 				{
-					if(this.playersForRound[expRoundNum-1][j]==numPlayers+i)
+					if(this.playersForRound[this.expRoundNum-1][j]==numPlayers+i)
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_3_Text'])+"</answer>"+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+this.expRoundNum+"\">"+preprocess(variables['Button_3_Text'])+"</answer>"+botVal);
 	$('#but4').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_3_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_3_Text']));
 	$("#but4").animate({right:'95px'});
@@ -1806,17 +1858,17 @@ function but5_4Pressed()
 			for(var i=1; i<=parseInt(variables['Bot_Count']); i++)
 			{
 				var botIncluded=false;
-				for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+				for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 				{
-					if(this.playersForRound[expRoundNum-1][j]==numPlayers+i)
+					if(this.playersForRound[this.expRoundNum-1][j]==numPlayers+i)
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_4_Text'])+"</answer>"+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+this.expRoundNum+"\">"+preprocess(variables['Button_4_Text'])+"</answer>"+botVal);
 	$('#but5').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_4_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_4_Text']));
 	$("#but5").animate({right:'282px'});
@@ -1834,17 +1886,17 @@ function but1_5Pressed()
 			for(var i=1; i<=parseInt(variables['Bot_Count']); i++)
 			{
 				var botIncluded=false;
-				for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+				for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 				{
-					if(this.playersForRound[expRoundNum-1][j]==numPlayers+i)
+					if(this.playersForRound[this.expRoundNum-1][j]==numPlayers+i)
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_1_Text'])+"</answer>"+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+this.expRoundNum+"\">"+preprocess(variables['Button_1_Text'])+"</answer>"+botVal);
 	$('#but1').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_1_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_1_Text']));
 	$("#but1").animate({left:'310px'});
@@ -1862,17 +1914,17 @@ function but2_5Pressed()
 			for(var i=1; i<=parseInt(variables['Bot_Count']); i++)
 			{
 				var botIncluded=false;
-				for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+				for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 				{
-					if(this.playersForRound[expRoundNum-1][j]==numPlayers+i)
+					if(this.playersForRound[this.expRoundNum-1][j]==numPlayers+i)
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_2_Text'])+"</answer>"+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+this.expRoundNum+"\">"+preprocess(variables['Button_2_Text'])+"</answer>"+botVal);
 	$('#but2').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_2_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_2_Text']));
 	$("#but2").animate({left:'155px'});
@@ -1890,17 +1942,17 @@ function but3_5Pressed()
 			for(var i=1; i<=parseInt(variables['Bot_Count']); i++)
 			{
 				var botIncluded=false;
-				for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+				for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 				{
-					if(this.playersForRound[expRoundNum-1][j]==numPlayers+i)
+					if(this.playersForRound[this.expRoundNum-1][j]==numPlayers+i)
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_3_Text'])+"</answer>"+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+this.expRoundNum+"\">"+preprocess(variables['Button_3_Text'])+"</answer>"+botVal);
 	$('#but3').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_3_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_3_Text']));
 }
@@ -1917,17 +1969,17 @@ function but4_5Pressed()
 			for(var i=1; i<=parseInt(variables['Bot_Count']); i++)
 			{
 				var botIncluded=false;
-				for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+				for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 				{
-					if(this.playersForRound[expRoundNum-1][j]==numPlayers+i)
+					if(this.playersForRound[this.expRoundNum-1][j]==numPlayers+i)
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_4_Text'])+"</answer>"+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+this.expRoundNum+"\">"+preprocess(variables['Button_4_Text'])+"</answer>"+botVal);
 	$('#but4').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_4_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_4_Text']));
 	$("#but4").animate({right:'155px'});
@@ -1945,17 +1997,17 @@ function but5_5Pressed()
 			for(var i=1; i<=parseInt(variables['Bot_Count']); i++)
 			{
 				var botIncluded=false;
-				for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
+				for(var j=0; j<this.playersForRound[this.expRoundNum-1].length; j++)
 				{
-					if(this.playersForRound[expRoundNum-1][j]==numPlayers+i)
+					if(this.playersForRound[this.expRoundNum-1][j]==numPlayers+i)
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_5_Text'])+"</answer>"+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+this.expRoundNum+"\">"+preprocess(variables['Button_5_Text'])+"</answer>"+botVal);
 	$('#but5').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_5_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_5_Text']));
 	$("#but5").animate({right:'310px'});
