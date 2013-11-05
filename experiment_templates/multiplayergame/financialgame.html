@@ -6,10 +6,7 @@
     </tr>
     <tr>
         <td width="70"></td>
-        <td width="426">
-		<div class="progress" id="insttimerbardiv">
-			<div class="bar" style="width:100%;" id="insttimerbar"></div>
-		</div>
+        <td width="426"><table><tr><td><button id="addtimebut" type="submit" class="btn-large btn-success dropdown-toggle" onClick="setPlus30Count(getPlus30Count()+1);setRound(1+getPlus30Count());submit('+30 Seconds');"><i class="icon-plus icon-white"></i>30 Seconds</button></td><td id="addedsecs"></td></tr></table>
 		</td>
         <td width="60" valign="top">
             <p align="right"><font face="Verdana"><span style="font-size:14pt; color:black;" id="insttimer"></span></font></p>
@@ -35,50 +32,8 @@
 <table border="0" id="step2" width="800" class="financialgametable" align="center">
     <tr>
         <td width="794">
-			<div style="text-align:left; width: 800px; height: 150px;">
-				<table align="center" border="0" width="794">
-					<tr>
-						<td width="510" height="95" rowspan="2">
-						<div id="grid_8div" class="grid_8" style="text-align:left; width:100px; height: 95px; overflow-x: auto; overflow-y: auto;">	
-						<table id="statisticstable" class="fancyTable" cellspacing="0" cellspacing="0">
-						</table>
-						</div>
-						<div class="clear"></div>
-						</td>
-						<td width="5" height="95" rowspan="2"></td>
-						<td width="148" height="40"><font face="Verdana" color="red"><span style="font-size:12pt;">Time Remaining:</span></font></td>
-						<td width="101" height="40"><span style="font-size:12pt; color:black;"><font face="Verdana" id="roundtimertext"></font></span></td>
-						<td width="8" height="40"></td>
-					</tr>
-					<tr>
-						<td width="253" height="40" colspan="2" valign="top">
-						<div class="progress">
-						<div class="bar" style="width:100%;" id="roundtimerbar"></div>
-						</div>
-						</td>
-						<td width="8" height="40" valign="top"></td>
-					</tr>
-					<tr>
-					   <td width="788" height="10" colspan="5"></td>
-					</tr>
-					<tr>
-						<td colspan="5">
-							<table border="0" width="788">
-								<tr>
-									<td width="169"></td>
-									<td width="169">
-										<p align="center">
-											<font face="Verdana" color="red"><span id="roundtext" style="font-size:16pt;"></span></font>
-										</p>
-									</td>
-									<td width="169" valign="top">
-										<span style="font-size:10pt;"><font face="Verdana" color="black" id="expid"></font></span>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</table>
+			<div id="statsContainer">
+
 			</div>
 			<div style="text-align:left; width: 800px; height: 359px; overflow: auto;">
 				<table align="center" border="0" id="midtable" width="775">
@@ -95,9 +50,9 @@
 		</td>
     </tr>
     <tr>
-        <td width="794" height="90">
-		<div id="butholder" style="height: 90px;">
-            <div style="text-align: center; height: 30px; line-height:30px;"><font face="Verdana" ><span style="font-size:12pt; color: #3a87ad;" id="selectedbuttext"></span></font></div>
+        <td width="794" height="80">
+		<div id="butholder" style="height: 80px;">
+            <div style="text-align: center; height: 30px; line-height:30px;"><font face="Verdana" ><span style="font-size:12pt; color: #0e76bc;" id="selectedbuttext"></span></font></div>
 			<table id="buts" border="0" align="center" width="794">
 			</table>
 		</div>
@@ -112,9 +67,6 @@
     <tr>
         <td width="123"></td>
         <td width="373">
-		<div class="progress">
-			<div class="bar" style="width:100%;" id="resulttimerbar"></div>
-		</div>
 		</td>
         <td width="60" valign="top">
             <p align="right"><font face="Verdana"><span style="font-size:14pt; color:black;" id="resulttimertext"></span></font></p>
@@ -142,33 +94,34 @@
 							</td>				
 						</tr>
 						<tr>	
-                                <td width="352" colspan="3" height="86"><div id="resulttextdiv"><div style='margin-left:6px; margin-right:6px; margin-top:5px; margin-bottom:5px; width:338px; height:90px; word-wrap:break-word;'><small id="resulttext" class='smallinst'></small></div></div></td>
+							<td width="352" colspan="3" height="86"><div id="resulttextdiv"><div style='margin-left:6px; margin-right:6px; margin-top:5px; margin-bottom:5px; width:338px; height:90px; word-wrap:break-word;'><small id="resulttext" class='smallinst'></small></div></div></td>
 						</tr>
 					</table>
 					</td>
                 </tr>
                 <tr>
-					<td width="555" height="150">
-					<table align="center" width="536">
+					<td width="607" height="150">
+					<table align="center" width="607">
 						<tr>
-							<td width="536" height="25">
+							<td width="607" height="25">
 							</td>
 						</tr>
 						<tr>
-							<td width="251" height="13">
+							<td width="252" height="13">
 								<p align="center"><span style="font-size:12pt; color:black;"><font face="Verdana" id="yourearntext"></font></span></p>
 							</td>
 							<td width="34" height="126" rowspan="2"></td>
-							<td width="250" height="126" rowspan="2">
-								<div id="resultdiv" class="grid_8" style="text-align:left; width:250px; height: 126px; overflow-x: auto; overflow-y: auto;">	
+							<td width="321" height="126" rowspan="2">
+								<div id="resultdiv" class="grid_8" style="text-align:left; width:321px; height: 126px; overflow-x: auto; overflow-y: auto;">	
 									<table id="resulttable" class="fancyTable" cellspacing="0" cellspacing="0">
 									</table>
 								</div>
 							</td>
 						</tr>
 						<tr>	
-							<td width="251" height="90" id="earnresulttd">
-								<p align="center"><font face="Verdana"><span style="font-size:24pt;" id="earnresult"></span></font></p>
+							<td width="251" height="90">
+								<div id="earnresult">
+								</div>
 							</td>
 						</tr>
 					</table>
@@ -207,9 +160,6 @@
     <tr>
         <td width="123"></td>
         <td width="373">
-		<div class="progress">
-			<div class="bar" style="width:100%;" id="finalresulttimerbar"></div>
-		</div>
 		</td>
         <td width="60">
             <p align="right"><font face="Verdana"><span style="font-size:14pt; color:black;" id="finalresulttext"></span></font></p>
@@ -269,9 +219,6 @@
     <tr>
         <td width="123"></td>
         <td width="373">
-		<div class="progress">
-			<div class="bar" style="width:100%;" id="pollingtimerbar"></div>
-		</div>
 		</td>
         <td width="60">
             <p align="right"><font face="Verdana"><span style="font-size:14pt; color:black" id="pollingtimertext"></span></font></p>
@@ -340,12 +287,23 @@ var scores;
 var waitThisRound=true;
 var iControlBots = false;
 var readyCount=0;
-var experimentID=-1;
+var paper;
+var roundText;
+var step2TimeRemText;
+var step2TimeRemCaptionText;
+var statsContainerArr;
+var startRank;
+var arrowButs;
+var plus30Count;
+var addedSecsTimer;
+var timeoutAddedSecs;
+var iAmReady;
 
 setRound(1);
 
 function initialize()
 {
+	this.paper = Raphael("statsContainer", 800, 160);
 	minimumParticipants=(Math.log(variables['payoff'][0].length)/Math.log(variables['payoff'].length))+1;
 	instructionsPage=1;
 	initializeExperimentDetails();
@@ -354,21 +312,61 @@ function initialize()
 	$('#step3').hide();
 	$('#step4').hide();
 	$('#polling').hide();
+	$('#addtimebut').hide();
+	this.plus30Count=0;
+	this.addedSecsTimer=5;
+	this.iAmReady=false;
+}
+
+function getPlus30Count(){
+	return this.plus30Count;
+}
+
+function setPlus30Count(val){
+	this.plus30Count = val;
+}
+
+function addedSecsCountDown(){  
+	 if (this.addedSecsTimer <=0){
+		$('#addedsecs').html('');
+		clearTimeout(this.timeoutAddedSecs);
+		this.addedSecsTimer=5;
+	 }else{  
+		this.addedSecsTimer--;
+		this.timeoutAddedSecs=setTimeout("addedSecsCountDown()", 1000);
+	 }  
 }
 
 function newMove(participant, index) {
   fetchMove(participant, currentRound, index, function(val) {
+	if(val=="+30 Seconds")
+	{
+		if(participant!=myid)
+		{
+			this.plus30Count++;
+			$('#addedsecs').html("<span style=\"font-size:11pt; color:black;\"> "+getName(parseInt(participant))+" added 30 seconds.</span>");
+			addedSecsCountDown();
+		}
+		else
+		{
+			$('#addedsecs').html("<span style=\"font-size:11pt; color:black;\"> Successfully added 30 seconds.</span>");
+			addedSecsCountDown();
+		}
+		setRound(2+getPlus30Count());
+		this.Step1Timer+=30;
+		return;
+	}
 	if(this.playersForRound.length==0)
 	{
-		experimentID=parseInt(val.substring(1,14));
-		$('#expid').html('Experiment #'+experimentID);
-		val=val.substring(15, val.length);
-		var tarr=val.split("_");
+		//experimentID=parseInt(val.substring(1,14));
+		//$('#expid').html('Experiment #'+experimentID);
+		//val=val.substring(15, val.length);
+		var tarr=val.split("</activePlayers>");
 		for(var p=0;p<tarr.length;p++)
 		{
 			if(tarr[p].length>0)
 			{
-				var tarr2=tarr[p].split(",");
+				var tarr2=tarr[p].substring(tarr[p].indexOf(">")+1).split(",");
 				var rarr=new Array();
 				for(var m=0;m<tarr2.length;m++)
 				{
@@ -378,7 +376,7 @@ function newMove(participant, index) {
 				this.playersForRound.push(rarr);
 			}
 		}
-		setRound(2);
+		setRound(2+this.plus30Count);
 		return;
 	}
 	if(readyCount<numPlayers)
@@ -387,15 +385,15 @@ function newMove(participant, index) {
 			readyCount++
 		if(readyCount==numPlayers)
 		{
-			setRound(2+expRoundNum);
-			if($('#roundtext').html().length==0)
-			{
+			setRound(2+expRoundNum+this.plus30Count);
+	//		if(this.roundText[0].attr['text']=="")
+	//		{
 				if(parseInt(variables['Enable Polling'])==1)
 				{
 					this.waitThisRound=true;
-					for(var i=0; i<this.playersForRound[expRoundNum].length; i++)
+					for(var i=0; i<this.playersForRound[expRoundNum-1].length; i++)
 					{
-						if(this.playersForRound[expRoundNum][i]==myid)
+						if(this.playersForRound[expRoundNum-1][i]==myid)
 							this.waitThisRound=false;
 					}
 					if(waitThisRound)
@@ -415,7 +413,7 @@ function newMove(participant, index) {
 					$('#step2').show();
 				}
 				beginExpRound();
-			}
+	//		}
 		}
 		return;
 	}
@@ -425,31 +423,26 @@ function newMove(participant, index) {
 		if(parseInt(variables['Bot_Count'])==0)
 		{
 			userArr.push(parseInt(participant));
-			userArr.push(val);
+			userArr.push(val.substring(val.indexOf(">")+1,val.indexOf("</")));
 			this.prevRoundChoices[expRoundNum].push(userArr);
 		}
 		else
 		{
-			if(val.indexOf("{")>=0)
+			if(val.substring(val.indexOf("</answer>")+9).indexOf("</answer>")>=0)
 			{
-				if(val.substring(0,val.indexOf("{")).length>0)
+				var tarr=val.split("</answer>");
+				for(var p=0;p<tarr.length;p++)
 				{
-					userArr.push(parseInt(participant));
-					userArr.push(val.substring(0,val.indexOf("{")));
-					this.prevRoundChoices[expRoundNum].push(userArr);
+					if(tarr[p].length>0)
+					{
+						var curpt=parseInt(tarr[p].substring(tarr[p].indexOf("\"")+1, tarr[p].indexOf("\"", tarr[p].indexOf("\"")+1)));
+						var curdir=tarr[p].substring(tarr[p].indexOf(">")+1);
+						var chcArr=new Array();
+						chcArr.push(curpt);
+						chcArr.push(curdir);
+						this.prevRoundChoices[expRoundNum].push(chcArr);
+					}
 				}
-				var remstr=val.substring(val.indexOf("{"),val.length);
-				do
-				{
-					var curpt=parseInt(remstr.substring(remstr.indexOf("{")+1, remstr.indexOf(",")));
-					var curdir=remstr.substring(remstr.indexOf(",")+2, remstr.indexOf("}"));
-
-					var botArr=new Array();
-					botArr.push(curpt);
-					botArr.push(curdir);
-					this.prevRoundChoices[expRoundNum].push(botArr);
-					remstr=remstr.substring(remstr.indexOf("}")+1, remstr.length);
-				}while(remstr.length>0);
 			}
 			else
 			{
@@ -464,17 +457,18 @@ function newMove(participant, index) {
 			updateStatTables();
 			clearTimeout(this.timeoutStep2);
 			this.Step2Timer=parseInt(variables['experiment_round_timer']);
-			document.getElementById("roundtimerbar").style.width="100%";
 			$('#step2').hide();
 			if(waitThisRound)
 			{
 				$('#step3').hide();
 				$('#polling').show();
+				$('#pollingtext').html("All participants made a choice. Next round is about to begin...");
 			}
 			else
 			{
 				$('#step3').show();
 				$('#polling').hide();
+				$('#pollingtext').html(preprocess(variables['Polling_Text']));
 				$('#resulttable').fixedHeaderTable({ altClass: 'odd'});
 			}
 			countDownStep3();
@@ -503,9 +497,9 @@ function submitBotAnswer()
 		if (!activePlayers[i])
 		{
 			var botWaitThisRound=true;
-			for(var j=0; j<this.playersForRound[expRoundNum].length; j++)
+			for(var j=0; j<this.playersForRound[expRoundNum-1].length; j++)
 			{
-				if(this.playersForRound[expRoundNum][j]==i)
+				if(this.playersForRound[expRoundNum-1][j]==i)
 					botWaitThisRound=false;
 			}
 			if(!botWaitThisRound)
@@ -527,7 +521,7 @@ function preprocess(str)
 {
 	while(str.indexOf('%')>=0&&str.indexOf('%',str.indexOf('%')+1)>=0)
 	{
-		if(str.indexOf('[')>=0&&str.indexOf(']',str.indexOf('[')+1)>=0)
+		if((str.substring(str.indexOf('%')+1, str.indexOf('%',str.indexOf('%')+1))).indexOf('[')>=0&&(str.substring(str.indexOf('%')+1, str.indexOf('%',str.indexOf('%')+1))).indexOf(']',(str.substring(str.indexOf('%')+1, str.indexOf('%',str.indexOf('%')+1))).indexOf('[')+1)>=0)
 			str=str.substring(0, str.indexOf('%'))+variables[str.substring(str.indexOf('%')+1, str.indexOf('['))][parseInt(str.substring(str.indexOf('[')+1,str.indexOf(']')))-1][parseInt(str.substring(str.indexOf('[', str.indexOf('[')+1)+1,str.indexOf(']', str.indexOf(']')+1)))-1]+str.substring(str.indexOf('%',str.indexOf('%')+1)+1, str.length);
 		else
 			str=str.substring(0, str.indexOf('%'))+variables[str.substring(str.indexOf('%')+1, str.indexOf('%',str.indexOf('%')+1))]+str.substring(str.indexOf('%',str.indexOf('%')+1)+1, str.length);
@@ -572,53 +566,42 @@ function selectionSort(arr)
 
 function updateStatTables()
 {
-	if(this.prevRoundChoices[expRoundNum].length<minimumParticipants)
+	prevRoundPayoffs = new Array();
+	for(var i=1; i<=numPlayers+parseInt(variables['Bot_Count']); i++)
+		prevRoundPayoffs[i]=parseFloat("0").toFixed(2);
+	for(var u=0; u<prevRoundChoices[expRoundNum].length; u++)
 	{
-		$("#resultimage").attr("src", getFile("incomplete.png"));
-		$("#resulttext").html(preprocess(variables['incomplete_participation_text']));
-		for(var i=1; i<=numPlayers+parseInt(variables['Bot_Count']); i++)
+		var figuredComb=new Array();
+		var userChoice;
+		for(var i=0; i<minimumParticipants; i++)
 		{
-			prevRoundPayoffs[i]=(0).toFixed(2);
-			averagePayoffs[i]=parseFloat(parseFloat(totalPayoffs[i])/(expRoundNum)).toFixed(2);
+			if(this.prevRoundChoices[expRoundNum][i][0]!=this.prevRoundChoices[expRoundNum][u][0])
+				figuredComb.push(this.prevRoundChoices[expRoundNum][i][1]);
+			else
+				userChoice=this.prevRoundChoices[expRoundNum][i][1];
 		}
-	}
-	else
-	{
-		for(var u=0; u<prevRoundChoices[expRoundNum].length; u++)
+		var mcri=matchedCombRowIndex(userChoice);
+		var mcci=matchedCombColumnIndex(figuredComb, true);
+		if(this.prevRoundChoices[expRoundNum][u][0]==myid)
 		{
-			var figuredComb=new Array();
-			var userChoice;
-			for(var i=0; i<minimumParticipants; i++)
+			for(var i=1; i<=parseInt(variables['information_row_count']); i++)
 			{
-				if(this.prevRoundChoices[expRoundNum][i][0]!=this.prevRoundChoices[expRoundNum][u][0])
-					figuredComb.push(this.prevRoundChoices[expRoundNum][i][1]);
-				else
-					userChoice=this.prevRoundChoices[expRoundNum][i][1];
-			}
-			var mcri=matchedCombRowIndex(userChoice);
-			var mcci=matchedCombColumnIndex(figuredComb, true);
-			if(this.prevRoundChoices[expRoundNum][u][0]==myid)
-			{
-				for(var i=1; i<=parseInt(variables['information_row_count']); i++)
+				for(var j=1; j<=parseInt(variables['information_column_count']); j++)
 				{
-					for(var j=1; j<=parseInt(variables['information_column_count']); j++)
+					if(variables["information_row"+i+"_column"+j+"_payoff_cells"].indexOf("("+(mcri+1)+","+(mcci+1)+")")>=0)
 					{
-						if(variables["information_row"+i+"_column"+j+"_payoff_cells"].indexOf("("+(mcri+1)+","+(mcci+1)+")")>=0)
-						{
-							$("#resultimage").attr("src", getFile(variables["information_row"+i+"_column"+j+"_image"]));
-							$("#resulttext").html(preprocess(variables["information_row"+i+"_column"+j+"_outcome_text"]));
-							break;
-						}
+						$("#resultimage").attr("src", getFile(variables["information_row"+i+"_column"+j+"_image"]));
+						$("#resulttext").html(preprocess(variables["information_row"+i+"_column"+j+"_outcome_text"]));
+						break;
 					}
 				}
 			}
-			prevRoundPayoffs[this.prevRoundChoices[expRoundNum][u][0]]=parseFloat(variables['payoff'][mcri][mcci]).toFixed(2);
-			totalPayoffs[this.prevRoundChoices[expRoundNum][u][0]]=(parseFloat(totalPayoffs[this.prevRoundChoices[expRoundNum][u][0]])+parseFloat(variables['payoff'][mcri][mcci])).toFixed(2);
-			averagePayoffs[this.prevRoundChoices[expRoundNum][u][0]]=parseFloat(parseFloat(totalPayoffs[this.prevRoundChoices[expRoundNum][u][0]])/(expRoundNum)).toFixed(2);
 		}
-	}
-	$('#earnresult').html(totalPayoffs[myid]);
-
+		prevRoundPayoffs[this.prevRoundChoices[expRoundNum][u][0]]=parseFloat(variables['payoff'][mcri][mcci]).toFixed(2);
+		totalPayoffs[this.prevRoundChoices[expRoundNum][u][0]]=(parseFloat(totalPayoffs[this.prevRoundChoices[expRoundNum][u][0]])+parseFloat(variables['payoff'][mcri][mcci])).toFixed(2);
+		averagePayoffs[this.prevRoundChoices[expRoundNum][u][0]]=parseFloat(parseFloat(totalPayoffs[this.prevRoundChoices[expRoundNum][u][0]])/(expRoundNum)).toFixed(2);
+	}	
+	
 	this.scores=new Array();
 	for(var i=0; i<numPlayers+parseInt(variables['Bot_Count']); i++)
 	{
@@ -627,152 +610,74 @@ function updateStatTables()
 		scores[i].push(parseFloat(totalPayoffs[i+1]));
 	}
 	this.scores=selectionSort(this.scores);
+	
+	$('#earnresult').html(prevRoundPayoffs[myid]);
 
 	if(this.prevRoundChoices[expRoundNum].length==minimumParticipants)
 	{
-		var resulttablehtml="<thead><tr style=\"height:25px; line-height:25px;\"><th><span style='padding-left:7px;'>Rank</span></th><th><span style='padding-left:7px;'>Players</span></th><th><span style='padding-left:7px;'>Score Board</span></th></tr></thead><tbody>";
+		var resulttablehtml="<thead><tr style=\"height:25px; line-height:25px;\"><th><span style='padding-left:7px;'>Rank</span></th><th><span style='padding-left:7px;'>Players</span></th><th><span style='padding-left:7px;'>Prev. Round Payoff</span></th><th><span style='padding-left:7px;'>Score Board</span></th></tr></thead><tbody>";
 		for(var i=0; i<numPlayers+parseInt(variables['Bot_Count']); i++)
 		{
 			resulttablehtml+=("<tr style=\"height:25px; line-height:25px;\"><td><span style='padding-left:7px;'>"+(i+1)+"</span></td><td><span style='padding-left:7px;'>");
 			if(scores[i][0]<=numPlayers)
 			{
 				if(scores[i][0]==myid)
-					resulttablehtml+=("You</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span></td></tr>");
+				{
+					if(prevRoundPayoffs[scores[i][0]]>0)
+						resulttablehtml+=("You</span></td><td><span style='padding-left:7px;'>"+prevRoundPayoffs[scores[i][0]]+"</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span><img src=\""+getFile("up.png")+"\"></td></tr>");
+					else if(prevRoundPayoffs[scores[i][0]]<0)
+						resulttablehtml+=("You</span></td><td><span style='padding-left:7px;'>"+prevRoundPayoffs[scores[i][0]]+"</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span><img src=\""+getFile("down.png")+"\"></td></tr>");
+					else
+						resulttablehtml+=("You</span></td><td><span style='padding-left:7px;'>"+prevRoundPayoffs[scores[i][0]]+"</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span><img src=\""+getFile("nochange.png")+"\"></td></tr>");
+				}
 				else
-					resulttablehtml+=(getName(scores[i][0])+"</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span></td></tr>");
+				{
+					if(prevRoundPayoffs[scores[i][0]]>0)
+						resulttablehtml+=(getName(scores[i][0])+"</span></td><td><span style='padding-left:7px;'>"+prevRoundPayoffs[scores[i][0]]+"</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span><img src=\""+getFile("up.png")+"\"></td></tr>");
+					else if(prevRoundPayoffs[scores[i][0]]<0)
+						resulttablehtml+=(getName(scores[i][0])+"</span></td><td><span style='padding-left:7px;'>"+prevRoundPayoffs[scores[i][0]]+"</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span><img src=\""+getFile("down.png")+"\"></td></tr>");
+					else
+						resulttablehtml+=(getName(scores[i][0])+"</span></td><td><span style='padding-left:7px;'>"+prevRoundPayoffs[scores[i][0]]+"</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span><img src=\""+getFile("nochange.png")+"\"></td></tr>");
+				}
 			}
 			else
-				resulttablehtml+=(("Bot "+(scores[i][0]-numPlayers))+"</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span></td></tr>");
+			{
+				if(prevRoundPayoffs[scores[i][0]]>0)
+					resulttablehtml+=(("User "+(scores[i][0]))+"</span></td><td><span style='padding-left:7px;'>"+prevRoundPayoffs[scores[i][0]]+"</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span><img src=\""+getFile("up.png")+"\"></td></tr>");
+				else if(prevRoundPayoffs[scores[i][0]]<0)
+					resulttablehtml+=(("User "+(scores[i][0]))+"</span></td><td><span style='padding-left:7px;'>"+prevRoundPayoffs[scores[i][0]]+"</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span><img src=\""+getFile("down.png")+"\"></td></tr>");
+				else
+					resulttablehtml+=(("User "+(scores[i][0]))+"</span></td><td><span style='padding-left:7px;'>"+prevRoundPayoffs[scores[i][0]]+"</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span><img src=\""+getFile("nochange.png")+"\"></td></tr>");
+			}
 		}
 		resulttablehtml+="</tbody>";
 		$('#resulttable').html(resulttablehtml);
 		if(this.waitForRound==false)
 			$('#resulttable').fixedHeaderTable({ altClass: 'odd'});
 	}
-
-	var statstablehtml="<thead><tr style=\"height:25px; line-height:25px;\"><th><span style='padding-left:7px;'>Players</span></th>";
-	var statstablewidth=110;
-	if(parseInt(variables['Prev_Rnd_Payoff'])==1)
-	{
-		statstablewidth+=100;
-		statstablehtml+="<th><span style='padding-left:7px;'>"+preprocess(variables['Prev_Rnd_Payoff_Text'])+"</span></th>";
-	}
-	if(parseInt(variables['Prev_Rnd_Choice'])==1)
-	{
-		statstablewidth+=100;
-		statstablehtml+="<th><span style='padding-left:7px;'>"+preprocess(variables['Prev_Rnd_Choice_Text'])+"</span></th>";
-	}
-	if(parseInt(variables['Total_Payoff'])==1)
-	{
-		statstablewidth+=100;
-		statstablehtml+="<th><span style='padding-left:7px;'>"+preprocess(variables['Total_Payoff_Text'])+"<span></th>";
-	}
-	if(parseInt(variables['Avg_Payoff'])==1)
-	{
-		statstablewidth+=100;
-		statstablehtml+="<th><span style='padding-left:7px;'>"+preprocess(variables['Avg_Payoff_Text'])+"</span></th>";
-	}
-	document.getElementById("grid_8div").style.width=statstablewidth+"px";
-	statstablehtml+="</tr></thead><tbody>";
-
-	for(var i=1; i<=numPlayers; i++)
-	{
-		if(i==myid)
-		{
-			statstablehtml+="<tr style=\"height:25px; line-height:25px;\"><td><span style='padding-left:7px;'>You</span></td>";
-			if(parseInt(variables['Prev_Rnd_Payoff'])==1)
-				statstablehtml+="<td><span style='padding-left:7px;'>"+prevRoundPayoffs[i]+"<span></td>";
-			if(parseInt(variables['Prev_Rnd_Choice'])==1)
-			{
-				if(this.prevRoundChoices[expRoundNum].length<minimumParticipants)
-					statstablehtml+="<td><span style='padding-left:7px;'>N/A</span></td>";
-				else
-				{
-					var choiceFound=false;
-					for(var k=0; k<this.prevRoundChoices[expRoundNum].length; k++)
-					{
-						if(this.prevRoundChoices[expRoundNum][k][0]==myid)
-						{
-							choiceFound=true;
-							statstablehtml+="<td><span style='padding-left:7px;'>"+this.prevRoundChoices[expRoundNum][k][1]+"</span></td>";
-							break;
-						}
-					}
-					if(!choiceFound)
-						statstablehtml+="<td><span style='padding-left:7px;'>N/A</span></td>";
-				}
-			}
-			if(parseInt(variables['Total_Payoff'])==1)
-				statstablehtml+="<td><span style='padding-left:7px;'>"+totalPayoffs[i]+"</span></td>";
-			if(parseInt(variables['Avg_Payoff'])==1)
-				statstablehtml+="<td><span style='padding-left:7px;'>"+averagePayoffs[i]+"</span></td>";
-			statstablehtml+="</tr>";
-		}
-	}
-
-	for(var i=1; i<=numPlayers+parseInt(variables['Bot_Count']); i++)
-	{
-		if(i!=myid)
-		{
-			if(i<=numPlayers)
-				statstablehtml+="<tr style=\"height:25px; line-height:25px;\"><td><span style='padding-left:7px;'>"+getName(i)+"</span></td>";
-			else
-				statstablehtml+="<tr style=\"height:25px; line-height:25px;\"><td><span style='padding-left:7px;'>Bot "+(i-numPlayers)+"</span></td>";
-			if(parseInt(variables['Prev_Rnd_Payoff'])==1)
-				statstablehtml+="<td><span style='padding-left:7px;'>"+prevRoundPayoffs[i]+"</span></td>";
-			if(parseInt(variables['Prev_Rnd_Choice'])==1)
-			{
-				if(this.prevRoundChoices[expRoundNum].length<minimumParticipants)
-					statstablehtml+="<td><span style='padding-left:7px;'>N/A</span></td>";
-				else
-				{
-					var choiceFound=false;
-					for(var k=0; k<this.prevRoundChoices[expRoundNum].length; k++)
-					{
-						if(this.prevRoundChoices[expRoundNum][k][0]==i)
-						{
-							choiceFound=true;
-							statstablehtml+="<td><span style='padding-left:7px;'>"+this.prevRoundChoices[expRoundNum][k][1]+"</span></td>";
-							break;
-						}
-					}
-					if(!choiceFound)
-						statstablehtml+="<td><span style='padding-left:7px;'>N/A</span></td>";
-				}
-			}
-			if(parseInt(variables['Total_Payoff'])==1)
-				statstablehtml+="<td><span style='padding-left:7px;'>"+totalPayoffs[i]+"</span></td>";
-			if(parseInt(variables['Avg_Payoff'])==1)
-				statstablehtml+="<td><span style='padding-left:7px;'>"+averagePayoffs[i]+"</span></td>";
-			statstablehtml+="</tr>";
-		}
-	}
-
-	statstablehtml+="</tbody>";
-	$('#statisticstable').html(statstablehtml);
-	if(this.waitForRound==false)
-		$('#statisticstable').fixedHeaderTable({ altClass: 'odd'});
 }
 
 function countDownStep1(){  
 	 if (this.Step1Timer <=0){
-		if($.trim($('#readyp').html())!='Please wait for others...')
+		if(!this.iAmReady)
+		{
+			setRound(2+this.plus30Count);
 			submit('Ready');
+		}
 	 }else{  
 		this.Step1Timer--;
 		if(parseInt(variables['instruction_lastseconds_timer'])>=this.Step1Timer)
 		{
-			$('#insttimerbardiv').show();
+			$('#addtimebut').show();
 			$('#insttimer').show();
 			$('#step1secrem').html('seconds remaining');
 		}
 		else
 		{
-			$('#insttimerbardiv').hide();
+			$('#addtimebut').hide();
 			$('#insttimer').hide();
 			$('#step1secrem').html('&nbsp;');
 		}
-		document.getElementById("insttimerbar").style.width=(this.Step1Timer*100/parseInt(variables['instruction_lastseconds_timer']+""))+"%";
 		document.getElementById("insttimer").innerHTML = this.Step1Timer;
 		this.timeoutStep1=setTimeout("countDownStep1()", 1000);
 	 }  
@@ -791,12 +696,18 @@ function getInstructions(instpage)
 			instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td width=\"400\" height=\"150\"><div id=\"instructiontextdiv\"><div style=\"word-wrap:break-word; width: 385px; height: 130px; margin-left:7.5px; margin-right:7.5px; margin-top:5px; margin-bottom:5px;\"><small id=\"instructiontext"+i+"\" class='smallinst'>"+preprocess(variables['instruction_text_'+i])+"</small></div></div></td><td width=\"15\" height=\"150\"></td><td width=\"140\" height=\"150\"><img src=\""+getFile(instimg)+"\" class=\"img-inst\"></td></tr></table></td></tr>"
 	}
 	//instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage--;getInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage++;getInstructions(instructionsPage);;\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
-	instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage--;getInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"><font face=\"Verdana\"><span style=\"font-size:10pt; color:black\" id=\"readyp\"><button id=\"begininsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"submit('Ready');$('#begininsbut').hide();$('#readyp').html('Please wait for others...');\"><i class=\"icon-play-circle icon-white\"></i> Ready</button></span></font></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage++;getInstructions(instructionsPage);\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
+	instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage--;getInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"><font face=\"Verdana\"><span style=\"font-size:10pt; color:black\" id=\"readyp\"><button id=\"begininsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"setRound(2+getPlus30Count());submit('Ready');$('#begininsbut').hide();$('#readyp').html('Please wait for others...');$('#addtimebut').hide();readySignal();\">I'm Ready</button></span></font></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage++;getInstructions(instructionsPage);\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
 	$("#instructiontable").html(instructionhtml);
 	if(instpage==Math.ceil(parseInt(variables['instruction_count'])/3))
 	{
 		$('#nextinsbut').hide();
-		$('#begininsbut').show();
+		if(!this.iAmReady)
+			$('#begininsbut').show();
+		else
+		{
+			$('#begininsbut').hide();
+			$('#readyp').html('Please wait for others...');
+		}
 	}
 	else
 		$('#begininsbut').hide();
@@ -806,29 +717,175 @@ function getInstructions(instpage)
 		$('#previnsbut').hide();
 }
 
+function readySignal()
+{
+	this.iAmReady=true;
+}
+
 function countDownStep2()
 {  
 	 if (this.Step2Timer <=0){
 		updateStatTables();
 		clearTimeout(this.timeoutStep2);
 	 	this.Step2Timer=parseInt(variables['experiment_round_timer']);
-		if(parseInt(variables['Enable Polling'])==1&&this.waitThisRound==true)
+		if(!(parseInt(variables['Enable Polling'])==1&&this.waitThisRound==true))
 		{
-			document.getElementById("pollingtimerbar").style.width="100%";
-		}
-		else
-		{
-			document.getElementById("roundtimerbar").style.width="100%";
+			if($('#selectedbuttext').html()=="&nbsp;") // in case of incomplete participation send the prespecified choice.
+			{
+				var incompChoiceButNum=-1;
+				if($.trim(variables["Button_1_Text"])==$.trim(variables["inactive_choice"]))
+					incompChoiceButNum=1;
+				if($.trim(variables["Button_2_Text"])==$.trim(variables["inactive_choice"]))
+					incompChoiceButNum=2;
+				if($.trim(variables["Button_3_Text"])==$.trim(variables["inactive_choice"]))
+					incompChoiceButNum=3;
+				if($.trim(variables["Button_4_Text"])==$.trim(variables["inactive_choice"]))
+					incompChoiceButNum=4;
+				if($.trim(variables["Button_5_Text"])==$.trim(variables["inactive_choice"]))
+					incompChoiceButNum=5;
+					
+				if(parseInt(variables['Button_Count'])==2)
+				{
+					if(incompChoiceButNum==1)
+					{
+						but2_2Pressed();
+						$('#but4').html('');
+					}
+					if(incompChoiceButNum==2)
+					{
+						but4_2Pressed();
+						$('#but2').html('');
+					}
+				}
+				if(parseInt(variables['Button_Count'])==3)
+				{
+					if(incompChoiceButNum==1)
+					{
+						but2_3Pressed();
+						$('#but3').html('');
+						$('#but4').html('');
+					}
+					if(incompChoiceButNum==2)
+					{
+						but3_3Pressed();
+						$('#but2').html('');
+						$('#but4').html('');
+					}
+					if(incompChoiceButNum==3)
+					{
+						but4_3Pressed();
+						$('#but2').html('');
+						$('#but3').html('');
+					}
+				}
+				if(parseInt(variables['Button_Count'])==4)
+				{
+					if(incompChoiceButNum==1)
+					{
+						but1_4Pressed();
+						$('#but2').html('');
+						$('#but4').html('');
+						$('#but5').html('');
+					}
+					if(incompChoiceButNum==2)
+					{
+						but2_4Pressed();
+						$('#but1').html('');
+						$('#but4').html('');
+						$('#but5').html('');
+					}
+					if(incompChoiceButNum==3)
+					{
+						but4_4Pressed();
+						$('#but1').html('');
+						$('#but2').html('');
+						$('#but5').html('');
+					}
+					if(incompChoiceButNum==4)
+					{
+						but5_4Pressed();
+						$('#but1').html('');
+						$('#but2').html('');
+						$('#but4').html('');
+					}
+				}
+				if(parseInt(variables['Button_Count'])==5)
+				{
+					if(incompChoiceButNum==1)
+					{
+						but1_5Pressed();
+						$('#but2').html('');
+						$('#but3').html('');
+						$('#but4').html('');
+						$('#but5').html('');
+					}
+					if(incompChoiceButNum==2)
+					{
+						but2_5Pressed();
+						$('#but1').html('');
+						$('#but3').html('');
+						$('#but4').html('');
+						$('#but5').html('');
+					}
+					if(incompChoiceButNum==3)
+					{
+						but3_5Pressed();
+						$('#but1').html('');
+						$('#but2').html('');
+						$('#but4').html('');
+						$('#but5').html('');
+					}
+					if(incompChoiceButNum==4)
+					{
+						but4_5Pressed();
+						$('#but1').html('');
+						$('#but2').html('');
+						$('#but3').html('');
+						$('#but5').html('');
+					}
+					if(incompChoiceButNum==5)
+					{
+						but5_5Pressed();
+						$('#but1').html('');
+						$('#but2').html('');
+						$('#but3').html('');
+						$('#but4').html('');
+					}
+				}
+			}
 			$('#step2').hide();
 			$('#step3').show();
 		}
-		countDownStep3();
 	 }else{  
 		this.Step2Timer--;
-		document.getElementById("pollingtimerbar").style.width=((this.Step2Timer+parseInt(variables['result_timer']+""))*100/(parseInt(variables['experiment_round_timer']+"")+parseInt(variables['result_timer']+"")))+"%";
 		document.getElementById("pollingtimertext").innerHTML = (this.Step2Timer+parseInt(variables['result_timer']+""));
-		document.getElementById("roundtimerbar").style.width=(this.Step2Timer*100/parseInt(variables['experiment_round_timer']+""))+"%";
-		document.getElementById("roundtimertext").innerHTML = this.Step2Timer+" seconds"; 
+		var min=Math.floor(this.Step2Timer/60);
+		var sec=this.Step2Timer%60;
+		if(min>1)
+		{
+			if(sec>1)
+				this.step2TimeRemText.attr({text: min+" minutes "+sec+" seconds"});
+			else if(sec==1)
+				this.step2TimeRemText.attr({text: min+" minutes "+sec+" second"});
+			else
+				this.step2TimeRemText.attr({text: min+" minutes"});
+		}
+		else if(min==1)
+		{
+			if(sec>1)
+				this.step2TimeRemText.attr({text: min+" minute "+sec+" seconds"});
+			else if(sec==1)
+				this.step2TimeRemText.attr({text: min+" minute "+sec+" second"});
+			else
+				this.step2TimeRemText.attr({text: min+" minute"});
+		}
+		else
+		{
+			if(sec>1)
+				this.step2TimeRemText.attr({text: sec+" seconds"});
+			else
+				this.step2TimeRemText.attr({text: sec+" second"});
+		}	
 		this.timeoutStep2=setTimeout("countDownStep2()", 1000);
 	 }  
 }
@@ -891,12 +948,8 @@ function countDownStep3(){
 		if(expRoundNum<parseInt(variables['total_rounds_count']))
 		{
 			this.Step3Timer=parseInt(variables['result_timer']);
-			if(parseInt(variables['Enable Polling'])==1)
-				document.getElementById("pollingtimerbar").style.width="100%";
-			else
-				document.getElementById("resulttimerbar").style.width="100%";
 			expRoundNum++;
-			setRound(2+expRoundNum);
+			setRound(2+expRoundNum+this.plus30Count);
 			if(parseInt(variables['Enable Polling'])==1)
 			{
 				this.waitThisRound=true;
@@ -905,6 +958,7 @@ function countDownStep3(){
 					if(this.playersForRound[expRoundNum-1][i]==myid)
 						this.waitThisRound=false;
 				}
+				$('#pollingtext').html(preprocess(variables['Polling_Text']));
 				if(waitThisRound)
 				{
 					$('#step3').hide();
@@ -942,7 +996,7 @@ function countDownStep3(){
 						finalresulttablehtml+=getName(scores[i][0])+"</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span></td></tr>";
 				}
 				else
-					finalresulttablehtml+=("Bot "+(scores[i][0]-numPlayers))+"</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span></td></tr>";
+					finalresulttablehtml+=("User "+(scores[i][0]))+"</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span></td></tr>";
 			}
 			finalresulttablehtml+="</tbody>";
 			$('#finalresulttable').html(finalresulttablehtml);
@@ -951,9 +1005,7 @@ function countDownStep3(){
 		}
 	 }else{  
 		this.Step3Timer--;
-		document.getElementById("pollingtimerbar").style.width=(this.Step3Timer*100/(parseInt(variables['experiment_round_timer']+"")+parseInt(variables['result_timer']+"")))+"%";
 		document.getElementById("pollingtimertext").innerHTML = this.Step3Timer;
-		document.getElementById("resulttimerbar").style.width=(this.Step3Timer*100/parseInt(variables['result_timer']+""))+"%";
 		document.getElementById("resulttimertext").innerHTML = this.Step3Timer;
 		this.timeoutStep3=setTimeout("countDownStep3()", 1000);
 	 }  
@@ -967,17 +1019,376 @@ function countDownStep4(){
 		window.location = myurl;
 	 }else{  
 		this.Step4Timer--;
-		document.getElementById("finalresulttimerbar").style.width=(this.Step4Timer*100/parseInt(variables['end_game_timer']+""))+"%";
 		document.getElementById("finalresulttext").innerHTML = this.Step4Timer; 
 		this.timeoutStep3=setTimeout("countDownStep4()", 1000);
 	 }  
-} 
+}
+
+function placeArrowButtons()
+{
+	this.arrowButs = new Array();
+	var circleRight = new Object();
+	circleRight=this.paper.circle(746, 96, 16);
+	circleRight.attr("fill", "#0e76bc");
+	circleRight.attr("stroke-width", 1);
+	this.arrowButs.push(circleRight);
+	var rightArr = this.paper.image(getFile('arrow.png'), 738.5, 87.5, 16, 16);
+	this.arrowButs.push(rightArr);
+	var hiddenCircRight = new Object();
+	hiddenCircRight=this.paper.circle(746, 96, 16);
+	hiddenCircRight.attr({opacity: 0});
+	hiddenCircRight.attr("fill", "red");
+	hiddenCircRight.attr("cursor", "pointer");
+	hiddenCircRight.hover(function(){circleRight.attr("fill", "#6198BC");}, function(){circleRight.attr({fill: "#0e76bc"});});
+	var rightClickHandler = function(){
+		if((startRank+4)<(numPlayers+parseInt(variables['Bot_Count'])))
+		{
+/*			statsContainerArr[startRank-1].translate(-130, 0);
+			statsContainerArr[startRank-1].hide();
+			for(var j=startRank; j<numPlayers+parseInt(variables['Bot_Count']); j++)
+			{
+				statsContainerArr[j].translate(-130, 0);
+				if(j==startRank+4)
+					statsContainerArr[j].show();
+			}
+			startRank++;*/
+			
+			for(var j=0; j<=(numPlayers+parseInt(variables['Bot_Count']))-1; j++)
+				statsContainerArr[j].translate(-130, 0);
+			statsContainerArr[startRank-1].hide();
+			startRank++;
+			statsContainerArr[startRank+4-1].show();
+			
+			if((startRank+4)==(numPlayers+parseInt(variables['Bot_Count'])))
+			{
+				circleRight.attr({opacity: 0});
+				rightArr.attr({opacity: 0});
+				hiddenCircRight.unclick(rightClickHandler);
+				hiddenCircRight.attr("cursor", "auto");
+			}
+			if(startRank==2)
+			{
+				circleLeft.attr({opacity: 100});
+				leftArr.attr({opacity: 100});
+				hiddenCircLeft.click(leftClickHandler);
+				hiddenCircLeft.attr("cursor", "pointer");
+			}
+		}
+	}
+	hiddenCircRight.click(rightClickHandler);
+	this.arrowButs.push(hiddenCircRight);
+	
+	var circleLeft = new Object();
+	circleLeft=this.paper.circle(701, 96, 16);
+	circleLeft.attr("fill", "#0e76bc");
+	circleLeft.attr("stroke-width", 1);
+	this.arrowButs.push(circleLeft);
+	var leftArr = this.paper.image(getFile('arrow.png'), 693.5, 87.5, 16, 16);
+	leftArr.transform("S-1,1");
+	this.arrowButs.push(leftArr);
+	var hiddenCircLeft = new Object();
+	hiddenCircLeft=this.paper.circle(701, 96, 16);
+	hiddenCircLeft.attr({opacity: 0});
+	hiddenCircLeft.attr("fill", "red");
+	hiddenCircLeft.attr("cursor", "pointer");
+	hiddenCircLeft.hover(function(){circleLeft.attr("fill", "#6198BC");}, function(){circleLeft.attr({fill: "#0e76bc"});});
+	var leftClickHandler = function(){
+		if(startRank>1)
+		{
+		/*	for(var j=startRank+4-1; j<=(numPlayers+parseInt(variables['Bot_Count']))-1; j++) // BURADAYDIN statsler kayiyor!!!
+				statsContainerArr[j].translate(130, 0);
+			statsContainerArr[startRank+4-1].hide();
+			for(var j=startRank+4-2; j>=0; j--)
+				statsContainerArr[j].translate(130, 0);*/
+			for(var j=0; j<=(numPlayers+parseInt(variables['Bot_Count']))-1; j++)
+				statsContainerArr[j].translate(130, 0);
+			statsContainerArr[startRank+4-1].hide();
+			startRank--;
+			statsContainerArr[startRank-1].show();
+			if(startRank==1)
+			{
+				circleLeft.attr({opacity: 0});
+				leftArr.attr({opacity: 0});
+				hiddenCircLeft.unclick(leftClickHandler);
+				hiddenCircLeft.attr("cursor", "auto");
+			}
+			if(startRank+4==(numPlayers+parseInt(variables['Bot_Count']))-1)
+			{
+				circleRight.attr({opacity: 100});
+				rightArr.attr({opacity: 100});
+				hiddenCircRight.click(rightClickHandler);
+				hiddenCircRight.attr("cursor", "pointer");
+			}
+		}
+	}
+	circleLeft.attr({opacity: 0});
+	leftArr.attr({opacity: 0});
+	hiddenCircLeft.unclick(leftClickHandler);
+	hiddenCircLeft.attr("cursor", "auto");
+	this.arrowButs.push(hiddenCircLeft);
+}
+
+function fillStatsContainer()
+{
+	if(this.statsContainerArr==undefined)
+		this.statsContainerArr = new Array();
+	for(var i=0; i<this.statsContainerArr.length; i++)
+		for(var j=0; j<this.statsContainerArr[i].length; j++)
+			if(this.statsContainerArr[i][j])
+				this.statsContainerArr[i][j].remove();
+	for(var i=0; i<numPlayers+parseInt(variables['Bot_Count']); i++)
+	{
+		if(this.scores==undefined) // first round
+			this.statsContainerArr[i]=participantStatTable(i+1,i+1);
+		else
+			this.statsContainerArr[i]=participantStatTable(i+1,this.scores[i][0]);
+		this.statsContainerArr[i].hide();
+	}
+	for(var i=0; i<numPlayers+parseInt(variables['Bot_Count']); i++)
+	{
+		if(i<5)
+			this.statsContainerArr[i].show();
+		else
+		{
+			this.startRank=1;
+			if(!waitThisRound)
+				placeArrowButtons();
+			break;
+		}
+	}
+}
+
+function participantStatTable(rank, playerId)
+{
+	var locX=(rank>1)?(rank-1)*130+5:5;
+	var height=20+25.5*((parseInt(variables['Self_Prev_Rnd_Choice'])+parseInt(variables['Others_Prev_Rnd_Choice'])>0)?1:0+(parseInt(variables['Self_Prev_Rnd_Payoff'])+parseInt(variables['Others_Prev_Rnd_Payoff'])>0)?1:0+(parseInt(variables['Self_Total_Payoff'])+parseInt(variables['Others_Total_Payoff'])>0)?1:0+(parseInt(variables['Self_Avg_Payoff'])+parseInt(variables['Others_Avg_Payoff'])>0)?1:0);
+	var tabContents = paper.set();
+	var rect = paper.rect(locX, 5, 125, 120, 5).attr({
+		"fill": "0.0-#FDBE85:5-#FDBE85:125",
+		"opacity": 0.3,
+		"stroke-opacity": 0
+	});
+	//rect.glow();
+	//rect.glow({color: "#FFF", width: 100});
+	tabContents.push(rect);
+
+	if(rank==1)
+	{
+		var starImg3 = this.paper.image(getFile('star.png'), locX+110, 7, 13, 13.5);
+		var starImg2 = this.paper.image(getFile('star.png'), locX+94, 7, 13, 13.5);
+		var starImg1 = this.paper.image(getFile('star.png'), locX+78, 7, 13, 13.5);
+		tabContents.push(starImg3);
+		tabContents.push(starImg2);
+		tabContents.push(starImg1);
+	}
+	if(rank==2)
+	{
+		var starImg2 = this.paper.image(getFile('star.png'), locX+102, 7, 13, 13.5);
+		var starImg1 = this.paper.image(getFile('star.png'), locX+86, 7, 13, 13.5);
+		tabContents.push(starImg2);
+		tabContents.push(starImg1);
+	}
+	if(rank==3)
+	{
+		var starImg1 = this.paper.image(getFile('star.png'), locX+94, 7, 13, 13.5);
+		tabContents.push(starImg1);
+	}
+	
+	var unText;
+	if(playerId==myid)
+		unText=this.paper.text(locX+7, 14.5, getName(myid)+" (You)").attr({'text-anchor': 'start'});
+	else if(playerId<=numPlayers)
+		unText=this.paper.text(locX+7, 14.5, getName(playerId)).attr({'text-anchor': 'start'});
+	else
+		unText=this.paper.text(locX+7, 14.5, "User "+(playerId)).attr({'text-anchor': 'start'});
+	unText.attr({'font-size': 10, 'font-family': 'Verdana', 'font-weight': 'bold'});
+	unText.attr("fill", "#0e76bc");
+	tabContents.push(unText);
+	
+	var opt1Valid=false;
+	var opt2Valid=false;
+	var opt3Valid=false;
+	
+	if((parseInt(variables['Self_Prev_Rnd_Choice'])==1 && myid == playerId) || (parseInt(variables['Others_Prev_Rnd_Choice'])==1 && myid!=playerId))
+	{
+		var prevRndText=this.paper.text(locX+62, 29, preprocess(variables['Prev_Rnd_Choice_Text']));
+		prevRndText.attr({'font-size': 10, 'font-family': 'Verdana', 'font-weight': 'bold'});
+		prevRndText.attr("fill", "#404041");
+		tabContents.push(prevRndText);
+		opt1Valid=true;
+	}
+	
+	if((parseInt(variables['Self_Prev_Rnd_Payoff'])==1 && myid == playerId) || (parseInt(variables['Others_Prev_Rnd_Payoff'])==1 && myid!=playerId))
+	{
+		var prevRndPayoffText;
+		if(opt1Valid)
+			prevRndPayoffText=this.paper.text(locX+62, 54.5, preprocess(variables['Prev_Rnd_Payoff_Text']));
+		else
+			prevRndPayoffText=this.paper.text(locX+62, 29, preprocess(variables['Prev_Rnd_Payoff_Text']));
+		prevRndPayoffText.attr({'font-size': 10, 'font-family': 'Verdana', 'font-weight': 'bold'});
+		prevRndPayoffText.attr("fill", "#404041");
+		tabContents.push(prevRndPayoffText);
+		opt2Valid=true;
+	}
+	
+	if((parseInt(variables['Self_Total_Payoff'])==1 && myid == playerId) || (parseInt(variables['Others_Total_Payoff'])==1 && myid!=playerId))
+	{
+		var totPayoffText;
+		if(opt1Valid&&opt2Valid)
+			totPayoffText=this.paper.text(locX+62, 80, preprocess(variables['Total_Payoff_Text']));
+		else if(opt1Valid||opt2Valid)
+			totPayoffText=this.paper.text(locX+62, 54.5, preprocess(variables['Total_Payoff_Text']));
+		else
+			totPayoffText=this.paper.text(locX+62, 29, preprocess(variables['Total_Payoff_Text']));
+		totPayoffText.attr({'font-size': 10, 'font-family': 'Verdana', 'font-weight': 'bold'});
+		totPayoffText.attr("fill", "#404041");
+		tabContents.push(totPayoffText);
+		opt3Valid=true;
+	}
+	
+	if((parseInt(variables['Self_Avg_Payoff'])==1 && myid == playerId) || (parseInt(variables['Others_Avg_Payoff'])==1 && myid!=playerId))
+	{
+		var avgPayoffText;
+		if(opt1Valid&&opt2Valid&&opt3Valid)
+			avgPayoffText=this.paper.text(locX+62, 105.5, preprocess(variables['Avg_Payoff_Text']));
+		else if(((opt1Valid||opt2Valid)&&opt3Valid)||((opt1Valid||opt3Valid)&&opt2Valid)||((opt3Valid||opt2Valid)&&opt1Valid))
+			avgPayoffText=this.paper.text(locX+62, 80, preprocess(variables['Avg_Payoff_Text']));
+		else if(opt1Valid||opt2Valid||opt3Valid)
+			avgPayoffText=this.paper.text(locX+62, 54.5, preprocess(variables['Avg_Payoff_Text']));
+		else
+			avgPayoffText=this.paper.text(locX+62, 29, preprocess(variables['Avg_Payoff_Text']));
+		avgPayoffText.attr({'font-size': 10, 'font-family': 'Verdana', 'font-weight': 'bold'});
+		avgPayoffText.attr("fill", "#404041");
+		tabContents.push(avgPayoffText);
+	}
+	
+	var prevRndChc;
+	if((parseInt(variables['Self_Prev_Rnd_Choice'])==1 && myid == playerId) || (parseInt(variables['Others_Prev_Rnd_Choice'])==1 && myid!=playerId))
+	{
+		if(expRoundNum==1||this.prevRoundChoices[expRoundNum-1].length<minimumParticipants)
+			prevRndChc=this.paper.text(locX+62, 41, "N/A");
+		else
+		{
+			var choiceFound=false;
+			for(var k=0; k<this.prevRoundChoices[expRoundNum-1].length; k++)
+			{
+				if(this.prevRoundChoices[expRoundNum-1][k][0]==playerId)
+				{
+					choiceFound=true;
+					prevRndChc=this.paper.text(locX+62, 41, this.prevRoundChoices[expRoundNum-1][k][1]+"");
+					break;
+				}
+			}
+			if(!choiceFound)
+				prevRndChc=this.paper.text(locX+62, 41, "N/A");
+		}
+		prevRndChc.attr({'font-size': 10, 'font-family': 'Verdana'});
+		prevRndChc.attr("fill", "#404041");
+		tabContents.push(prevRndChc);
+	}
+	
+	var prevRndPo;
+	if((parseInt(variables['Self_Prev_Rnd_Payoff'])==1 && myid == playerId) || (parseInt(variables['Others_Prev_Rnd_Payoff'])==1 && myid!=playerId))
+	{
+		if(opt1Valid)
+			prevRndPo=this.paper.text(locX+62, 66.5, prevRoundPayoffs[playerId]);
+		else
+			prevRndPo=this.paper.text(locX+62, 41, prevRoundPayoffs[playerId]);
+		prevRndPo.attr({'font-size': 10, 'font-family': 'Verdana'});
+		prevRndPo.attr("fill", "#404041");
+		tabContents.push(prevRndPo);
+	}
+
+	var totPo;
+	if((parseInt(variables['Self_Total_Payoff'])==1 && myid == playerId) || (parseInt(variables['Others_Total_Payoff'])==1 && myid!=playerId))
+	{	
+		if(opt1Valid&&opt2Valid)
+			totPo=this.paper.text(locX+62, 92, totalPayoffs[playerId]+"");
+		else if(opt1Valid||opt2Valid)
+			totPo=this.paper.text(locX+62, 66.5, totalPayoffs[playerId]+"");
+		else
+			totPo=this.paper.text(locX+62, 41, totalPayoffs[playerId]+"");
+		totPo.attr({'font-size': 10, 'font-family': 'Verdana'});
+		totPo.attr("fill", "#404041");
+		tabContents.push(totPo);
+	}
+
+	var avgPo;
+	if((parseInt(variables['Self_Avg_Payoff'])==1 && myid == playerId) || (parseInt(variables['Others_Avg_Payoff'])==1 && myid!=playerId))
+	{
+		if(opt1Valid&&opt2Valid&&opt3Valid)
+			avgPo=this.paper.text(locX+62, 117.5, averagePayoffs[playerId]+"");
+		else if(((opt1Valid||opt2Valid)&&opt3Valid)||((opt1Valid||opt3Valid)&&opt2Valid)||((opt3Valid||opt2Valid)&&opt1Valid))
+			avgPo=this.paper.text(locX+62, 92, averagePayoffs[playerId]+"");
+		else if(opt1Valid||opt2Valid||opt3Valid)
+			avgPo=this.paper.text(locX+62, 66.5, averagePayoffs[playerId]+"");
+		else
+			avgPo=this.paper.text(locX+62, 41, averagePayoffs[playerId]+"");
+		avgPo.attr({'font-size': 10, 'font-family': 'Verdana'});
+		avgPo.attr("fill", "#404041");
+		tabContents.push(avgPo);
+	}
+	
+	var hiddenRect = paper.rect(locX, 5, 125, 120, 5);
+	hiddenRect.attr({opacity: 0});
+	hiddenRect.attr("fill", "red");
+	hiddenRect.attr("cursor", "pointer");
+	tabContents.push(hiddenRect);
+	tabContents[tabContents.length-1].hover(function(){this.g = this.glow({color: "#f7941e", width: 3});}, function(){this.g.remove();});
+	
+	return tabContents;
+}
 
 function beginExpRound()
 {
-	$('#roundtext').html("Round "+(expRoundNum)+" of "+variables['total_rounds_count']);
+	for(var i=0; this.arrowButs!=undefined&&this.arrowButs!=null&&i<this.arrowButs.length; i++)
+		if(this.arrowButs[i])
+			this.arrowButs[i].remove();
+	if(this.roundText==undefined)
+		this.roundText=this.paper.text(400, 149, "");
+	this.roundText.attr({text: "Round "+(expRoundNum)+" of "+variables['total_rounds_count']});
+	this.roundText.attr({'font-size': 24, 'font-family': 'Verdana'});
+	this.roundText.attr("fill", "#0e76bc");
+
+	if(numPlayers+parseInt(variables['Bot_Count'])>4)
+	{	
+		if(this.step2TimeRemCaptionText==undefined)
+		{
+			this.step2TimeRemCaptionText=this.paper.text(725, 13, "");
+			this.step2TimeRemCaptionText.attr({'font-size': 12, 'font-family': 'Verdana', 'font-weight': 'bold'});
+			this.step2TimeRemCaptionText.attr({text: "Time Remaining:"});
+			this.step2TimeRemCaptionText.attr("fill", "#0e76bc");
+		}
+		if(this.step2TimeRemText==undefined)
+		{
+			this.step2TimeRemText=this.paper.text(725, 35, "");
+			this.step2TimeRemText.attr({'font-size': 12, 'font-family': 'Verdana'});
+			this.step2TimeRemText.attr("fill", "#404041");
+		}
+	}
+	else
+	{
+		if(this.step2TimeRemCaptionText==undefined)
+		{
+				this.step2TimeRemCaptionText=this.paper.text(690, 15, "");
+				this.step2TimeRemCaptionText.attr({'font-size': 16, 'font-family': 'Verdana'});
+				this.step2TimeRemCaptionText.attr({text: "Time Remaining:"});
+				this.step2TimeRemCaptionText.attr("fill", "#0e76bc");
+		}
+		if(this.step2TimeRemText==undefined)
+		{
+				this.step2TimeRemText=this.paper.text(690, 35, "");
+				this.step2TimeRemText.attr({'font-size': 16, 'font-family': 'Verdana'});	
+				this.step2TimeRemText.attr("fill", "#404041");
+		}
+	}
 	countDownStep2();
 	setupButtons();
+	
+	fillStatsContainer();
+	
+	$("#resultimage").attr("src", getFile("nophoto.png"));
+	$("#resulttext").html("");
 	
 	if(iControlBots&&waitThisRound)
 	{
@@ -995,7 +1406,7 @@ function beginExpRound()
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("{"+(numPlayers+i)+", "+botAnswer()+"}");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 			submit(botVal);
 		}
@@ -1044,9 +1455,9 @@ function initializeExperimentDetails()
 	
 	if(parseInt(variables['Bot_Count'])>0&&myid==1)
 		iControlBots = true;
-	$('#yourearntext').html(preprocess(variables['Total_Payoff_Text']));
+	$('#yourearntext').html(preprocess(variables['Prev_Rnd_Payoff_Text']));
 	$('#pollingtext').html(preprocess(variables['Polling_Text']));
-	$("#pollingimage").attr("src", getFile("wait.png"));
+	$("#pollingimage").attr("src", getFile("wait.gif"));
 
 	expRoundNum=1;
 	this.Step1Timer=parseInt(variables['instruction_timer'])+1;
@@ -1068,19 +1479,19 @@ function initializeExperimentDetails()
 		averagePayoffs[i]=(0).toFixed(2);
 	}
 	
-	var resulttablehtml="<thead><tr style=\"height:25px; line-height:25px;\"><th><span style='padding-left:7px;'>Rank</span></th><th><span style='padding-left:7px;'>Players</span></th><th><span style='padding-left:7px;'>Score Board</span></th></tr></thead><tbody>";
+	var resulttablehtml="<thead><tr style=\"height:25px; line-height:25px;\"><th><span style='padding-left:7px;'>Rank</span></th><th><span style='padding-left:7px;'>Players</span></th><th><span style='padding-left:7px;'>Prev. Round Payoff</span></th><th><span style='padding-left:7px;'>Score Board</span></th></tr></thead><tbody>";
 	for(var i=0; i<numPlayers+parseInt(variables['Bot_Count']); i++)
 	{
 		resulttablehtml+=("<tr style=\"height:25px; line-height:25px;\"><td><span style='padding-left:7px;'>"+(i+1)+"</span></td><td><span style='padding-left:7px;'>");
 		if(i<numPlayers)
 		{
 			if(i+1==myid)
-				resulttablehtml+=("You</span></td><td><span style='padding-left:7px;'>"+(0).toFixed(2)+"</span></td></tr>");
+				resulttablehtml+=("You</span></td><td><span style='padding-left:7px;'>"+(0).toFixed(2)+"</span></td><td><span style='padding-left:7px;'>"+(0).toFixed(2)+"</span></td></tr>");
 			else
-				resulttablehtml+=(getName(i+1)+"</span></td><td><span style='padding-left:7px;'>"+(0).toFixed(2)+"</span></td></tr>");
+				resulttablehtml+=(getName(i+1)+"</span></td><td><span style='padding-left:7px;'>"+(0).toFixed(2)+"</span></td><td><span style='padding-left:7px;'>"+(0).toFixed(2)+"</span></td></tr>");
 		}
 		else
-			resulttablehtml+=(("Bot "+(i+1-numPlayers))+"</span></td><td><span style='padding-left:7px;'>"+(0).toFixed(2)+"</span></td></tr>");
+			resulttablehtml+=(("User "+(i+1))+"</span></td><td><span style='padding-left:7px;'>"+(0).toFixed(2)+"</span></td><td><span style='padding-left:7px;'>"+(0).toFixed(2)+"</span></td></tr>");
 	}
 	resulttablehtml+="</tbody>";
 	$('#resulttable').html(resulttablehtml);
@@ -1089,69 +1500,6 @@ function initializeExperimentDetails()
 	getInstructions(instructionsPage);
 	$('#insttimer').html(variables['instruction_timer']);
 	countDownStep1();
-
-	var statstablehtml="<thead><tr style=\"height:25px; line-height:25px;\"><th><span style='padding-left:7px;'>Players</span></th>";
-	var statstablewidth=110;
-	if(parseInt(variables['Prev_Rnd_Payoff'])==1)
-	{
-		statstablewidth+=100;
-		statstablehtml+="<th><span style='padding-left:7px;'>"+preprocess(variables['Prev_Rnd_Payoff_Text'])+"</span></th>";
-	}
-	if(parseInt(variables['Prev_Rnd_Choice'])==1)
-	{
-		statstablewidth+=100;
-		statstablehtml+="<th><span style='padding-left:7px;'>"+preprocess(variables['Prev_Rnd_Choice_Text'])+"</span></th>";
-	}
-	if(parseInt(variables['Total_Payoff'])==1)
-	{
-		statstablewidth+=100;
-		statstablehtml+="<th><span style='padding-left:7px;'>"+preprocess(variables['Total_Payoff_Text'])+"</span></th>";
-	}
-	if(parseInt(variables['Avg_Payoff'])==1)
-	{
-		statstablewidth+=100;
-		statstablehtml+="<th><span style='padding-left:7px;'>"+preprocess(variables['Avg_Payoff_Text'])+"</span></th>";
-	}
-	document.getElementById("grid_8div").style.width=statstablewidth+"px";
-	statstablehtml+="</tr></thead><tbody>";
-	for(var i=1; i<=numPlayers; i++)
-	{
-		if(i==myid)
-		{
-			statstablehtml+="<tr style=\"height:25px; line-height:25px;\"><td><span style='padding-left:7px;'>You</span></td>";
-			if(parseInt(variables['Prev_Rnd_Payoff'])==1)
-				statstablehtml+="<td><span style='padding-left:7px;'>0</span></td>";
-			if(parseInt(variables['Prev_Rnd_Choice'])==1)
-				statstablehtml+="<td><span style='padding-left:7px;'>N/A</span></td>";
-			if(parseInt(variables['Total_Payoff'])==1)
-				statstablehtml+="<td><span style='padding-left:7px;'>0</span></td>";
-			if(parseInt(variables['Avg_Payoff'])==1)
-				statstablehtml+="<td><span style='padding-left:7px;'>0</span></td>";
-			statstablehtml+="</tr>";
-		}
-	}
-	for(var i=1; i<=numPlayers+parseInt(variables['Bot_Count']); i++)
-	{
-		if(i!=myid)
-		{
-			if(i<=numPlayers)
-				statstablehtml+="<tr style=\"height:25px; line-height:25px;\"><td><span style='padding-left:7px;'>"+getName(i)+"</span></td>";
-			else
-				statstablehtml+="<tr style=\"height:25px; line-height:25px;\"><td><span style='padding-left:7px;'>Bot "+(i-numPlayers)+"</span></td>";
-			if(parseInt(variables['Prev_Rnd_Payoff'])==1)
-				statstablehtml+="<td><span style='padding-left:7px;'>0</span></td>";
-			if(parseInt(variables['Prev_Rnd_Choice'])==1)
-				statstablehtml+="<td><span style='padding-left:7px;'>N/A</span></td>";
-			if(parseInt(variables['Total_Payoff'])==1)
-				statstablehtml+="<td><span style='padding-left:7px;'>0</span></td>";
-			if(parseInt(variables['Avg_Payoff'])==1)
-				statstablehtml+="<td><span style='padding-left:7px;'>0</span></td>";
-			statstablehtml+="</tr>";
-		}
-	}
-	statstablehtml+="</tbody>";
-	$('#statisticstable').html(statstablehtml);
-	$('#statisticstable').fixedHeaderTable({ altClass: 'odd'});
 
 	var infohtml="";
 	for(var i=1; i<=parseInt(variables['information_row_count']); i++)
@@ -1170,7 +1518,7 @@ function initializeExperimentDetails()
 		}
 		infohtml+="</tr><tr><td width=\"352\" height=\"6\" colspan=\"3\"></td></tr><tr>";
 		for(var j=1; j<=parseInt(variables['information_column_count']); j++)
-			infohtml+="<td width=\"18\" id=\"infotexttdmargin\"></td><td width=\"302\" id=\"infotexttd\"><div style='margin-left:5px; margin-right:5px; margin-top:5px; margin-bottom:5px; width:292px; word-wrap:break-word;'><small id=\"infotext"+j+"\" class='smallinfo'>"+((variables['information_row'+i+'_column'+j+'_text'])?preprocess(variables['information_row'+i+'_column'+j+'_text']):"")+"</small></div></td><td width=\"18\" id=\"infotexttdmargin\" ></td>";
+			infohtml+="<td width=\"18\" id=\"infotexttdmargin\"></td><td width=\"302\"><div id=\"infotextdiv\"><small id=\"infotext"+j+"\" class='smallinfo'>"+((variables['information_row'+i+'_column'+j+'_text'])?preprocess(variables['information_row'+i+'_column'+j+'_text']):"")+"</small></div></td><td width=\"18\" id=\"infotexttdmargin\" ></td>";
 		infohtml+="</tr>";
 	}
 	$("#infotable").html(infohtml);
@@ -1195,20 +1543,21 @@ function initializeExperimentDetails()
 				orderarr.push(tmpnm);
 			}
 
+			roundsstr+="<activePlayers expRound=\""+(m+1)+"\">";
 			for(var g=0; g<orderarr.length; g++)
 			{
 				if(g==orderarr.length-1)
-					roundsstr+=(orderarr[g]+"_");
+					roundsstr+=(orderarr[g]+"</activePlayers>");
 				else
 					roundsstr+=(orderarr[g]+",");
 			}
 		}
 
-		//unique experiment id
-		roundsstr="["+((new Date()).getTime())+"]"+roundsstr;
+		////unique experiment id
+		//roundsstr="["+((new Date()).getTime())+"]"+roundsstr;
 		
-		submit(roundsstr);
-	
+		//submit(roundsstr);
+		submitBot(0, currentRound, roundsstr);
 	}
 }
 
@@ -1240,11 +1589,11 @@ function but2_2Pressed()
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("{"+(numPlayers+i)+", "+botAnswer()+"}");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit(preprocess(variables['Button_1_Text'])+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_1_Text'])+"</answer>"+botVal);
 	$('#but2').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_1_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_1_Text']));
 	$("#but2").animate({left:'155px'});
@@ -1268,11 +1617,11 @@ function but4_2Pressed()
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("{"+(numPlayers+i)+", "+botAnswer()+"}");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit(variables['Button_2_Text']+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_2_Text'])+"</answer>"+botVal);
 	$('#but4').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_2_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_2_Text']));
 	$("#but4").animate({right:'155px'});
@@ -1296,11 +1645,11 @@ function but2_3Pressed()
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("{"+(numPlayers+i)+", "+botAnswer()+"}");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit(variables['Button_1_Text']+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_1_Text'])+"</answer>"+botVal);
 	$('#but2').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_1_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_1_Text']));
 	$("#but2").animate({left:'155px'});
@@ -1324,11 +1673,11 @@ function but3_3Pressed()
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("{"+(numPlayers+i)+", "+botAnswer()+"}");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit(variables['Button_2_Text']+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_2_Text'])+"</answer>"+botVal);
 	$('#but3').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_2_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_2_Text']));
 }
@@ -1351,11 +1700,11 @@ function but4_3Pressed()
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("{"+(numPlayers+i)+", "+botAnswer()+"}");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit(variables['Button_3_Text']+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_3_Text'])+"</answer>"+botVal);
 	$('#but4').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_3_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_3_Text']));
 	$("#but4").animate({right:'155px'});
@@ -1379,11 +1728,11 @@ function but1_4Pressed()
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("{"+(numPlayers+i)+", "+botAnswer()+"}");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit(variables['Button_1_Text']+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_1_Text'])+"</answer>"+botVal);
 	$('#but1').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_1_Text']+"</a></p>"));
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_1_Text']));
 	$("#but1").animate({left:'282px'});
@@ -1407,11 +1756,11 @@ function but2_4Pressed()
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("{"+(numPlayers+i)+", "+botAnswer()+"}");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit(variables['Button_2_Text']+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_2_Text'])+"</answer>"+botVal);
 	$('#but2').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_2_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_2_Text']));
 	$("#but2").animate({left:'95px'});
@@ -1435,11 +1784,11 @@ function but4_4Pressed()
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("{"+(numPlayers+i)+", "+botAnswer()+"}");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit(variables['Button_3_Text']+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_3_Text'])+"</answer>"+botVal);
 	$('#but4').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_3_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_3_Text']));
 	$("#but4").animate({right:'95px'});
@@ -1463,11 +1812,11 @@ function but5_4Pressed()
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("{"+(numPlayers+i)+", "+botAnswer()+"}");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit(variables['Button_4_Text']+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_4_Text'])+"</answer>"+botVal);
 	$('#but5').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_4_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_4_Text']));
 	$("#but5").animate({right:'282px'});
@@ -1491,11 +1840,11 @@ function but1_5Pressed()
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("{"+(numPlayers+i)+", "+botAnswer()+"}");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit(variables['Button_1_Text']+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_1_Text'])+"</answer>"+botVal);
 	$('#but1').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_1_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_1_Text']));
 	$("#but1").animate({left:'310px'});
@@ -1519,11 +1868,11 @@ function but2_5Pressed()
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("{"+(numPlayers+i)+", "+botAnswer()+"}");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit(variables['Button_2_Text']+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_2_Text'])+"</answer>"+botVal);
 	$('#but2').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_2_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_2_Text']));
 	$("#but2").animate({left:'155px'});
@@ -1547,11 +1896,11 @@ function but3_5Pressed()
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("{"+(numPlayers+i)+", "+botAnswer()+"}");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit(variables['Button_3_Text']+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_3_Text'])+"</answer>"+botVal);
 	$('#but3').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_3_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_3_Text']));
 }
@@ -1574,11 +1923,11 @@ function but4_5Pressed()
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("{"+(numPlayers+i)+", "+botAnswer()+"}");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit(variables['Button_4_Text']+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_4_Text'])+"</answer>"+botVal);
 	$('#but4').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_4_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_4_Text']));
 	$("#but4").animate({right:'155px'});
@@ -1602,11 +1951,11 @@ function but5_5Pressed()
 						botIncluded=true;
 				}
 				if(botIncluded)
-					botVal+=("{"+(numPlayers+i)+", "+botAnswer()+"}");
+					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
 		}
 	}
-	submit(variables['Button_5_Text']+botVal);
+	submit("<answer subject=\""+myid+"\" expRound=\""+expRoundNum+"\">"+preprocess(variables['Button_5_Text'])+"</answer>"+botVal);
 	$('#but5').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_5_Text'])+"</a></p>");
 	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_5_Text']));
 	$("#but5").animate({right:'310px'});

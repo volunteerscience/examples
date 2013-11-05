@@ -57,7 +57,7 @@
 					<td width="440">
 					</td>
 					<td width="118">
-                        <p align="right" style="font-family:'Verdana';font-size:15pt;">Time Left:
+                        <p align="right" style="font-family:'Verdana';font-size:15pt;" id="tlefttext">Time Left:
                         </p>
                     </td>
                     <td width="54">
@@ -114,7 +114,7 @@
 								<tr>
 									<td width="455" height="171">
 										<div style="text-align: center; vertical-align:middle; width: 100%; height: 100%; font-family:'Verdana'; font-size: 12pt;">
-										Please click on a user to start chatting...
+										Please click on a user to start conversation...
 										</div>
 									</td>
 								</tr>
@@ -132,7 +132,7 @@
 						<table border="0">
 							<tr>
 								<td width="480" id="pubcontainer"></td>
-								<td width="20">&nbsp;</td>
+								<td width="20" id="adjustableNotesWidth"></td>
 								<td width="300" id="hpnotes">
 									<table border="0" id="notetable">
 										<tr>
@@ -251,7 +251,7 @@ var step3Options;
 var clueType;
 var shuffledOptions;
 var infoCounts;
-var endGameResultsCount=0;
+var endGameResultsArr;
 var questions = new Array();
 var title;
 var introtext;
@@ -264,12 +264,20 @@ var canvasHeight=303;
 var condition;
 var currentDiscRound;
 var publicInfo;
+var privateInfo;
 var publicImage;
 var readyCount;
 var myanswer;
 var tabTemplate;
 var tabs;
 var circleColors;
+var gameInfo;
+var draggableInfo;
+var sharedMessage;
+var iControlBots = false;
+var botSchedule;
+var numOfBotSchedule;
+var numOfWaitingSchedule;
 
 function initialize()
 {
@@ -291,6 +299,10 @@ function initialize()
 	this.EndGameTimer=parseInt(variables['end_game_timer']+"")+1;
 	this.NextRoundTimer=parseInt(variables['round_interval_timer']+"")+1;
 	parseScenarioXML();
+	if(myid==1)	iControlBots = true;
+	this.numOfBotSchedule=0;
+	this.numOfWaitingSchedule=0;
+	this.endGameResultsArr=new Array();
 }
 
 function arraySize(obj) {
@@ -360,7 +372,7 @@ function parseScenarioXML()
    // for (key in this.clueType) {
    //     if (this.clueType.hasOwnProperty(key)) alert(key+","+this.clueType[key]);
 	//}
-	
+
 	setRound(1);
 
 	if(myid==1)
@@ -369,8 +381,9 @@ function parseScenarioXML()
 		if(variables['random_private_info']==1)
 		{
 			var numbers=new Array();
-			for(var i=0; i<numPlayers; i++)
+			for(var i=0; i<numPlayers+parseInt(variables["bot_count"]); i++)
 			{
+				this.privateOrder+="<setup type=\"assignment\" subject=\""+(i+1)+"\">";
 				var arrkey;
 				for (arrkey in this.clueType)
 				{
@@ -381,28 +394,31 @@ function parseScenarioXML()
 					numbers[arrkey+","+randomnumber]=true;
 					this.privateOrder+=((arrkey+","+randomnumber)+"-");
 				}
-				this.privateOrder+="_";
+				this.privateOrder=this.privateOrder.substring(0, this.privateOrder.length-1);
+				this.privateOrder+="</setup>";
 			}
 		}
 		else
 		{
-			for(var i=1; i<=numPlayers; i++)
+			for(var i=1; i<=numPlayers+parseInt(variables["bot_count"]); i++)
 			{
+				this.privateOrder+="<setup type=\"assignment\" subject=\""+(i+1)+"\">";
 				var arrkey;
 				for (arrkey in this.clueType)
 					this.privateOrder+=((arrkey+","+i)+"-");
-				this.privateOrder+="_";
+				this.privateOrder=this.privateOrder.substring(0, this.privateOrder.length-1);
+				this.privateOrder+="</setup>";
 			}
 		}
 		if($.trim(variables["visualization_type"])=="1"||$.trim(variables["visualization_type"])=="2"||$.trim(variables["visualization_type"])=="3")
-			this.privateOrder=parseInt(variables["visualization_type"])+"| "+this.privateOrder;
+			this.privateOrder=parseInt(variables["visualization_type"])+"</setup>"+this.privateOrder;
 		else
-			this.privateOrder=(Math.floor(Math.random()*3)+1)+"| "+this.privateOrder;
+			this.privateOrder=(Math.floor(Math.random()*3)+1)+"</setup>"+this.privateOrder;
 		var key;
 		var optionsOrder="";
 		for (key in this.clueType) 
-			optionsOrder+=(key+"="+shuffle(this.shuffledOptions[key])+" ");
-		this.privateOrder=optionsOrder+"|"+this.privateOrder;
+			optionsOrder+=("<setup type=\"shuffledOptions\" name=\""+key+"\">"+shuffle(this.shuffledOptions[key])+"</setup>");
+		this.privateOrder=optionsOrder+"<setup type=\"condition\">"+this.privateOrder;
 		submit(this.privateOrder);
 	}
 }
@@ -432,13 +448,49 @@ function setEveryoneTab()
 	this.tabTemplate = "<li id='#{tabli}'><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>";
 	if(parseInt(variables['chatting_with_everyone'])==1)
 	{
-		$("#chattable").html("<tr><td width=\"455\" height=\"87\"><div id=\"tabs\"><ul><li id=\"tabli0\"><a href=\"#tabs-0\">Everyone</a></li></ul><div id=\"tabs-0\"><div class=\"control-group\"><div class=\"controls\"> <div id=\"chat_conversation0\" style=\"background-color:white; text-align:left; width: 100%; height: 250px; overflow: auto; font-family:'Verdana'; font-size: 10pt;\"><div></div></div></div></div></div></div><i class=\"icon-pencil\"></i><input onFocus=\"document.getElementById('chat_input').value='';\" value=\"Type something here...\" type=\"text\" id=\"chat_input\" style=\"width: 76%;\" class=\"input-xlarge\"><button type=\"submit\" class=\"btn btn-primary\" id=\"chat_send_button\" onClick=\"sendMessage();\"><i class=\"icon-comment icon-white\"></i> Send</button></td><td width=\"0\" height=\"62\"></td></tr>");
-		 $("#chat_input").keypress(function(event) {
-			if ( event.which == 13 ) {
-				sendMessage();
-				event.preventDefault();
-			}
-		  });
+		if(parseInt(variables['conversation_type'])==1)
+		{
+			$("#chattable").html("<tr><td width=\"455\" height=\"87\"><div id=\"tabs\"><ul><li id=\"tabli0\"><a href=\"#tabs-0\">Everyone</a></li></ul><div id=\"tabs-0\"><div class=\"control-group\"><div class=\"controls\"> <div id=\"chat_conversation0\" style=\"background-color:white; text-align:left; width: 100%; height: 250px; overflow: auto; font-family:'Verdana'; font-size: 10pt;\"><div></div></div></div></div></div></div><i class=\"icon-pencil\"></i><input onFocus=\"document.getElementById('chat_input').value='';\" value=\"Type something here...\" type=\"text\" id=\"chat_input\" style=\"width: 76%;\" class=\"input-xlarge\"><button type=\"submit\" class=\"btn btn-primary\" id=\"chat_send_button\" onClick=\"sendMessage();\"><i class=\"icon-comment icon-white\"></i> Send</button></td><td width=\"0\" height=\"62\"></td></tr>");
+		
+			 $("#chat_input").keypress(function(event) {
+				if ( event.which == 13 ) {
+					sendMessage();
+					event.preventDefault();
+				}
+			  });
+		}
+		if(parseInt(variables['conversation_type'])==2)
+		{
+			$("#chattable").html("<tr><td width=\"455\" height=\"312\"><div id=\"tabs\"><ul><li id=\"tabli0\"><a href=\"#tabs-0\">Everyone</a></li></ul><div id=\"tabs-0\"><div class=\"control-group\"><div class=\"controls\"> <div id=\"trash0\" class=\"ui-widget-content ui-state-default\" style=\"background-color:white; text-align:left; width: 100%; height: 279px; overflow: auto; font-family:'Verdana'; font-size: 11pt;\">Drag and drop here the information you want to send...</div></div></div></div></div></div></div></td></tr>");
+			$(function() {
+				var $trash = $( "#trash0");
+
+				// let the trash be droppable, accepting the gallery items
+				$trash.droppable({
+					accept: "#gallery > li",
+					activeClass: "ui-state-highlight",
+					drop: function( event, ui ) {
+						if($('#trash0').html()=='Drag and drop here the information you want to send...')
+							$('#trash0').html('');
+						deleteImage( ui.draggable );
+					}
+				});
+
+				// image deletion function
+				var recycle_icon = "";
+				function deleteImage( $item ) {
+						var $list = $( "ul", $trash ).length ?
+						$( "ul", $trash ) :
+						$( "<ul class='gallery ui-helper-reset'/>" ).appendTo( $trash );
+						$item.find( "a.ui-icon-trash" ).remove();
+						//$list.html($list.html()+"<div class='messagesender'>You ("+getName(myid)+"):</div>"+$item.clone().text()+"</br>");
+						//clonedItem.append( recycle_icon ).appendTo( $list );
+						jQuery("div#trash0").scrollTop(jQuery("div#trash0")[0].scrollHeight);
+						this.sharedMessage=$item.text();
+						sendMessage();
+				}
+			});
+		}
 		this.tabs = $( "#tabs" ).tabs({
 			activate: function( event, ui ) {
 				if($(ui.newTab).text()=="Everyone")
@@ -451,7 +503,7 @@ function setEveryoneTab()
 					}
 					else
 					{
-						for(var i=1; i<=numPlayers; i++)
+						for(var i=1; i<=numPlayers+parseInt(variables["bot_count"]); i++)
 							dehighlightCircle(i);
 						highlightCircle(0);
 					}
@@ -461,17 +513,32 @@ function setEveryoneTab()
 				{
 					if(getCondition()==1)
 					{
-						setUser(parseInt($(ui.newTab).text().substring(5, 6)));
-						removeActives();
-						$('#'+$(ui.newTab).text().substring(5, 6)).addClass('active');
+						if($(ui.newTab).text().indexOf("User")>=0)
+						{
+							setUser(parseInt($(ui.newTab).text().substring(5, 6)));
+							removeActives();
+							$('#'+$(ui.newTab).text().substring(5, 6)).addClass('active');
+						}
+					//	if($(ui.newTab).text().indexOf("Bot")>=0)
+					//	{
+					//		setUser(parseInt($(ui.newTab).text().substring(4, 5))+numPlayers);
+					//		removeActives();
+					//		$('#'+(parseInt($(ui.newTab).text().substring(4, 5))+numPlayers)).addClass('active');
+					//	}
 					}
 					else
 					{
-						for(var i=1; i<=numPlayers; i++)
+						for(var i=1; i<=numPlayers+parseInt(variables["bot_count"]); i++)
 							dehighlightCircle(i);
-						highlightCircle(parseInt($(ui.newTab).text().substring(5, 6)));
+						if($(ui.newTab).text().indexOf("User")>=0)
+							highlightCircle(parseInt($(ui.newTab).text().substring(5, 6)));
+					//	if($(ui.newTab).text().indexOf("Bot")>=0)
+					//		highlightCircle(parseInt($(ui.newTab).text().substring(4, 5))+numPlayers);
 					}
-					$("#tabli"+$(ui.newTab).text().substring(5, 6)).css("background-color", "#FFFFFF");
+					if($(ui.newTab).text().indexOf("User")>=0)
+						$("#tabli"+$(ui.newTab).text().substring(5, 6)).css("background-color", "#FFFFFF");
+					//if($(ui.newTab).text().indexOf("Bot")>=0)
+					//	$("#tabli"+($(ui.newTab).text().substring(4, 5)+numPlayers)).css("background-color", "#FFFFFF");
 				}
 			}
 		});
@@ -487,7 +554,6 @@ function setEveryoneTab()
 
 function setCondition()
 {
-	this.condition=parseInt(this.privateOrder.substring(this.privateOrder.indexOf("|")+1, this.privateOrder.indexOf("|")+2));
 	this.circleColors=["#FE2E2E", "#FE642E", "#2E64FE", "#642EFE", "#FE2E9A", "#2E2EFE", "#0489B1", "#585858", "#0B610B"];
 	
 	setEveryoneTab();
@@ -495,7 +561,7 @@ function setCondition()
 	if(this.condition==1)
 	{
 		if(parseInt(variables['chatting_with_everyone'])==1)
-			$("#conditiontable").html("<tr><td width=\"150\" rowspan=\"2\" height=\"297\" class=\"myhero-unit\" style=\"border-width:1;\"><div><div class=\"span3\" style=\"width:100%;\"><ul id=\"userlist\" class=\"mynav mynav-list\"\"><li id=\"0\" class=\"active\"><a onClick=\"setUser(0); removeActives(); $('#0').addClass('active');\"><i class=\"icon-user\"></i>Everyone</a></li></ul></div></div></td></tr>");
+			$("#conditiontable").html("<tr><td width=\"150\" rowspan=\"2\" height=\"297\" class=\"myhero-unit\" style=\"border-width:1;\"><div><div class=\"span3\" style=\"width:100%;\"><ul id=\"userlist\" class=\"mynav mynav-list\"\"><li id=\"0\" class=\"active\"><a onClick=\"setUser(0); removeActives(); $('#0').addClass('active'); highlightCircle(0);\"><i class=\"icon-user\"></i>Everyone</a></li></ul></div></div></td></tr>");
 		else
 			$("#conditiontable").html("<tr><td width=\"150\" rowspan=\"2\" height=\"297\" class=\"myhero-unit\" style=\"border-width:1;\"><div><div class=\"span3\" style=\"width:100%;\"><ul id=\"userlist\" class=\"mynav mynav-list\"\"></ul></div></div></td></tr>");
 		$("#conditiontable").css("background-color", "#F2F5A9");
@@ -503,16 +569,26 @@ function setCondition()
 		$("#conditiontabletd").css("width", 150);
 		$("#conditiontablespaceleft").css("width", 78);
 		$("#conditiontablespaceright").css("width", 78);
-		for(var g=1; g<=numPlayers; g++)
+		for(var g=1; g<=numPlayers+parseInt(variables["bot_count"]); g++)
 		{
 			if(g==myid)
 				document.getElementById("userlist").innerHTML+=("<li id=\""+g+"\"><a><i class=\"icon-user\"></i>You ("+getName(myid)+")</a></li>");
 			else
 			{
 				if(canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))
-					document.getElementById("userlist").innerHTML+=("<li id=\""+g+"\"><a onClick=\"setUser("+g+"); removeActives(); $('#"+g+"').addClass('active'); highlightCircle("+g+");\"><i class=\"icon-user\"></i>"+getName(g)+"</a></li>");
+				{
+					if(g<=numPlayers)
+						document.getElementById("userlist").innerHTML+=("<li id=\""+g+"\"><a onClick=\"setUser("+g+"); removeActives(); $('#"+g+"').addClass('active'); highlightCircle("+g+");\"><i class=\"icon-user\"></i>"+getName(g)+"</a></li>");
+					else
+						document.getElementById("userlist").innerHTML+=("<li id=\""+g+"\"><a onClick=\"setUser("+g+"); removeActives(); highlightCircle("+g+");\"><i class=\"icon-user\"></i>User "+(g)+"</a></li>");
+				}
 				else
-					document.getElementById("userlist").innerHTML+=("<li id=\""+g+"\"><a><i class=\"icon-user\"></i>"+getName(g)+"</a></li>");
+				{
+					if(g<=numPlayers)
+						document.getElementById("userlist").innerHTML+=("<li id=\""+g+"\"><a><i class=\"icon-user\"></i>"+getName(g)+"</a></li>");
+					else
+						document.getElementById("userlist").innerHTML+=("<li id=\""+g+"\"><a><i class=\"icon-user\"></i>User "+(g)+"</a></li>");
+				}
 			}
 		}
 	}
@@ -535,13 +611,22 @@ function getCondition()
 
 function setShuffledOptions()
 {
-	var tarr=this.privateOrder.substring(0, this.privateOrder.indexOf("|")).split(" ");
+	//var tarr=this.privateOrder.substring(0, this.privateOrder.indexOf("|")).split(" ");
+	//for(var p=0;p<tarr.length;p++)
+	//{
+	//	if(tarr[p].length==0) continue;
+	//	this.shuffledOptions[tarr[p].substring(0, tarr[p].indexOf("="))] = eval("["+tarr[p].substring(tarr[p].indexOf("=")+1)+"]");
+	//}
+	
+	var tarr=this.privateOrder.split("</setup>");
 	for(var p=0;p<tarr.length;p++)
 	{
 		if(tarr[p].length==0) continue;
-		this.shuffledOptions[tarr[p].substring(0, tarr[p].indexOf("="))] = eval("["+tarr[p].substring(tarr[p].indexOf("=")+1)+"]");
+		if(tarr[p].indexOf("name=")>=0)
+			this.shuffledOptions[tarr[p].substring(tarr[p].indexOf("name=")+6, tarr[p].lastIndexOf("\""))]=eval("["+tarr[p].substring(tarr[p].indexOf(">")+1)+"]");
+		if(tarr[p].indexOf("<setup type=\"condition\">")>=0)
+			this.condition=parseInt(tarr[p].substring(tarr[p].indexOf("<setup type=\"condition\">")+24));
 	}
-	
 	xmlDoc=loadXMLDoc(getFile("scenario"+variables['scenario_number']+".xml"));
 	
 	var key;
@@ -586,55 +671,64 @@ function setPrivateInfo(myident)
 	$('#VideoHere').append('<video id="HP_video" width="640" height="360" controls autoplay>'+mp4str+'<source src="'+getFile(videoName+".ogg")+'" type="video/ogg">'+'<source src="'+getFile(videoName+".webm")+'" type="video/webm">'+'Your browser does not support video.'+'</video>');
 	$("#video_instructions").show();  
 	
-	this.privateOrder=this.privateOrder.substring(this.privateOrder.indexOf("|", this.privateOrder.indexOf("|")+1)+2);
-	var tarr=this.privateOrder.split("_");
+	this.privateOrder=this.privateOrder.substring(this.privateOrder.indexOf("</setup>", this.privateOrder.indexOf("<setup type=\"condition\">"))+8);
+
+	var tarr=this.privateOrder.split("</setup>");
 	
 	var publicInfos="";
+	this.draggableInfo="<div class=\"ui-widget ui-helper-clearfix\"><ul id=\"gallery\" class=\"gallery ui-helper-reset ui-helper-clearfix\">";
 	for(var i =0; i < this.publicInfo.length; i++)
+	{
 		publicInfos+=("<li>"+this.publicInfo[i]+"</li>");
+		draggableInfo+=("<li class=\"ui-widget-content ui-corner-tr\">"+this.publicInfo[i]+"</li>");
+	}
 	
-	var gameInfo="<pre id=\"descpre\"><ul>"+publicInfos;
+	this.gameInfo="<pre id=\"descpre\"><ul>"+publicInfos;
 	for(var i=0; i<this.publicImage.length; i++)
-		gameInfo+="<img src=\""+this.publicImage[i]+"\" alt=\"private info picture\">";
+		this.gameInfo+="<img src=\""+this.publicImage[i]+"\" alt=\"private info picture\">";
 
-		
+	this.privateInfo = new Array();
 	for(var p=0;p<tarr.length;p++)
 	{
-		if(p+1==myident)
+		tarr[p]=tarr[p].substring(tarr[p].indexOf(">")+1)+"-";
+		var tarr2=tarr[p].split("-");
+		for(var m=0;m<tarr2.length;m++)
 		{
-			var tarr2=tarr[p].split("-");
-			for(var m=0;m<tarr2.length;m++)
-			{
-				if(tarr2[m].length==0) continue;
+			if(tarr2[m].length==0) continue;
 
-				var pi1="";
-				var img1="";
-				
-				for(var j=0; j<xmlDoc.getElementsByTagName("clue").length; j++)
+			var pi1="";
+			var img1="";
+			
+			for(var j=0; j<xmlDoc.getElementsByTagName("clue").length; j++)
+			{
+				if($.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("visibility").nodeValue)=="private"&&tarr2[m].split(",")[0]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("type").nodeValue))
 				{
-					if($.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("visibility").nodeValue)=="private"&&tarr2[m].split(",")[0]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("type").nodeValue))
+					//alert(tarr2[m].split(",")[0]+"=="+$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("type").nodeValue)+" sonuc: "+(tarr2[m].split(",")[0]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("type").nodeValue))+" ve "+tarr2[m].split(",")[1]+"=="+$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("id").nodeValue)+" sonuc: "+(tarr2[m].split(",")[1]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("id").nodeValue)))
+					if(tarr2[m].split(",")[1]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("id").nodeValue))
 					{
-						//alert(tarr2[m].split(",")[0]+"=="+$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("type").nodeValue)+" sonuc: "+(tarr2[m].split(",")[0]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("type").nodeValue))+" ve "+tarr2[m].split(",")[1]+"=="+$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("id").nodeValue)+" sonuc: "+(tarr2[m].split(",")[1]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("id").nodeValue)))
-						if(tarr2[m].split(",")[1]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("id").nodeValue))
-						{
-							pi1=preprocess($.trim(xmlDoc.getElementsByTagName("clue")[j].childNodes[0].nodeValue));
-							if(xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0]!=undefined&&xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0].childNodes[0]!=null)
-								img1=$.trim(xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0].childNodes[0].nodeValue);
-							break;
-						}
+						pi1=preprocess($.trim(xmlDoc.getElementsByTagName("clue")[j].childNodes[0].nodeValue));
+						if(xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0]!=undefined&&xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0].childNodes[0]!=null)
+							img1=$.trim(xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0].childNodes[0].nodeValue);
+						break;
 					}
 				}
-				
-				gameInfo+="<li>"+pi1+"</li>";
+			}
+			if(this.privateInfo[p]==undefined||this.privateInfo[p]==null||this.privateInfo[p].length==0)
+				this.privateInfo[p]=new Array();
+			this.privateInfo[p].push(pi1);
+			if(p+1==myident)
+			{
+				this.gameInfo+="<li>"+pi1+"</li>";
+				this.draggableInfo+=("<li class=\"ui-widget-content ui-corner-tr\">"+pi1+"</li>");
 					
 				if(img1!="" && img1!=null && img1 != undefined)
-					gameInfo+="<img src=\""+img1+"\" alt=\"private info picture\">";
+					this.gameInfo+="<img src=\""+img1+"\" alt=\"private info picture\">";
 			}
 		}
 	}
-	gameInfo+="</ul></pre>";
-	$("#desc").html(gameInfo);
-		
+	this.gameInfo+="</ul></pre>";
+	this.draggableInfo+="</ul></div>";
+	$("#desc").html(this.gameInfo);
 	countDownInstructions();
 }
 
@@ -727,13 +821,16 @@ function nextSurveyQuestion()
 		var chstr="";
 		if(strictness=="true")
 		{
-			for(var k=1; k<=numPlayers; k++)
+			for(var k=1; k<=numPlayers+parseInt(variables["bot_count"]); k++)
 			{
 				if(k!=myid)
 				{
 					if($("input:radio[name='likertrad"+k+"']:checked").val()==undefined)
 					{
-						alert("Please select an option for "+getName(k)+" before proceeding!");
+						if(k<=numPlayers)
+							alert("Please select an option for "+getName(k)+" before proceeding!");
+						else
+							alert("Please select an option for User"+(k)+" before proceeding!");
 						return;
 					}
 					else
@@ -774,8 +871,8 @@ function nextSurveyQuestion()
 		{
 			if(surveySelections[z]!=null&&surveySelections[z]!=undefined)
 			{
-				submit(surveySelections[z]);
-				setRound(4+parseInt(variables['total_rounds'])+z);
+				submit("<answer no=\""+(z+1)+"\">"+surveySelections[z]+"</answer>");
+				setRound(4+this.numOfBotSchedule+parseInt(variables['total_rounds'])+z);
 			}
 		}
 		$("#surveytitle").html('');
@@ -849,19 +946,27 @@ function displaySurveyQuestion(qNum)
 	{
 		$("#rbFormSurv").show();
 		$("#likertplayerstable").hide();
-		for(var k=1; k<=numPlayers; k++)
+		for(var k=1; k<=numPlayers+parseInt(variables["bot_count"]); k++)
 		{
 			if(k!=myid)
-				document.getElementById("rbFormSurv").innerHTML+=("<input type=\"radio\" name=\"survrad\" value=\""+getName(k)+"\">"+getName(k)+"<br>");
+			{
+				if(k<=numPlayers)
+					document.getElementById("rbFormSurv").innerHTML+=("<input type=\"radio\" name=\"survrad\" value=\""+getName(k)+"\">"+getName(k)+"<br>");
+				else
+					document.getElementById("rbFormSurv").innerHTML+=("<input type=\"radio\" name=\"survrad\" value=\"User "+(k)+"\">User "+(k)+"<br>");
+			}
 		}
 	}
 	if(questions[qNum][0]=="players-all")
 	{
 		$("#rbFormSurv").show();
 		$("#likertplayerstable").hide();
-		for(var k=1; k<=numPlayers; k++)
+		for(var k=1; k<=numPlayers+parseInt(variables["bot_count"]); k++)
 		{
-			document.getElementById("rbFormSurv").innerHTML+=("<input type=\"radio\" name=\"survrad\" value=\""+getName(k)+"\">"+getName(k)+"<br>");
+			if(k<=numPlayers)
+				document.getElementById("rbFormSurv").innerHTML+=("<input type=\"radio\" name=\"survrad\" value=\""+getName(k)+"\">"+getName(k)+"<br>");
+			else
+				document.getElementById("rbFormSurv").innerHTML+=("<input type=\"radio\" name=\"survrad\" value=\"User "+(k)+"\">User "+(k)+"<br>");
 		}
 	}
 	if(questions[qNum][0]=="likert-players-selfexclude")
@@ -869,10 +974,15 @@ function displaySurveyQuestion(qNum)
 		$("#rbFormSurv").hide();
 		$("#likertplayerstable").show();
 		$("#likertplayerstable").html("<tr><td width=\"97\" height=\"23\" bgcolor=\"black\"><p align=\"center\"><b><font color=\"white\"><span style=\"font-size:10pt;\">Teammate</span></font></b></p></td><td width=\"97\" height=\"23\" bgcolor=\"black\"><p align=\"center\"><i><font color=\"white\"><span style=\"font-size:10pt;\">Not at all</span></font></i></p></td><td width=\"97\" height=\"23\" bgcolor=\"black\"><p align=\"center\"><span style=\"font-size:10pt;\"><i>&nbsp;</i></span></p></td><td width=\"97\" height=\"23\" bgcolor=\"black\"><p align=\"center\"><i><font color=\"white\"><span style=\"font-size:10pt;\">To Some Extent</span></font></i></p></td><td width=\"97\" height=\"23\" bgcolor=\"black\"><p align=\"center\"><span style=\"font-size:10pt;\"><i>&nbsp;</i></span></p></td><td width=\"104\" height=\"23\" bgcolor=\"black\"><p align=\"center\"><i><font color=\"white\"><span style=\"font-size:10pt;\">A Great Deal</span></font></i></p></td></tr>");
-		for(var k=1; k<=numPlayers; k++)
+		for(var k=1; k<=numPlayers+parseInt(variables["bot_count"]); k++)
 		{
 			if(k!=myid)
-				$("#likertplayerstable").html($("#likertplayerstable").html()+"<tr><form id=\"likertplayerform"+k+"\"><td width=\"97\"><p align=\"center\" id=\"likertusername\">"+getName(k)+"</p></td><td width=\"97\"><p align=\"center\"><input type=\"radio\" name=\"likertrad"+k+"\" value=\""+getName(k)+"-1\"><br></p></td><td width=\"97\"><p align=\"center\"><input type=\"radio\" name=\"likertrad"+k+"\" value=\""+getName(k)+"-2\"><br></p></td><td width=\"97\"><p align=\"center\"><input type=\"radio\" name=\"likertrad"+k+"\" value=\""+getName(k)+"-3\"><br></p></td><td width=\"97\"><p align=\"center\"><input type=\"radio\" name=\"likertrad"+k+"\" value=\""+getName(k)+"-4\"><br></p></td><td width=\"104\"><p align=\"center\"><input type=\"radio\" name=\"likertrad"+k+"\" value=\""+getName(k)+"-5\"><br></p></td></form></tr>");
+			{
+				if(k<=numPlayers)
+					$("#likertplayerstable").html($("#likertplayerstable").html()+"<tr><form id=\"likertplayerform"+k+"\"><td width=\"97\"><p align=\"center\" id=\"likertusername\">"+getName(k)+"</p></td><td width=\"97\"><p align=\"center\"><input type=\"radio\" name=\"likertrad"+k+"\" value=\""+getName(k)+"-1\"><br></p></td><td width=\"97\"><p align=\"center\"><input type=\"radio\" name=\"likertrad"+k+"\" value=\""+getName(k)+"-2\"><br></p></td><td width=\"97\"><p align=\"center\"><input type=\"radio\" name=\"likertrad"+k+"\" value=\""+getName(k)+"-3\"><br></p></td><td width=\"97\"><p align=\"center\"><input type=\"radio\" name=\"likertrad"+k+"\" value=\""+getName(k)+"-4\"><br></p></td><td width=\"104\"><p align=\"center\"><input type=\"radio\" name=\"likertrad"+k+"\" value=\""+getName(k)+"-5\"><br></p></td></form></tr>");
+				else
+					$("#likertplayerstable").html($("#likertplayerstable").html()+"<tr><form id=\"likertplayerform"+k+"\"><td width=\"97\"><p align=\"center\" id=\"likertusername\">User "+(k)+"</p></td><td width=\"97\"><p align=\"center\"><input type=\"radio\" name=\"likertrad"+k+"\" value=\"User "+(k)+"-1\"><br></p></td><td width=\"97\"><p align=\"center\"><input type=\"radio\" name=\"likertrad"+k+"\" value=\"User "+(k)+"-2\"><br></p></td><td width=\"97\"><p align=\"center\"><input type=\"radio\" name=\"likertrad"+k+"\" value=\"User "+(k)+"-3\"><br></p></td><td width=\"97\"><p align=\"center\"><input type=\"radio\" name=\"likertrad"+k+"\" value=\"User "+(k)+"-4\"><br></p></td><td width=\"104\"><p align=\"center\"><input type=\"radio\" name=\"likertrad"+k+"\" value=\"User "+(k)+"-5\"><br></p></td></form></tr>");
+			}
 		}
 		$("#likertplayerstable").html($("#likertplayerstable").html()+"</table>");
 	}
@@ -896,6 +1006,7 @@ function newMove(participant, index) {
 			this.readyCount++
 		if(this.readyCount==numPlayers)
 		{
+			clearTimeout(this.timeoutInst);
 			$("#HP_video").get(0).pause();
 			countDownStep1();
 			$("#helpinfo").show();
@@ -909,23 +1020,43 @@ function newMove(participant, index) {
 		}
 		return;
 	}
-	if(currentRound>=3&&this.currentDiscRound<=parseInt(variables['total_rounds']))
+	if(parseInt(variables["bot_behavior"])==2&&(val.indexOf("<botSchedule>")>=0||val.indexOf("Waiting for schedule")>=0))
 	{
-		val=val.substring(0, val.indexOf('|'));
-		var tarr=val.split("_");
+		this.numOfWaitingSchedule++;
+		if(val.indexOf("<botSchedule>")>=0)
+		{
+			this.botSchedule=eval(val.substring(13,val.length-14));
+			this.numOfBotSchedule++;
+		}
+		if(this.numOfWaitingSchedule==numPlayers+parseInt(variables["bot_count"]))
+		{
+			setRound(currentRound+1);
+			this.numOfWaitingSchedule=0;
+			loadStep2();
+		}
+		return;
+	}
+	if(currentRound>=3+this.numOfBotSchedule&&this.currentDiscRound<=parseInt(variables['total_rounds'])&&val.indexOf("</vote>")>=0)
+	{
+		val=val.substring(0, val.indexOf('<confidence>'));
+		var tarr=val.split("</vote>");
 		for(var p=0;p<tarr.length;p++)
 		{
 			if(tarr[p].length==0)continue;
 			if(parseInt(variables['feedback_type'])==1)
-				this.step3Options[tarr[p]][1]++;
+				this.step3Options[tarr[p].substring(tarr[p].indexOf("name=\"")+6, tarr[p].indexOf("\">", tarr[p].indexOf("name=\"")+6))+","+tarr[p].substring(tarr[p].indexOf(">")+1)][1]++;
 			if(parseInt(variables['feedback_type'])==2&&participant==myid)
-				this.step3Options[tarr[p]][1]++;
+				this.step3Options[tarr[p].substring(tarr[p].indexOf("name=\"")+6, tarr[p].indexOf("\">", tarr[p].indexOf("name=\"")+6))+","+tarr[p].substring(tarr[p].indexOf(">")+1)][1]++;
 		}
-		endGameResultsCount++;
-		if(endGameResultsCount==numPlayers)
+		var foundPt=false;
+		for(var v=0; v<this.endGameResultsArr.length; v++)
+			if(this.endGameResultsArr[v]==participant)
+				foundPt=true;
+		if(!foundPt)		
+			this.endGameResultsArr.push(participant);
+		if(this.endGameResultsArr.length==numPlayers+parseInt(variables["bot_count"]))
 		{
-			//$("#endgameresults").show();
-			endGameResultsCount=0;
+			this.endGameResultsArr=new Array();
 			if(parseInt(variables["allow_feedback"])==1)
 			{
 				if(parseInt(variables['feedback_type'])==1)
@@ -1074,7 +1205,7 @@ function newMove(participant, index) {
 				countDownEndGame();
 			}
 			$("#pbar").show();
-			setRound(3+this.currentDiscRound);
+			setRound(3+this.currentDiscRound+this.numOfBotSchedule);
 			this.currentDiscRound++;
 		}
 	}
@@ -1087,22 +1218,33 @@ function newMove(participant, index) {
   });
 }
 
+// implement playerDisconnect():
+function playerDisconnect(playerNum) {
+  // see if I have the lowest live id
+	for (var i = 1; i < myid; i++) 
+	{
+		if (activePlayers[i])
+			return;
+	}
+	iControlBots = true;
+}
+
 function loadStep2()
 {
-	if(this.currentDiscRound==null||this.currentDiscRound==undefined)
-		this.currentDiscRound=1;
-	$("#step1").hide();  
-	$("#step3").hide();
-	$("#step2").show();
-	$("#hpnotesvoting").hide();
-	$("#notearea").val($("#noteareavoting").val());
-	$("#pubcontainer").html($("#desc").html());
 	$("#pubcontainer").css({'width': '490px'});
 	$("#desc").hide();
 	$("#stepgoal").hide();
 	$("#helpinfo").show();
 	$("#helpinfotable").css("width", 817);
 	$("#comch").show();
+	
+	if(this.currentDiscRound==null||this.currentDiscRound==undefined)
+		this.currentDiscRound=1;
+	$("#step1").hide();  
+	$("#step3").hide();
+	$("#step2").show();
+	$("#notearea").val($("#noteareavoting").val());
+	
 	if(Math.round(parseInt(variables['Step2Timer'])/60) == 1)
 	{
 		if((parseInt(variables['Step2Timer'])%60)!=0)
@@ -1134,12 +1276,111 @@ function loadStep2()
 			$("#timetext").html($("#timetext").html()+", "+arrkey)
 		currentcount++;
 	}
+	$("#pbarrow").show();
 	$("#pbarrow").html("<td width=\"77\"><p align=\"right\" style=\"font-family:'Verdana';font-size:15pt;\">Round:</p></td><td width=\"89\"><p style=\"font-family:'Verdana';font-size:15pt;\"><font color=\"red\" id=\"roundtext\">"+this.currentDiscRound+" of "+variables['total_rounds']+"</font></p></td><td width=\"440\"></td><td width=\"118\"><p align=\"right\" style=\"font-family:'Verdana';font-size:15pt;\">Time Left:</p></td><td width=\"54\"><p style=\"font-family:'Verdana';font-size:15pt;\"><font color=\"red\" id=\"timer\"></font></p></td>");
+	
+	$("#ttl").show();
+	$("#timer").show();
+	$("#tlefttext").show();
+	
 	countDownStep2();
+}
+
+function setSchedule()
+{
+	if(parseInt(variables['conversation_type'])==1)
+	{
+		$("#pubcontainer").html(this.gameInfo);
+		loadStep2();
+	}
+	if(parseInt(variables['conversation_type'])==2)
+	{
+		$("#pubcontainer").html(this.draggableInfo);
+		$(function() {
+			var $gallery = $( "#gallery" );
+
+			// let the gallery items be draggable
+			$( "li", $gallery ).draggable({
+				cancel: "a.ui-icon", // clicking an icon won't initiate dragging
+				revert: "invalid", // when not dropped, the item will revert back to its initial position
+				containment: "document",
+				cursor: "move",
+				helper: "clone",
+				start: function(event, ui) {
+					//if(jQuery.browser.webkit) ui.position.top -= $(window).scrollTop();
+				},
+				drag: function(event, ui) {
+					//if(jQuery.browser.webkit) ui.position.top -= $(window).scrollTop();
+				}
+			});
+
+			// resolve the icons behavior with event delegation
+			$( "ul.gallery > li" ).click(function( event ) {
+				var $item = $( this ),
+				$target = $( event.target );
+				if ( $target.is( "a.ui-icon-trash" ) ) {
+					deleteImage( $item );
+				} 
+				return false;
+			});
+		});
+		$("#adjustableNotesWidth").css({ 'width': '0px'});
+		
+		if(parseInt(variables["bot_behavior"])==2 && myid==1)
+		{
+			this.botSchedule=new Array();
+			for(var g=1; g<=parseInt(variables["bot_count"]); g++)
+			{
+				var chatAmount = parseInt(variables['chat_amount']);
+				this.botSchedule[g-1] = new Array();
+				for(var h=1; h<=chatAmount; h++)
+				{
+					this.botSchedule[g-1].push("[\""+(Math.floor(Math.random()*parseInt(variables['Step2Timer']))+1)+"\"");
+					this.botSchedule[g-1].push("\""+(numPlayers+g)+"\"");
+					this.botSchedule[g-1].push("\""+(Math.floor(Math.random()*(numPlayers+g))+1)+"\"");
+					var fnd=false;
+					var botMsg="";
+					do{	
+						if(variables['bot_type']==1)//random private
+							botMsg=this.privateInfo[numPlayers+g-1][Math.floor(Math.random()*this.privateInfo[numPlayers+g-1].length)];
+						if(variables['bot_type']==2)//random public
+							botMsg=this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)];
+						if(variables['bot_type']==3)//totally random
+						{
+							if(Math.floor(Math.random()*2)+1==1) // private
+								botMsg=this.privateInfo[numPlayers+g-1][Math.floor(Math.random()*this.privateInfo[numPlayers+g-1].length)];
+							else
+								botMsg=this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)];
+						}
+						fnd=false;
+						for(var hh=3; hh<this.botSchedule[g-1].length; hh+=4)
+						{
+							if(this.botSchedule[g-1][hh]==("\""+botMsg+"\"]"))
+								fnd=true;
+						}
+					}while(fnd);
+					this.botSchedule[g-1].push("\""+botMsg+"\"]");
+				}
+				this.botSchedule[g-1][0]="["+this.botSchedule[g-1][0];
+				this.botSchedule[g-1][this.botSchedule[g-1].length-1]=this.botSchedule[g-1][this.botSchedule[g-1].length-1]+"]";
+			}
+			
+			for(var m=1; m<=parseInt(variables["bot_count"]); m++)
+				submitBot(numPlayers+m, currentRound, "Waiting for schedule");
+			
+			submit("<botSchedule>["+this.botSchedule+"]</botSchedule>")
+		}
+		if(parseInt(variables["bot_behavior"])==2 && myid!=1)
+			submit("Waiting for schedule");
+			
+		if(parseInt(variables["bot_behavior"])==1)
+			loadStep2();
+	}
 }
 
 function loadStep3()
 {
+	$("#desc").html(this.gameInfo);
 	$("#hpnotesvoting").show();
 	$("#noteareavoting").val($("#notearea").val());
 	$("#step1").hide();
@@ -1210,6 +1451,11 @@ function countDownNextRound(){
 	 if (this.NextRoundTimer <=0){  
 		$("#step3").hide();
 		$("#pubinfo").hide();
+		$("#hpnotesvoting").hide();
+		$("#ttl").hide();
+		$("#timer").hide();
+		$("#tlefttext").hide();
+		$("#pbarrow").hide();
 		this.Step2Timer=parseInt(variables['Step2Timer']+"")+1;
 		$("#step3").html("<tr><td width=\"798\" colspan=\"5\" id=\"submitStatus\"></td></tr><tr><td width=\"792\" height=\"20\" colspan=\"3\"><p id=\"basedonthe\">Based on the information you have gathered, identify: </p></td></tr>");
 		this.NextRoundTimer=parseInt(variables['round_interval_timer']+"")+1;
@@ -1217,11 +1463,11 @@ function countDownNextRound(){
 		for (arrkey in this.clueType)
 			for (var h=1; h<=this.clueType[arrkey]; h++)
 				step3Options[arrkey+","+h][1]=0;
-		loadStep2();
+		setSchedule();
 		if(parseInt(variables['chatting_with_everyone'])==1)
 			setEveryoneTab();
 		else
-			$("#chattable").html("<tr><td width=\"455\" height=\"156\"></td></tr><tr><td width=\"455\" height=\"171\"><div style=\"text-align: center; vertical-align:middle; width: 100%; height: 100%; font-family:'Verdana'; font-size: 12pt;\">Please click on a user to start chatting...</div></td></tr>");
+			$("#chattable").html("<tr><td width=\"455\" height=\"156\"></td></tr><tr><td width=\"455\" height=\"171\"><div style=\"text-align: center; vertical-align:middle; width: 100%; height: 100%; font-family:'Verdana'; font-size: 12pt;\">Please click on a user to start conversation...</div></td></tr>");
 	 }else{  
 		this.NextRoundTimer--;
 		document.getElementById("timer").innerHTML = this.NextRoundTimer;  
@@ -1229,9 +1475,48 @@ function countDownNextRound(){
 	 }  
 }  
 
-function countDownStep2(){  
+function countDownStep2(){ 
+	for(var g=1; g<=parseInt(variables["bot_count"])&&parseInt(variables["bot_behavior"])==2; g++)
+	{
+		for(j=0; j<parseInt(variables["chat_amount"]); j++) 
+		{
+			if(this.Step2Timer==parseInt(this.botSchedule[g-1][j][0]))
+			{
+				if(myid==parseInt(this.botSchedule[g-1][j][2]))
+				{
+					if($("#chattable").html().indexOf("tabs-"+this.botSchedule[g-1][j][1])==-1)
+						addTab("User "+(parseInt(this.botSchedule[g-1][j][1])), parseInt(this.botSchedule[g-1][j][1]));	
+					else
+						this.tabs.tabs("option", "active", $('#tabs-'+this.botSchedule[g-1][j][1]).tabIndex());
+					
+					if($('#trash'+this.botSchedule[g-1][j][1]).html()=='Drag and drop here the information you want to send...')
+						$('#trash'+this.botSchedule[g-1][j][1]).html('');
+					if(getCondition()==1)
+					{
+						setUser(parseInt(this.botSchedule[g-1][j][1]));
+						removeActives();
+						$('#'+this.botSchedule[g-1][j][1]).addClass('active');
+					}
+					$('#trash'+this.botSchedule[g-1][j][1]).append("<div class='messagereceiver'>User "+(this.botSchedule[g-1][j][1])+":</div><div class='receivedmessage'>&nbsp;"+this.botSchedule[g-1][j][3]+"</div>");
+					jQuery("div#trash"+this.botSchedule[g-1][j][1]).scrollTop(jQuery("div#trash"+this.botSchedule[g-1][j][1])[0].scrollHeight);
+				}
+				if(parseInt(variables["bot_behavior"])==2)
+				{
+					if(getCondition()!=1)
+					{
+						var path = new Object();
+						path.line = this.r.path("M "+xVals[parseInt(this.botSchedule[g-1][j][1])-1]+" "+this.yVals[parseInt(this.botSchedule[g-1][j][1])-1]+" l "+(this.xVals[parseInt(this.botSchedule[g-1][j][2])-1]-this.xVals[parseInt(this.botSchedule[g-1][j][1])-1])+" "+(this.yVals[parseInt(this.botSchedule[g-1][j][2])-1]-this.yVals[parseInt(this.botSchedule[g-1][j][1])-1])+" z");
+						path.line.attr({stroke: '#3b4449','stroke-width': 3});
+						path.line.toBack();
+						if(myid==parseInt(this.botSchedule[g-1][j][2]))
+							highlightCircle(parseInt(this.botSchedule[g-1][j][1]));
+					}
+				}
+			}
+		}
+	}
 	 if (this.Step2Timer <=0){ 
-		clearTimeout(this.timeoutStep2);	 
+		clearTimeout(this.timeoutStep2);
 		loadStep3();
 	 }else{  
 		this.Step2Timer--;
@@ -1243,7 +1528,7 @@ function countDownStep2(){
 function countDownStep1(){  
 	 if (this.Step1Timer <=0){ 
 		clearTimeout(this.timeoutStep1);
-		loadStep2();
+		setSchedule();
 	 }else{  
 		this.Step1Timer--;
 		document.getElementById("timer").innerHTML = this.Step1Timer; 
@@ -1262,7 +1547,7 @@ function showConfidence()
 			document.getElementById("errorStatus").innerHTML="<font color=\"red\">Please select one of the options from each group!</font>";
 			return;
 		}
-		this.myanswer+=($("input:radio[name='findec"+arrkey+"']:checked").val()+"_");
+		this.myanswer+=("<vote name=\""+$("input:radio[name='findec"+arrkey+"']:checked").val().split(",")[0]+"\">"+$("input:radio[name='findec"+arrkey+"']:checked").val().split(",")[1]+"</vote>");
 	}
 	for (arrkey in this.clueType)
 	{
@@ -1291,8 +1576,22 @@ function submitDecision()
 	$("#basedonthe").html("Based on the information you have gathered, identify: ");
 	$("#subconfbut").hide();
 	$("#howconftable").hide();
-	this.myanswer+=("|"+$("input:radio[name='howconf']:checked").val());
+	this.myanswer+=("<confidence>"+$("input:radio[name='howconf']:checked").val()+"</confidence>");
 	submit(this.myanswer);
+	if(iControlBots)
+	{
+		for(var g=1; g<=parseInt(variables["bot_count"]); g++)
+		{
+			var botanswer="";
+			var arrkey;
+			for (arrkey in this.clueType)
+			{
+				botanswer+=("<vote name=\""+arrkey+"\">"+(Math.floor(Math.random()*this.clueType[arrkey])+1)+"</vote>");
+			}
+			botanswer=botanswer+("<confidence>Bot Answer</confidence>");
+			submitBot(numPlayers+g, currentRound, botanswer);
+		}
+	}
 	document.getElementById("submitStatus").innerHTML="<p align='center'><font color=\"green\">Thank you! Your choices are sent. Waiting for other participants...</font></p>";
 	setEnableRadioGroups(true);
 }
@@ -1300,26 +1599,80 @@ function submitDecision()
 function addTab(tabTitle, tabid) {
 	if($("#chattable").html().indexOf("tabs-")==-1)
 	{
-		$("#chattable").html("<tr><td width=\"455\" height=\"87\"><div id=\"tabs\"><ul><li id=\"tabli"+tabid+"\"><a href=\"#tabs-"+tabid+"\">"+tabTitle+"</a> <span class=\"ui-icon ui-icon-close\" role=\"presentation\">Remove Tab</span></li></ul><div id=\"tabs-"+tabid+"\"><div class=\"control-group\"><div class=\"controls\"> <div id=\"chat_conversation"+tabid+"\" style=\"background-color:white; text-align:left; width: 100%; height: 250px; overflow: auto; font-family:'Verdana'; font-size: 10pt;\"><div></div></div></div></div></div></div><i class=\"icon-pencil\"></i><input onFocus=\"document.getElementById('chat_input').value='';\" value=\"Type something here...\" type=\"text\" id=\"chat_input\" style=\"width: 76%;\" class=\"input-xlarge\"><button type=\"submit\" class=\"btn btn-primary\" id=\"chat_send_button\" onClick=\"sendMessage();\"><i class=\"icon-comment icon-white\"></i> Send</button></td><td width=\"0\" height=\"62\"></td></tr>");
-		 $("#chat_input").keypress(function(event) {
-			if ( event.which == 13 ) {
-				sendMessage();
-				event.preventDefault();
-			}
-		  });
+		if(parseInt(variables['conversation_type'])==1)
+		{
+			$("#chattable").html("<tr><td width=\"455\" height=\"87\"><div id=\"tabs\"><ul><li id=\"tabli"+tabid+"\"><a href=\"#tabs-"+tabid+"\">"+tabTitle+"</a> <span class=\"ui-icon ui-icon-close\" role=\"presentation\">Remove Tab</span></li></ul><div id=\"tabs-"+tabid+"\"><div class=\"control-group\"><div class=\"controls\"> <div id=\"chat_conversation"+tabid+"\" style=\"background-color:white; text-align:left; width: 100%; height: 250px; overflow: auto; font-family:'Verdana'; font-size: 10pt;\"><div></div></div></div></div></div></div><i class=\"icon-pencil\"></i><input onFocus=\"document.getElementById('chat_input').value='';\" value=\"Type something here...\" type=\"text\" id=\"chat_input\" style=\"width: 76%;\" class=\"input-xlarge\"><button type=\"submit\" class=\"btn btn-primary\" id=\"chat_send_button\" onClick=\"sendMessage();\"><i class=\"icon-comment icon-white\"></i> Send</button></td><td width=\"0\" height=\"62\"></td></tr>");
+		
+			$("#chat_input").keypress(function(event) {
+				if ( event.which == 13 ) {
+					sendMessage();
+					event.preventDefault();
+				}
+			});
+		}
+		if(parseInt(variables['conversation_type'])==2)
+		{
+			$("#chattable").html("<tr><td width=\"455\" height=\"312\"><div id=\"tabs\"><ul><li id=\"tabli"+tabid+"\"><a href=\"#tabs-"+tabid+"\">"+tabTitle+"</a> <span class=\"ui-icon ui-icon-close\" role=\"presentation\">Remove Tab</span></li></ul><div id=\"tabs-"+tabid+"\"><div class=\"control-group\"><div class=\"controls\"> <div id=\"trash"+tabid+"\" class=\"ui-widget-content ui-state-default\" style=\"background-color:white; text-align:left; width: 100%; height: 279px; overflow: auto; font-family:'Verdana'; font-size: 11pt;\">Drag and drop here the information you want to send...</div></div></div></div></div></div></div></td></tr>");
+			
+			$(function() {
+				var $trash = $( "#trash"+tabid );
+
+				// let the trash be droppable, accepting the gallery items
+				$trash.droppable({
+					accept: "#gallery > li",
+					activeClass: "ui-state-highlight",
+					drop: function( event, ui ) {
+						if($('#trash'+tabid).html()=='Drag and drop here the information you want to send...')
+							$('#trash'+tabid).html('');
+						deleteImage( ui.draggable );
+					}
+				});
+
+				// image deletion function
+				var recycle_icon = "";
+				function deleteImage( $item ) {
+						var $list = $( "ul", $trash ).length ?
+						$( "ul", $trash ) :
+						$( "<ul class='gallery ui-helper-reset'/>" ).appendTo( $trash );
+						$item.find( "a.ui-icon-trash" ).remove();
+						//$list.html($list.html()+"<div class='messagesender'>You ("+getName(myid)+"):</div>"+$item.clone().text()+"</br>");
+						//clonedItem.append( recycle_icon ).appendTo( $list );
+						jQuery("div#trash"+tabid).scrollTop(jQuery("div#trash"+tabid)[0].scrollHeight);
+						this.sharedMessage=$item.text();
+						sendMessage();
+				}
+			});
+		}
 		this.tabs = $( "#tabs" ).tabs({
 			activate: function( event, ui ) {
 				$("#tabli"+$(ui.newTab).text().substring(5, 6)).css("background-color", "#FFFFFF");
 				if(getCondition()==1)
 				{
-					setUser(parseInt($(ui.newTab).text().substring(5, 6)));
-					removeActives();
-					$('#'+$(ui.newTab).text().substring(5, 6)).addClass('active');
+					if($(ui.newTab).text().indexOf("User")>=0)
+					{
+						setUser(parseInt($(ui.newTab).text().substring(5, 6)));
+						removeActives();
+						$('#'+$(ui.newTab).text().substring(5, 6)).addClass('active');
+					}
+				//	if($(ui.newTab).text().indexOf("Bot")>=0)
+				//	{
+				//		setUser((parseInt($(ui.newTab).text().substring(4, 5))+numPlayers));
+				//		removeActives();
+				//		$('#'+(parseInt($(ui.newTab).text().substring(4, 5))+numPlayers)).addClass('active');
+				//	}
 				}
 				else
 				{
-					dehighlightCircle(parseInt($(ui.oldTab).text().substring(5, 6)));
-					highlightCircle(parseInt($(ui.newTab).text().substring(5, 6)));
+					if($(ui.newTab).text().indexOf("User")>=0)
+					{
+						dehighlightCircle(parseInt($(ui.oldTab).text().substring(5, 6)));
+						highlightCircle(parseInt($(ui.newTab).text().substring(5, 6)));
+					}
+		//			if($(ui.newTab).text().indexOf("Bot")>=0)
+		//			{
+		//				dehighlightCircle(parseInt($(ui.oldTab).text().substring(4, 5))+numPlayers);
+		//				highlightCircle(parseInt($(ui.newTab).text().substring(4, 5))+numPlayers);
+		//			}
 				}
 			}
 		});
@@ -1339,7 +1692,40 @@ function addTab(tabTitle, tabid) {
 		var id = "tabs-" + tabid;
 		var li = $( this.tabTemplate.replace( /#\{tabli\}/g, "tabli"+tabid ).replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label ) );
 		this.tabs.find( ".ui-tabs-nav" ).append( li );
-		this.tabs.append( "<div id='" + id + "'><div class=\"control-group\"><div class=\"controls\"> <div id=\"chat_conversation"+tabid+"\" style=\"background-color:white; text-align:left; width: 100%; height: 250px; overflow: auto; font-family:'Verdana'; font-size: 10pt;\"><div></div></div></div></div></div>" );
+		if(parseInt(variables['conversation_type'])==1)
+			this.tabs.append( "<div id='" + id + "'><div class=\"control-group\"><div class=\"controls\"> <div id=\"chat_conversation"+tabid+"\" style=\"background-color:white; text-align:left; width: 100%; height: 250px; overflow: auto; font-family:'Verdana'; font-size: 10pt;\"><div></div></div></div></div></div>" );
+		if(parseInt(variables['conversation_type'])==2)
+		{
+			this.tabs.append( "<div id='" + id + "'><div class=\"control-group\"><div class=\"controls\"> <div id=\"trash"+tabid+"\" class=\"ui-widget-content ui-state-default\" style=\"background-color:white; text-align:left; width: 100%; height: 279px; overflow: auto; font-family:'Verdana'; font-size: 11pt;\">Drag and drop here the information you want to send...</div></div></div></div></div></div>" );
+			$(function() {
+				var $trash = $( "#trash"+tabid );
+
+				// let the trash be droppable, accepting the gallery items
+				$trash.droppable({
+					accept: "#gallery > li",
+					activeClass: "ui-state-highlight",
+					drop: function( event, ui ) {
+						if($('#trash'+tabid).html()=='Drag and drop here the information you want to send...')
+							$('#trash'+tabid).html('');
+						deleteImage( ui.draggable );
+					}
+				});
+
+				// image deletion function
+				var recycle_icon = "";
+				function deleteImage( $item ) {
+						var $list = $( "ul", $trash ).length ?
+						$( "ul", $trash ) :
+						$( "<ul class='gallery ui-helper-reset'/>" ).appendTo( $trash );
+						$item.find( "a.ui-icon-trash" ).remove();
+						//$list.html($list.html()+"<div class='messagesender'>You ("+getName(myid)+"):</div>"+$item.clone().text()+"</br>");
+						//clonedItem.append( recycle_icon ).appendTo( $list );
+						jQuery("div#trash"+tabid).scrollTop(jQuery("div#trash"+tabid)[0].scrollHeight);
+						this.sharedMessage=$item.text();
+						sendMessage();
+				}
+			});
+		}
 		this.tabs.tabs( "refresh" );
 		this.tabs.tabs("option", "active", $('#tabs >ul >li').size()-1);
 	}
@@ -1365,12 +1751,26 @@ function refreshTabs()
 	{
 		if(getCondition()==1)
 		{
-			setUser(parseInt(panelId.substring(5)));
-			removeActives();
-			$('#'+parseInt(panelId.substring(5))).addClass('active');
+			if(panelId.substring(0,5).indexOf("User")>=0)
+			{
+				setUser(parseInt(panelId.substring(5, 6)));
+				removeActives();
+				$('#'+parseInt(panelId.substring(5, 6))).addClass('active');
+			}
+			//if(panelId.substring(0,4).indexOf("Bot")>=0)
+			//{
+			//	setUser(parseInt(panelId.substring(4, 5))+numPlayers);
+			//	removeActives();
+			//	$('#'+(parseInt(panelId.substring(4, 5))+numPlayers)).addClass('active');
+			//}
 		}
 		else
-			highlightCircle(parseInt(panelId.substring(5)));
+		{
+			if(panelId.substring(0,5).indexOf("User")>=0)
+				highlightCircle(parseInt(panelId.substring(5, 6)));
+			//if(panelId.substring(0,4).indexOf("Bot")>=0)
+			//	highlightCircle(parseInt(panelId.substring(4, 5))+numPlayers);
+		}
 	}
 }
 
@@ -1383,7 +1783,7 @@ function setupTabs()
 		if(getCondition()!=1)
 			dehighlightCircle(parseInt(panelId.substring(5)));
 		if($("#chattable").html().indexOf("#tabs-")==-1)
-			$("#chattable").html("<tr><td width=\"455\" height=\"156\"></td></tr><tr><td width=\"455\" height=\"171\"><div style=\"text-align: center; vertical-align:middle; width: 100%; height: 100%; font-family:'Verdana'; font-size: 12pt;\">Please click on a user to start chatting...</div></td></tr>");
+			$("#chattable").html("<tr><td width=\"455\" height=\"156\"></td></tr><tr><td width=\"455\" height=\"171\"><div style=\"text-align: center; vertical-align:middle; width: 100%; height: 100%; font-family:'Verdana'; font-size: 12pt;\">Please click on a user to start conversation...</div></td></tr>");
 		else
 			refreshTabs();
 	});
@@ -1467,16 +1867,16 @@ function drawStaticNetwork()
 	this.xVals = new Array();
 	this.yVals = new Array();
 	this.labels = this.r.set();
-	for(var g=1; g<=numPlayers; g++)
+	for(var g=1; g<=numPlayers+parseInt(variables["bot_count"]); g++)
 	{
 		var circleY=-1;
 		var circleX=-1;
-		if(numPlayers==1)
+		if(numPlayers+parseInt(variables["bot_count"])==1)
 		{
 			circleY=canvasHeight/2;
 			circleX=canvasWidth/2;
 		}
-		if(numPlayers==2)
+		if(numPlayers+parseInt(variables["bot_count"])==2)
 		{
 			circleY=canvasHeight/2;
 			if(g==1)
@@ -1484,7 +1884,7 @@ function drawStaticNetwork()
 			if(g==2)
 				circleX=2*canvasWidth/3+5;
 		}
-		if(numPlayers==3)
+		if(numPlayers+parseInt(variables["bot_count"])==3)
 		{
 			if(g>1)
 			{
@@ -1500,7 +1900,7 @@ function drawStaticNetwork()
 				circleY=canvasHeight/3-5;
 			}
 		}
-		if(numPlayers==4)
+		if(numPlayers+parseInt(variables["bot_count"])==4)
 		{
 			if(g>2)
 			{
@@ -1519,7 +1919,7 @@ function drawStaticNetwork()
 					circleX=2*canvasWidth/3+5;
 			}
 		}
-		if(numPlayers==5)
+		if(numPlayers+parseInt(variables["bot_count"])==5)
 		{
 			if(g==1)
 			{
@@ -1545,7 +1945,7 @@ function drawStaticNetwork()
 					circleX=6*canvasWidth/8;
 			}
 		}
-		if(numPlayers==6)
+		if(numPlayers+parseInt(variables["bot_count"])==6)
 		{
 			if(g==1)
 			{
@@ -1576,7 +1976,7 @@ function drawStaticNetwork()
 					circleX=6*canvasWidth/8-15;
 			}
 		}
-		if(numPlayers==7)
+		if(numPlayers+parseInt(variables["bot_count"])==7)
 		{
 			if(g==1)
 			{
@@ -1614,7 +2014,7 @@ function drawStaticNetwork()
 				circleX=canvasWidth/5-7;
 			}
 		}
-		if(numPlayers==8)
+		if(numPlayers+parseInt(variables["bot_count"])==8)
 		{
 			if(g==1)
 			{
@@ -1658,7 +2058,7 @@ function drawStaticNetwork()
 				circleX=canvasWidth/5-7;
 			}
 		}
-		if(numPlayers==9)
+		if(numPlayers+parseInt(variables["bot_count"])==9)
 		{
 			if(g==1)
 			{
@@ -1722,7 +2122,12 @@ function drawStaticNetwork()
 			if(myid==g)
 				this.labels.push(this.r.text(this.xVals[g-1]-23, (this.yVals[g-1]-4)/2, "\u00a0\u00a0\u00a0\u00a0You\n("+getName(myid)+")"));
 			else
-				this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5)/2, getName(g)+""));
+			{
+				if(g<=numPlayers)
+					this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5)/2, getName(g)+""));
+				else
+					this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5)/2, "User "+(g)));
+			}
 			var c = this.r.circle(circleX, circleY,29);
 			c.attr("fill", "red");
 			c.attr("cursor", "pointer");
@@ -1734,7 +2139,12 @@ function drawStaticNetwork()
 			if(myid==g)
 				this.labels.push(this.r.text(this.xVals[g-1]-23, (this.yVals[g-1]-4), "\u00a0\u00a0\u00a0\u00a0You\n("+getName(myid)+")"));
 			else
-				this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5), getName(g)+""));
+			{
+				if(g<=numPlayers)
+					this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5), getName(g)+""));
+				else
+					this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5), "User "+(g)));
+			}
 			var c = this.r.circle(circleX, circleY,29);
 			c.attr("fill", "red");
 			c.attr("cursor", "pointer");
@@ -1755,27 +2165,27 @@ function drawStaticNetwork()
 			path.line.toBack();
 		}
 	}
-	if(numPlayers==1)
+	if(numPlayers+parseInt(variables["bot_count"])==1)
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
-	if(numPlayers==2)
+	if(numPlayers+parseInt(variables["bot_count"])==2)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
-	if(numPlayers==3)
+	if(numPlayers+parseInt(variables["bot_count"])==3)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
-	if(numPlayers==4)
+	if(numPlayers+parseInt(variables["bot_count"])==4)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
-	if(numPlayers==5)
+	if(numPlayers+parseInt(variables["bot_count"])==5)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
@@ -1783,7 +2193,7 @@ function drawStaticNetwork()
 		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
-	if(numPlayers==6)
+	if(numPlayers+parseInt(variables["bot_count"])==6)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
@@ -1792,7 +2202,7 @@ function drawStaticNetwork()
 		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
-	if(numPlayers==7)
+	if(numPlayers+parseInt(variables["bot_count"])==7)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
@@ -1802,7 +2212,7 @@ function drawStaticNetwork()
 		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
-	if(numPlayers==8)
+	if(numPlayers+parseInt(variables["bot_count"])==8)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
@@ -1813,7 +2223,7 @@ function drawStaticNetwork()
 		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[7].hover(function(){circles[7].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[7].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
-	if(numPlayers==9)
+	if(numPlayers+parseInt(variables["bot_count"])==9)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
@@ -1845,16 +2255,16 @@ function drawDynamicNetwork()
 	this.xVals = new Array();
 	this.yVals = new Array();
 	this.labels = this.r.set();
-	for(var g=1; g<=numPlayers; g++)
+	for(var g=1; g<=numPlayers+parseInt(variables["bot_count"]); g++)
 	{
 		var circleY=-1;
 		var circleX=-1;
-		if(numPlayers==1)
+		if(numPlayers+parseInt(variables["bot_count"])==1)
 		{
 			circleY=canvasHeight/2;
 			circleX=canvasWidth/2;
 		}
-		if(numPlayers==2)
+		if(numPlayers+parseInt(variables["bot_count"])==2)
 		{
 			circleY=canvasHeight/2;
 			if(g==1)
@@ -1862,7 +2272,7 @@ function drawDynamicNetwork()
 			if(g==2)
 				circleX=2*canvasWidth/3+5;
 		}
-		if(numPlayers==3)
+		if(numPlayers+parseInt(variables["bot_count"])==3)
 		{
 			if(g>1)
 			{
@@ -1878,7 +2288,7 @@ function drawDynamicNetwork()
 				circleY=canvasHeight/3-5;
 			}
 		}
-		if(numPlayers==4)
+		if(numPlayers+parseInt(variables["bot_count"])==4)
 		{
 			if(g>2)
 			{
@@ -1897,7 +2307,7 @@ function drawDynamicNetwork()
 					circleX=2*canvasWidth/3+5;
 			}
 		}
-		if(numPlayers==5)
+		if(numPlayers+parseInt(variables["bot_count"])==5)
 		{
 			if(g==1)
 			{
@@ -1923,7 +2333,7 @@ function drawDynamicNetwork()
 					circleX=6*canvasWidth/8;
 			}
 		}
-		if(numPlayers==6)
+		if(numPlayers+parseInt(variables["bot_count"])==6)
 		{
 			if(g==1)
 			{
@@ -1954,7 +2364,7 @@ function drawDynamicNetwork()
 					circleX=6*canvasWidth/8-15;
 			}
 		}
-		if(numPlayers==7)
+		if(numPlayers+parseInt(variables["bot_count"])==7)
 		{
 			if(g==1)
 			{
@@ -1992,7 +2402,7 @@ function drawDynamicNetwork()
 				circleX=canvasWidth/5-7;
 			}
 		}
-		if(numPlayers==8)
+		if(numPlayers+parseInt(variables["bot_count"])==8)
 		{
 			if(g==1)
 			{
@@ -2036,7 +2446,7 @@ function drawDynamicNetwork()
 				circleX=canvasWidth/5-7;
 			}
 		}
-		if(numPlayers==9)
+		if(numPlayers+parseInt(variables["bot_count"])==9)
 		{
 			if(g==1)
 			{
@@ -2102,7 +2512,12 @@ function drawDynamicNetwork()
 			if(myid==g)
 				this.labels.push(this.r.text(this.xVals[g-1]-26, (this.yVals[g-1]-4)/2, "\u00a0\u00a0\u00a0\u00a0You\n("+getName(myid)+")"));
 			else
-				this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5)/2, getName(g)+""));
+			{
+				if(g<=numPlayers)
+					this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5)/2, getName(g)+""));
+				else
+					this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5)/2, "User "+(g)));
+			}
 			var c = this.r.circle(circleX, circleY,29);
 			c.attr("fill", "red");
 			c.attr("cursor", "pointer");
@@ -2114,7 +2529,12 @@ function drawDynamicNetwork()
 			if(myid==g)
 				this.labels.push(this.r.text(this.xVals[g-1]-26, (this.yVals[g-1]-4), "\u00a0\u00a0\u00a0\u00a0You\n("+getName(myid)+")"));
 			else
-				this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5), getName(g)+""));
+			{
+				if(g<=numPlayers)
+					this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5), getName(g)+""));
+				else
+					this.labels.push(this.r.text(this.xVals[g-1]-19, (this.yVals[g-1]+3.5), "User "+(g)));
+			}
 			var c = this.r.circle(circleX, circleY,29);
 			c.attr("fill", "red");
 			c.attr("cursor", "pointer");
@@ -2124,27 +2544,27 @@ function drawDynamicNetwork()
 		this.labels.attr({font: "12px Fontin-Sans, Verdana", fill: "#fff", "text-anchor": "start", "cursor": "pointer"});
 	}   
 
-	if(numPlayers==1)
+	if(numPlayers+parseInt(variables["bot_count"])==1)
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
-	if(numPlayers==2)
+	if(numPlayers+parseInt(variables["bot_count"])==2)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
-	if(numPlayers==3)
+	if(numPlayers+parseInt(variables["bot_count"])==3)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
-	if(numPlayers==4)
+	if(numPlayers+parseInt(variables["bot_count"])==4)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[2].hover(function(){circles[2].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[2].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
-	if(numPlayers==5)
+	if(numPlayers+parseInt(variables["bot_count"])==5)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
@@ -2152,7 +2572,7 @@ function drawDynamicNetwork()
 		this.hiddencircles[3].hover(function(){circles[3].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[3].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
-	if(numPlayers==6)
+	if(numPlayers+parseInt(variables["bot_count"])==6)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
@@ -2161,7 +2581,7 @@ function drawDynamicNetwork()
 		this.hiddencircles[4].hover(function(){circles[4].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[4].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
-	if(numPlayers==7)
+	if(numPlayers+parseInt(variables["bot_count"])==7)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
@@ -2171,7 +2591,7 @@ function drawDynamicNetwork()
 		this.hiddencircles[5].hover(function(){circles[5].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[5].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
-	if(numPlayers==8)
+	if(numPlayers+parseInt(variables["bot_count"])==8)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
@@ -2182,7 +2602,7 @@ function drawDynamicNetwork()
 		this.hiddencircles[6].hover(function(){circles[6].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[6].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[7].hover(function(){circles[7].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[7].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 	}
-	if(numPlayers==9)
+	if(numPlayers+parseInt(variables["bot_count"])==9)
 	{
 		this.hiddencircles[0].hover(function(){circles[0].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[0].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
 		this.hiddencircles[1].hover(function(){circles[1].animate({ r: 35 }, 200);this.animate({ r: 35 }, 200);}, function(){circles[1].animate({ r: 29 }, 200);this.animate({ r: 29 }, 200);});
@@ -2219,7 +2639,7 @@ function canCommunicate(i, j)
 }
 
 function circleClick(){
-	for(var g=1; g<=numPlayers; g++)
+	for(var g=1; g<=numPlayers+parseInt(variables["bot_count"]); g++)
 	{
 		if(canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))
 		{
@@ -2230,9 +2650,9 @@ function circleClick(){
 					return;
 				});
 				this.hiddencircles[g-1].click(function() {
-				highlightCircle(1);
-				return;
-			});
+					highlightCircle(1);
+					return;
+				});
 			}
 			if(g==2)
 			{
@@ -2329,29 +2749,37 @@ function circleClick(){
 
 function highlightCircle(gg)
 {
-	if(gg==myid)
+	if(isNaN(gg)||gg==myid)
 		return;
 	if(gg==0)
 	{
-		for(var g=1; g<=numPlayers; g++)
+		if(getCondition()!=1)
 		{
-			if(g==myid||canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))
-				this.circles[g-1].attr("fill", "#0A4");
+			for(var g=1; g<=numPlayers+parseInt(variables["bot_count"]); g++)
+			{
+				if(g==myid||canCommunicate(myid-1, g-1)||canCommunicate(g-1, myid-1))
+					this.circles[g-1].attr("fill", "#0A4");
+			}
 		}
 		setUser(0); 
 		removeActives();
 		$('#0').addClass('active');
+		this.tabs.tabs("option", "active", 0);
 	}
 	else
 	{
-	
 		if($("#chattable").html().indexOf("tabs-"+gg)==-1)
-			addTab(getName(gg), gg);
+		{
+			if(gg<=numPlayers)
+				addTab(getName(gg), gg);
+			else
+				addTab("User "+(gg), gg);
+		}	
 		else
 			this.tabs.tabs("option", "active", $('#tabs-'+gg).tabIndex());
 		if(getCondition()!=1)
 		{
-			for(var ic=0; ic<numPlayers; ic++)
+			for(var ic=0; ic<numPlayers+parseInt(variables["bot_count"]); ic++)
 				this.circles[ic].attr("fill", getCircleColor(ic));
 			this.circles[gg-1].attr("fill", "#0A4");
 		}
@@ -2371,13 +2799,13 @@ function setUser(nmb)
 	selectedUser=nmb;
 }
 
-    $.fn.tabIndex = function () {
-        return $(this).parent().find(this).index() - 1; 
-    };
+$.fn.tabIndex = function () {
+	return $(this).parent().find(this).index() - 1; 
+};
 
 function removeActives()
 {
-	for(var g=0; g<=numPlayers; g++)
+	for(var g=0; g<=numPlayers+parseInt(variables["bot_count"]); g++)
 	{
 		if ($("#"+g)!=null&&$("#"+g)!=undefined&&$("#"+g).is('.active'))
 			$("#"+g).removeClass("active");
@@ -2421,6 +2849,95 @@ function removeActives()
 	setTimeout("drawLineIfMessageReceived()", 1000);
 }*/
 
+function botBehav1()
+{
+	for(var n=1; n<=parseInt(variables["bot_count"]); n++)
+	{
+		if(variables['bot_type']==1)//random private
+			$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[numPlayers+n-1][Math.floor(Math.random()*this.privateInfo[numPlayers+n-1].length)]+"</div>");
+		if(variables['bot_type']==2)//random public
+			$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]+"</div>");
+		if(variables['bot_type']==3)//totally random
+		{
+			if(Math.floor(Math.random()*2)+1==1) // private
+				$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[numPlayers+n-1][Math.floor(Math.random()*this.privateInfo[numPlayers+n-1].length)]+"</div>");
+			else
+				$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]+"</div>");
+		}
+		jQuery("div#trash0").scrollTop(jQuery("div#trash0")[0].scrollHeight);
+		
+		if(getCondition()!=1)
+		{
+			for(var i=0; i<numPlayers+parseInt(variables["bot_count"]); i++)
+			{
+				var path = new Object();
+				path.line = this.r.path("M "+xVals[parseInt(numPlayers+n)-1]+" "+this.yVals[parseInt(numPlayers+n)-1]+" l "+(this.xVals[i]-this.xVals[parseInt(numPlayers+n)-1])+" "+(this.yVals[i]-this.yVals[parseInt(numPlayers+n)-1])+" z");
+				path.line.attr({stroke: '#3b4449','stroke-width': 3});
+				path.line.toBack();
+			}
+		}
+	}
+}
+
+function botBehav2(to_ids)
+{
+	if(variables['bot_type']==1)//random private
+		$('#trash'+to_ids[5]).append("<div class='messagereceiver'>User "+(to_ids[5])+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[to_ids[5]-1][Math.floor(Math.random()*this.privateInfo[to_ids[5]-1].length)]+"</div>");
+	if(variables['bot_type']==2)//random public
+		$('#trash'+to_ids[5]).append("<div class='messagereceiver'>User "+(to_ids[5])+":</div><div class='receivedmessage'>&nbsp;"+this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]+"</div>");
+	if(variables['bot_type']==3)//totally random
+	{
+		if(Math.floor(Math.random()*2)+1==1) // private
+			$('#trash'+to_ids[5]).append("<div class='messagereceiver'>User "+(to_ids[5])+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[to_ids[5]-1][Math.floor(Math.random()*this.privateInfo[to_ids[5]-1].length)]+"</div>");
+		else
+			$('#trash'+to_ids[5]).append("<div class='messagereceiver'>User "+(to_ids[5])+":</div><div class='receivedmessage'>&nbsp;"+this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]+"</div>");
+	}
+	jQuery("div#trash"+to_ids[5]).scrollTop(jQuery("div#trash"+to_ids[5])[0].scrollHeight);
+	
+	if(getCondition()!=1)
+	{
+		var path = new Object();
+		path.line = this.r.path("M "+xVals[to_ids[2]-1]+" "+this.yVals[to_ids[2]-1]+" l "+(this.xVals[to_ids[5]-1]-this.xVals[to_ids[2]-1])+" "+(this.yVals[to_ids[5]-1]-this.yVals[to_ids[2]-1])+" z");
+		path.line.attr({stroke: '#3b4449','stroke-width': 3});
+		path.line.toBack();
+	}
+}
+
+function botBehav3()
+{
+	for(var n=1; n<=parseInt(variables["bot_count"]); n++)
+	{
+		if(variables['bot_type']==1)//random private
+			$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[numPlayers+n-1][Math.floor(Math.random()*this.privateInfo[numPlayers+n-1].length)]+"</div>");
+		if(variables['bot_type']==2)//random public
+			$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]+"</div>");
+		if(variables['bot_type']==3)//totally random
+		{
+			if(Math.floor(Math.random()*2)+1==1) // private
+				$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[numPlayers+n-1][Math.floor(Math.random()*this.privateInfo[numPlayers+n-1].length)]+"</div>");
+			else
+				$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]+"</div>");
+		}
+		jQuery("div#trash0").scrollTop(jQuery("div#trash0")[0].scrollHeight);
+	}
+}
+
+function botBehav4(to_ids)
+{
+	if(variables['bot_type']==1)//random private
+		$('#trash'+to_ids[1]).append("<div class='messagereceiver'>User "+(to_ids[1])+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[to_ids[1]-1][Math.floor(Math.random()*this.privateInfo[to_ids[1]-1].length)]+"</div>");
+	if(variables['bot_type']==2)//random public
+		$('#trash'+to_ids[1]).append("<div class='messagereceiver'>User "+(to_ids[1])+":</div><div class='receivedmessage'>&nbsp;"+this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]+"</div>");
+	if(variables['bot_type']==3)//totally random
+	{
+		if(Math.floor(Math.random()*2)+1==1) // private
+			$('#trash'+to_ids[1]).append("<div class='messagereceiver'>User "+(to_ids[1])+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[to_ids[1]-1][Math.floor(Math.random()*this.privateInfo[to_ids[1]-1].length)]+"</div>");
+		else
+			$('#trash'+to_ids[1]).append("<div class='messagereceiver'>User "+(to_ids[1])+":</div><div class='receivedmessage'>&nbsp;"+this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]+"</div>");
+	}
+	jQuery("div#trash"+to_ids[1]).scrollTop(jQuery("div#trash"+to_ids[1])[0].scrollHeight);
+}
+
 function comReceived(index, newCom) {
   if (newCom.com_type == -1) {
     chatReceived(newCom.from,newCom.val,newCom.to_parts);
@@ -2434,8 +2951,36 @@ function chatReceived(from_ids,message,to_ids) {
 		if(parseInt(variables['chatting_with_everyone'])==1 && eval(to_ids).length==numPlayers) // everyone
 		{
 			if (parseInt(from_ids) == myid) {
-				$('#chat_conversation0').append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
-				jQuery("div#chat_conversation0").scrollTop(jQuery("div#chat_conversation0")[0].scrollHeight);
+				if(parseInt(variables['conversation_type'])==1)
+				{
+					$('#chat_conversation0').append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#chat_conversation0").scrollTop(jQuery("div#chat_conversation0")[0].scrollHeight);
+				}
+				if(parseInt(variables['conversation_type'])==2)
+				{
+					if($('#trash0').html()=="Drag and drop here the information you want to send...") $('#trash0').html("");	
+					$('#trash0').append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#trash0").scrollTop(jQuery("div#trash0")[0].scrollHeight);
+					
+					if(parseInt(variables["bot_count"])>0)
+					{
+						if(parseInt(variables["bot_behavior"])==1)
+							setTimeout('botBehav1()', 2500);
+						if(parseInt(variables["bot_behavior"])==2)
+						{
+							if(getCondition()!=1)
+							{
+								for(var i=0; i<numPlayers+parseInt(variables["bot_count"]); i++)
+								{
+									var path = new Object();
+									path.line = this.r.path("M "+xVals[parseInt(from_ids)-1]+" "+this.yVals[parseInt(from_ids)-1]+" l "+(this.xVals[i]-this.xVals[parseInt(from_ids)-1])+" "+(this.yVals[i]-this.yVals[parseInt(from_ids)-1])+" z");
+									path.line.attr({stroke: '#3b4449','stroke-width': 3});
+									path.line.toBack();
+								}
+							}
+						}
+					}
+				}
 			}
 			else
 			{
@@ -2443,22 +2988,49 @@ function chatReceived(from_ids,message,to_ids) {
 					$("#tabli0").css("background-color", "#FFFFFF");
 				else
 					$("#tabli0").css("background-color", "#DBA901");
-				$('#chat_conversation0').append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
-				jQuery("div#chat_conversation0").scrollTop(jQuery("div#chat_conversation0")[0].scrollHeight);
+				if(parseInt(variables['conversation_type'])==1)
+				{
+					$('#chat_conversation0').append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#chat_conversation0").scrollTop(jQuery("div#chat_conversation0")[0].scrollHeight);
+				}
+				if(parseInt(variables['conversation_type'])==2)
+				{
+					if($('#trash0').html()=="Drag and drop here the information you want to send...") $('#trash0').html("");
+					$('#trash0').append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#trash0").scrollTop(jQuery("div#trash0")[0].scrollHeight);
+				}
 			}
-			for(var i=0; i<eval(to_ids).length; i++)
+			if(getCondition()!=1)
 			{
-				var path = new Object();
-				path.line = this.r.path("M "+xVals[parseInt(from_ids)-1]+" "+this.yVals[parseInt(from_ids)-1]+" l "+(this.xVals[eval(to_ids)[i]-1]-this.xVals[parseInt(from_ids)-1])+" "+(this.yVals[eval(to_ids)[i]-1]-this.yVals[parseInt(from_ids)-1])+" z");
-				path.line.attr({stroke: '#3b4449','stroke-width': 3});
-				path.line.toBack();
+				for(var i=0; i<eval(to_ids).length; i++)
+				{
+					var path = new Object();
+					path.line = this.r.path("M "+xVals[parseInt(from_ids)-1]+" "+this.yVals[parseInt(from_ids)-1]+" l "+(this.xVals[eval(to_ids)[i]-1]-this.xVals[parseInt(from_ids)-1])+" "+(this.yVals[eval(to_ids)[i]-1]-this.yVals[parseInt(from_ids)-1])+" z");
+					path.line.attr({stroke: '#3b4449','stroke-width': 3});
+					path.line.toBack();
+				}
 			}
 		}
 		else
 		{
 			if (to_ids[2] == myid) {
-				$('#chat_conversation'+to_ids[5]).append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
-				jQuery("div#chat_conversation"+to_ids[5]).scrollTop(jQuery("div#chat_conversation"+to_ids[5])[0].scrollHeight);
+				if(parseInt(variables['conversation_type'])==1)
+				{
+					$('#chat_conversation'+to_ids[5]).append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#chat_conversation"+to_ids[5]).scrollTop(jQuery("div#chat_conversation"+to_ids[5])[0].scrollHeight);
+				}
+				if(parseInt(variables['conversation_type'])==2)
+				{
+					if($('#trash'+to_ids[5]).html()=="Drag and drop here the information you want to send...") $('#trash'+to_ids[5]).html("");
+					$('#trash'+to_ids[5]).append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#trash"+to_ids[5]).scrollTop(jQuery("div#trash"+to_ids[5])[0].scrollHeight);
+					
+					if(parseInt(variables["bot_count"])>0)
+					{
+						if(parseInt(variables["bot_behavior"])==1)
+							setTimeout(function() {botBehav2(to_ids);}, 2500);
+					}
+				}
 			}
 			if (to_ids[5] == myid)
 			{
@@ -2470,13 +3042,25 @@ function chatReceived(from_ids,message,to_ids) {
 				}
 				else
 					$("#tabli"+to_ids[2]).css("background-color", "#DBA901");
-				$('#chat_conversation'+to_ids[2]).append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
-				jQuery("div#chat_conversation"+to_ids[2]).scrollTop(jQuery("div#chat_conversation"+to_ids[2])[0].scrollHeight);
+				if(parseInt(variables['conversation_type'])==1)
+				{
+					$('#chat_conversation'+to_ids[2]).append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#chat_conversation"+to_ids[2]).scrollTop(jQuery("div#chat_conversation"+to_ids[2])[0].scrollHeight);
+				}
+				if(parseInt(variables['conversation_type'])==2)
+				{
+					if($('#trash'+to_ids[2]).html()=="Drag and drop here the information you want to send...") $('#trash'+to_ids[2]).html("");
+					$('#trash'+to_ids[2]).append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#trash"+to_ids[2]).scrollTop(jQuery("div#trash"+to_ids[2])[0].scrollHeight);
+				}
 			}
-			var path = new Object();
-			path.line = this.r.path("M "+xVals[to_ids[2]-1]+" "+this.yVals[to_ids[2]-1]+" l "+(this.xVals[to_ids[5]-1]-this.xVals[to_ids[2]-1])+" "+(this.yVals[to_ids[5]-1]-this.yVals[to_ids[2]-1])+" z");
-			path.line.attr({stroke: '#3b4449','stroke-width': 3});
-			path.line.toBack();
+			if(getCondition()!=1)
+			{
+				var path = new Object();
+				path.line = this.r.path("M "+xVals[to_ids[2]-1]+" "+this.yVals[to_ids[2]-1]+" l "+(this.xVals[to_ids[5]-1]-this.xVals[to_ids[2]-1])+" "+(this.yVals[to_ids[5]-1]-this.yVals[to_ids[2]-1])+" z");
+				path.line.attr({stroke: '#3b4449','stroke-width': 3});
+				path.line.toBack();
+			}
 		}
 	}
 	else
@@ -2485,8 +3069,23 @@ function chatReceived(from_ids,message,to_ids) {
 		if(parseInt(variables['chatting_with_everyone'])==1 && eval(to_ids).length==numPlayers) // everyone
 		{
 			if (parseInt(from_ids) == myid) {
-				$('#chat_conversation0').append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
-				jQuery("div#chat_conversation0").scrollTop(jQuery("div#chat_conversation0")[0].scrollHeight);
+				if(parseInt(variables['conversation_type'])==1)
+				{
+					$('#chat_conversation0').append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#chat_conversation0").scrollTop(jQuery("div#chat_conversation0")[0].scrollHeight);
+				}
+				if(parseInt(variables['conversation_type'])==2)
+				{
+					if($('#trash0').html()=="Drag and drop here the information you want to send...") $('#trash0').html("");
+					$('#trash0').append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#trash0").scrollTop(jQuery("div#trash0")[0].scrollHeight);
+					
+					if(parseInt(variables["bot_count"])>0)
+					{
+						if(parseInt(variables["bot_behavior"])==1)
+							setTimeout('botBehav3()', 2500);
+					}
+				}
 			}
 			else
 			{
@@ -2494,15 +3093,39 @@ function chatReceived(from_ids,message,to_ids) {
 					$("#tabli0").css("background-color", "#FFFFFF");
 				else
 					$("#tabli0").css("background-color", "#DBA901");
-				$('#chat_conversation0').append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
-				jQuery("div#chat_conversation0").scrollTop(jQuery("div#chat_conversation0")[0].scrollHeight);
+				if(parseInt(variables['conversation_type'])==1)
+				{
+					$('#chat_conversation0').append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#chat_conversation0").scrollTop(jQuery("div#chat_conversation0")[0].scrollHeight);
+				}
+				if(parseInt(variables['conversation_type'])==2)
+				{
+					if($('#trash0').html()=="Drag and drop here the information you want to send...") $('#trash0').html("");
+					$('#trash0').append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#trash0").scrollTop(jQuery("div#trash0")[0].scrollHeight);
+				}
 			}
 		}
 		else
 		{
 			if (to_ids[4] == myid) {
-				$('#chat_conversation'+to_ids[1]).append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
-				jQuery("div#chat_conversation"+to_ids[1]).scrollTop(jQuery("div#chat_conversation"+to_ids[1])[0].scrollHeight);
+				if(parseInt(variables['conversation_type'])==1)
+				{
+					$('#chat_conversation'+to_ids[1]).append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#chat_conversation"+to_ids[1]).scrollTop(jQuery("div#chat_conversation"+to_ids[1])[0].scrollHeight);
+				}
+				if(parseInt(variables['conversation_type'])==2)
+				{
+					if($("#trash"+to_ids[1]).html()=="Drag and drop here the information you want to send...") $("#trash"+to_ids[1]).html("");
+					$('#trash'+to_ids[1]).append("<div class='messagesender'>You ("+getName(myid)+"):</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#trash"+to_ids[1]).scrollTop(jQuery("div#trash"+to_ids[1])[0].scrollHeight);
+					
+					if(parseInt(variables["bot_count"])>0)
+					{
+						if(parseInt(variables["bot_behavior"])==1)
+							setTimeout(function() {botBehav4(to_ids);}, 2500);
+					}
+				}
 			}
 			if (to_ids[1] == myid)
 			{
@@ -2514,8 +3137,17 @@ function chatReceived(from_ids,message,to_ids) {
 				}
 				else
 					$("#tabli"+to_ids[4]).css("background-color", "#DBA901");
-				$('#chat_conversation'+to_ids[4]).append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
-				jQuery("div#chat_conversation"+to_ids[4]).scrollTop(jQuery("div#chat_conversation"+to_ids[4])[0].scrollHeight);
+				if(parseInt(variables['conversation_type'])==1)
+				{
+					$('#chat_conversation'+to_ids[4]).append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#chat_conversation"+to_ids[4]).scrollTop(jQuery("div#chat_conversation"+to_ids[4])[0].scrollHeight);
+				}
+				if(parseInt(variables['conversation_type'])==2)
+				{
+					if($("#trash"+to_ids[4]).html()=="Drag and drop here the information you want to send...") $("#trash"+to_ids[4]).html("");
+					$('#trash'+to_ids[4]).append("<div class='messagereceiver'>"+getName(from_ids)+":</div><div class='receivedmessage'>&nbsp;"+message+"</div>");
+					jQuery("div#trash"+to_ids[4]).scrollTop(jQuery("div#trash"+to_ids[4])[0].scrollHeight);
+				}
 			}
 		}
 	}
@@ -2523,7 +3155,7 @@ function chatReceived(from_ids,message,to_ids) {
 
 function sendMessage()
 {
-	if($("#chat_input").val()==null||$("#chat_input").val()=="Type something here..."||$("#chat_input").val()=="") return;
+	if(parseInt(variables['conversation_type'])==1&&$("#chat_input").val()==null||$("#chat_input").val()=="Type something here..."||$("#chat_input").val()=="") return;
 
 	if(this.condition==3)
 	{
@@ -2531,8 +3163,10 @@ function sendMessage()
 		{
 			if(parseInt(variables['chatting_with_everyone'])==1)
 			{
-
-				sendChat($("#chat_input").val());
+				if(parseInt(variables['conversation_type'])==1)
+					sendChat($("#chat_input").val());
+				if(parseInt(variables['conversation_type'])==2)
+					sendChat(this.sharedMessage);
 			}
 		}
 		else
@@ -2551,7 +3185,10 @@ function sendMessage()
 				//else
 				//	curve(xVals[myid-1], this.yVals[myid-1],xVals[myid-1]+20, this.yVals[myid-1]-(this.yVals[selectedUser-1]-this.yVals[myid-1])/3, this.xVals[selectedUser-1]+40, this.yVals[selectedUser-1]+(this.yVals[selectedUser-1]-this.yVals[myid-1])/3, this.xVals[selectedUser-1], this.yVals[selectedUser-1], "hsb(0, 0, 0)"); 
 			}
-			sendChat($("#chat_input").val(), msgArr);
+			if(parseInt(variables['conversation_type'])==1)
+				sendChat($("#chat_input").val(), msgArr);
+			if(parseInt(variables['conversation_type'])==2)
+				sendChat(this.sharedMessage, msgArr);
 		}
 	}
 	else
@@ -2559,16 +3196,27 @@ function sendMessage()
 		if(selectedUser==undefined||selectedUser==null||selectedUser==0)
 		{
 			if(parseInt(variables['chatting_with_everyone'])==1)
-				sendChat($("#chat_input").val());
+			{
+				if(parseInt(variables['conversation_type'])==1)
+					sendChat($("#chat_input").val());
+				if(parseInt(variables['conversation_type'])==2)
+					sendChat(this.sharedMessage);
+			}
 		}
 		else
 		{
 			var msgArr = new Array();
 			msgArr.push(selectedUser);
 			msgArr.push(myid);
-			sendChat($("#chat_input").val(),msgArr);
+			if(parseInt(variables['conversation_type'])==1)
+				sendChat($("#chat_input").val(),msgArr);
+			if(parseInt(variables['conversation_type'])==2)
+				sendChat(this.sharedMessage,msgArr);
 		}
 	}
-	$("#chat_input").val('');
+	if(parseInt(variables['conversation_type'])==1)
+		$("#chat_input").val('');
+	if(parseInt(variables['conversation_type'])==2)
+		this.sharedMessage="";
 }	
 </script> 
