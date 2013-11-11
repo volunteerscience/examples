@@ -275,13 +275,13 @@ var timeoutStep1=-1;
 var timeoutStep2=-1;
 var timeoutStep3=-1;
 var timeoutStep4=-1;
-var playersForRound=new Array();
-var prevRoundPayoffs=new Array();
-var prevRoundChoices=new Array();
-var totalPayoffs=new Array();
-var averagePayoffs=new Array();
-var availableChoicesComb=new Array();
-var payoffcaption=new Array();
+var playersForRound;
+var prevRoundPayoffs;
+var prevRoundChoices;
+var totalPayoffs;
+var averagePayoffs;
+var availableChoicesComb;
+var payoffcaption;
 var minimumParticipants;
 var scores;
 var waitThisRound=true;
@@ -306,6 +306,13 @@ function initialize()
 	this.paper = Raphael("statsContainer", 800, 160);
 	minimumParticipants=(Math.log(variables['payoff'][0].length)/Math.log(variables['payoff'].length))+1;
 	instructionsPage=1;
+	this.payoffcaption=new Array();
+	this.availableChoicesComb=new Array();
+	this.playersForRound=new Array();
+	this.prevRoundPayoffs=new Array();
+	this.prevRoundChoices=new Array();
+	this.totalPayoffs=new Array();
+	this.averagePayoffs=new Array();
 	initializeExperimentDetails();
 	$('#step1').show();
 	$('#step2').hide();
@@ -685,20 +692,20 @@ function countDownStep1(){
 
 function getStaticInstructions(instpage)
 {
-	$('#insttitle').html("Instructions - Part "+instpage+"/"+Math.ceil(parseInt(variables['instruction_count'])/3));
+	$('#insttitle').html("Instructions - Part "+instpage+"/"+Math.ceil(parseInt(variables['static_instruction_count'])/3));
 	var instructionhtml="";
-	for(var i=(instpage-1)*3+1; i<=(instpage-1)*3+3&&i<=parseInt(variables['instruction_count']); i++)
+	for(var i=(instpage-1)*3+1; i<=(instpage-1)*3+3&&i<=parseInt(variables['static_instruction_count']); i++)
 	{
-		var instimg=(variables['instruction_image_'+i]&&variables['instruction_image_'+i].length>0)?variables['instruction_image_'+i]:"nophoto.png";
+		var instimg=(variables['static_instruction_image_'+i]&&variables['static_instruction_image_'+i].length>0)?variables['static_instruction_image_'+i]:"";
 		if(i%2==1)
-			instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td width=\"140\" height=\"150\"><img src=\""+getFile(instimg)+"\" class=\"img-inst\"></td><td width=\"15\" height=\"150\"></td><td width=\"400\" height=\"150\" colspan=\"4\"><div id=\"instructiontextdiv\"><div style=\"word-wrap:break-word; width: 385px; height: 130px; margin-left:7.5px; margin-right:7.5px; margin-top:5px; margin-bottom:5px;\"><small id=\"instructiontext"+i+"\" class='smallinst'>"+preprocess(variables['instruction_text_'+i])+"</small></div></div></td></tr></table></td></tr>"
+			instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td width=\"140\" height=\"150\">"+((instimg!="")?("<img src=\""+getFile(instimg)+"\" class=\"img-inst\">"):"")+"</td><td width=\"15\" height=\"150\"></td><td width=\"400\" height=\"150\" colspan=\"4\"><div id=\"instructiontextdiv\"><div style=\"word-wrap:break-word; width: 385px; height: 130px; margin-left:7.5px; margin-right:7.5px; margin-top:5px; margin-bottom:5px;\"><small id=\"instructiontext"+i+"\" class='smallinst'>"+preprocess(variables['static_instruction_text_'+i])+"</small></div></div></td></tr></table></td></tr>"
 		else
-			instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td width=\"400\" height=\"150\"><div id=\"instructiontextdiv\"><div style=\"word-wrap:break-word; width: 385px; height: 130px; margin-left:7.5px; margin-right:7.5px; margin-top:5px; margin-bottom:5px;\"><small id=\"instructiontext"+i+"\" class='smallinst'>"+preprocess(variables['instruction_text_'+i])+"</small></div></div></td><td width=\"15\" height=\"150\"></td><td width=\"140\" height=\"150\"><img src=\""+getFile(instimg)+"\" class=\"img-inst\"></td></tr></table></td></tr>"
+			instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td width=\"400\" height=\"150\"><div id=\"instructiontextdiv\"><div style=\"word-wrap:break-word; width: 385px; height: 130px; margin-left:7.5px; margin-right:7.5px; margin-top:5px; margin-bottom:5px;\"><small id=\"instructiontext"+i+"\" class='smallinst'>"+preprocess(variables['static_instruction_text_'+i])+"</small></div></div></td><td width=\"15\" height=\"150\"></td><td width=\"140\" height=\"150\">"+((instimg!="")?("<img src=\""+getFile(instimg)+"\" class=\"img-inst\">"):"")+"</td></tr></table></td></tr>"
 	}
 	//instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage--;getStaticInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage++;getStaticInstructions(instructionsPage);;\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
 	instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage--;getStaticInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"><font face=\"Verdana\"><span style=\"font-size:10pt; color:black\" id=\"readyp\"><button id=\"begininsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"setRound(2+getPlus30Count());submit('Ready');$('#begininsbut').hide();$('#readyp').html('Please wait for others...');$('#addtimebut').hide();readySignal();\">I'm Ready</button></span></font></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage++;getStaticInstructions(instructionsPage);\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
 	$("#instructiontable").html(instructionhtml);
-	if(instpage==Math.ceil(parseInt(variables['instruction_count'])/3))
+	if(instpage==Math.ceil(parseInt(variables['static_instruction_count'])/3))
 	{
 		$('#nextinsbut').hide();
 		if(!this.iAmReady)
@@ -719,35 +726,71 @@ function getStaticInstructions(instpage)
 
 function getDynamicInstructions(instpage)
 {
-	$('#insttitle').html("Instructions - "+instpage+"/"+variables["instruction_count"]);
+	$('#insttitle').html("Instructions - "+instpage+"/"+variables["dynamic_instruction_count"]);
 	var instructionhtml="";
 	
-	//<--CUSTOM HTML START-->
-	if(instpage==3)
-		instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td width=\"77\"></td><td><img src=\""+getFile("barnfeedlarge.gif")+"\"></td><td width=\"77\"></td></tr></table></td></tr>";
-	if(instpage==4)
-		instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td><img src=\""+getFile("bringtocommonsmedium.gif")+"\"></td><td width=\"25\"></td><td><img src=\""+getFile("bringtocommonsmedium.gif")+"\"></td></tr></table></td></tr>";
-	if(instpage==5 || instpage==6)
-		instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td width=\"77\"></td><td><img src=\""+getFile("bringtocommonslarge.gif")+"\"></td><td width=\"77\"></td></tr></table></td></tr>";
-	//<--CUSTOM HTML END-->
-	
-	var instimg=(variables['instruction_image_'+instpage]&&variables['instruction_image_'+instpage].length>0)?variables['instruction_image_'+instpage]:"nophoto.png";
+	var instimg=(variables['dynamic_instruction_image_'+instpage]&&variables['dynamic_instruction_image_'+instpage].length>0)?variables['dynamic_instruction_image_'+instpage]:"";
 	if(instpage%2==1)
-		instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td width=\"140\" height=\"150\"><img src=\""+getFile(instimg)+"\" class=\"img-inst\"></td><td width=\"15\" height=\"150\"></td><td width=\"400\" height=\"150\" colspan=\"4\"><div id=\"instructiontextdiv\"><div style=\"word-wrap:break-word; width: 385px; height: 130px; margin-left:7.5px; margin-right:7.5px; margin-top:5px; margin-bottom:5px;\"><small id=\"instructiontext"+instpage+"\" class='smalldyninst'>"+preprocess(variables['instruction_text_'+instpage])+"</small></div></div></td></tr></table></td></tr>"
+		instructionhtml+="<tr><td width=\"555\"><table align=\"center\" width=\"555\"><tr><td width=\"140\">"+((instimg!="")?("<img id=\"infoimg\" src=\""+getFile(instimg)+"\" class=\"img-inst\">"):"")+"</td><td width=\"15\"></td><td width=\"400\" colspan=\"4\"><div id=\"instructiontextdiv\"><div id=\"instructiontextdivdets\" style=\"word-wrap:break-word; width: 385px; margin-left:7.5px; margin-right:7.5px; margin-top:5px; margin-bottom:5px;\"><small id=\"instructiontext"+instpage+"\" class='smalldyninst'>"+preprocess(variables['dynamic_instruction_text_'+instpage])+"</small></div></div></td></tr></table></td></tr>"
 	else
-		instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td width=\"400\" height=\"150\"><div id=\"instructiontextdiv\"><div style=\"word-wrap:break-word; width: 385px; height: 130px; margin-left:7.5px; margin-right:7.5px; margin-top:5px; margin-bottom:5px;\"><small id=\"instructiontext"+instpage+"\" class='smalldyninst'>"+preprocess(variables['instruction_text_'+instpage])+"</small></div></div></td><td width=\"15\" height=\"150\"></td><td width=\"140\" height=\"150\"><img src=\""+getFile(instimg)+"\" class=\"img-inst\"></td></tr></table></td></tr>"
-	//instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage--;getStaticInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage++;getStaticInstructions(instructionsPage);;\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
-	
-	//<--CUSTOM HTML START-->
-	if(instpage==5)
-		instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td><img src=\""+getFile("barnfeedmedium.gif")+"\"></td><td width=\"25\"></td><td><img src=\""+getFile("barnfeedmedium.gif")+"\"></td></tr></table></td></tr>";
-	if(instpage==6)
-		instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td><img src=\""+getFile("bringtocommonsmedium.gif")+"\"></td><td width=\"25\"></td><td><img src=\""+getFile("bringtocommonsmedium.gif")+"\"></td></tr></table></td></tr>";
-	//<--CUSTOM HTML END-->
-	
-	instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage--;getDynamicInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"><font face=\"Verdana\"><span style=\"font-size:10pt; color:black\" id=\"readyp\"><button id=\"begininsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"setRound(2+getPlus30Count());submit('Ready');$('#begininsbut').hide();$('#readyp').html('Please wait for others...');$('#addtimebut').hide();readySignal();\">I'm Ready</button></span></font></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage++;getDynamicInstructions(instructionsPage);\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
+		instructionhtml+="<tr><td width=\"555\"><table align=\"center\" width=\"555\"><tr><td width=\"400\"><div id=\"instructiontextdiv\"><div id=\"instructiontextdivdets\" style=\"word-wrap:break-word; width: 385px; margin-left:7.5px; margin-right:7.5px; margin-top:5px; margin-bottom:5px;\"><small id=\"instructiontext"+instpage+"\" class='smalldyninst'>"+preprocess(variables['dynamic_instruction_text_'+instpage])+"</small></div></div></td><td width=\"15\"></td><td width=\"140\">"+((instimg!="")?("<img id=\"infoimg\" src=\""+getFile(instimg)+"\" class=\"img-inst\">"):"")+"</td></tr></table></td></tr>"
+
+	if(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].length>0)
+	{
+		setupInfoTable();
+		instructionhtml=(instructionhtml+"<tr><td><table style=\"margin-left: auto;margin-right: auto;\">"+$("#infotable").html()+"</table></td></tr><tr><td width=\"794\" height=\"80\"><div id=\"butholder\" style=\"height: 80px;\"><div style=\"text-align: center; height: 25px; line-height:30px;\"><font face=\"Verdana\" ><span style=\"font-size:12pt; color: #0e76bc;\" id=\"selectedbuttext\"></span></font></div><table id=\"buts\" border=\"0\" align=\"center\" width=\"794\"></table></div></td></tr>");
+	}
+		
+	instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn-small btn-success dropdown-toggle\" onClick=\"instructionsPage--;getDynamicInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"><font face=\"Verdana\"><span style=\"font-size:10pt; color:black\" id=\"readyp\"><button id=\"begininsbut\" type=\"submit\" class=\"btn-small btn-success dropdown-toggle\" onClick=\"setRound(2+getPlus30Count());submit('Ready');$('#begininsbut').hide();$('#readyp').html('Please wait for others...');$('#addtimebut').hide();readySignal();\">I'm Ready</button></span></font></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn-small btn-success dropdown-toggle\" onClick=\"instructionsPage++;getDynamicInstructions(instructionsPage);\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
 	$("#instructiontable").html(instructionhtml);
-	if(instpage==parseInt(variables["instruction_count"]))
+	
+	if(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].length==0)
+		$("#instructiontextdivdets").css( { height : "130px" } );
+	else
+	{
+		var butshtml="<tr><td width=\"20\"></td><td width=\"140\"><div id=\"but1\" style=\"width: 140px; height: 70px; position:relative;\"></div></td><td width=\"15\"></td><td width=\"140\"><div id=\"but2\" style=\"width: 140px; height: 70px; position:relative;\"></div></td><td width=\"15\"></td><td width=\"140\"><div id=\"but3\" style=\"width: 140px; height: 70px; position:relative;\"></div></td><td width=\"15\"></td><td width=\"140\"><div id=\"but4\" style=\"width: 140px; height: 70px; position:relative;\"></div></td><td width=\"15\"></td><td width=\"140\"><div id=\"but5\" style=\"width: 140px; height: 70px; position:relative;\"></div></td><td width=\"20\"></td></tr>";
+		$("#buts").html(butshtml);
+		$('#selectedbuttext').html("&nbsp;");
+		if(parseInt(variables['Button_Count'])==2)
+		{
+			(parseInt(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].substring(1,2))==1)?$("#but2").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introBut2_2Pressed("+instpage+");$('#but4').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_1_Text'])+"</a></p>"):$("#but2").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introWarning("+instpage+");\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_1_Text'])+"</a></p>");	
+			(parseInt(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].substring(1,2))==2)?($("#but4").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introBut4_2Pressed("+instpage+");$('#but2').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_2_Text'])+"</a></p>")):$("#but4").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introWarning("+instpage+");\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_2_Text'])+"</a></p>");
+		}
+		else if(parseInt(variables['Button_Count'])==3)
+		{
+			(parseInt(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].substring(1,2))==1)?$("#but2").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introBut2_3Pressed("+instpage+");$('#but3').html('');$('#but4').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_1_Text'])+"</a></p>"):$("#but2").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introWarning("+instpage+");\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_1_Text'])+"</a></p>");		
+			(parseInt(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].substring(1,2))==2)?$("#but3").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introBut3_3Pressed("+instpage+");$('#but2').html('');$('#but4').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_2_Text'])+"</a></p>"):$("#but3").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introWarning("+instpage+");\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_2_Text'])+"</a></p>");		
+			(parseInt(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].substring(1,2))==3)?$("#but4").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introBut4_3Pressed("+instpage+");$('#but2').html('');$('#but3').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_3_Text'])+"</a></p>"):$("#but4").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introWarning("+instpage+");\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_3_Text'])+"</a></p>");
+		}
+		else if(parseInt(variables['Button_Count'])==4)
+		{
+			$("#buts").html("<tr><td width=\"24\"></td><td width=\"170\"><div id=\"but1\" style=\"width: 170px; height: 70px; position:relative;\"></div></td><td width=\"24\"></td><td width=\"170\"><div id=\"but2\" style=\"width: 170px; height: 70px; position:relative;\"></div></td><td width=\"24\"></td><td width=\"170\"><div id=\"but4\" style=\"width: 170px; height: 70px; position:relative;\"></div></td><td width=\"24\"></td><td width=\"170\"><div id=\"but5\" style=\"width: 170px; height: 70px; position:relative;\"></div></td><td width=\"24\"></td></tr>");
+			(parseInt(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].substring(1,2))==1)?$("#but1").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introBut1_4Pressed("+instpage+");$('#but2').html('');$('#but4').html('');$('#but5').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_1_Text'])+"</a></p>"):$("#but1").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introWarning("+instpage+");\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_1_Text'])+"</a></p>");
+			(parseInt(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].substring(1,2))==2)?$("#but2").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introBut2_4Pressed("+instpage+");$('#but1').html('');$('#but4').html('');$('#but5').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_2_Text'])+"</a></p>"):$("#but2").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introWarning("+instpage+");\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_2_Text'])+"</a></p>");
+			(parseInt(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].substring(1,2))==3)?$("#but4").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introBut4_4Pressed("+instpage+");$('#but1').html('');$('#but2').html('');$('#but5').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_3_Text'])+"</a></p>"):$("#but4").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introWarning("+instpage+");\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_3_Text'])+"</a></p>");		
+			(parseInt(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].substring(1,2))==4)?$("#but5").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introBut5_4Pressed("+instpage+");$('#but1').html('');$('#but2').html('');$('#but4').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_4_Text'])+"</a></p>"):$("#but5").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introWarning("+instpage+");\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_4_Text'])+"</a></p>");	
+		}
+		else if(parseInt(variables['Button_Count'])==5)
+		{
+			(parseInt(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].substring(1,2))==1)?$("#but1").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introBut1_5Pressed("+instpage+");$('#but2').html('');$('#but3').html('');$('#but4').html('');$('#but5').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_1_Text'])+"</a></p>"):$("#but1").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introWarning("+instpage+");\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_1_Text'])+"</a></p>");
+			(parseInt(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].substring(1,2))==2)?$("#but2").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introBut2_5Pressed("+instpage+");$('#but1').html('');$('#but3').html('');$('#but4').html('');$('#but5').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_2_Text'])+"</a></p>"):$("#but2").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introWarning("+instpage+");\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_2_Text'])+"</a></p>");
+			(parseInt(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].substring(1,2))==3)?$("#but3").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introBut3_5Pressed("+instpage+");$('#but1').html('');$('#but2').html('');$('#but4').html('');$('#but5').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_3_Text'])+"</a></p>"):$("#but3").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introWarning("+instpage+");\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_3_Text'])+"</a></p>");
+			(parseInt(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].substring(1,2))==4)?$("#but4").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introBut4_5Pressed("+instpage+");$('#but1').html('');$('#but2').html('');$('#but3').html('');$('#but5').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_4_Text'])+"</a></p>"):$("#but4").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introWarning("+instpage+");\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_4_Text'])+"</a></p>");
+			(parseInt(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].substring(1,2))==5)?$("#but5").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introBut5_5Pressed("+instpage+");$('#but1').html('');$('#but2').html('');$('#but3').html('');$('#but4').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_5_Text'])+"</a></p>"):$("#but5").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"introWarning("+instpage+");\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_5_Text'])+"</a></p>");
+		}
+	}
+	
+	$("#instructiontextdiv").css( { width : "0px" } );
+	$( "#infoimg" ).hide().fadeIn(700);
+	if(instpage%2==1)
+	{
+		$("#instructiontextdiv").css( { marginLeft : "400px" } );
+		$("#instructiontextdiv").animate({width: "400px", marginLeft: 0}, 500);
+	}
+	else
+		$("#instructiontextdiv").animate({width: "400px"}, 500);
+		
+	if(instpage==parseInt(variables["dynamic_instruction_count"]))
 	{
 		$('#nextinsbut').hide();
 		if(!this.iAmReady)
@@ -764,6 +807,165 @@ function getDynamicInstructions(instpage)
 		$('#previnsbut').show();
 	else
 		$('#previnsbut').hide();
+}
+
+function introWarning(instpage)
+{
+	$('#selectedbuttext').html("Please press on "+preprocess(variables['Button_'+variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].substring(1,2)+'_Text'])+"!");
+	$('#selectedbuttext').css("color", "red");
+}
+
+function introOutcome(instpage)
+{
+	setTimeout( function(){ 
+		for(var t=0; t<parseInt(variables['information_row_count']); t++)
+		{
+			for(var y=0; y<parseInt(variables['information_column_count']); y++)
+			{	
+				if(variables['information_row'+(t+1)+'_column'+(y+1)+'_payoff_cells'].indexOf(variables['dynamic_instruction_text_'+instpage+'_payoff_cell'])>=0)
+				{
+					$("#instructiontext"+instpage).html(preprocess(variables['information_row'+(t+1)+'_column'+(y+1)+'_outcome_text']));
+					break;
+				}
+			}
+		}
+		$("#instructiontextdiv").css("background-color", "#f7941e");
+		$("#instructiontextdiv").css("borderColor", "#f7941e");
+		$("#instructiontextdiv").css("color", "#404041");
+		$("#instructiontextdiv").css( { width : "0px" } );
+		if(instpage%2==1)
+		{
+			$("#instructiontextdiv").css( { marginLeft : "400px" } );
+			$("#instructiontextdiv").animate({width: "400px", marginLeft: 0}, 500);
+		}
+		else
+			$("#instructiontextdiv").animate({width: "400px"}, 500);
+	  }
+	 , 1000 );
+}
+
+function introBut2_2Pressed(instpage)
+{
+	$('#but2').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_1_Text'])+"</a></p>");
+	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_1_Text']));
+	$('#selectedbuttext').css("color", "#0e76bc");
+	$("#but2").animate({left:'155px'});
+	introOutcome(instpage);
+}
+
+function introBut4_2Pressed(instpage)
+{
+	$('#but4').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_2_Text'])+"</a></p>");
+	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_2_Text']));
+	$('#selectedbuttext').css("color", "#0e76bc");
+	$("#but4").animate({right:'155px'});
+	introOutcome(instpage);
+}
+
+function introBut2_3Pressed(instpage)
+{
+	$('#but2').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_1_Text'])+"</a></p>");
+	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_1_Text']));
+	$('#selectedbuttext').css("color", "#0e76bc");
+	$("#but2").animate({left:'155px'});
+	introOutcome(instpage);
+}
+
+function introBut3_3Pressed(instpage)
+{
+	$('#but3').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_2_Text'])+"</a></p>");
+	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_2_Text']));
+	$('#selectedbuttext').css("color", "#0e76bc");
+	introOutcome(instpage);
+}
+
+function introBut4_3Pressed(instpage)
+{
+	$('#but4').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_3_Text'])+"</a></p>");
+	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_3_Text']));
+	$('#selectedbuttext').css("color", "#0e76bc");
+	$("#but4").animate({right:'155px'});
+	introOutcome(instpage);
+}
+
+function introBut1_4Pressed(instpage)
+{
+	$('#but1').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_1_Text']+"</a></p>"));
+	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_1_Text']));
+	$('#selectedbuttext').css("color", "#0e76bc");
+	$("#but1").animate({left:'282px'});
+	introOutcome(instpage);
+}
+
+function introBut2_4Pressed(instpage)
+{
+	$('#but2').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_2_Text'])+"</a></p>");
+	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_2_Text']));
+	$('#selectedbuttext').css("color", "#0e76bc");
+	$("#but2").animate({left:'95px'});
+	introOutcome(instpage);
+}
+
+function introBut4_4Pressed(instpage)
+{
+	$('#but4').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_3_Text'])+"</a></p>");
+	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_3_Text']));
+	$('#selectedbuttext').css("color", "#0e76bc");
+	$("#but4").animate({right:'95px'});
+	introOutcome(instpage);
+}
+
+function introBut5_4Pressed(instpage)
+{
+	$('#but5').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_4_Text'])+"</a></p>");
+	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_4_Text']));
+	$('#selectedbuttext').css("color", "#0e76bc");
+	$("#but5").animate({right:'282px'});
+	introOutcome(instpage);
+}
+
+function introBut1_5Pressed(instpage)
+{
+	$('#but1').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_1_Text'])+"</a></p>");
+	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_1_Text']));
+	$('#selectedbuttext').css("color", "#0e76bc");
+	$("#but1").animate({left:'310px'});
+	introOutcome(instpage);
+}
+
+function introBut2_5Pressed(instpage)
+{
+	$('#but2').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_2_Text'])+"</a></p>");
+	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_2_Text']));
+	$('#selectedbuttext').css("color", "#0e76bc");
+	$("#but2").animate({left:'155px'});
+	introOutcome(instpage);
+}
+
+function introBut3_5Pressed(instpage)
+{
+	$('#but3').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_3_Text'])+"</a></p>");
+	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_3_Text']));
+	$('#selectedbuttext').css("color", "#0e76bc");
+	introOutcome(instpage);
+}
+
+function introBut4_5Pressed(instpage)
+{
+	$('#but4').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_4_Text'])+"</a></p>");
+	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_4_Text']));
+	$('#selectedbuttext').css("color", "#0e76bc");
+	$("#but4").animate({right:'155px'});
+	introOutcome(instpage);
+}
+
+function introBut5_5Pressed(instpage)
+{
+	$('#but5').html("<p align='center'><a class='mybuttonpressed'> "+preprocess(variables['Button_5_Text'])+"</a></p>");
+	$('#selectedbuttext').html(preprocess(variables['Your_Choice_Text'])+preprocess(variables['Button_5_Text']));
+	$('#selectedbuttext').css("color", "#0e76bc");
+	$("#but5").animate({right:'310px'});
+	introOutcome(instpage);
 }
 
 function readySignal()
@@ -946,13 +1148,13 @@ function recursivepayoffcaption(begin, end, k)
 		if (begin == end) 
 		{
 			var tempord=new Array();
-			for(var j=0; j<payoffcaption.length; j++)
-				tempord.push(payoffcaption[j]);
+			for(var j=0; j<this.payoffcaption.length; j++)
+				tempord.push(this.payoffcaption[j]);
 			this.availableChoicesComb.push(tempord);
 			return;
 		}
 		else
-			payoffcaption[begin]=preprocess(variables['Button_'+s+'_Text']);
+			this.payoffcaption[begin]=preprocess(variables['Button_'+s+'_Text']);
 		recursivepayoffcaption(begin+1, end, k);
 	}
 	
@@ -977,12 +1179,12 @@ function matchedCombRowIndex(playerChoice)
 
 function matchedCombColumnIndex(arr, ratiovalid)
 {
-	for(var y=0; y<availableChoicesComb.length; y++)
+	for(var y=0; y<this.availableChoicesComb.length; y++)
 	{
 		var bl=true;
 		for(var z=0; z<minimumParticipants-1; z++)
 		{
-			if(arr[z]!=availableChoicesComb[y][z])
+			if(arr[z]!=this.availableChoicesComb[y][z])
 				bl = false;
 		}
 		if(bl)
@@ -1432,6 +1634,7 @@ function beginExpRound()
 		}
 	}
 	countDownStep2();
+	$('#instructiontable').html('');
 	setupButtons();
 	
 	fillStatsContainer();
@@ -1515,7 +1718,7 @@ function initializeExperimentDetails()
 	this.Step4Timer=parseInt(variables['end_game_timer'])+1;
 	
 	for(var m=0; m<minimumParticipants-1; m++)
-		payoffcaption.push(preprocess(variables['Button_1_Text']));
+		this.payoffcaption.push(preprocess(variables['Button_1_Text']));
 	recursivepayoffcaption(0, minimumParticipants-1, parseInt(variables['Button_Count']));
 	
 	for(var i=1; i<=parseInt(variables['total_rounds_count']); i++)
@@ -1553,29 +1756,8 @@ function initializeExperimentDetails()
 	$('#insttimer').html(variables['instruction_timer']);
 	countDownStep1();
 
-	var infohtml="";
-	for(var i=1; i<=parseInt(variables['information_row_count']); i++)
-	{
-		infohtml+="<tr>";
-		if(i>1)
-		{
-			for(var j=1; j<=parseInt(variables['information_column_count']); j++)
-				infohtml+="<td width=\"352\" height=\"11\" colspan=\"3\"></td>";
-			infohtml+="</tr><tr>";
-		}
-		for(var j=1; j<=parseInt(variables['information_column_count']); j++)
-		{
-			var infimg=(variables['information_row'+i+'_column'+j+'_image']&&variables['information_row'+i+'_column'+j+'_image'].length>0)?variables['information_row'+i+'_column'+j+'_image']:"nophoto.png";
-			infohtml+="<td width=\"352\" colspan=\"3\"><div style=\"width:100px; height:100px; margin-left:126px;\"><img class=\"infoimg\" id=\"infoimage"+j+"\" src=\""+getFile(infimg)+"\"><div></td>";
-		}
-		infohtml+="</tr><tr><td width=\"352\" height=\"6\" colspan=\"3\"></td></tr><tr>";
-		for(var j=1; j<=parseInt(variables['information_column_count']); j++)
-			infohtml+="<td width=\"18\" id=\"infotexttdmargin\"></td><td width=\"302\"><div id=\"infotextdiv\"><small id=\"infotext"+j+"\" class='smallinfo'>"+((variables['information_row'+i+'_column'+j+'_text'])?preprocess(variables['information_row'+i+'_column'+j+'_text']):"")+"</small></div></td><td width=\"18\" id=\"infotexttdmargin\" ></td>";
-		infohtml+="</tr>";
-	}
-	$("#infotable").html(infohtml);
-	
-	setupButtons();
+	setupInfoTable();
+	//setupButtons();
 	
 	//send the information of which players will play in which rounds
 	if(myid==1)
@@ -1611,6 +1793,31 @@ function initializeExperimentDetails()
 		//submit(roundsstr);
 		submitBot(0, currentRound, roundsstr);
 	}
+}
+
+function setupInfoTable()
+{
+	var infohtml="";
+	for(var i=1; i<=parseInt(variables['information_row_count']); i++)
+	{
+		infohtml+="<tr>";
+		if(i>1)
+		{
+			for(var j=1; j<=parseInt(variables['information_column_count']); j++)
+				infohtml+="<td width=\"352\" height=\"11\" colspan=\"3\"></td>";
+			infohtml+="</tr><tr>";
+		}
+		for(var j=1; j<=parseInt(variables['information_column_count']); j++)
+		{
+			var infimg=(variables['information_row'+i+'_column'+j+'_image']&&variables['information_row'+i+'_column'+j+'_image'].length>0)?variables['information_row'+i+'_column'+j+'_image']:"nophoto.png";
+			infohtml+="<td width=\"352\" colspan=\"3\"><div style=\"width:100px; height:100px; margin-left:126px;\"><img class=\"infoimg\" id=\"infoimage"+j+"\" src=\""+getFile(infimg)+"\"><div></td>";
+		}
+		infohtml+="</tr><tr><td width=\"352\" height=\"6\" colspan=\"3\"></td></tr><tr>";
+		for(var j=1; j<=parseInt(variables['information_column_count']); j++)
+			infohtml+="<td width=\"18\" id=\"infotexttdmargin\"></td><td width=\"302\"><div id=\"infotextdiv\"><small id=\"infotext"+j+"\" class='smallinfo'>"+((variables['information_row'+i+'_column'+j+'_text'])?preprocess(variables['information_row'+i+'_column'+j+'_text']):"")+"</small></div></td><td width=\"18\" id=\"infotexttdmargin\" ></td>";
+		infohtml+="</tr>";
+	}
+	$("#infotable").html(infohtml);
 }
 
 function orderExists(arr, nm)
