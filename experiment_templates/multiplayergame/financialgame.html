@@ -454,13 +454,14 @@ function newMove(participant, index) {
 			else
 			{
 				userArr.push(parseInt(participant));
-				userArr.push(val);
+				userArr.push(val.substring(val.indexOf(">")+1,val.indexOf("</")));
 				this.prevRoundChoices[this.expRoundNum].push(userArr);
 			}
 		}
 
 		if(this.prevRoundChoices[this.expRoundNum].length==minimumParticipants)
 		{
+			$('#earnresult').html("");
 			updateStatTables();
 			clearTimeout(this.timeoutStep2);
 			this.Step2Timer=parseInt(variables['experiment_round_timer']);
@@ -589,6 +590,7 @@ function updateStatTables()
 		}
 		var mcri=matchedCombRowIndex(userChoice);
 		var mcci=matchedCombColumnIndex(figuredComb, true);
+		//alert(mcri+" ve "+mcci+" ve "+userChoice+" ve "+figuredComb)
 		if(this.prevRoundChoices[this.expRoundNum][u][0]==myid)
 		{
 			for(var i=1; i<=parseInt(variables['information_row_count']); i++)
@@ -976,10 +978,9 @@ function readySignal()
 function countDownStep2()
 {  
 	 if (this.Step2Timer <=0){
-		updateStatTables();
 		clearTimeout(this.timeoutStep2);
 	 	this.Step2Timer=parseInt(variables['experiment_round_timer']);
-		if((parseInt(variables['Enable Polling'])==1&&this.waitThisRound==false)||(parseInt(variables['Enable Polling'])==0))
+		if((parseInt(variables['Enable Polling'])==1&&this.waitThisRound==false)||(parseInt(variables['Enable Polling'])==1&&numPlayers==minimumParticipants)||(parseInt(variables['Enable Polling'])==0))
 		{
 			if($('#selectedbuttext').html()=="&nbsp;") // in case of incomplete participation send the prespecified choice.
 			{
@@ -1660,7 +1661,8 @@ function beginExpRound()
 				if(botIncluded)
 					botVal+=("<answer subject=\""+(numPlayers+i)+"\" expRound=\""+this.expRoundNum+"\">"+botAnswer()+"</answer>");
 			}
-			submit(botVal);
+			if(botVal.length>0)
+				submit(botVal);
 		}
 	}
 }
