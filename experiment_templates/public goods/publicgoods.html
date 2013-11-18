@@ -1,0 +1,843 @@
+<table border="0" id="instructionsContainer" align="center" width="857">
+    <tr>
+        <td width="849" height="590" colspan="5">
+            <table align="center" border="0" width="716">
+                <tr>
+                    <td width="222" height="40">
+                        <p align="center">&nbsp;</p>
+                    </td>
+                    <td width="207" height="40">
+                        <p align="center">&nbsp;</p>
+                    </td>
+                    <td width="273" height="40"><p align="center"><font face="Verdana"><span style="font-size:12pt; color:#404041" id="instimertext"></span></font></p></td>
+                </tr>
+                <tr>
+                    <td width="710" height="40" colspan="3">
+
+                        <p align="center"><span style="font-size:16pt;"><font face="Verdana" color="#0e76bc" id="instructionsTitle"></font></span></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3"><pre id="instructionsBody"></pre></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="66" height="55">&nbsp;</td>
+        <td width="215" height="55">
+			<p align="left" id="prevp">
+				<button id="previnsbut" type="submit" class="btn btn-primary" onClick="prevInstruction();">
+					<i class="icon-arrow-left icon-white"></i> Previous
+				</button>
+			</p>
+		</td>
+        <td width="269" height="55">
+			<p align="center">
+				<span style="font-size:12pt; color:#404041" id="readyp">
+					<button id="begininsbut" type="submit" class="btn btn-primary" onClick="submit('Ready');$('#begininsbut').hide();$('#readyp').html('Please wait for others...');">
+					I'm Ready
+					</button>
+				</span>
+			</p>
+		</td>
+        <td width="215" height="55">
+			<p align="right" id="nextp">
+				<button id="nextinsbut" type="submit" class="btn btn-primary" onClick="nextInstruction();">
+					<i class="icon-arrow-right icon-white"></i> Next
+				</button>
+			</p>
+        </td>
+        <td width="68" height="55">&nbsp;</td>
+    </tr>
+</table>
+<table id="gameContainer" border="0" align="center" width="800" height="600">
+    <tr>
+        <td width="800" height="80" colspan="3">
+		<div class="mybs-docs-example gamePlay">
+		<span style="font-size:10pt;"><font face="Verdana" id="gamePlayText"></font></span>
+		</div>
+		</td>
+    </tr>
+    <tr>
+        <td width="480" rowspan="2">
+			<div id="networkContainer"></div>
+		</td>
+        <td width="20" rowspan="2">&nbsp;</td>
+        <td width="300">
+			<div id="toolsColumn">
+				<table id="gameTools" width="300" height="250">
+				</table>
+			</div>
+		</td>
+    </tr>
+    <tr>
+        <td width="300" height="250" id="modifiableRow"></td>
+    </tr>
+</table>
+<div id="dialog">
+    <table align="center"><tr><td><p align="center"><span style="font-size:11pt; color:#404041"><font face="Verdana" id="roundintervaltimertext"></font></span></p></td></tr><tr height="20"><td></td></tr></table><table id="roundresultstext"></table>
+    <p id="dialogContent"></p>
+</div>
+<div id="dialogEndGame">
+    <table align="center"><tr><td><p align="center"><span style="font-size:11pt; color:#404041"><font face="Verdana" id="endgametimertext"></font></span></p></td></tr><tr height="20"><td></td></tr></table><table id="endgameresultstext"></table>
+    <p id="dialogContent"></p>
+</div>
+<script language="JavaScript" type="text/javascript"> 
+
+var currentExpRound;
+var offerButFace=0;
+var paper;
+var networkPaper;
+var locationCircle;
+var LRPoints;
+var totalPoints;
+var totalCollectivePoints;
+var indexArr;
+var circles;
+var hiddenCircles;
+var roundTimer;
+var timeoutRound;
+var freeRiderExposureElems;
+var instructionsTimer;
+var timeoutInstructions;
+var instructions;
+var currentInstructionsPage;
+var readyCount;
+var lastRoundContributions;
+var totalContributionsLastRound;
+var contributionCount;
+var roundIntervalTimer;
+var timeoutRoundInterval;
+var lastRoundTexts;
+var endGameTimer;
+var timeoutEndGame;
+var sortedScores;
+var lowestThreeContributors;
+
+function initialize()
+{	
+	this.readyCount=0;
+	if(parseInt(variables['frame'])==1) // individual score
+		$("#gameTools").html("<tr><td width=\"300\"><table border=\"0\" width=\"271\" id=\"gameOption\"><tr><td width=\"83\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\">Time Left:</font></span></td><td width=\"178\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\" id=\"timetext\"></font></span></td></tr></table></td></tr><tr width=\"300\" height=\"3\"><td></td></tr><tr width=\"300\"><td width=\"300\"><table border=\"0\" width=\"194\" id=\"gameOption\"><tr><td width=\"188\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\" id=\"roundText\"></font></span></td></tr></table></td></tr><tr width=\"300\" height=\"3\"><td></td></tr><tr width=\"300\"><td width=\"300\"><table border=\"0\" width=\"281\" id=\"gameOption\"><tr><td width=\"213\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\">Total points accrued so far:</font></span></td><td width=\"58\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\" id=\"totalPointsAccrued\">0</font></span></td></tr></table></td></tr><tr width=\"300\" height=\"3\"><td></td></tr><tr width=\"300\"><td width=\"300\"><table border=\"0\" width=\"228\" id=\"gameOption\"><tr><td width=\"169\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\">Budget for this round: </font></span></td><td width=\"49\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\" id=\"budget_amount\"></font></span></td></tr></table></td></tr><tr width=\"300\" height=\"3\"><td></td></tr><tr width=\"300\"><td width=\"300\" id='plmkyrcb'><table border=\"0\" width=\"300\" id=\"gameOption\"><tr><td width=\"300\" height=\"19\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\" id=\"pmyc\">Please make your contribution: 0</font></span></td></tr><tr><td width=\"300\" height=\"25\"><div id=\"shareslider\"></div></td></tr></table></td></tr><tr width=\"300\" height=\"3\"><td></td></tr><tr width=\"300\"><td width=\"300\"><table border=\"0\" width=\"300\"><tr id='obcc'></tr></table></td></tr>");
+	if(parseInt(variables['frame'])==2) // individual + collective score
+	{
+		$("#gameTools").html("<tr><td width=\"300\"><table border=\"0\" width=\"271\" id=\"gameOption\"><tr><td width=\"83\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\">Time Left:</font></span></td><td width=\"178\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\" id=\"timetext\"></font></span></td></tr></table></td></tr><tr width=\"300\" height=\"3\"><td></td></tr><tr width=\"300\"><td width=\"300\"><table border=\"0\" width=\"194\" id=\"gameOption\"><tr><td width=\"188\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\" id=\"roundText\"></font></span></td></tr></table></td></tr><tr width=\"300\" height=\"3\"><td></td></tr><tr width=\"300\"><td width=\"300\"><table border=\"0\" width=\"281\" id=\"gameOption\"><tr><td width=\"213\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\">Total points accrued so far:</font></span></td><td width=\"58\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\" id=\"totalPointsAccrued\">0</font></span></td></tr></table></td></tr><tr width=\"300\" height=\"3\"><td></td></tr><tr width=\"300\"><td width=\"300\"><table border=\"0\" width=\"281\" id=\"gameOption\"><tr><td width=\"230\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\">Total collective points so far:</font></span></td><td width=\"41\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\" id=\"totalCollectivePoints\">0</font></span></td></tr></table></td></tr><tr width=\"300\" height=\"3\"><td></td></tr><tr width=\"300\"><td width=\"300\"><table border=\"0\" width=\"281\" id=\"gameOption\"><tr><td width=\"230\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\">Highest total collective points:</font></span></td><td width=\"41\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\" id=\"highestCollectivePoints\">N/A</font></span></td></tr></table></td></tr><tr width=\"300\" height=\"3\"><td></td></tr><tr width=\"300\"><td width=\"300\"><table border=\"0\" width=\"228\" id=\"gameOption\"><tr><td width=\"169\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\">Budget for this round: </font></span></td><td width=\"49\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\" id=\"budget_amount\"></font></span></td></tr></table></td></tr><tr width=\"300\" height=\"3\"><td></td></tr><tr width=\"300\" id='plmkyrcb'><td width=\"300\"><table border=\"0\" width=\"300\" id=\"gameOption\"><tr><td width=\"300\" height=\"19\"><span style=\"font-size:11pt; color:#404041\"><font face=\"Verdana\" id=\"pmyc\">Please make your contribution: 0</font></span></td></tr><tr><td width=\"300\" height=\"25\"><div id=\"shareslider\"></div></td></tr></table></td></tr><tr width=\"300\" height=\"3\"><td></td></tr><tr width=\"300\"><td width=\"300\"><table border=\"0\" width=\"300\"><tr id='obcc'></tr></table></td></tr>");
+		$("#modifiableRow").css("height", 190);
+	}
+	$("#gamePlayText").html(preprocess(variables["gameplay_text"]));
+	this.locationCircle = [[60, 262.5], [108, 145], [240, 82.5], [372, 145], [420, 262.5], [372, 380], [240, 442.5], [108, 380], [240, 262.5]];
+	this.LRPoints = ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"];
+	this.circles = new Array();
+	this.hiddenCircles = new Array();
+	this.totalContributionsLastRound=0;
+	this.contributionCount=0;
+	this.lastRoundContributions = new Array();
+	this.lastRoundTexts = new Array();
+	this.totalPoints = new Array();
+	this.sortedScores = new Array();
+	for(var b=1; b<=numPlayers; b++)
+		this.totalPoints[b-1]=0;
+	this.totalCollectivePoints=0;
+	
+	$("#gameContainer").hide();
+	initSlider();
+	this.instructionsTimer=parseInt(variables['instructions_timer']);
+	this.roundIntervalTimer=parseInt(variables['round_interval_timer']);
+	this.endGameTimer=parseInt(variables['end_game_timer']);
+	$("#readyp").hide();
+	$("#prevp").hide();
+	countDownInstructions();
+	this.currentInstructionsPage=0;
+	parseInstructionsXML();
+	nextInstruction();
+	setRound(2);
+}
+
+function newMove(participant, index) {
+	fetchMove(participant, currentRound, index, function(val) {
+		if(currentRound==2&&this.readyCount<numPlayers)
+		{
+			if(val=='Ready')
+				this.readyCount++
+			if(this.readyCount==numPlayers)
+			{
+				clearTimeout(this.timeoutInstructions);
+				$("#instructionsContainer").hide();
+				$("#gameContainer").show();
+				drawNetwork();
+				$("#obcc").html("<td width=\"94\" height=\"60\"></td><td width=\"100\" height=\"60\"><div id=\"offerButContainer\"></div></td><td width=\"94\" height=\"60\"></td>");
+				this.paper = Raphael("offerButContainer", 200, 65);
+				drawOfferBut(0);
+				$("#budget_amount").html(variables['round_budget']);
+				this.currentExpRound=1;
+				$("#roundText").html("Round "+this.currentExpRound+" out of "+variables['total_rounds']);
+				this.roundTimer=parseInt(variables["round_times"][0][this.currentExpRound-1]);
+				countDownRound();
+				setRound(2+this.currentExpRound);
+			}
+			return;
+		}
+		if(currentRound>2)
+		{
+			this.contributionCount++;
+			this.totalContributionsLastRound+=parseInt(val);
+			this.lastRoundContributions[participant-1]=parseInt(val);
+			if(this.contributionCount==numPlayers)
+			{
+				clearTimeout(this.timeoutRound);
+				while(this.LRPoints.length>0)
+					this.LRPoints.splice(0,1);
+				while(this.sortedScores.length>0)
+					this.sortedScores.splice(0,1);
+				for(var b=1; b<=numPlayers; b++)
+				{
+					if(this.lastRoundTexts[b-1].attr('opacity')>0)
+						this.sortedScores.push([b, Math.round((parseInt(variables['round_budget'])-this.lastRoundContributions[b-1])+Number(variables['contribution_factor'])*this.totalContributionsLastRound)]);
+					this.LRPoints[b-1] = Math.round((parseInt(variables['round_budget'])-this.lastRoundContributions[b-1])+Number(variables['contribution_factor'])*this.totalContributionsLastRound);
+					this.totalPoints[b-1]+=this.LRPoints[b-1];
+					this.totalCollectivePoints+=this.LRPoints[b-1];
+				}
+				this.sortedScores=selectionSort(this.sortedScores);
+				$("#roundresultstext").html("");
+
+				for(var b=0; b<this.sortedScores.length; b++)
+				{
+					if(this.sortedScores[b][0]==myid) 
+						$("#roundresultstext").html($("#roundresultstext").html()+"<tr><td>You ("+getName(this.sortedScores[b][0])+") earned "+this.sortedScores[b][1]+" points this round.</td></tr><tr height=\"10\"><td></td></tr>");
+					else
+						$("#roundresultstext").html($("#roundresultstext").html()+"<tr><td>"+getName(this.sortedScores[b][0])+" earned "+this.sortedScores[b][1]+" points.</td></tr><tr height=\"10\"><td></td></tr>");
+				}
+				$("#dialog").dialog("open");
+				countDownRoundInterval();
+			}
+		}
+	});
+}
+
+function countDownRound(){  
+	 if (this.roundTimer <=0){ 
+		clearTimeout(this.timeoutRound);
+		if($('#offerButContainer').is(":visible"))
+		{
+			$("#offerButContainer").hide();
+			$("#plmkyrcb").hide();
+			$("#obcc").html("<td width=\"288\" height=\"125\"><span style=\"font-size:12pt; color:#0e76bc\">Thank you! You made a contribution of "+(parseInt(variables['round_budget'])/2)+". Please wait for the others...</span></td>");
+			submit(parseInt(variables['round_budget'])/2);
+		}
+	 }else{  
+		this.roundTimer--;
+		var min=Math.floor(this.roundTimer/60);
+		var sec=this.roundTimer%60;
+		if(min>1)
+		{
+			if(sec>1)
+				$("#timetext").html(min+" minutes "+sec+" seconds");
+			else if(sec==1)
+				$("#timetext").html(min+" minutes "+sec+" second");
+			else
+				$("#timetext").html(min+" minutes");
+		}
+		else if(min==1)
+		{
+			if(sec>1)
+				$("#timetext").html(min+" minute "+sec+" seconds");
+			else if(sec==1)
+				$("#timetext").html(min+" minute "+sec+" second");
+			else
+				$("#timetext").html(min+" minute");
+		}
+		else
+		{
+			if(sec>1)
+				$("#timetext").html(sec+" seconds");
+			else
+				$("#timetext").html(sec+" second");
+		}	
+		this.timeoutRound=setTimeout("countDownRound()", 1000);
+	 }  
+}
+
+function countDownRoundInterval(){  
+	 if (this.roundIntervalTimer <=0){ 
+		clearTimeout(this.timeoutRoundInterval);
+		this.roundIntervalTimer=parseInt(variables['round_interval_timer']);
+		$("#totalPointsAccrued").html(this.totalPoints[myid-1]);
+		if(parseInt(variables['frame'])==2)
+		{
+			$("#totalCollectivePoints").html(this.totalCollectivePoints);
+		}
+		this.lowestThreeContributors=new Array();
+		for(var b=1; b<=numPlayers; b++)
+		{
+			this.lastRoundTexts[b-1].attr({text: "Last Round:\n"+LRPoints[b-1]});
+			this.lowestThreeContributors.push([b, LRPoints[b-1]]);
+		}
+		this.lowestThreeContributors = selectionSort(this.lowestThreeContributors);
+		if(parseInt(variables['free_rider_exposure'])==2)
+		{
+			if(this.currentExpRound==1)
+				createFreeRiderExposurePanel();
+			this.freeRiderExposureElems[2].attr({text: "1- N/A \u00a0\u00a0\u00a0 N/A"});
+			this.freeRiderExposureElems[3].attr({text: "2- N/A \u00a0\u00a0\u00a0 N/A"});
+			this.freeRiderExposureElems[4].attr({text: "3- N/A \u00a0\u00a0\u00a0 N/A"});
+			if($.trim(variables['scoreboard_order'])=="increasing")
+			{
+				this.freeRiderExposureElems[2].attr({text: "1- "+getName(this.lowestThreeContributors[0][0])+"\u00a0\u00a0\u00a0"+this.lowestThreeContributors[0][1]});
+				if(this.lowestThreeContributors.length>1)
+					this.freeRiderExposureElems[3].attr({text: "2- "+getName(this.lowestThreeContributors[1][0])+"\u00a0\u00a0\u00a0"+this.lowestThreeContributors[1][1]});
+				if(this.lowestThreeContributors.length>2)
+					this.freeRiderExposureElems[4].attr({text: "3- "+getName(this.lowestThreeContributors[2][0])+"\u00a0\u00a0\u00a0"+this.lowestThreeContributors[2][1]});
+			}
+			if($.trim(variables['scoreboard_order'])=="decreasing")
+			{
+				this.freeRiderExposureElems[2].attr({text: "1- "+getName(this.lowestThreeContributors[this.lowestThreeContributors.length-1][0])+"\u00a0\u00a0\u00a0"+this.lowestThreeContributors[this.lowestThreeContributors.length-1][1]});
+				if(this.lowestThreeContributors.length>1)
+					this.freeRiderExposureElems[3].attr({text: "2- "+getName(this.lowestThreeContributors[this.lowestThreeContributors.length-2][0])+"\u00a0\u00a0\u00a0"+this.lowestThreeContributors[this.lowestThreeContributors.length-2][1]});
+				if(this.lowestThreeContributors.length>2)
+					this.freeRiderExposureElems[4].attr({text: "3- "+getName(this.lowestThreeContributors[this.lowestThreeContributors.length-3][0])+"\u00a0\u00a0\u00a0"+this.lowestThreeContributors[this.lowestThreeContributors.length-3][1]});
+			}
+		}
+		$("#plmkyrcb").show();
+		$("#shareslider").slider( "value", 0);
+		$("#pmyc").html("Please make your contribution: 0");
+		$("#obcc").html("<td width=\"94\" height=\"60\"></td><td width=\"100\" height=\"60\"><div id=\"offerButContainer\"></div></td><td width=\"94\" height=\"60\"></td>");
+		this.paper = Raphael("offerButContainer", 200, 65);
+		drawOfferBut(0);
+		$("#dialog").dialog("close");
+		while(this.lastRoundContributions.length>0)
+			this.lastRoundContributions.splice(0,1);
+		this.contributionCount=0;
+		this.totalContributionsLastRound=0;
+		this.currentExpRound++;
+		if(this.currentExpRound<=parseInt(variables['total_rounds']))
+		{
+			$("#roundText").html("Round "+this.currentExpRound+" out of "+variables['total_rounds']);
+			this.roundTimer=parseInt(variables["round_times"][0][this.currentExpRound-1]);
+			countDownRound();
+			setRound(2+this.currentExpRound);
+		}
+		else
+		{
+			while(this.sortedScores.length>0)
+				this.sortedScores.splice(0,1);
+			for(var b=1; b<=numPlayers; b++)
+			{
+				//if(this.lastRoundTexts[b-1].attr('opacity')>0)
+					this.sortedScores.push([b, this.totalPoints[b-1]]);
+			}
+			this.sortedScores = selectionSort(this.sortedScores);
+			for(var b=0; b<this.sortedScores.length; b++)
+			{
+				if(this.sortedScores[b][0]==myid)
+					$("#endgameresultstext").html($("#endgameresultstext").html()+"<tr><td>Your ("+getName(this.sortedScores[b][0])+") total points: "+this.sortedScores[b][1]+"</td></tr><tr height=\"10\"><td></td></tr>");
+				else
+					$("#endgameresultstext").html($("#endgameresultstext").html()+"<tr><td>"+getName(this.sortedScores[b][0])+"'s total points: "+this.sortedScores[b][1]+"</td></tr><tr height=\"10\"><td></td></tr>");
+			}	
+			$("#dialogEndGame").dialog("open");
+			countDownEndGame();
+		}
+	 }else{  
+		this.roundIntervalTimer--;
+		var min=Math.floor(this.roundIntervalTimer/60);
+		var sec=this.roundIntervalTimer%60;
+		if(min>1)
+		{
+			if(sec>1)
+				$("#roundintervaltimertext").html(min+" minutes "+sec+" seconds left to proceed at next step.");
+			else if(sec==1)
+				$("#roundintervaltimertext").html(min+" minutes "+sec+" second left to proceed at next step.");
+			else
+				$("#roundintervaltimertext").html(min+" minutes left to proceed at next step.");
+		}
+		else if(min==1)
+		{
+			if(sec>1)
+				$("#roundintervaltimertext").html(min+" minute "+sec+" seconds left to proceed at next step.");
+			else if(sec==1)
+				$("#roundintervaltimertext").html(min+" minute "+sec+" second left to proceed at next step.");
+			else
+				$("#roundintervaltimertext").html(min+" minute left to proceed at next step.");
+		}
+		else
+		{
+			if(sec>1)
+				$("#roundintervaltimertext").html(sec+" seconds left to proceed at next step.");
+			else
+				$("#roundintervaltimertext").html(sec+" second left to proceed at next step.");
+		}	
+		this.timeoutRoundInterval=setTimeout("countDownRoundInterval()", 1000);
+	 }  
+}
+
+function countDownEndGame(){  
+	 if (this.endGameTimer <=0){ 
+		clearTimeout(this.timeoutEndGame);
+		$("#dialogEndGame").dialog("close");
+		quit();
+		var myurl = "http://"+window.location.host+"/stop_test";
+		window.location = myurl;
+	 }else{  
+		this.endGameTimer--;
+		var min=Math.floor(this.endGameTimer/60);
+		var sec=this.endGameTimer%60;
+		if(min>1)
+		{
+			if(sec>1)
+				$("#endgametimertext").html("Thank you for your participation! You will be redirected to experiments in "+min+" minutes "+sec+" seconds");
+			else if(sec==1)
+				$("#endgametimertext").html("Thank you for your participation! You will be redirected to experiments in "+min+" minutes "+sec+" second");
+			else
+				$("#endgametimertext").html("Thank you for your participation! You will be redirected to experiments in "+min+" minutes");
+		}
+		else if(min==1)
+		{
+			if(sec>1)
+				$("#endgametimertext").html("Thank you for your participation! You will be redirected to experiments in "+min+" minute "+sec+" seconds");
+			else if(sec==1)
+				$("#endgametimertext").html("Thank you for your participation! You will be redirected to experiments in "+min+" minute "+sec+" second");
+			else
+				$("#endgametimertext").html("Thank you for your participation! You will be redirected to experiments in "+min+" minute");
+		}
+		else
+		{
+			if(sec>1)
+				$("#endgametimertext").html("Thank you for your participation! You will be redirected to experiments in "+sec+" seconds");
+			else
+				$("#endgametimertext").html("Thank you for your participation! You will be redirected to experiments in "+sec+" second");
+		}	
+		this.timeoutEndGame=setTimeout("countDownEndGame()", 1000);
+	 }  
+}
+
+function selectionSort(arr)
+{
+	for (var i=0; i<arr.length-1; i++) {
+		for (var j=i+1; j<arr.length; j++) {
+			if($.trim(variables['scoreboard_order'])=="increasing")
+			{
+				if (arr[i][1] > arr[j][1]) {
+					//... Exchange elements
+					var tempid = arr[i][0];
+					arr[i][0] = arr[j][0];
+					arr[j][0] = tempid;
+					
+					var tempscore = arr[i][1];
+					arr[i][1] = arr[j][1];
+					arr[j][1] = tempscore;
+				}
+			}
+			if($.trim(variables['scoreboard_order'])=="decreasing")
+			{
+				if (arr[i][1] < arr[j][1]) {
+					var tempid = arr[i][0];
+					arr[i][0] = arr[j][0];
+					arr[j][0] = tempid;
+					
+					var tempscore = arr[i][1];
+					arr[i][1] = arr[j][1];
+					arr[j][1] = tempscore;
+				}
+			}
+		}
+	}
+	return arr;
+}
+
+function initSlider()
+{
+	 $(function() {
+		$( "#shareslider" ).slider({
+		range: "max",
+		min: 0,
+		max: 0,
+		value: 0,
+		slide: function( event, ui ) {
+			$("#pmyc").html("Please make your contribution: "+ui.value);
+			if(ui.value/$("#shareslider").slider( "valueMax")<=0.25)
+			{
+				if(this.offerButFace!=0)
+				{
+					this.offerButFace=0;
+					paper.clear();
+					drawOfferBut(0);
+				}
+			}
+			if(ui.value/$("#shareslider").slider( "valueMax")>0.25&&ui.value/$("#shareslider").slider( "valueMax")<=0.5)
+			{
+				if(this.offerButFace!=1)
+				{
+					this.offerButFace=1;
+					paper.clear();
+					drawOfferBut(1);
+				}
+			}
+			if(ui.value/$("#shareslider").slider( "valueMax")>0.5&&ui.value/$("#shareslider").slider( "valueMax")<=0.75)
+			{
+				if(this.offerButFace!=2)
+				{
+					this.offerButFace=2;
+					paper.clear();
+					drawOfferBut(2);
+				}
+			}
+			if(ui.value/$("#shareslider").slider( "valueMax")>0.75&&ui.value/$("#shareslider").slider( "valueMax")<=1.0)
+			{
+				if(this.offerButFace!=3)
+				{
+					this.offerButFace=3;
+					paper.clear();
+					drawOfferBut(3);
+				}
+			}
+		}
+		});
+		$( "#shareslider" ).slider( "setOption" , "max", parseInt(variables['round_budget']));
+	}
+	);
+}
+
+function createFreeRiderExposurePanel()
+{
+	this.freeRiderExposureElems=new Array();
+	var rectangle = this.networkPaper.roundedRectangle(320, 10, 150, 80, 5, 5, 5, 5).attr("fill", "#FDBE85");
+	this.freeRiderExposureElems.push(rectangle);
+	var lowestText=this.networkPaper.text(393, 25, "Three lowest contributors\nof the last round:");
+	lowestText.attr({'font-size': 10, 'font-family': 'Verdana'});
+	lowestText.attr("fill", "#404041")
+	this.freeRiderExposureElems.push(lowestText);
+	var firstLowestText=this.networkPaper.text(393, 47, "1- User 1\u00a0\u00a0\u00a0600");
+	firstLowestText.attr({'font-size': 10, 'font-family': 'Verdana'});
+	firstLowestText.attr("fill", "#404041");
+	this.freeRiderExposureElems.push(firstLowestText);
+	var secondLowestText=this.networkPaper.text(393, 62, "2- User 5\u00a0\u00a0\u00a0700");
+	secondLowestText.attr({'font-size': 10, 'font-family': 'Verdana'});
+	secondLowestText.attr("fill", "#404041");
+	this.freeRiderExposureElems.push(secondLowestText);
+	var thirdLowestText=this.networkPaper.text(393, 77, "3- User 3\u00a0\u00a0\u00a0900");
+	thirdLowestText.attr({'font-size': 10, 'font-family': 'Verdana'});
+	thirdLowestText.attr("fill", "#404041");
+	this.freeRiderExposureElems.push(thirdLowestText);
+}
+
+function removeFreeRiderExposurePanel()
+{
+	for(var i=0; i<this.freeRiderExposureElems.length; i++)
+		this.freeRiderExposureElems[i].remove();
+}
+
+function drawOfferBut(face)
+{
+	Raphael.fn.roundedRectangle = function (x, y, w, h, r1, r2, r3, r4){
+		var array = [];
+		array = array.concat(["M",x,r1+y, "Q",x,y, x+r1,y]); //A
+		array = array.concat(["L",x+w-r2,y, "Q",x+w,y, x+w,y+r2]); //B
+		array = array.concat(["L",x+w,y+h-r3, "Q",x+w,y+h, x+w-r3,y+h]); //C
+		array = array.concat(["L",x+r4,y+h, "Q",x,y+h, x,y+h-r4, "Z"]); //D
+
+		return this.path(array);
+	};
+	var offerButRect = this.paper.roundedRectangle(35, 2, 140, 60, 10, 10, 10, 10).attr({fill: "#8dc63f"});
+	var offerImg = this.paper.image(getFile('offer'+face+'.png'), 3, 3, 137, 50);
+	var hiddenOfferButRect = this.paper.roundedRectangle(35, 2, 140, 60, 10, 10, 10, 10).attr({fill: "#8dc63f"});
+	hiddenOfferButRect.hover(function(){offerButRect.attr("fill", "#0A4");}, function(){offerButRect.attr({fill: "#8dc63f"});});
+	hiddenOfferButRect.attr("fill", "red");
+	hiddenOfferButRect.attr("cursor", "pointer");
+	hiddenOfferButRect.attr({opacity: 0});
+	hiddenOfferButRect.click(function() {
+		$("#offerButContainer").hide();
+		$("#plmkyrcb").hide();
+		$("#obcc").html("<td width=\"288\" height=\"125\"><span style=\"font-size:12pt; color:#0e76bc\">Thank you! You made a contribution of "+$("#shareslider").slider("value")+". Please wait for the others...</span></td>");
+		submit($("#shareslider").slider("value"));
+		return;
+	});
+}
+
+$(document).ready(function(){
+    $('#dialog').dialog({
+        title: 'End of Round',
+        dialogClass: "noOverlayDialog",
+        autoOpen:false,
+        modal: true,
+		closeOnEscape: false,
+		draggable: false,
+		width: 450,
+		height: 300,
+		resizable: false,
+		open: function(event, ui) { $(".ui-dialog-titlebar-close", ui.dialog).hide(); }
+    });
+});
+
+$(document).ready(function(){
+    $('#dialogEndGame').dialog({
+        title: 'End of Experiment Results',
+        dialogClass: "noOverlayDialog",
+        autoOpen:false,
+        modal: true,
+		closeOnEscape: false,
+		draggable: false,
+		width: 450,
+		height: 300,
+		resizable: false,
+		open: function(event, ui) { $(".ui-dialog-titlebar-close", ui.dialog).hide(); }
+    });
+});
+
+
+function drawNetwork()
+{
+	Raphael.fn.roundedRectangle = function (x, y, w, h, r1, r2, r3, r4){
+		var array = [];
+		array = array.concat(["M",x,r1+y, "Q",x,y, x+r1,y]); //A
+		array = array.concat(["L",x+w-r2,y, "Q",x+w,y, x+w,y+r2]); //B
+		array = array.concat(["L",x+w,y+h-r3, "Q",x+w,y+h, x+w-r3,y+h]); //C
+		array = array.concat(["L",x+r4,y+h, "Q",x,y+h, x,y+h-r4, "Z"]); //D
+
+		return this.path(array);
+	};
+
+	this.networkPaper = Raphael("networkContainer", 480, 525);
+
+	if(parseInt(variables['network_structure'])==1) // scale-free: one in the middle
+	{
+		//if(numPlayers==1)
+		//	this.indexArr=[9];
+		//if(numPlayers==2)
+		//	this.indexArr=[1, 5];
+		if(numPlayers==3)
+			this.indexArr=[1, 5, 9];
+		if(numPlayers==4)
+			this.indexArr=[3, 6, 8, 9];
+		if(numPlayers==5)
+			this.indexArr=[1, 3, 5, 7, 9];
+		if(numPlayers==6)
+			this.indexArr=[1, 3, 5, 6, 8, 9];
+		if(numPlayers==7)
+			this.indexArr=[1, 2, 4, 5, 6, 8, 9];
+		if(numPlayers==8)
+			this.indexArr=[1, 2, 3, 4, 5, 6, 8, 9];
+		if(numPlayers==9)
+			this.indexArr=[1, 2, 3, 4, 5, 6, 7, 8, 9];
+		
+		for(var i=1; i<=numPlayers; i++)
+		{
+			var circle = new Object();
+			circle=this.networkPaper.circle(240, 262.5, 40);
+			circle.animate({cx: locationCircle[this.indexArr[i-1]-1][0], cy: locationCircle[this.indexArr[i-1]-1][1]}, 4000, "elastic");
+			circle.attr("fill", "#0e76bc");
+			this.circles.push(circle);
+			
+			var usernameText;
+			if(myid==i)
+				usernameText = this.networkPaper.text(240, 262.5, "You ("+getName(i)+")"); 
+			else
+				usernameText = this.networkPaper.text(240, 262.5, getName(i)); 
+			usernameText.attr({'font-size': 11, 'font-family': 'Verdana'});
+			usernameText.attr("fill", "#f1f1f1");
+			usernameText.animate({x: locationCircle[this.indexArr[i-1]-1][0], y: locationCircle[this.indexArr[i-1]-1][1]-7.5}, 4000, "elastic");
+			var LRtext = this.networkPaper.text(240, 262.5, "Last Round:\n"+LRPoints[myid-1]); 
+			LRtext.attr({'font-size': 10, 'font-family': 'Verdana'});
+			LRtext.attr("fill", "#f1f1f1");
+			LRtext.animate({x: locationCircle[this.indexArr[i-1]-1][0], y: locationCircle[this.indexArr[i-1]-1][1]+12.5}, 4000, "elastic");
+			this.lastRoundTexts.push(LRtext);
+			if(i!=numPlayers&&i!=myid&&myid!=numPlayers)
+				LRtext.attr({opacity: 0});
+			
+			var hiddenCircle = new Object();
+			hiddenCircle=this.networkPaper.circle(240, 262.5, 40);
+			hiddenCircle.animate({cx: locationCircle[this.indexArr[i-1]-1][0], cy: locationCircle[this.indexArr[i-1]-1][1]}, 4000, "elastic");
+			hiddenCircle.attr({opacity: 0});
+			hiddenCircle.attr("fill", "red");
+			//hiddenCircle.attr("cursor", "pointer");
+			this.hiddenCircles.push(hiddenCircle);
+			
+			var path = new Object();
+			path.line = this.networkPaper.path("M "+240+" "+262.5+" l "+(0)+" "+(0)+" z");
+			path.line.animate({path: "M "+240+" "+262.5+" l "+(locationCircle[this.indexArr[i-1]-1][0]-240)+" "+(locationCircle[this.indexArr[i-1]-1][1]-262.5)+" z"}, 4000, "elastic");
+			path.line.attr({stroke: '#404041','stroke-width': 5});
+			path.line.toBack();
+		}
+	}
+	if(parseInt(variables['network_structure'])==2) // small world: all connected
+	{
+		//if(numPlayers==1)
+		//	this.indexArr=[9];
+		//if(numPlayers==2)
+		//	this.indexArr=[1, 5];
+		if(numPlayers==3)
+			this.indexArr=[3, 6, 8];
+		if(numPlayers==4)
+			this.indexArr=[2, 4, 6, 8];
+		if(numPlayers==5)
+			this.indexArr=[1, 3, 5, 6, 8];
+		if(numPlayers==6)
+			this.indexArr=[1, 2, 4, 5, 6, 8];
+		if(numPlayers==7)
+			this.indexArr=[1, 2, 3, 4, 5, 6, 8];
+		if(numPlayers==8)
+			this.indexArr=[1, 2, 3, 4, 5, 6, 7, 8];
+		
+		for(var i=1; i<=numPlayers; i++)
+		{
+			var circle = new Object();
+			circle=this.networkPaper.circle(240, 262.5, 40);
+			circle.animate({cx: locationCircle[this.indexArr[i-1]-1][0], cy: locationCircle[this.indexArr[i-1]-1][1]}, 4000, "elastic");
+			circle.attr("fill", "#0e76bc");
+			this.circles.push(circle);
+			
+			var usernameText;
+			if(myid==i)
+				usernameText = this.networkPaper.text(240, 262.5, "You ("+getName(i)+")"); 
+			else
+				usernameText = this.networkPaper.text(240, 262.5, getName(i)); 
+			usernameText.attr({'font-size': 11, 'font-family': 'Verdana'});
+			usernameText.attr("fill", "#f1f1f1");
+			usernameText.animate({x: locationCircle[this.indexArr[i-1]-1][0], y: locationCircle[this.indexArr[i-1]-1][1]-7.5}, 4000, "elastic");
+			var LRtext = this.networkPaper.text(240, 262.5, "Last Round:\n"+LRPoints[myid-1]); 
+			LRtext.attr({'font-size': 10, 'font-family': 'Verdana'});
+			LRtext.attr("fill", "#f1f1f1");
+			LRtext.animate({x: locationCircle[this.indexArr[i-1]-1][0], y: locationCircle[this.indexArr[i-1]-1][1]+12.5}, 4000, "elastic");
+			this.lastRoundTexts.push(LRtext);
+			
+			var hiddenCircle = new Object();
+			hiddenCircle=this.networkPaper.circle(240, 262.5, 40);
+			hiddenCircle.animate({cx: locationCircle[this.indexArr[i-1]-1][0], cy: locationCircle[this.indexArr[i-1]-1][1]}, 4000, "elastic");
+			hiddenCircle.attr({opacity: 0});
+			hiddenCircle.attr("fill", "red");
+			//hiddenCircle.attr("cursor", "pointer");
+			this.hiddenCircles.push(hiddenCircle);
+			
+			for(var j=1; j<=numPlayers; j++)
+			{
+				if(j==i) continue;
+				var path = new Object();
+				path.line = this.networkPaper.path("M "+locationCircle[this.indexArr[i-1]-1][0]+" "+locationCircle[this.indexArr[i-1]-1][1]+" l "+(0)+" "+(0)+" z");
+				path.line.animate({path: "M "+locationCircle[this.indexArr[i-1]-1][0]+" "+locationCircle[this.indexArr[i-1]-1][1]+" l "+(locationCircle[this.indexArr[j-1]-1][0]-locationCircle[this.indexArr[i-1]-1][0])+" "+(locationCircle[this.indexArr[j-1]-1][1]-locationCircle[this.indexArr[i-1]-1][1])+" z"}, 6000, "backOut");
+				path.line.attr({stroke: '#404041','stroke-width': 5});
+				path.line.toBack();
+			}
+		}
+	}
+		
+	this.hiddenCircles[0].hover(function(){circles[0].attr("fill", "#6198BC");}, function(){circles[0].attr({fill: "#0e76bc"});});
+	if(numPlayers>1)
+		this.hiddenCircles[1].hover(function(){circles[1].attr("fill", "#6198BC");}, function(){circles[1].attr({fill: "#0e76bc"});});
+	if(numPlayers>2)
+		this.hiddenCircles[2].hover(function(){circles[2].attr("fill", "#6198BC");}, function(){circles[2].attr({fill: "#0e76bc"});});
+	if(numPlayers>3)
+		this.hiddenCircles[3].hover(function(){circles[3].attr("fill", "#6198BC");}, function(){circles[3].attr({fill: "#0e76bc"});});
+	if(numPlayers>4)
+		this.hiddenCircles[4].hover(function(){circles[4].attr("fill", "#6198BC");}, function(){circles[4].attr({fill: "#0e76bc"});});
+	if(numPlayers>5)
+		this.hiddenCircles[5].hover(function(){circles[5].attr("fill", "#6198BC");}, function(){circles[5].attr({fill: "#0e76bc"});});
+	if(numPlayers>6)
+		this.hiddenCircles[6].hover(function(){circles[6].attr("fill", "#6198BC");}, function(){circles[6].attr({fill: "#0e76bc"});});
+	if(numPlayers>7)
+		this.hiddenCircles[7].hover(function(){circles[7].attr("fill", "#6198BC");}, function(){circles[7].attr({fill: "#0e76bc"});});
+	if(numPlayers>8)
+		this.hiddenCircles[8].hover(function(){circles[8].attr("fill", "#6198BC");}, function(){circles[8].attr({fill: "#0e76bc"});});
+}
+
+function preprocess(str)
+{
+	while(str.indexOf('%')>=0&&str.indexOf('%',str.indexOf('%')+1)>=0)
+	{
+		if((str.substring(str.indexOf('%')+1, str.indexOf('%',str.indexOf('%')+1))).indexOf('[')>=0&&(str.substring(str.indexOf('%')+1, str.indexOf('%',str.indexOf('%')+1))).indexOf(']',(str.substring(str.indexOf('%')+1, str.indexOf('%',str.indexOf('%')+1))).indexOf('[')+1)>=0)
+			str=str.substring(0, str.indexOf('%'))+variables[str.substring(str.indexOf('%')+1, str.indexOf('['))][parseInt(str.substring(str.indexOf('[')+1,str.indexOf(']')))-1][parseInt(str.substring(str.indexOf('[', str.indexOf('[')+1)+1,str.indexOf(']', str.indexOf(']')+1)))-1]+str.substring(str.indexOf('%',str.indexOf('%')+1)+1, str.length);
+		else
+			str=str.substring(0, str.indexOf('%'))+variables[str.substring(str.indexOf('%')+1, str.indexOf('%',str.indexOf('%')+1))]+str.substring(str.indexOf('%',str.indexOf('%')+1)+1, str.length);
+	}
+	return str;
+}
+
+function countDownInstructions(){  
+	 if (this.instructionsTimer <=0){ 
+		clearTimeout(this.timeoutInstructions);				
+		if($.trim($('#readyp').html())!='Please wait for others...')
+			submit('Ready');
+	 }else{  
+		this.instructionsTimer--;
+		var min=Math.floor(this.instructionsTimer/60);
+		var sec=this.instructionsTimer%60;
+		if(min>1)
+		{
+			if(sec>1)
+				$("#instimertext").html(min+" minutes "+sec+" seconds remaining");
+			else if(sec==1)
+				$("#instimertext").html(min+" minutes "+sec+" second remaining");
+			else
+				$("#instimertext").html(min+" minutes remaining");
+		}
+		else if(min==1)
+		{
+			if(sec>1)
+				$("#instimertext").html(min+" minute "+sec+" seconds remaining");
+			else if(sec==1)
+				$("#instimertext").html(min+" minute "+sec+" second remaining");
+			else
+				$("#instimertext").html(min+" minute remaining");
+		}
+		else
+		{
+			if(sec>1)
+				$("#instimertext").html(sec+" seconds remaining");
+			else
+				$("#instimertext").html(sec+" second remaining");
+		}	
+		this.timeoutInstructions=setTimeout("countDownInstructions()", 1000);
+	 }  
+}
+
+function loadXMLDoc(dname)
+{
+	if (window.XMLHttpRequest)
+	{
+		xhttp=new XMLHttpRequest();
+	}
+	else
+	{
+		xhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xhttp.open("GET",dname,false);
+	xhttp.send();
+	return xhttp.responseXML;
+}
+
+function parseInstructionsXML()
+{
+	xmlDoc=loadXMLDoc(getFile("instructions.xml"));
+
+	this.instructions=new Array();
+
+	for(var j=0; j<xmlDoc.getElementsByTagName("instruction").length; j++)
+		this.instructions.push($.trim(xmlDoc.getElementsByTagName("instruction")[j].childNodes[0].nodeValue));
+}
+
+function nextInstruction()
+{
+	this.currentInstructionsPage++;
+	if(this.currentInstructionsPage>1)
+		$("#prevp").show();
+	$("#instructionsTitle").html("INSTRUCTIONS ("+currentInstructionsPage+" of "+this.instructions.length+")");
+	if(this.currentInstructionsPage==this.instructions.length)
+	{
+		$("#readyp").show();
+		$("#nextp").hide();
+	}
+	$("#instructionsBody").html(this.instructions[this.currentInstructionsPage-1]);
+}
+
+function prevInstruction()
+{
+	this.currentInstructionsPage--;
+	if(this.currentInstructionsPage<this.instructions.length)
+	{
+		$("#nextp").show();
+		$("#readyp").hide();
+	}
+	$("#instructionsTitle").html("INSTRUCTIONS ("+currentInstructionsPage+" of "+this.instructions.length+")");
+	if(this.currentInstructionsPage==1)
+		$("#prevp").hide();
+	$("#instructionsBody").html(this.instructions[this.currentInstructionsPage-1]);
+}
+</script>

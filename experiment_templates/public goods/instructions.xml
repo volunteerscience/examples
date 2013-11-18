@@ -1,0 +1,69 @@
+<instructions>
+	<instruction>
+Welcome to the public goods game!
+
+Because the amount of money you can earn depends on your decisions in the game, it is important that you read these instructions with care. At the end of the instructions there is a brief quiz to ensure that you understand the instructions. You cannot play the public goods game unless you correctly answer these questions.
+
+Overview:
+
+In the public goods game, you will be placed in a network with four other players; however, you will only "see" a subset of the total network-those players to whom you are connected directly. These players will be called your "neighbors". Both the total network and your neighbors will remain fixed throughout the game.
+
+Once the network is populated with enough players, the game will proceed over the course of 10 "rounds". During each round you, and your neighbors (i.e. the players directly connected to you in the network) will choose how much to contribute to an abstract project. Then this project generates a "payoff" that will then be split equally among you and those who are directly connected to you. Your total payoff for the game is the sum of your payoffs from each round.
+	</instruction>
+	<instruction>
+How the game works:
+
+1.	In each round we give you an "endowment" of 10 points.
+
+2.	You decide how many points you want to contribute to the project by typing a number between 0 and 10 in the input field and then clicking the submit button. Please note that by deciding how many points to contribute to the project, you also decide how many points you keep for yourself, this is (10 - your contribution) points. Also note that once you have submitted your contribution you cannot go back and change it.
+
+3.	In the first two rounds you have 45 seconds to make you contribution. In the remaining rounds you have 30 seconds displayed on a timer. If you do not make a contribution before the end of a round, the system will make one for you and you will not earn any points for that round.
+
+4.	Your income from each round consists of two parts:
+	a.	 a. the points which you have kept for yourself ("income from points kept").
+	b.	"income from the project", which is 0.4 x the total contribution that you and your neighbors made to the project.
+Your income in points from a round is therefore:
+	a.	Income from points kept + Income from the project = (10 - your contribution to the project) + 0.4*(total contributions you and your neighbors made to the project)
+
+5.	The income of each person in the network (including your neighbors) is calculated in the same way.
+	</instruction>
+	<instruction>
+Four Examples of Payoffs:
+
+1.	Suppose you have four (4) neighbors, and each of you contributes the maximum allowable of 10 points. The sum of the contributions you and your neighbors (those who are directly connected to you) is 50 points, and so each member of the group receives an income from the project of: 0.4*50 = 20 points. Meanwhile your income from points kept = 0 (because you did not keep any), and so your total income = 0 + 20 = 20 points.
+
+2.	Alternatively, suppose that each player contributes two (2) points. Then the total contribution to the project is 10 points, and each member of the group receives an income from the project of: 0.4*10 = 4 points. Because you contributed two of these points then your income from points kept is eight (8), and your total income = 8 + 4 = 12 points.
+
+3.	Next, say you contribute two (2) points and all your neighbors contribute ten (10) points, the total contribution is 42 points, and the income that each player receives from the project is 0.4*42 = 16.8 points. Because you contributed two (2) points, your kept income is eight (8), and your total income = 8 + 16.8 = 24.8 points.
+
+4.	Finally, say you contribute ten (10) points, and all your neighbors contribute two (2) points, the total contribution is 18 points, and the income that each player receives from the project is 0.4*18 = 7.2 points. Because you contributed ten (10) points, your kept income is zero (0) points and your total income = 0 + 7.2 = 7.2 points.
+	</instruction>
+	<instruction>
+Important Points to Note:
+
+1.	For each point that you decide to keep for yourself, your income for that round will increase by one point.
+
+2.	For each point you contribute to the project, the total contribution to the project will rise by one point, and your income from the project will rise by 0.4*1 = 0.4 points.
+
+3.	For each point you contribute to the project, the income of your neighbors will rise by 0.4 points each. For example, if you have 4 neighbors then a one point contribution by you will raise the total income of you and your neighbors by 5*0.4 = 2.0 points.
+
+4.	Finally, you also earn an income for each point contributed by your neighbors to the project. For each point contributed by each of them, you earn 0.4*1 = 0.4 points.
+	</instruction>
+	<instruction>
+Quiz
+
+To make sure you have read and understood the instructions, you must answer the following questions correctly. If you answer any questions incorrectly, you will get a second chance. If you answer a question incorrectly twice, you will not be allowed to play the game and will not receive payment for the HIT. The answers to all of the questions below are in terms of points. Please accept the HIT before beginning to fill out the form.
+In questions 1-4, assume you have 5 neighbors and you and your neighbors have an endowment of 10 points each.
+1.	If nobody (including yourself) contributes any points to the project what would your total income be?
+
+2.	If everyone (including yourself) contributes all 10 points to the project, would your total income be?
+
+3.	Say together your neighbors contribute a total of 25 points to the project.
+	a.	If you do not contribute any points to the project what would your total income be?
+	b.	If you contribute an additional 5 points to the project what would your total income be?
+
+4.	Say you contribute 8 points to the project.
+	a.	What would be your income if your neighbors contributed a total of 12 points to the project?
+	b.	What would be your income if your neighbors contributed a total of 32 points to the project?
+	</instruction>
+</instructions>
