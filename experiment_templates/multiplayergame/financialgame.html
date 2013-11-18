@@ -300,6 +300,8 @@ var timeoutAddedSecs;
 var iAmReady;
 
 setRound(1);
+$('#addtimebut').hide();
+$('#step1secrem').html('&nbsp;');
 
 function initialize()
 {
@@ -319,7 +321,6 @@ function initialize()
 	$('#step3').hide();
 	$('#step4').hide();
 	$('#polling').hide();
-	$('#addtimebut').hide();
 	this.plus30Count=0;
 	this.addedSecsTimer=5;
 	this.iAmReady=false;
@@ -384,6 +385,11 @@ function newMove(participant, index) {
 			}
 		}
 		setRound(2+this.plus30Count);
+		try {
+			if (awards[myid]["instructions"]["count"] > 0) {
+				$('#begininsbut').show();
+			}
+		} catch(err) {}
 		return;
 	}
 	if(readyCount<numPlayers)
@@ -392,6 +398,7 @@ function newMove(participant, index) {
 			readyCount++
 		if(readyCount==numPlayers)
 		{
+			writeAward("instructions",0);
 			setRound(2+this.expRoundNum+this.plus30Count);
 	//		if(this.roundText[0].attr['text']=="")
 	//		{
@@ -719,7 +726,14 @@ function getStaticInstructions(instpage)
 		}
 	}
 	else
-		$('#begininsbut').hide();
+	{
+		try{
+			if (awards[myid]["instructions"]["count"] > 0)
+				$('#begininsbut').show();
+			else
+				$('#begininsbut').hide();
+		} catch(err) {$('#begininsbut').hide();}
+	}
 	if(instpage>1)
 		$('#previnsbut').show();
 	else
@@ -804,7 +818,14 @@ function getDynamicInstructions(instpage)
 		}
 	}
 	else
-		$('#begininsbut').hide();
+	{
+		try{
+			if (awards[myid]["instructions"]["count"] > 0)
+				$('#begininsbut').show();
+			else
+				$('#begininsbut').hide();
+		} catch(err) {$('#begininsbut').hide();}
+	}
 	if(instpage>1)
 		$('#previnsbut').show();
 	else
@@ -1669,7 +1690,7 @@ function beginExpRound()
 
 function setupButtons()
 {
-	var butshtml="<tr><td width=\"20\"></td><td width=\"140\"><div id=\"but1\" style=\"width: 140px; height: 60px; position:relative;\"></div></td><td width=\"15\"></td><td width=\"140\"><div id=\"but2\" style=\"width: 140px; height: 60px; position:relative;\"></div></td><td width=\"15\"></td><td width=\"140\"><div id=\"but3\" style=\"width: 140px; height: 60px; position:relative;\"></div></td><td width=\"15\"></td><td width=\"140\"><div id=\"but4\" style=\"width: 140px; height: 60px; position:relative;\"></div></td><td width=\"15\"></td><td width=\"140\"><div id=\"but5\" style=\"width: 140px; height: 60px; position:relative;\"></div></td><td width=\"20\"></td></tr>";
+	var butshtml="<tr><td width=\"20\"></td><td width=\"140\"><div id=\"but1\" style=\"width: 140px; height: 50px; position:relative;\"></div></td><td width=\"15\"></td><td width=\"140\"><div id=\"but2\" style=\"width: 140px; height: 50px; position:relative;\"></div></td><td width=\"15\"></td><td width=\"140\"><div id=\"but3\" style=\"width: 140px; height: 50px; position:relative;\"></div></td><td width=\"15\"></td><td width=\"140\"><div id=\"but4\" style=\"width: 140px; height: 50px; position:relative;\"></div></td><td width=\"15\"></td><td width=\"140\"><div id=\"but5\" style=\"width: 140px; height: 50px; position:relative;\"></div></td><td width=\"20\"></td></tr>";
 	$("#buts").html(butshtml);
 	$('#selectedbuttext').html("&nbsp;");
 	if(parseInt(variables['Button_Count'])==2)
@@ -1685,7 +1706,7 @@ function setupButtons()
 	}
 	else if(parseInt(variables['Button_Count'])==4)
 	{
-		$("#buts").html("<tr><td width=\"24\"></td><td width=\"170\"><div id=\"but1\" style=\"width: 170px; height: 60px; position:relative;\"></div></td><td width=\"24\"></td><td width=\"170\"><div id=\"but2\" style=\"width: 170px; height: 60px; position:relative;\"></div></td><td width=\"24\"></td><td width=\"170\"><div id=\"but4\" style=\"width: 170px; height: 60px; position:relative;\"></div></td><td width=\"24\"></td><td width=\"170\"><div id=\"but5\" style=\"width: 170px; height: 60px; position:relative;\"></div></td><td width=\"24\"></td></tr>");
+		$("#buts").html("<tr><td width=\"24\"></td><td width=\"170\"><div id=\"but1\" style=\"width: 170px; height: 50px; position:relative;\"></div></td><td width=\"24\"></td><td width=\"170\"><div id=\"but2\" style=\"width: 170px; height: 50px; position:relative;\"></div></td><td width=\"24\"></td><td width=\"170\"><div id=\"but4\" style=\"width: 170px; height: 50px; position:relative;\"></div></td><td width=\"24\"></td><td width=\"170\"><div id=\"but5\" style=\"width: 170px; height: 50px; position:relative;\"></div></td><td width=\"24\"></td></tr>");
 		$("#but1").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"but1_4Pressed();$('#but2').html('');$('#but4').html('');$('#but5').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_1_Text'])+"</a></p>");
 		$("#but2").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"but2_4Pressed();$('#but1').html('');$('#but4').html('');$('#but5').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_2_Text'])+"</a></p>");
 		$("#but4").html("<p align=\"center\"><a class=\"mybutton\" onclick=\"but4_4Pressed();$('#but1').html('');$('#but2').html('');$('#but5').html('');\" OnMouseOver=\"this.style.cursor='pointer'\">"+preprocess(variables['Button_3_Text'])+"</a></p>");
