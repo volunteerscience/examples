@@ -1,0 +1,30 @@
+<script>
+function initialize() {
+  DEBUG_TEST = true;
+  $("#result").html("Ready");
+  
+  $("#submit").click(function() {
+    $("#result").html("Sending...");
+    var name = $("#awardName").val();
+    var val = $("#value").val();
+    
+    writeScore(name,val,"high",function(rank,count) {
+      $("#result").html(rank+"/"+count);
+    });
+    
+    getTopScores(name,10,function(count, scores) {
+      $("#scores").html(count+":"+scores);
+    });
+  });
+}
+</script>
+
+<h1>Test Score</h1>
+<h3>Place an award name the 1st field.</h3>
+<h3>Place score (a number) in the 2nd field.</h3>
+<h3>Click Submit, below says rank/count</h3>
+<input id="awardName" type="text" value="stars"/>
+<input id="value" type="text" value="5"/>
+<input type="submit" id="submit" class="btn-success" value="Submit"/>
+<h2 id="result">Wait</h2>
+<h3 id="scores"></h3>
