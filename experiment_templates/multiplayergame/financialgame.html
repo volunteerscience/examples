@@ -6,7 +6,7 @@
     </tr>
     <tr>
         <td width="70"></td>
-        <td width="426"><table><tr><td><button id="addtimebut" type="submit" class="btn-large btn-success dropdown-toggle" onClick="setPlus30Count(getPlus30Count()+1);setRound(1+getPlus30Count());submit('+30 Seconds');"><i class="icon-plus icon-white"></i>30 Seconds</button></td><td id="addedsecs"></td></tr></table>
+        <td width="426"><table><tr><td><button id="addtimebut" type="submit" class="btn-small btn-success dropdown-toggle" onClick="setPlus30Count(getPlus30Count()+1);setRound(1+getPlus30Count());submit('+30 Seconds');"><i class="icon-plus icon-white"></i>30 Seconds</button></td><td id="addedsecs"></td></tr></table>
 		</td>
         <td width="60" valign="top">
             <p align="right"><font face="Verdana"><span style="font-size:14pt; color:black;" id="insttimer"></span></font></p>
@@ -712,7 +712,7 @@ function getStaticInstructions(instpage)
 			instructionhtml+="<tr><td width=\"555\" height=\"150\"><table align=\"center\" width=\"555\"><tr><td width=\"400\" height=\"150\"><div id=\"instructiontextdiv\"><div style=\"word-wrap:break-word; width: 385px; height: 130px; margin-left:7.5px; margin-right:7.5px; margin-top:5px; margin-bottom:5px;\"><small id=\"instructiontext"+i+"\" class='smallinst'>"+preprocess(variables['static_instruction_text_'+i])+"</small></div></div></td><td width=\"15\" height=\"150\"></td><td width=\"140\" height=\"150\">"+((instimg!="")?("<img src=\""+getFile(instimg)+"\" class=\"img-inst\">"):"")+"</td></tr></table></td></tr>"
 	}
 	//instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage--;getStaticInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn btn-primary\" onClick=\"instructionsPage++;getStaticInstructions(instructionsPage);;\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
-	instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage--;getStaticInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"><font face=\"Verdana\"><span style=\"font-size:10pt; color:black\" id=\"readyp\"><button id=\"begininsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"setRound(2+getPlus30Count());submit('Ready');$('#begininsbut').hide();$('#readyp').html('Please wait for others...');$('#addtimebut').hide();readySignal();\">I'm Ready</button></span></font></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage++;getStaticInstructions(instructionsPage);\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
+	instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage--;getStaticInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"><font face=\"Verdana\"><span style=\"font-size:10pt; color:black\" id=\"readyp\"><button id=\"begininsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"setRound(2+getPlus30Count());submit('Ready');$('#begininsbut').hide();$('#readyp').html('Please wait for others...');$('#addtimebut').hide();readySignal();$('#insttitle').html('');\">I'm Ready</button></span></font></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage++;getStaticInstructions(instructionsPage);\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
 	$("#instructiontable").html(instructionhtml);
 	if(instpage==Math.ceil(parseInt(variables['static_instruction_count'])/3))
 	{
@@ -753,11 +753,27 @@ function getDynamicInstructions(instpage)
 
 	if(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].length>0)
 	{
-		setupInfoTable();
-		instructionhtml=(instructionhtml+"<tr><td><table style=\"margin-left: auto;margin-right: auto;\">"+$("#infotable").html()+"</table></td></tr><tr><td width=\"794\" height=\"80\"><div id=\"butholder\" style=\"height: 80px;\"><div style=\"text-align: center; height: 25px; line-height:30px;\"><font face=\"Verdana\" ><span style=\"font-size:12pt; color: #0e76bc;\" id=\"selectedbuttext\"></span></font></div><table id=\"buts\" border=\"0\" align=\"center\" width=\"794\"></table></div></td></tr>");
+		for(var i=1; i<=parseInt(variables['information_row_count']); i++)
+		{
+			for(var j=1; j<=parseInt(variables['information_column_count']); j++)
+			{
+				if(variables['information_row'+i+'_column'+j+'_payoff_cells'].indexOf(variables['dynamic_instruction_text_'+instpage+'_payoff_cell'])>=0)
+				{
+					var infohtml="";
+					infohtml+="<tr>";
+					var infimg=(variables['information_row'+i+'_column'+j+'_image']&&variables['information_row'+i+'_column'+j+'_image'].length>0)?variables['information_row'+i+'_column'+j+'_image']:"nophoto.png";
+					infohtml+="<td width=\"352\" colspan=\"3\"><div style=\"width:100px; height:100px; margin-left:126px;\"><img class=\"infoimg\" id=\"infoimage"+j+"\" src=\""+getFile(infimg)+"\"><div></td>";
+					infohtml+="</tr><tr><td width=\"352\" height=\"6\" colspan=\"3\"></td></tr><tr>";
+					infohtml+="<td width=\"18\" id=\"infotexttdmargin\"></td><td width=\"302\"><div id=\"infotextdiv\"><small id=\"infotext"+j+"\" class='smallinfo'>"+((variables['information_row'+i+'_column'+j+'_text'])?preprocess(variables['information_row'+i+'_column'+j+'_text']):"")+"</small></div></td><td width=\"18\" id=\"infotexttdmargin\" ></td>";
+					infohtml+="</tr>";
+					$("#infotable").html(infohtml);
+				}
+			}
+		}
+		instructionhtml=(instructionhtml+"<tr><td><table style=\"margin-left: auto;margin-right: auto;\">"+$("#infotable").html()+"</table></td></tr><tr><td width=\"794\" height=\"80\"><div id=\"butholder\" style=\"height: 80px;\"><div style=\"text-align: center; height: 30px; line-height:30px;\"><font face=\"Verdana\" ><span style=\"font-size:12pt; color: #0e76bc;\" id=\"selectedbuttext\"></span></font></div><table id=\"buts\" border=\"0\" align=\"center\" width=\"794\"></table></div></td></tr>");
 	}
 		
-	instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn-small btn-success dropdown-toggle\" onClick=\"instructionsPage--;getDynamicInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"><font face=\"Verdana\"><span style=\"font-size:10pt; color:black\" id=\"readyp\"><button id=\"begininsbut\" type=\"submit\" class=\"btn-small btn-success dropdown-toggle\" onClick=\"setRound(2+getPlus30Count());submit('Ready');$('#begininsbut').hide();$('#readyp').html('Please wait for others...');$('#addtimebut').hide();readySignal();\">I'm Ready</button></span></font></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn-small btn-success dropdown-toggle\" onClick=\"instructionsPage++;getDynamicInstructions(instructionsPage);\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
+	instructionhtml+="<tr><td width=\"555\" height=\"46\"><table align=\"center\" width=\"555\"><tr><td width=\"185\" height=\"46\"><p align=\"left\"><button id=\"previnsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage--;getDynamicInstructions(instructionsPage);\"><i class=\"icon-arrow-left icon-white\"></i> Previous</button></p></td><td width=\"185\" height=\"46\"><p align=\"center\"><font face=\"Verdana\"><span style=\"font-size:10pt; color:black\" id=\"readyp\"><button id=\"begininsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"setRound(2+getPlus30Count());submit('Ready');$('#begininsbut').hide();$('#readyp').html('Please wait for others...');$('#addtimebut').hide();readySignal();$('#instructiontable').html('');$('#insttitle').html('');\">I'm Ready</button></span></font></p></td><td width=\"185\" height=\"46\"><p align=\"right\"><button id=\"nextinsbut\" type=\"submit\" class=\"btn-large btn-success dropdown-toggle\" onClick=\"instructionsPage++;getDynamicInstructions(instructionsPage);\"><i class=\"icon-arrow-right icon-white\"></i>Next</button></p></td></tr></table></td></tr>";
 	$("#instructiontable").html(instructionhtml);
 	
 	if(variables["dynamic_instruction_text_"+instpage+"_payoff_cell"].length==0)
@@ -1657,6 +1673,7 @@ function beginExpRound()
 	}
 	countDownStep2();
 	$('#instructiontable').html('');
+	setupInfoTable();
 	setupButtons();
 	
 	fillStatsContainer();
