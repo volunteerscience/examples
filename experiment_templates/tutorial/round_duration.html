@@ -14,6 +14,8 @@
 
 <script>
 function initializeVisualization() {
+  $('#raw_data').html('<a href="'+DATA_URL+'?format=json">here</a>');
+  
   getJSONdata(function(data) {
     $("#status").html("Rendering...");
 
@@ -51,5 +53,6 @@ function initializeVisualization() {
 <p>This is a minimal demonstration of Volunter Science's Data Visualization system.</p>
 <p>For each test, build something that looks like:</p>
 &lt;div class="test"&gt;&lt;div class="round" style="width:40px;" title="10 seconds"&gt;101&lt;/div&gt; ... &lt;/div&gt;
+<p>Raw data available <span id="raw_data"></span>.
 <h2 id="status">Loading...</h2><br/>
 <div id="data"></div>
