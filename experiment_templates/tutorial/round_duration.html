@@ -1,0 +1,54 @@
+<style>
+.test {
+  clear: left;
+}
+.round {
+  color: #000000;
+  background-color: #00FF00;
+  border: solid 1px #000000;
+  float: left;
+  text-align: center;
+  cursor: default;
+}
+</style>
+
+<script>
+function initializeVisualization() {
+  getJSONdata(function(data) {
+    $("#status").html("Rendering...");
+
+    tests = data['tests']
+    
+    // loop over the tests
+    for (var test_ctr in tests) {
+      test = tests[test_ctr];
+      submissions = test['submissions'];
+      // build the submission time table round=>longest_time
+      submission_time = {}
+      for (var submission_ctr in submissions) {
+        submission = submissions[submission_ctr];        
+        if (typeof (submission_time[submission['round']]) == 'undefined' || submission_time[submission['round']] < submission['time']) {
+          submission_time[submission['round']] = submission['time'];
+        }
+      }
+      
+      var s = "";
+      var last_submission_time = 0;
+      for (var round in submission_time) {
+        var duration = submission_time[round]-last_submission_time;
+        s+='<div class="round" style="width:'+duration*4+'px;" title="'+duration+' seconds">'+round+'</div>';
+        last_submission_time = submission_time[round];
+      }    
+      $("#data").append('<div class="test">'+s+'</div>');
+    }
+    $("#status").html("");
+  });
+}
+</script>
+
+<h1>Round Duration</h1>
+<p>This is a minimal demonstration of Volunter Science's Data Visualization system.</p>
+<p>For each test, build something that looks like:</p>
+&lt;div class="test"&gt;&lt;div class="round" style="width:40px;" title="10 seconds"&gt;101&lt;/div&gt; ... &lt;/div&gt;
+<h2 id="status">Loading...</h2><br/>
+<div id="data"></div>
