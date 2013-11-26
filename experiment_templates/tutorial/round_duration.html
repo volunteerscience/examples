@@ -36,6 +36,7 @@ function initializeVisualization() {
       var last_submission_time = 0;
       for (var round in submission_time) {
         var duration = submission_time[round]-last_submission_time;
+        if (duration > 180) duration = 180;
         s+='<div class="round" style="width:'+duration*4+'px;" title="'+duration+' seconds">'+round+'</div>';
         last_submission_time = submission_time[round];
       }    
