@@ -1034,12 +1034,17 @@ function showResults() {
     
     var totalStars = 0;
     var table = $('#result_table');
+    var foundShortest = false;
     for (var rnd = 1; rnd <= numRounds; rnd++) {
       var note = "";
       var roundScore = scoreTable[rnd+FIRST_ACTUAL_ROUND-1];
       var stars = 0;
       if (roundScore == 0) {
+        if (rnd == 1) {
+          writeAward("First Try");
+        }
         stars = 10;
+        foundShortest = true;
       } else {
         stars = 5-Math.floor(roundScore/variables['close_score']);
       }
@@ -1063,6 +1068,12 @@ function showResults() {
     
     $('#results').show();
     enablePlayAgain();
+    writeScore("Points",totalStars*100);
+    if (foundShortest) {
+      writeAward("Shortest Path");
+      writeScore("Shortest Path",1)
+    }
+    
 //    quit();
   });
   
