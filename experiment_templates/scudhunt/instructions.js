@@ -62,12 +62,19 @@ function blink(elt, rate, times) {
 var inInstructions = true;
 function runAllInstructions() {
   inInstructions = true;
+  commandHistory[1] = new Array();
+  setRound(1);
+  
+  if (skipAllInstructions) {
+    doneInstructions();
+    return;
+  }
+  
+  
   initializeInstructions();
   initializeRoleSpecificInstructions();
   initializeSpecialRules();
   
-  commandHistory[1] = new Array();
-  setRound(1);
   runInstructions(story);
 //  doneInstructions();
 }

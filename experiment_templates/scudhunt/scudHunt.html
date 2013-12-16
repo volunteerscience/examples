@@ -35,15 +35,21 @@
       
     <div id="situationReport" class="rightSide" style="display: none;">
       <h2 id="sitRepTitle">Situation Reports</h2>
+      <div id="sitRep_wrapper" class="scroll-pane ui-corner-all">
+         <div class="scroll-bar-wrap ui-widget-content ui-corner-bottom">
+           <div id="sitRepScrollBar" class="scroll-bar"></div>
+         </div>
+        <table class="scroll-content" id="sitRep"></table>
+      </div>
       <div id="chatPanel" style="display:none;">
         <div id="sendChat" class="btn-success btn-large" onclick="callSendChat();">Send</div>
         <input id="chatInput" type="text"/>
-      </div>
-      <div class="sitrep_wrapper scroll-pane ui-corner-all">
-         <div class="scroll-bar-wrap ui-widget-content ui-corner-bottom">
-           <div class="scroll-bar"></div>
-         </div>
-        <table class="scroll-content" id="sitrep"></table>
+        <div id="chat_wrapper" class="scroll-pane ui-corner-all">
+           <div class="scroll-bar-wrap ui-widget-content ui-corner-bottom">
+             <div id="chatScrollBar" class="scroll-bar"></div>
+           </div>
+          <table class="scroll-content" id="chat"></table>
+        </div>
       </div>
     </div>
   </div>

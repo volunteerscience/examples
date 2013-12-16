@@ -211,8 +211,15 @@
   
 }
 
-.sitrep_wrapper {
-  height: 400px;
+#sitRep_wrapper {
+  height: 300px;
+}
+
+#chat_wrapper {
+  height: 150px;
+}
+
+.scroll-pane {
   min-width: 290px;
   overflow: hidden;
   width: auto;
@@ -230,12 +237,11 @@
   min-width: 120px;
 }
 
-.scroll-pane { float:left; }
 .scroll-content { float: left; }
 .scroll-bar-wrap {
   clear: left;
   float: right;
-  height: 389px;
+  height: calc(100% - 11px);
   margin: 0 -1px;
   padding: 4px 2px 7px;
 }

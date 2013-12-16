@@ -7,12 +7,16 @@ var realTimeUnitPlacement = true; // can see ally's unit placement as they do it
 var localSitRep = true; // situation reports show your local reports (overridden if global is true)
 var globalSitRep = true; // situation reports show everyone's reports
 var localMapScans = true; // show your assets' scans on the map
-var globalMapScans = true; // show everyone's assets' scans on the map (overrides local)
+var globalMapScans = false; // show everyone's assets' scans on the map (overrides local)
 var cumulativeMapScans = true; // if true, current round shows cumulation of all scans so far, not just yesterday
 var allowMapHistory = true; // allow players to view previous states of the board
 var showNumberOfRounds = true;  // do we tell the players how many rounds they have?
 var showNumberOfTargets = true;  // do we tell the players how many targets they have?
-var allowGroupTargetPlace = true; // true if the group decides where the targets go
+var allowGroupTargetPlace = false; // true if the group decides where the targets go
+var highestRankingOfficerChoose = true; // true if the highest ranking player gets to choose who controls what
+
+var skipAllInstructions = true;
+
 var roundDuration = 90;
 var numRows = 5;
 var numCols = 5;
@@ -52,6 +56,41 @@ var choiceAvatarId = 1; // what to render as the user's choice
 
 var roleToPlayer = new Array();
 var roleName = new Array();
+
+
+var difficulty = 0;
+var DIF_EASY = 10;
+var DIF_MEDIUM = 20;
+var DIF_HARD = 30;
+
+
+function setDifficulty(d) {
+  if (typeof d =="string") {
+    if (d.toLowerCase().indexOf("hard") >= 0) {
+      difficulty = DIF_HARD;
+    } else if (d.toLowerCase().indexOf("medium") >= 0) {
+      difficulty = DIF_MEDIUM;      
+    } else {
+      difficulty = DIF_EASY;
+    }
+  } else {
+    difficulty=d;    
+  }
+  
+  if (difficulty <= DIF_EASY) {
+    allyUnitPlacement = true;
+  } else {
+    allyUnitPlacement = false;    
+  }
+  realTimeUnitPlacement = allyUnitPlacement;
+
+  if (difficulty < DIF_HARD) {
+    globalSitRep = true;
+  } else {
+    globalSitRep = false;    
+  }
+  
+}
 
 function getUnits(playerId) {
   var ret = [];
@@ -611,7 +650,7 @@ function initializeGameBoard() {
   initializeHistory();
   initializeAvatars();
   initChat();
-  initScrollPane();
+  initScrollPanes();
   startAnimation();
 }
 
@@ -811,7 +850,7 @@ function playerDisconnect(playerNum) {
 
 function fetchResponse(val,participant,round,index) {
   var tagName = $(val).prop("tagName");
-//  log("fetchReturn("+tagName+" r:"+round+") cr:"+currentRound);
+  log("fetchResponse("+tagName+" r:"+round+") cr:"+currentRound);
   if (tagName == "COMMAND" || tagName == "CONFIDENCE"|| tagName=="READY") {
     // this contains 1 or more commands
     if (typeof commandHistory[round][participant] === "undefined") {
@@ -1054,9 +1093,9 @@ function addMoveReports(moves) {
 function addBeginTurnSitRep(round, numRounds) {
   log("addBeginTurnSitRep("+round+")");
   if (showNumberOfRounds) {
-    $("#sitrep").append('<tr><th class="roundHeading">'+ROUND_NOUN+' '+round+' of '+numRounds+':</th></tr>');
+    $("#sitRep").append('<tr><th class="roundHeading">'+ROUND_NOUN+' '+round+' of '+numRounds+':</th></tr>');
   } else {
-    $("#sitrep").append('<tr><th class="roundHeading">'+ROUND_NOUN+' '+round+':</th></tr>');
+    $("#sitRep").append('<tr><th class="roundHeading">'+ROUND_NOUN+' '+round+':</th></tr>');
   }
 }
 
@@ -1096,11 +1135,11 @@ function addSituationReports(moves) {
 }
 
 function appendSitRep(title,value) {
-  $("#sitrep").append('<tr><th>&nbsp;&nbsp;'+title+'</th><td>'+value+'</td></tr>'); 
+  $("#sitRep").append('<tr><th>&nbsp;&nbsp;'+title+'</th><td>'+value+'</td></tr>'); 
   sitRepScrollbar.slider("value",0);
 }
 
-var DEFAULT_CHAT = "<send communication here>";
+var DEFAULT_CHAT = "<type chat here>";
 function initChat() {
   if (playerChat) {
     $("#chatPanel").show();
@@ -1139,7 +1178,11 @@ function callSendChat() {
 }
 
 function chatReceived(tid,val) {
-  appendSitRep(roleName[getFirstRole(tid)], val);
+//  appendSitRep(roleName[getFirstRole(tid)], val);
+  title = roleName[getFirstRole(tid)];
+  value = val;
+  $("#chat").append('<tr><th>&nbsp;&nbsp;'+title+'</th><td>'+value+'</td></tr>'); 
+  chatScrollbar.slider("value",0);
 }
 
 var animTimer = null;
@@ -1163,11 +1206,19 @@ function countdownExpired(id) {
 }
 
 var sitRepScrollbar = null;
+var chatScrollbar = null;
 
-function initScrollPane() {
+function initScrollPanes() {
+  sitRepScrollbar = initScrollPane("sitRep");
+  if (playerChat) {
+    chatScrollbar = initScrollPane("chat");    
+  }
+}
+
+function initScrollPane(name) {
   //scrollpane parts
-  var scrollPane = $( ".scroll-pane" ),
-  scrollContent = $( ".scroll-content" );
+  var scrollPane = $( "#"+name+"_wrapper" ),
+  scrollContent = $( "#"+name );
   
   function updateContent(event, ui) {
     if ( scrollContent.height() > scrollPane.height() ) {
@@ -1180,7 +1231,7 @@ function initScrollPane() {
   }
   
   //build slider
-  sitRepScrollbar = $( ".scroll-bar" ).slider({
+  return $( "#"+name+"ScrollBar" ).slider({
     orientation: "vertical",
     range: "min",
     min: 0,
@@ -1188,54 +1239,6 @@ function initScrollPane() {
     value: 100,
     slide: updateContent,
     change: updateContent
-  });
-//  //append icon to handle
-//  var handleHelper = scrollbar.find( ".ui-slider-handle" )
-//    .mousedown(function() {
-//      scrollbar.height( handleHelper.height() );
-//    })
-//    .mouseup(function() {
-//      scrollbar.height( "100%" );
-//    })
-//    .append( "<span class='ui-icon ui-icon-grip-dotted-vertical'></span>" )
-//    .wrap( "<div class='ui-handle-helper-parent'></div>" ).parent();
-//  //change overflow to hidden now that slider handles the scrolling
-//  scrollPane.css( "overflow", "hidden" );
-//    //size scrollbar and handle proportionally to scroll distance
-//  function sizeScrollbar() {
-//    var remainder = scrollContent.width() - scrollPane.width();
-//    var proportion = remainder / scrollContent.width();
-//    var handleSize = scrollPane.width() - ( proportion * scrollPane.width() );
-//    scrollbar.find( ".ui-slider-handle" ).css({
-//      height: handleSize,
-//      "margin-top": -handleSize / 2
-//    });
-//    handleHelper.height( "" ).height( scrollbar.height() - handleSize );
-//  }
-  
-//reset slider value based on scroll content position
-//function resetValue() {
-//var remainder = scrollPane.width() - scrollContent.width();
-//var leftVal = scrollContent.css( "margin-left" ) === "auto" ? 0 :
-//parseInt( scrollContent.css( "margin-left" ) );
-//var percentage = Math.round( leftVal / remainder * 100 );
-//scrollbar.slider( "value", percentage );
-//}
-////if the slider is 100% and window gets larger, reveal content
-//function reflowContent() {
-//var showing = scrollContent.width() + parseInt( scrollContent.css( "margin-left" ), 10 );
-//var gap = scrollPane.width() - showing;
-//if ( gap > 0 ) {
-//scrollContent.css( "margin-left", parseInt( scrollContent.css( "margin-left" ), 10 ) + gap );
-//}
-//}
-////change handle position on window resize
-//$( window ).resize(function() {
-//resetValue();
-//sizeScrollbar();
-//reflowContent();
-//});
-////init scrollbar size
-//setTimeout( sizeScrollbar, 10 );//safari wants a timeout
+  });  
 }
 

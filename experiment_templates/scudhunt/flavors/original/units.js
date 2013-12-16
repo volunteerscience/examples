@@ -13,8 +13,8 @@ function initializeUnits(minPlayers) {
   
   ROUND_NOUN = "Day";
   ROUND_NOUN_PLURAL = "Days";
-  TARGET_NOUN = "Scud";
-  TARGET_NOUN_PLURAL = "Scuds";
+  TARGET_NOUN = "mobile missile launcher";
+  TARGET_NOUN_PLURAL = "mobile missile launchers";
 
   roleName[SPACE_COMMAND] = "Space Command";
   roleName[AIR_COMMAND] = "Air Command";
@@ -24,21 +24,21 @@ function initializeUnits(minPlayers) {
   var actualNumPlayers = Math.max(numPlayers, minPlayers);
   
   story = [
-    "<p>The rogue state of Korona has acquired mobile ballistic missiles and weapons of mass destruction.</p>",
-    "<p>Korona is threatening our ally, Kartuna, located across the narrow Gulf of Sabani.</p>",
+    "<p>The rogue state of Porona has acquired mobile ballistic missiles and weapons of mass destruction.</p>",
+    "<p>Porona is threatening our ally, Kartuna, located across the narrow Gulf of Sabani.</p>",
     "<p>Your mission is to locate the missile launchers, using various ground, space, air, and intelligence assets.</p>",
-    "<p>The elite fanatical Koronan Revolutionary Guard Special Artillery Regiment (KRGSAR), with a number of mobile missile launchers, "+
+    "<p>The elite fanatical Poronan Revolutionary Guard Special Artillery Regiment (PRGSAR), with a number of mobile missile launchers, "+
       "has deployed from its depot to a secret hide site.</p>",
     "<p>This deployment is supported by deception operations that may confuse our sensors.</p>",
     "<p>"+(actualNumPlayers == 1 ? "You " : ("Your team of "+numPlayers+" joint operations commanders"))+" must identify the locations of "+
-      (showNumberOfTargets ? numTargets : "one or more")+" mobile "+TARGET_NOUN+" missile launchers"+(showNumberOfRounds ? " in the next "+numRounds+" days" : "")+".</p>",
+      (showNumberOfTargets ? numTargets : "one or more")+" "+TARGET_NOUN_PLURAL+(showNumberOfRounds ? " in the next "+numRounds+" days" : "")+".</p>",
     "<p>The fate of hundreds of thousands of Kartunans depend on your success.</p>"
   ];        
   
   var bottomRow = String.fromCharCode('A'.charCodeAt(0)+numRows-1);
   
   mapRules = [
-    "<p>The Koronian deployment zone is divided into "+(numRows*numCols)+" squares identified by columns numbered from 1 to "+numCols+" and rows lettered from A to "+bottomRow+".</p>"+
+    "<p>The Poronian deployment zone is divided into "+(numRows*numCols)+" squares identified by columns numbered from 1 to "+numCols+" and rows lettered from A to "+bottomRow+".</p>"+
       "<p>Row "+bottomRow+" is the coastline of the Gulf of Sabani.</p>",
     "<p>Each of the "+TARGET_NOUN_PLURAL+" is hidden in a different grid square.</p>"
   ];
@@ -124,7 +124,7 @@ function initializeUnits(minPlayers) {
   };
   
   var mannedAircraft = new Unit(1, AIR_COMMAND, "Manned Aircraft", "Search from the Coast", 
-      "May fly only along the Gulf (Row E) outside Koronan airspace.  "+
+      "May fly only along the Gulf (Row E) outside Poronan airspace.  "+
       "It searches the coastal grid squares with excellent reliability, "+
       "and two rows inland (Rows C and D) with reduced reliablity.  "+
       "Must rest at leat one turn between flights due to crew fatigue and maintenance requirements.", 
@@ -149,7 +149,7 @@ function initializeUnits(minPlayers) {
   mannedAircraft.waitString = "Resting";
   
   var uav = new Unit(2, AIR_COMMAND, "UAV", "Scan Row", 
-      "May enter Koronan airspace to search any row.  It has good search reliability.  "+
+      "May enter Poronan airspace to search any row.  It has good search reliability.  "+
       "For each grid square it enters, there is a chance that it will crash or be shot down, "+
       "which aborts any further search on that turn.  "+
       "There is a variable probability that a lost UAV will be replaced the next day.", 
@@ -281,8 +281,8 @@ function initializeUnits(minPlayers) {
   };
   
   for (var i = 0; i < numTargets; i++) {
-    var scud = new Unit(7+i, TARGET_ROLE, "SCUD", "Hidden Target", 
-        "Based on your operations over the previous days, place each the SCUD in the most likely location.", 
+    var scud = new Unit(7+i, TARGET_ROLE, "Enemy "+i, "Hidden Target", 
+        "Based on your operations over the previous days, place each the "+TARGET_NOUN+" in the most likely location.", 
         getFile("scud.png"), 7, null);
   }
 
