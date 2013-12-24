@@ -1,0 +1,107 @@
+<scenario>
+	<title>
+	Art Heist
+	</title>
+	<memo>
+Police have received word that a local crime syndicate is planning a major art heist in Capitol City next week. The city’s most valuable art may be at risk. We need your help to identify the culprit, target, and day of the heist so police can intervene before it’s too late. Officers on the ground have discovered:
+	</memo>
+	<clue visibility="shared">
+The [Culprit,1], [Culprit,2], [Culprit,3], [Culprit,4] and [Culprit,5] organizations may be planning heists. [Culprit,4] has been unusually active lately. 
+	</clue>
+	<clue visibility="shared">
+[Target,1], [Target,2], [Target,3], [Target,4]  and [Target,5] are all potential targets. The [Target,1] in Capital City are particularly vulnerable. 
+	</clue>
+	<clue visibility="shared">
+The heist will be on a weekday. Historically, heists have occurred most often on [Day,1]s.  
+	</clue>
+	<clue visibility="private" type="Culprit" id="1">
+[Culprit,1] has been infiltrated by an undercover officer. They are not involved. 
+	</clue>
+	<clue visibility="private" type="Culprit" id="2">
+All members of the [Culprit,2] organization are in police custody, and could not be involved.  
+	</clue>
+	<clue visibility="private" type="Culprit" id="3">
+Members of [Culprit,1] and [Culprit,3] have been seen on the streets near potential targets.
+	</clue>
+	<clue visibility="private" type="Culprit" id="4">
+[Culprit,3] and [Culprit,4] have inside contacts who could assist in heists. 
+	</clue>
+	<clue visibility="private" type="Culprit" id="5">
+[Culprit,4] and [Culprit,5] are not large enough to coordinate a heist of this size.
+	</clue>
+	<clue visibility="private" type="Target" id="1">
+Word of a possible heist has leaked and security has been increased at [Target,2] and [Target,3] in Capital City. They are not likely targets. 
+	</clue>
+	<clue visibility="private" type="Target" id="2">
+[Target,1] and [Target,4] have especially valuable holdings and are at high risk for a heist. 
+	</clue>
+	<clue visibility="private" type="Target" id="3">
+Copies of keys for [Target,4] and [Target,5] have recently gone missing. These keys could be used in a heist. 
+	</clue>
+	<clue visibility="private" type="Target" id="4">
+Inside informants indicate that [Target,5] are not at risk. 
+	</clue>
+	<clue visibility="private" type="Target" id="5">
+Art at [Target,1] is guarded by motion sensors; it would be difficult to get anything off the premises. 
+	</clue>
+	<clue visibility="private" type="Day" id="1">
+Heists are most likely on days when target locations have few visitors. 
+	</clue>
+	<clue visibility="private" type="Day" id="2">
+Very few people visit the target locations on [Day,1]s and [Day,2]s. 
+	</clue>
+	<clue visibility="private" type="Day" id="3">
+Police informants indicate that the heist will not occur on a [Day,1] or [Day,3]. 
+	</clue>
+	<clue visibility="private" type="Day" id="4">
+Security is enhanced on [Day,4]s. The heist will not occur on a [Day,4]. 
+	</clue>
+	<clue visibility="private" type="Day" id="5">
+Intelligence suggests the heist is most likely to occur on a [Day,2] and least likely on a [Day,5].  
+	</clue>
+	<option type="Culprit" id="1" answer="false">
+	Lion
+	</option>
+	<option type="Culprit" id="2" answer="false">
+	Cobra
+	</option>
+	<option type="Culprit" id="3" answer="true">
+	Falcon
+	</option>
+	<option type="Culprit" id="4" answer="false">
+	Shark
+	</option>
+	<option type="Culprit" id="5" answer="false">
+	Wolf
+	</option>
+	<option type="Target" id="1" answer="false">
+	Museums
+	</option>
+	<option type="Target" id="2" answer="false">
+	Galleries
+	</option>
+	<option type="Target" id="3" answer="false">
+	Art Studios
+	</option>
+	<option type="Target" id="4" answer="true">
+	Bank Vaults
+	</option>
+	<option type="Target" id="5" answer="false">
+	Private Collections
+	</option>
+	<option type="Day" id="1" answer="false">
+	Monday
+	</option>
+	<option type="Day" id="2" answer="true">
+	Tuesday
+	</option>
+	<option type="Day" id="3" answer="false">
+	Wednesday
+	</option>
+	<option type="Day" id="4" answer="false">
+	Thursday
+	</option>
+	<option type="Day" id="5" answer="false">
+	Friday
+	</option>
+</scenario>
