@@ -2,9 +2,8 @@
 	<title>
 	Finding the Terrorists
 	</title>
-	<instructions>
-HP_Instructions_v1
-	</instructions>
+	<memo>
+	</memo>
 	<clue visibility="shared">
 The [Culprit,1], [Culprit,2], [Culprit,3], [Culprit,4] and [Culprit,5] organizations may be planning attacks. [Culprit,4] has been unusually active lately.
 	</clue>

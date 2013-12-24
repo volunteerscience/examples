@@ -132,7 +132,7 @@
 						<table border="0">
 							<tr>
 								<td width="480" id="pubcontainer"></td>
-								<td width="20" id="adjustableNotesWidth"></td>
+								<td id="adjustableNotesWidth"></td>
 								<td width="300" id="hpnotes">
 									<table border="0" id="notetable">
 										<tr>
@@ -233,6 +233,9 @@
 				
 			</div>
 </table>
+<div id="dialog-confirm" title="Quit Experiment">
+<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Are you sure that you want to quit?</p>
+</div>
 
 <script language="JavaScript" type="text/javascript">  
 
@@ -240,9 +243,11 @@ var privateOrder;
 var InstructionsTimer 
 var Step1Timer;
 var Step2Timer;
+var ReviewStep2Timer;
 var timeoutInst;
 var timeoutStep1;
 var timeoutStep2;
+var timeoutReviewStep2;
 var EndGameTimer;
 var NextRoundTimer;
 var selectedUser=0;
@@ -265,19 +270,50 @@ var condition;
 var currentDiscRound;
 var publicInfo;
 var privateInfo;
-var publicImage;
 var readyCount;
 var myanswer;
 var tabTemplate;
 var tabs;
 var circleColors;
 var gameInfo;
+var reviewInfo;
 var draggableInfo;
 var sharedMessage;
 var iControlBots = false;
 var botSchedule;
 var numOfBotSchedule;
 var numOfWaitingSchedule;
+var reviewStepActive;
+var chatAmount;
+var myAccuracy;
+var botChatRate;
+var botInformationNovelty;
+var botLeadership;
+var botReciprocity;
+
+ $(function() {
+	$( "#dialog-confirm" ).dialog({
+	resizable: false,
+	height:140,
+	modal: true,
+	autoOpen: false,
+	closeOnEscape: false,
+	buttons: {
+		"Quit": function() {
+			$( this ).dialog( "close" );
+			try {
+				clearInterval(pingIntervalId);
+				quit();
+				var myurl = "http://"+window.location.host+"/stop_test";
+				window.location = myurl;
+			} catch (err) {} 
+		},
+		Cancel: function() {
+			$( this ).dialog( "close" );
+		}
+	}
+	});
+});
 
 function initialize()
 {
@@ -291,11 +327,11 @@ function initialize()
 	$('#notearea').html("");
 	$("#hpnotesvoting").hide();
 	$("#ttl").hide();
-	$('#pubinfo').html("<div id='desc' class='accordion'></div><div id='step1' class='accordion'></div>");
 	document.getElementById("timetext").innerHTML="You have "+variables['Step1Timer']+" seconds before proceeding at next step.";
 	this.InstructionsTimer=parseInt(variables['InstructionsTimer']+"")+1; 
 	this.Step1Timer=parseInt(variables['Step1Timer']+"")+1; 
 	this.Step2Timer=parseInt(variables['Step2Timer']+"")+1;
+	this.ReviewStep2Timer=parseInt(variables['Step2ReviewTimer'])+1;
 	this.EndGameTimer=parseInt(variables['end_game_timer']+"")+1;
 	this.NextRoundTimer=parseInt(variables['round_interval_timer']+"")+1;
 	parseScenarioXML();
@@ -303,6 +339,12 @@ function initialize()
 	this.numOfBotSchedule=0;
 	this.numOfWaitingSchedule=0;
 	this.endGameResultsArr=new Array();
+	this.reviewStepActive = false;	
+	$(".gameid a").removeAttr("href");
+	this.chatAmount=new Array();
+	for(var g=1; g<=parseInt(variables["bot_count"]); g++)
+		this.chatAmount.push(-1);
+	this.myAccuracy=0;
 }
 
 function arraySize(obj) {
@@ -321,6 +363,12 @@ function preprocess(str)
 			str=str.substring(0, str.indexOf('['))+this.step3Options[str.substring(str.indexOf('[')+1, str.indexOf(']'))][0]+str.substring(str.indexOf(']',str.indexOf('[')+1)+1, str.length);
 	}
 	return str;
+}
+
+function stopPinging()
+{
+	$( "#dialog-confirm" ).dialog( "open" );
+	//alert($(".gameid a").attr('href','http://example.com'););
 }
 
 function parseScenarioXML()
@@ -419,6 +467,28 @@ function parseScenarioXML()
 		for (key in this.clueType) 
 			optionsOrder+=("<setup type=\"shuffledOptions\" name=\""+key+"\">"+shuffle(this.shuffledOptions[key])+"</setup>");
 		this.privateOrder=optionsOrder+"<setup type=\"condition\">"+this.privateOrder;
+		
+		this.botChatRate = variables['bot_chat_rate'];
+		this.botInformationNovelty = variables['bot_information_novelty'];
+		this.botLeadership = variables['bot_leadership'];
+		this.botReciprocity = variables['bot_reciprocity'];
+		for(var i =0; i < variables['bot_randomized_vars'].split(",").length; i++)
+		{
+			if($.trim(variables['bot_randomized_vars'].split(",")[i])=="bot_reciprocity")
+				this.botReciprocity = Math.floor(Math.random()*101);
+			if($.trim(variables['bot_randomized_vars'].split(",")[i])=="bot_leadership")
+				this.botLeadership = Math.floor(Math.random()*2+1);
+			if($.trim(variables['bot_randomized_vars'].split(",")[i])=="bot_information_novelty")
+				this.botInformationNovelty = (Math.floor(Math.random()*3+1)==3)?"3":(Math.floor(Math.random()*2+1)+"-"+Math.floor(Math.random()*101));
+			if($.trim(variables['bot_randomized_vars'].split(",")[i])=="bot_chat_rate")
+				this.botChatRate = (Math.floor(Math.random()*2+1)==1)?"1,"+(Math.floor(Math.random()*56+5)):"2,"+(Math.floor(Math.random()*26+5))+"-"+(Math.floor(Math.random()*30+31));
+		}
+		this.privateOrder="<setup type=\"botCount\">"+variables['bot_count']+"</setup>"+this.privateOrder;
+		this.privateOrder="<setup type=\"botInformationNovelty\">"+this.botInformationNovelty+"</setup>"+this.privateOrder;
+		this.privateOrder="<setup type=\"botChatRate\">"+this.botChatRate+"</setup>"+this.privateOrder;
+		this.privateOrder="<setup type=\"botLeadership\">"+this.botLeadership+"</setup>"+this.privateOrder;
+		this.privateOrder="<setup type=\"botReciprocity\">"+this.botReciprocity+"</setup>"+this.privateOrder;
+		this.privateOrder="<setup type=\"botRandomizedVars\">"+variables['bot_randomized_vars']+"</setup>"+this.privateOrder;
 		submit(this.privateOrder);
 	}
 }
@@ -641,6 +711,7 @@ function setShuffledOptions()
 					var larray=new Array();
 					larray.push($.trim(xmlDoc.getElementsByTagName("option")[i].childNodes[0].nodeValue));
 					larray.push(0);
+					larray.push(-1);
 					//alert($.trim(xmlDoc.getElementsByTagName("option")[i].attributes.getNamedItem("type").nodeValue)+","+this.shuffledOptions[key][j]+" = "+larray)
 					this.step3Options[$.trim(xmlDoc.getElementsByTagName("option")[i].attributes.getNamedItem("type").nodeValue)+","+this.shuffledOptions[key][j]]=larray;
 				}
@@ -649,13 +720,10 @@ function setShuffledOptions()
 	}
 	
 	this.publicInfo=new Array();
-	this.publicImage=new Array();
 	for(var j=0; j<xmlDoc.getElementsByTagName("clue").length; j++)
 	{
 		if($.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("visibility").nodeValue)=="shared")
 			this.publicInfo.push(preprocess($.trim(xmlDoc.getElementsByTagName("clue")[j].childNodes[0].nodeValue)));
-		if(xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[j]!=null&&xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0]!=undefined)
-			this.publicImage.push(getFile($.trim(xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0].childNodes[0].nodeValue)));	
 	}
 }
 
@@ -664,28 +732,18 @@ function setPrivateInfo(myident)
 	setShuffledOptions();
 	setCondition();
 	
-	var videoName=$.trim(xmlDoc.getElementsByTagName("instructions")[0].childNodes[0].nodeValue);
-	var mp4str = '<source src="'+getFile(videoName+".mp4")+'" type="video/mp4">';
-	if (jQuery.browser.msie)
-	 mp4str = '<source src="'+getFile(videoName+"_ie.mp4")+'" type="video/mp4">';
-	$('#VideoHere').append('<video id="HP_video" width="640" height="360" controls autoplay>'+mp4str+'<source src="'+getFile(videoName+".ogg")+'" type="video/ogg">'+'<source src="'+getFile(videoName+".webm")+'" type="video/webm">'+'Your browser does not support video.'+'</video>');
+	$('#VideoHere').html("<iframe src=\"//player.vimeo.com/video/81042348?autoplay=1\" id='vimeoVideo' width=\"640\" height=\"401\" frameborder=\"0\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>");
 	$("#video_instructions").show();  
+	
+	$('#pubinfo').html("<div id='desc' class='accordion'></div><div id='step1' class='accordion'></div>");
 	
 	this.privateOrder=this.privateOrder.substring(this.privateOrder.indexOf("</setup>", this.privateOrder.indexOf("<setup type=\"condition\">"))+8);
 
 	var tarr=this.privateOrder.split("</setup>");
-	
-	var publicInfos="";
+
 	this.draggableInfo="<div class=\"ui-widget ui-helper-clearfix\"><ul id=\"gallery\" class=\"gallery ui-helper-reset ui-helper-clearfix\">";
-	for(var i =0; i < this.publicInfo.length; i++)
-	{
-		publicInfos+=("<li>"+this.publicInfo[i]+"</li>");
-		draggableInfo+=("<li class=\"ui-widget-content ui-corner-tr\">"+this.publicInfo[i]+"</li>");
-	}
-	
-	this.gameInfo="<pre id=\"descpre\"><ul>"+publicInfos;
-	for(var i=0; i<this.publicImage.length; i++)
-		this.gameInfo+="<img src=\""+this.publicImage[i]+"\" alt=\"private info picture\">";
+	this.gameInfo="<pre id=\"descpre\">"+$.trim(xmlDoc.getElementsByTagName("memo")[0].childNodes[0].nodeValue)+"</br></br><ul>";
+	this.reviewInfo="<pre id=\"descpre\">It's almost time to vote on the ";
 
 	this.privateInfo = new Array();
 	for(var p=0;p<tarr.length;p++)
@@ -697,18 +755,14 @@ function setPrivateInfo(myident)
 			if(tarr2[m].length==0) continue;
 
 			var pi1="";
-			var img1="";
 			
 			for(var j=0; j<xmlDoc.getElementsByTagName("clue").length; j++)
 			{
 				if($.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("visibility").nodeValue)=="private"&&tarr2[m].split(",")[0]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("type").nodeValue))
 				{
-					//alert(tarr2[m].split(",")[0]+"=="+$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("type").nodeValue)+" sonuc: "+(tarr2[m].split(",")[0]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("type").nodeValue))+" ve "+tarr2[m].split(",")[1]+"=="+$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("id").nodeValue)+" sonuc: "+(tarr2[m].split(",")[1]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("id").nodeValue)))
 					if(tarr2[m].split(",")[1]==$.trim(xmlDoc.getElementsByTagName("clue")[j].attributes.getNamedItem("id").nodeValue))
 					{
-						pi1=preprocess($.trim(xmlDoc.getElementsByTagName("clue")[j].childNodes[0].nodeValue));
-						if(xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0]!=undefined&&xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0].childNodes[0]!=null)
-							img1=$.trim(xmlDoc.getElementsByTagName("clue")[j].getElementsByTagName("picture")[0].childNodes[0].nodeValue);
+						pi1=preprocess($.trim(xmlDoc.getElementsByTagName("clue")[j].childNodes[0].nodeValue));						
 						break;
 					}
 				}
@@ -716,18 +770,86 @@ function setPrivateInfo(myident)
 			if(this.privateInfo[p]==undefined||this.privateInfo[p]==null||this.privateInfo[p].length==0)
 				this.privateInfo[p]=new Array();
 			this.privateInfo[p].push(pi1);
-			if(p+1==myident)
-			{
-				this.gameInfo+="<li>"+pi1+"</li>";
-				this.draggableInfo+=("<li class=\"ui-widget-content ui-corner-tr\">"+pi1+"</li>");
-					
-				if(img1!="" && img1!=null && img1 != undefined)
-					this.gameInfo+="<img src=\""+img1+"\" alt=\"private info picture\">";
-			}
 		}
 	}
-	this.gameInfo+="</ul></pre>";
+	
+	var infoOrder=new Array();
+	var curPublicInfo=0;
+	var curPrivateInfo=0;
+	var infoText="";
+	for(var i=0; i<this.publicInfo.length+this.privateInfo[myident-1].length; i++)
+	{
+		var fnd;
+		var numb=-1;
+		do{
+			fnd=false;
+			numb = Math.floor(Math.random()*(this.publicInfo.length+this.privateInfo[myident-1].length))+1;
+			for(var j=0; j<infoOrder.length; j++)
+			{
+				if(infoOrder[j]==numb)
+					fnd=true;
+			}
+		}while(fnd==true);
+		infoOrder.push(numb);
+		if(numb>this.publicInfo.length)
+		{
+			this.gameInfo+=("<li>"+this.privateInfo[myident-1][curPrivateInfo]+"</li>");
+			this.draggableInfo+=("<li class=\"ui-widget-content ui-corner-tr\">"+this.privateInfo[myident-1][curPrivateInfo]+"</li>");
+			infoText+=("<li>"+this.privateInfo[myident-1][curPrivateInfo]+"</li>");
+			curPrivateInfo++;
+		}
+		else
+		{
+			this.gameInfo+=("<li>"+this.publicInfo[curPublicInfo]+"</li>");
+			this.draggableInfo+=("<li class=\"ui-widget-content ui-corner-tr\">"+this.publicInfo[curPublicInfo]+"</li>");
+			infoText+=("<li>"+this.publicInfo[curPublicInfo]+"</li>");
+			curPublicInfo++;
+		}
+	}
+	this.gameInfo+="</ul></br>Work with your team to identify the ";
+	this.infoText+="</ul>";
 	this.draggableInfo+="</ul></div>";
+	var arrkey;
+	var size=0;
+	var curSize=0;
+	for (arrkey in this.clueType)
+		size++;
+	for (arrkey in this.clueType)
+	{
+		if(curSize<=size-3)
+		{
+			this.gameInfo+=arrkey.toLowerCase()+",";
+			this.reviewInfo+=arrkey.toLowerCase()+",";
+			curSize++;
+		}
+		else if(curSize==size-2)
+		{
+			this.gameInfo+=arrkey.toLowerCase()+" and ";
+			this.reviewInfo+=arrkey.toLowerCase()+" and ";
+			curSize++;
+		}
+		else if(curSize==size-1)
+		{
+			this.gameInfo+=arrkey.toLowerCase()+" of the heist. Good Luck!</pre>"
+			if(Math.round(parseInt(variables['Step2ReviewTimer'])/60) == 1)
+			{
+				if((parseInt(variables['Step2ReviewTimer'])%60)!=0)
+					this.reviewInfo+=" of the heist. But first, you have "+Math.round((parseInt(variables['Step2ReviewTimer'])/60))+" minute and "+((parseInt(variables['Step2ReviewTimer'])%60))+" seconds to chat with your teammates. Your goal is to review everything you have learned. Review your clues, your notes, and the clues your teammates have shared with you now.</br></br><ul>"+infoText;
+				else
+					this.reviewInfo+=" of the heist. But first, you have "+Math.round((parseInt(variables['Step2ReviewTimer'])/60))+" minute to review everything you have learned. Review your clues, your notes, and the clues your teammates have shared with you now.</br></br><ul>"+infoText;
+			}
+			else if(Math.round(parseInt(variables['Step2ReviewTimer'])/60) >= 2)
+			{
+				if((parseInt(variables['Step2ReviewTimer'])%60)!=0)
+					this.reviewInfo+=" of the heist. But first, you have "+Math.round((parseInt(variables['Step2ReviewTimer'])/60))+" minutes and "+((parseInt(variables['Step2ReviewTimer'])%60))+" seconds to review everything you have learned. Review your clues, your notes, and the clues your teammates have shared with you now.</br></br><ul>"+infoText;
+				else
+					this.reviewInfo+=" of the heist. But first, you have "+Math.round((parseInt(variables['Step2ReviewTimer'])/60))+" minutes to review everything you have learned. Review your clues, your notes, and the clues your teammates have shared with you now.</br></br><ul>"+infoText;
+			}
+			else
+				this.reviewInfo+=" of the heist. But first, you have "+parseInt(variables['Step2ReviewTimer'])+" seconds to review everything you have learned. Review your clues, your notes, and the clues your teammates have shared with you now.</br></br><ul>"+infoText;
+			curSize++;
+		}		
+	}
 	$("#desc").html(this.gameInfo);
 	countDownInstructions();
 }
@@ -1007,7 +1129,7 @@ function newMove(participant, index) {
 		if(this.readyCount==numPlayers)
 		{
 			clearTimeout(this.timeoutInst);
-			$("#HP_video").get(0).pause();
+			$('iframe#vimeoVideo').attr('src','');
 			countDownStep1();
 			$("#helpinfo").show();
 			$("#helpinfotable").css("width", 800);
@@ -1020,7 +1142,7 @@ function newMove(participant, index) {
 		}
 		return;
 	}
-	if(parseInt(variables["bot_behavior"])==2&&(val.indexOf("<botSchedule>")>=0||val.indexOf("Waiting for schedule")>=0))
+	if((val.indexOf("<botSchedule>")>=0||val.indexOf("Waiting for schedule")>=0))
 	{
 		this.numOfWaitingSchedule++;
 		if(val.indexOf("<botSchedule>")>=0)
@@ -1044,7 +1166,11 @@ function newMove(participant, index) {
 		{
 			if(tarr[p].length==0)continue;
 			if(parseInt(variables['feedback_type'])==1)
+			{
 				this.step3Options[tarr[p].substring(tarr[p].indexOf("name=\"")+6, tarr[p].indexOf("\">", tarr[p].indexOf("name=\"")+6))+","+tarr[p].substring(tarr[p].indexOf(">")+1)][1]++;
+				if(participant==myid)
+					this.step3Options[tarr[p].substring(tarr[p].indexOf("name=\"")+6, tarr[p].indexOf("\">", tarr[p].indexOf("name=\"")+6))+","+tarr[p].substring(tarr[p].indexOf(">")+1)][2]=-2;
+			}
 			if(parseInt(variables['feedback_type'])==2&&participant==myid)
 				this.step3Options[tarr[p].substring(tarr[p].indexOf("name=\"")+6, tarr[p].indexOf("\">", tarr[p].indexOf("name=\"")+6))+","+tarr[p].substring(tarr[p].indexOf(">")+1)][1]++;
 		}
@@ -1068,6 +1194,8 @@ function newMove(participant, index) {
 						var values = new Array();
 						var correctCount=0;
 						var wrongCount=0;
+						var myCorrectCount=0;
+						var myWrongCount=0;
 						
 						for(var y=1; y<=this.clueType[arrkey]; y++)
 						{
@@ -1078,9 +1206,17 @@ function newMove(participant, index) {
 									if($.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("type").nodeValue)==arrkey&&y==$.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("id").nodeValue))
 									{
 										if($.trim(xmlDoc.getElementsByTagName("option")[j].attributes.getNamedItem("answer").nodeValue)=="true")
+										{
 											correctCount+=step3Options[arrkey+","+y][1];
+											if(step3Options[arrkey+","+y][2]==-2)
+												myCorrectCount++;
+										}
 										else
+										{
 											wrongCount+=step3Options[arrkey+","+y][1];
+											if(step3Options[arrkey+","+y][2]==-2)
+												myWrongCount++;
+										}
 									}
 								}
 							}
@@ -1090,6 +1226,12 @@ function newMove(participant, index) {
 						values.push(correctCount);
 						labels.push("%%.%% - Wrong");
 						values.push(wrongCount);
+						
+						if(myWrongCount==0)
+							writeAward("All Accurate");
+						if(myCorrectCount==0)
+							writeAward("All Inaccurate");
+						this.myAccuracy+=(myCorrectCount*100)/(myCorrectCount+myWrongCount);
 						
 						if(values[0]==0)
 						{
@@ -1151,6 +1293,13 @@ function newMove(participant, index) {
 							}
 						}
 					}	
+					
+					if(wrongCount==0)
+						writeAward("All Accurate");
+					if(correctCount==0)
+						writeAward("All Inaccurate");
+					this.myAccuracy+=(correctCount*100)/(correctCount+wrongCount);
+					
 					var labels = new Array();
 					var values = new Array();
 					labels.push("%%.%% - Correct");
@@ -1203,6 +1352,10 @@ function newMove(participant, index) {
 			{
 				document.getElementById("submitStatus").innerHTML="<p align='center'><font color=\"blue\">You will now be redirected to end game survey...</font></p>";
 				countDownEndGame();
+				enableSubmitFeedback();
+				$('#submit_feedback_btn').click(function() { showFeedbackForm(); });
+				enablePlayAgain();
+				writeScore("Accuracy Percentage",parseFloat(this.myAccuracy/parseFloat(variables['total_rounds'])));
 			}
 			$("#pbar").show();
 			setRound(3+this.currentDiscRound+this.numOfBotSchedule);
@@ -1212,6 +1365,10 @@ function newMove(participant, index) {
 	if(currentRound==1)
 	{
 		this.privateOrder=val;
+		this.botReciprocity = val.substring(val.indexOf("<setup type=\"botReciprocity\">")+29,val.indexOf("</setup>",val.indexOf("<setup type=\"botReciprocity\">")+29));
+		this.botLeadership = val.substring(val.indexOf("<setup type=\"botLeadership\">")+28,val.indexOf("</setup>",val.indexOf("<setup type=\"botLeadership\">")+28));
+		this.botInformationNovelty = val.substring(val.indexOf("<setup type=\"botInformationNovelty\">")+36,val.indexOf("</setup>",val.indexOf("<setup type=\"botInformationNovelty\">")+36));
+		this.botChatRate = val.substring(val.indexOf("<setup type=\"botChatRate\">")+26,val.indexOf("</setup>",val.indexOf("<setup type=\"botChatRate\">")+26));
 		setPrivateInfo(myid);
 		setRound(2);
 	}
@@ -1291,6 +1448,7 @@ function setSchedule()
 	if(parseInt(variables['conversation_type'])==1)
 	{
 		$("#pubcontainer").html(this.gameInfo);
+		$("#adjustableNotesWidth").css({ 'width': '20px'});
 		loadStep2();
 	}
 	if(parseInt(variables['conversation_type'])==2)
@@ -1326,40 +1484,24 @@ function setSchedule()
 		});
 		$("#adjustableNotesWidth").css({ 'width': '0px'});
 		
-		if(parseInt(variables["bot_behavior"])==2 && myid==1)
+		if(myid==1)
 		{
 			this.botSchedule=new Array();
 			for(var g=1; g<=parseInt(variables["bot_count"]); g++)
 			{
-				var chatAmount = parseInt(variables['chat_amount']);
 				this.botSchedule[g-1] = new Array();
-				for(var h=1; h<=chatAmount; h++)
+				var curChatTime=0;
+				var h=1;
+				while(curChatTime<parseInt(variables['Step2Timer']))
 				{
-					this.botSchedule[g-1].push("[\""+(Math.floor(Math.random()*parseInt(variables['Step2Timer']))+1)+"\"");
+					if(this.botChatRate.indexOf("-")>=0)
+						curChatTime=curChatTime+=Math.floor(Math.random()*(parseInt(this.botChatRate.substring(4))-parseInt(this.botChatRate.substring(2,3))+1))+parseInt(this.botChatRate.substring(2,3));
+					else
+						curChatTime=parseInt(this.botChatRate.substring(2))*h;
+					this.botSchedule[g-1].push("[\""+curChatTime+"\"");
 					this.botSchedule[g-1].push("\""+(numPlayers+g)+"\"");
-					this.botSchedule[g-1].push("\""+(Math.floor(Math.random()*(numPlayers+g))+1)+"\"");
-					var fnd=false;
-					var botMsg="";
-					do{	
-						if(variables['bot_type']==1)//random private
-							botMsg=this.privateInfo[numPlayers+g-1][Math.floor(Math.random()*this.privateInfo[numPlayers+g-1].length)];
-						if(variables['bot_type']==2)//random public
-							botMsg=this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)];
-						if(variables['bot_type']==3)//totally random
-						{
-							if(Math.floor(Math.random()*2)+1==1) // private
-								botMsg=this.privateInfo[numPlayers+g-1][Math.floor(Math.random()*this.privateInfo[numPlayers+g-1].length)];
-							else
-								botMsg=this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)];
-						}
-						fnd=false;
-						for(var hh=3; hh<this.botSchedule[g-1].length; hh+=4)
-						{
-							if(this.botSchedule[g-1][hh]==("\""+botMsg+"\"]"))
-								fnd=true;
-						}
-					}while(fnd);
-					this.botSchedule[g-1].push("\""+botMsg+"\"]");
+					this.botSchedule[g-1].push("\""+(((Math.floor(Math.random()*(numPlayers+parseInt(variables["bot_count"])))+1)==(numPlayers+g))?(numPlayers+g-1):(Math.floor(Math.random()*(numPlayers+parseInt(variables["bot_count"])))+1))+"\"]");
+					h++;
 				}
 				this.botSchedule[g-1][0]="["+this.botSchedule[g-1][0];
 				this.botSchedule[g-1][this.botSchedule[g-1].length-1]=this.botSchedule[g-1][this.botSchedule[g-1].length-1]+"]";
@@ -1370,11 +1512,8 @@ function setSchedule()
 			
 			submit("<botSchedule>["+this.botSchedule+"]</botSchedule>")
 		}
-		if(parseInt(variables["bot_behavior"])==2 && myid!=1)
+		if(myid!=1)
 			submit("Waiting for schedule");
-			
-		if(parseInt(variables["bot_behavior"])==1)
-			loadStep2();
 	}
 }
 
@@ -1465,7 +1604,17 @@ function countDownNextRound(){
 				step3Options[arrkey+","+h][1]=0;
 		setSchedule();
 		if(parseInt(variables['chatting_with_everyone'])==1)
+		{
 			setEveryoneTab();
+			if(getCondition()==1)
+			{			
+				setUser(0);
+				removeActives();
+				$('#0').addClass('active');
+			}
+			else
+				highlightCircle(0);
+		}
 		else
 			$("#chattable").html("<tr><td width=\"455\" height=\"156\"></td></tr><tr><td width=\"455\" height=\"171\"><div style=\"text-align: center; vertical-align:middle; width: 100%; height: 100%; font-family:'Verdana'; font-size: 12pt;\">Please click on a user to start conversation...</div></td></tr>");
 	 }else{  
@@ -1476,52 +1625,106 @@ function countDownNextRound(){
 }  
 
 function countDownStep2(){ 
-	for(var g=1; g<=parseInt(variables["bot_count"])&&parseInt(variables["bot_behavior"])==2; g++)
+	for(var g=1; g<=parseInt(variables["bot_count"]); g++)
 	{
-		for(j=0; j<parseInt(variables["chat_amount"]); j++) 
+		for(j=0; j<this.botSchedule[g-1].length; j++) 
 		{
-			if(this.Step2Timer==parseInt(this.botSchedule[g-1][j][0]))
+			if(this.Step2Timer==parseInt(this.botSchedule[g-1][j][0])&&(parseInt(this.botLeadership)==2||(parseInt(this.botLeadership)==1&&$('#trash'+this.botSchedule[g-1][j][1]).html()!=null&&$('#trash'+this.botSchedule[g-1][j][1]).html().indexOf('messagereceiver')>=0)))
 			{
 				if(myid==parseInt(this.botSchedule[g-1][j][2]))
 				{
+				//	if(getCondition()==1&&$("#chattable").html().indexOf("#tabs-")==-1)
+				//	{
+				//		setUser(parseInt(this.botSchedule[g-1][j][1]));
+				//		removeActives();
+				//		$('#'+this.botSchedule[g-1][j][1]).addClass('active');
+				//	}
+				
 					if($("#chattable").html().indexOf("tabs-"+this.botSchedule[g-1][j][1])==-1)
 						addTab("User "+(parseInt(this.botSchedule[g-1][j][1])), parseInt(this.botSchedule[g-1][j][1]));	
+					//else
+					//	this.tabs.tabs("option", "active", $('#tabs-'+this.botSchedule[g-1][j][1]).tabIndex());
+						
+					if(parseInt(this.tabs.find( ".ui-tabs-active" ).attr( "aria-controls" ).substring(5))==parseInt(this.botSchedule[g-1][j][1]))
+						$("#tabli"+parseInt(this.botSchedule[g-1][j][1])).css("background-color", "#FFFFFF");
 					else
-						this.tabs.tabs("option", "active", $('#tabs-'+this.botSchedule[g-1][j][1]).tabIndex());
+						$("#tabli"+parseInt(this.botSchedule[g-1][j][1])).css("background-color", "#DBA901");
 					
 					if($('#trash'+this.botSchedule[g-1][j][1]).html()=='Drag and drop here the information you want to send...')
 						$('#trash'+this.botSchedule[g-1][j][1]).html('');
-					if(getCondition()==1)
-					{
-						setUser(parseInt(this.botSchedule[g-1][j][1]));
-						removeActives();
-						$('#'+this.botSchedule[g-1][j][1]).addClass('active');
-					}
-					$('#trash'+this.botSchedule[g-1][j][1]).append("<div class='messagereceiver'>User "+(this.botSchedule[g-1][j][1])+":</div><div class='receivedmessage'>&nbsp;"+this.botSchedule[g-1][j][3]+"</div>");
+					
+					var fnd=false;
+					var botMsg="";
+					var numTries=0;
+					do{	
+						if(parseInt((this.botInformationNovelty+"").substring(0,1))==1)//random private
+							botMsg=(Math.floor(Math.random()*101)<=parseInt((this.botInformationNovelty+"").substring(2)))?this.privateInfo[numPlayers+g-1][Math.floor(Math.random()*this.privateInfo[numPlayers+g-1].length)]:this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)];
+						if(parseInt((this.botInformationNovelty+"").substring(0,1))==2)//random public
+							botMsg=(Math.floor(Math.random()*101)<=parseInt((this.botInformationNovelty+"").substring(2)))?this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]:this.privateInfo[numPlayers+g-1][Math.floor(Math.random()*this.privateInfo[numPlayers+g-1].length)];
+						if(parseInt((this.botInformationNovelty+"").substring(0,1))==3)//totally random
+						{
+							if(Math.floor(Math.random()*2)+1==1) // private
+								botMsg=this.privateInfo[numPlayers+g-1][Math.floor(Math.random()*this.privateInfo[numPlayers+g-1].length)];
+							else
+								botMsg=this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)];
+						}
+						fnd=false;
+						if($('#trash'+this.botSchedule[g-1][j][1]).html()!=null&&$('#trash'+this.botSchedule[g-1][j][1]).html().indexOf(botMsg)>=0)
+							fnd=true;
+						if(numTries<100)
+							numTries++;
+						else
+							fnd = false;
+					}while(fnd);
+					
+					$('#trash'+this.botSchedule[g-1][j][1]).append("<div class='messagereceiver'>User "+(this.botSchedule[g-1][j][1])+":</div><div class='receivedmessage'>&nbsp;"+botMsg+"</div>");
 					jQuery("div#trash"+this.botSchedule[g-1][j][1]).scrollTop(jQuery("div#trash"+this.botSchedule[g-1][j][1])[0].scrollHeight);
 				}
-				if(parseInt(variables["bot_behavior"])==2)
+				if(getCondition()!=1)
 				{
-					if(getCondition()!=1)
-					{
-						var path = new Object();
-						path.line = this.r.path("M "+xVals[parseInt(this.botSchedule[g-1][j][1])-1]+" "+this.yVals[parseInt(this.botSchedule[g-1][j][1])-1]+" l "+(this.xVals[parseInt(this.botSchedule[g-1][j][2])-1]-this.xVals[parseInt(this.botSchedule[g-1][j][1])-1])+" "+(this.yVals[parseInt(this.botSchedule[g-1][j][2])-1]-this.yVals[parseInt(this.botSchedule[g-1][j][1])-1])+" z");
-						path.line.attr({stroke: '#3b4449','stroke-width': 3});
-						path.line.toBack();
-						if(myid==parseInt(this.botSchedule[g-1][j][2]))
-							highlightCircle(parseInt(this.botSchedule[g-1][j][1]));
-					}
+					var path = new Object();
+					path.line = this.r.path("M "+xVals[parseInt(this.botSchedule[g-1][j][1])-1]+" "+this.yVals[parseInt(this.botSchedule[g-1][j][1])-1]+" l "+(this.xVals[parseInt(this.botSchedule[g-1][j][2])-1]-this.xVals[parseInt(this.botSchedule[g-1][j][1])-1])+" "+(this.yVals[parseInt(this.botSchedule[g-1][j][2])-1]-this.yVals[parseInt(this.botSchedule[g-1][j][1])-1])+" z");
+					path.line.attr({stroke: '#3b4449','stroke-width': 3});
+					path.line.toBack();
+					//if(myid==parseInt(this.botSchedule[g-1][j][2]))
+					//	highlightCircle(parseInt(this.botSchedule[g-1][j][1]));
 				}
 			}
 		}
 	}
 	 if (this.Step2Timer <=0){ 
 		clearTimeout(this.timeoutStep2);
-		loadStep3();
+		//loadStep3();
+		reviewStep2();
 	 }else{  
 		this.Step2Timer--;
 		document.getElementById("timer").innerHTML = this.Step2Timer;  
 		this.timeoutStep2=setTimeout("countDownStep2()", 1000);
+	 }  
+} 
+
+function reviewStep2()
+{
+	this.reviewStepActive=true;
+	$("#pubcontainer").html(this.reviewInfo);
+	document.getElementById("timetext").innerHTML="You have "+variables['Step2ReviewTimer']+" seconds to review the information from the chat and take notes before making your decision.";
+	document.getElementById("comch").innerHTML="You are not allowed to chat with others during the review.";
+	document.getElementById("stepgoal").innerHTML="";
+	$("#chat_send_button").hide();
+	$("#chat_input").hide();
+	$(".icon-pencil").hide();
+	countDownReviewStep2();
+	$("#adjustableNotesWidth").css({ 'width': '20px'});
+}
+
+function countDownReviewStep2(){ 
+	 if (this.ReviewStep2Timer <=0){ 
+		clearTimeout(this.timeoutReviewStep2);
+		loadStep3();
+	 }else{  
+		this.ReviewStep2Timer--;
+		document.getElementById("timer").innerHTML = this.ReviewStep2Timer;  
+		this.timeoutReviewStep2=setTimeout("countDownReviewStep2()", 1000);
 	 }  
 } 
 
@@ -1609,10 +1812,19 @@ function addTab(tabTitle, tabid) {
 					event.preventDefault();
 				}
 			});
+			if(this.reviewStepActive == true)
+			{
+				$("#chat_send_button").hide();
+				$("#chat_input").hide();
+				$(".icon-pencil").hide();
+			}
 		}
 		if(parseInt(variables['conversation_type'])==2)
 		{
-			$("#chattable").html("<tr><td width=\"455\" height=\"312\"><div id=\"tabs\"><ul><li id=\"tabli"+tabid+"\"><a href=\"#tabs-"+tabid+"\">"+tabTitle+"</a> <span class=\"ui-icon ui-icon-close\" role=\"presentation\">Remove Tab</span></li></ul><div id=\"tabs-"+tabid+"\"><div class=\"control-group\"><div class=\"controls\"> <div id=\"trash"+tabid+"\" class=\"ui-widget-content ui-state-default\" style=\"background-color:white; text-align:left; width: 100%; height: 279px; overflow: auto; font-family:'Verdana'; font-size: 11pt;\">Drag and drop here the information you want to send...</div></div></div></div></div></div></div></td></tr>");
+			if(this.reviewStepActive == true)
+				$("#chattable").html("<tr><td width=\"455\" height=\"312\"><div id=\"tabs\"><ul><li id=\"tabli"+tabid+"\"><a href=\"#tabs-"+tabid+"\">"+tabTitle+"</a> <span class=\"ui-icon ui-icon-close\" role=\"presentation\">Remove Tab</span></li></ul><div id=\"tabs-"+tabid+"\"><div class=\"control-group\"><div class=\"controls\"> <div id=\"trash"+tabid+"\" class=\"ui-widget-content ui-state-default\" style=\"background-color:white; text-align:left; width: 100%; height: 279px; overflow: auto; font-family:'Verdana'; font-size: 11pt;\"></div></div></div></div></div></div></div></td></tr>");
+			else
+				$("#chattable").html("<tr><td width=\"455\" height=\"312\"><div id=\"tabs\"><ul><li id=\"tabli"+tabid+"\"><a href=\"#tabs-"+tabid+"\">"+tabTitle+"</a> <span class=\"ui-icon ui-icon-close\" role=\"presentation\">Remove Tab</span></li></ul><div id=\"tabs-"+tabid+"\"><div class=\"control-group\"><div class=\"controls\"> <div id=\"trash"+tabid+"\" class=\"ui-widget-content ui-state-default\" style=\"background-color:white; text-align:left; width: 100%; height: 279px; overflow: auto; font-family:'Verdana'; font-size: 11pt;\">Drag and drop here the information you want to send...</div></div></div></div></div></div></div></td></tr>");
 			
 			$(function() {
 				var $trash = $( "#trash"+tabid );
@@ -1693,10 +1905,21 @@ function addTab(tabTitle, tabid) {
 		var li = $( this.tabTemplate.replace( /#\{tabli\}/g, "tabli"+tabid ).replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label ) );
 		this.tabs.find( ".ui-tabs-nav" ).append( li );
 		if(parseInt(variables['conversation_type'])==1)
+		{
 			this.tabs.append( "<div id='" + id + "'><div class=\"control-group\"><div class=\"controls\"> <div id=\"chat_conversation"+tabid+"\" style=\"background-color:white; text-align:left; width: 100%; height: 250px; overflow: auto; font-family:'Verdana'; font-size: 10pt;\"><div></div></div></div></div></div>" );
+			if(this.reviewStepActive == true)
+			{
+				$("#chat_send_button").hide();
+				$("#chat_input").hide();
+				$(".icon-pencil").hide();
+			}
+		}
 		if(parseInt(variables['conversation_type'])==2)
 		{
-			this.tabs.append( "<div id='" + id + "'><div class=\"control-group\"><div class=\"controls\"> <div id=\"trash"+tabid+"\" class=\"ui-widget-content ui-state-default\" style=\"background-color:white; text-align:left; width: 100%; height: 279px; overflow: auto; font-family:'Verdana'; font-size: 11pt;\">Drag and drop here the information you want to send...</div></div></div></div></div></div>" );
+			if(this.reviewStepActive == true)
+				this.tabs.append( "<div id='" + id + "'><div class=\"control-group\"><div class=\"controls\"> <div id=\"trash"+tabid+"\" class=\"ui-widget-content ui-state-default\" style=\"background-color:white; text-align:left; width: 100%; height: 279px; overflow: auto; font-family:'Verdana'; font-size: 11pt;\"></div></div></div></div></div></div>" );
+			else
+				this.tabs.append( "<div id='" + id + "'><div class=\"control-group\"><div class=\"controls\"> <div id=\"trash"+tabid+"\" class=\"ui-widget-content ui-state-default\" style=\"background-color:white; text-align:left; width: 100%; height: 279px; overflow: auto; font-family:'Verdana'; font-size: 11pt;\">Drag and drop here the information you want to send...</div></div></div></div></div></div>" );
 			$(function() {
 				var $trash = $( "#trash"+tabid );
 
@@ -1727,9 +1950,9 @@ function addTab(tabTitle, tabid) {
 			});
 		}
 		this.tabs.tabs( "refresh" );
-		this.tabs.tabs("option", "active", $('#tabs >ul >li').size()-1);
+		//this.tabs.tabs("option", "active", $('#tabs >ul >li').size()-1);
 	}
-	$('.ui-icon').css('background-image', 'url(' + getFile("ui-icons_222222_256x240.png") + ')');
+	//$('.ui-icon').css('background-image', 'url(' + getFile("ui-icons_222222_256x240.png") + ')');
 }
 
 function refreshTabs()
@@ -2797,6 +3020,8 @@ function dehighlightCircle(g)
 function setUser(nmb)
 {
 	selectedUser=nmb;
+//	if(getCondition()==1)
+//		this.tabs.tabs("option", "active", $('#tabs-'+nmb).tabIndex());
 }
 
 $.fn.tabIndex = function () {
@@ -2811,53 +3036,16 @@ function removeActives()
 			$("#"+g).removeClass("active");
 	}
 }
-       
-/*function curve(x, y, ax, ay, bx, by, zx, zy, color) 
-{
-	var path = [["M", x, y], ["C", ax, ay, bx, by, zx, zy]],
-		path2 = [["M", x, y], ["L", ax, ay], ["M", bx, by], ["L", zx, zy]],
-		curve = r.path(path).attr({stroke: '#3b4449','stroke-width': 3	, 'stroke-dasharray':'-'}),
-		controls = r.set(
-			r.circle(x, y, 0.1).attr({fill: "#9F2200", stroke: "none"}),
-			r.circle(ax, ay, 0.1).attr({fill: "#9F2200", stroke: "none"}),
-			r.circle(bx, by, 0.1).attr({fill: "#9F2200", stroke: "none"}),
-			r.circle(zx, zy, 0.1).attr({fill: "#9F2200", stroke: "none"})
-		);
-		curve.toBack();
-}*/
-  
-/*function drawLineIfMessageReceived()
-{
-	if(this.chatContent!=$("#chat_conversation").html())
-	{
-		for(var g=1; g<=numPlayers; g++)
-		{
-			if(g!=myid&&getName(g)==$("#chat_conversation").html().substring($("#chat_conversation").html().indexOf('>',$("#chat_conversation").html().lastIndexOf("<div color"))+1,$("#chat_conversation").html().lastIndexOf("</div><div>")-1))
-			{
-				var path = new Object();
-				path.line = this.r.path("M "+xVals[myid-1]+" "+this.yVals[myid-1]+" l "+(this.xVals[g-1]-this.xVals[myid-1])+" "+(this.yVals[g-1]-this.yVals[myid-1])+" z");
-				path.line.attr({stroke: '#3b4449','stroke-width': 3	, 'stroke-dasharray':'-'});
-				path.line.toBack();
-				//if(this.yVals[myid-1]<=this.yVals[g-1])
-				//	curve(xVals[myid-1], this.yVals[myid-1],xVals[myid-1]+20, this.yVals[myid-1]+(this.yVals[g-1]-this.yVals[myid-1])/2, this.xVals[g-1]+40, this.yVals[g-1]-(this.yVals[g-1]-this.yVals[myid-1])/2, this.xVals[g-1], this.yVals[g-1], "hsb(0, 0, 0)");
-				//else
-				//	curve(xVals[myid-1], this.yVals[myid-1],xVals[myid-1]+20, this.yVals[myid-1]-(this.yVals[g-1]-this.yVals[myid-1])/2, this.xVals[g-1]+40, this.yVals[g-1]+(this.yVals[g-1]-this.yVals[myid-1])/2, this.xVals[g-1], this.yVals[g-1], "hsb(0, 0, 0)"); 				
-			}
-		}
-	}
-	this.chatContent=$("#chat_conversation").html();
-	setTimeout("drawLineIfMessageReceived()", 1000);
-}*/
 
 function botBehav1()
 {
 	for(var n=1; n<=parseInt(variables["bot_count"]); n++)
 	{
-		if(variables['bot_type']==1)//random private
-			$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[numPlayers+n-1][Math.floor(Math.random()*this.privateInfo[numPlayers+n-1].length)]+"</div>");
-		if(variables['bot_type']==2)//random public
-			$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]+"</div>");
-		if(variables['bot_type']==3)//totally random
+		if(parseInt((this.botInformationNovelty+"").substring(0,1))==1)//random private
+			$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+((Math.floor(Math.random()*101)<=parseInt((this.botInformationNovelty+"").substring(2)))?this.privateInfo[numPlayers+n-1][Math.floor(Math.random()*this.privateInfo[numPlayers+n-1].length)]:this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)])+"</div>");
+		if(parseInt((this.botInformationNovelty+"").substring(0,1))==2)//random public
+			$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+((Math.floor(Math.random()*101)<=parseInt((this.botInformationNovelty+"").substring(2)))?this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]:this.privateInfo[numPlayers+n-1][Math.floor(Math.random()*this.privateInfo[numPlayers+n-1].length)])+"</div>");
+		if(parseInt((this.botInformationNovelty+"").substring(0,1))==3)//totally random
 		{
 			if(Math.floor(Math.random()*2)+1==1) // private
 				$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[numPlayers+n-1][Math.floor(Math.random()*this.privateInfo[numPlayers+n-1].length)]+"</div>");
@@ -2881,11 +3069,11 @@ function botBehav1()
 
 function botBehav2(to_ids)
 {
-	if(variables['bot_type']==1)//random private
-		$('#trash'+to_ids[5]).append("<div class='messagereceiver'>User "+(to_ids[5])+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[to_ids[5]-1][Math.floor(Math.random()*this.privateInfo[to_ids[5]-1].length)]+"</div>");
-	if(variables['bot_type']==2)//random public
-		$('#trash'+to_ids[5]).append("<div class='messagereceiver'>User "+(to_ids[5])+":</div><div class='receivedmessage'>&nbsp;"+this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]+"</div>");
-	if(variables['bot_type']==3)//totally random
+	if(parseInt((this.botInformationNovelty+"").substring(0,1))==1)//random private
+		$('#trash'+to_ids[5]).append("<div class='messagereceiver'>User "+(to_ids[5])+":</div><div class='receivedmessage'>&nbsp;"+((Math.floor(Math.random()*101)<=parseInt((this.botInformationNovelty+"").substring(2)))?this.privateInfo[to_ids[5]-1][Math.floor(Math.random()*this.privateInfo[to_ids[5]-1].length)]:this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)])+"</div>");
+	if(parseInt((this.botInformationNovelty+"").substring(0,1))==2)//random public
+		$('#trash'+to_ids[5]).append("<div class='messagereceiver'>User "+(to_ids[5])+":</div><div class='receivedmessage'>&nbsp;"+((Math.floor(Math.random()*101)<=parseInt((this.botInformationNovelty+"").substring(2)))?this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]:this.privateInfo[to_ids[5]-1][Math.floor(Math.random()*this.privateInfo[to_ids[5]-1].length)])+"</div>");
+	if(parseInt((this.botInformationNovelty+"").substring(0,1))==3)//totally random
 	{
 		if(Math.floor(Math.random()*2)+1==1) // private
 			$('#trash'+to_ids[5]).append("<div class='messagereceiver'>User "+(to_ids[5])+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[to_ids[5]-1][Math.floor(Math.random()*this.privateInfo[to_ids[5]-1].length)]+"</div>");
@@ -2907,11 +3095,11 @@ function botBehav3()
 {
 	for(var n=1; n<=parseInt(variables["bot_count"]); n++)
 	{
-		if(variables['bot_type']==1)//random private
-			$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[numPlayers+n-1][Math.floor(Math.random()*this.privateInfo[numPlayers+n-1].length)]+"</div>");
-		if(variables['bot_type']==2)//random public
-			$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]+"</div>");
-		if(variables['bot_type']==3)//totally random
+		if(parseInt((this.botInformationNovelty+"").substring(0,1))==1)//random private
+			$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+((Math.floor(Math.random()*101)<=parseInt((this.botInformationNovelty+"").substring(2)))?this.privateInfo[numPlayers+n-1][Math.floor(Math.random()*this.privateInfo[numPlayers+n-1].length)]:this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)])+"</div>");
+		if(parseInt((this.botInformationNovelty+"").substring(0,1))==2)//random public
+			$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+((Math.floor(Math.random()*101)<=parseInt((this.botInformationNovelty+"").substring(2)))?this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]:this.privateInfo[numPlayers+n-1][Math.floor(Math.random()*this.privateInfo[numPlayers+n-1].length)])+"</div>");
+		if(parseInt((this.botInformationNovelty+"").substring(0,1))==3)//totally random
 		{
 			if(Math.floor(Math.random()*2)+1==1) // private
 				$('#trash0').append("<div class='messagereceiver'>User "+n+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[numPlayers+n-1][Math.floor(Math.random()*this.privateInfo[numPlayers+n-1].length)]+"</div>");
@@ -2924,11 +3112,11 @@ function botBehav3()
 
 function botBehav4(to_ids)
 {
-	if(variables['bot_type']==1)//random private
-		$('#trash'+to_ids[1]).append("<div class='messagereceiver'>User "+(to_ids[1])+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[to_ids[1]-1][Math.floor(Math.random()*this.privateInfo[to_ids[1]-1].length)]+"</div>");
-	if(variables['bot_type']==2)//random public
-		$('#trash'+to_ids[1]).append("<div class='messagereceiver'>User "+(to_ids[1])+":</div><div class='receivedmessage'>&nbsp;"+this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]+"</div>");
-	if(variables['bot_type']==3)//totally random
+	if(parseInt((this.botInformationNovelty+"").substring(0,1))==1)//random private
+		$('#trash'+to_ids[1]).append("<div class='messagereceiver'>User "+(to_ids[1])+":</div><div class='receivedmessage'>&nbsp;"+((Math.floor(Math.random()*101)<=parseInt((this.botInformationNovelty+"").substring(2)))?this.privateInfo[to_ids[1]-1][Math.floor(Math.random()*this.privateInfo[to_ids[1]-1].length)]:this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)])+"</div>");
+	if(parseInt((this.botInformationNovelty+"").substring(0,1))==2)//random public
+		$('#trash'+to_ids[1]).append("<div class='messagereceiver'>User "+(to_ids[1])+":</div><div class='receivedmessage'>&nbsp;"+((Math.floor(Math.random()*101)<=parseInt((this.botInformationNovelty+"").substring(2)))?this.publicInfo[Math.floor(Math.random()*this.publicInfo.length)]:this.privateInfo[to_ids[1]-1][Math.floor(Math.random()*this.privateInfo[to_ids[1]-1].length)])+"</div>");
+	if(parseInt((this.botInformationNovelty+"").substring(0,1))==3)//totally random
 	{
 		if(Math.floor(Math.random()*2)+1==1) // private
 			$('#trash'+to_ids[1]).append("<div class='messagereceiver'>User "+(to_ids[1])+":</div><div class='receivedmessage'>&nbsp;"+this.privateInfo[to_ids[1]-1][Math.floor(Math.random()*this.privateInfo[to_ids[1]-1].length)]+"</div>");
@@ -2964,19 +3152,16 @@ function chatReceived(from_ids,message,to_ids) {
 					
 					if(parseInt(variables["bot_count"])>0)
 					{
-						if(parseInt(variables["bot_behavior"])==1)
-							setTimeout('botBehav1()', 2500);
-						if(parseInt(variables["bot_behavior"])==2)
+						if(Math.floor(Math.random()*100+1)<=parseInt(this.botReciprocity))
+							setTimeout('botBehav1()', 1000*((this.botChatRate.indexOf("-")>=0)?Math.floor(Math.random()*(parseInt(this.botChatRate.substring(4))-parseInt(this.botChatRate.substring(2,3))+1))+parseInt(this.botChatRate.substring(2,3)):parseInt(this.botChatRate.substring(2))));
+						if(getCondition()!=1)
 						{
-							if(getCondition()!=1)
+							for(var i=0; i<numPlayers+parseInt(variables["bot_count"]); i++)
 							{
-								for(var i=0; i<numPlayers+parseInt(variables["bot_count"]); i++)
-								{
-									var path = new Object();
-									path.line = this.r.path("M "+xVals[parseInt(from_ids)-1]+" "+this.yVals[parseInt(from_ids)-1]+" l "+(this.xVals[i]-this.xVals[parseInt(from_ids)-1])+" "+(this.yVals[i]-this.yVals[parseInt(from_ids)-1])+" z");
-									path.line.attr({stroke: '#3b4449','stroke-width': 3});
-									path.line.toBack();
-								}
+								var path = new Object();
+								path.line = this.r.path("M "+xVals[parseInt(from_ids)-1]+" "+this.yVals[parseInt(from_ids)-1]+" l "+(this.xVals[i]-this.xVals[parseInt(from_ids)-1])+" "+(this.yVals[i]-this.yVals[parseInt(from_ids)-1])+" z");
+								path.line.attr({stroke: '#3b4449','stroke-width': 3});
+								path.line.toBack();
 							}
 						}
 					}
@@ -3027,8 +3212,8 @@ function chatReceived(from_ids,message,to_ids) {
 					
 					if(parseInt(variables["bot_count"])>0)
 					{
-						if(parseInt(variables["bot_behavior"])==1)
-							setTimeout(function() {botBehav2(to_ids);}, 2500);
+						if(Math.floor(Math.random()*100+1)<=parseInt(this.botReciprocity))
+							setTimeout(function() {botBehav2(to_ids);}, 1000*((this.botChatRate.indexOf("-")>=0)?Math.floor(Math.random()*(parseInt(this.botChatRate.substring(4))-parseInt(this.botChatRate.substring(2,3))+1))+parseInt(this.botChatRate.substring(2,3)):parseInt(this.botChatRate.substring(2))));
 					}
 				}
 			}
@@ -3082,8 +3267,8 @@ function chatReceived(from_ids,message,to_ids) {
 					
 					if(parseInt(variables["bot_count"])>0)
 					{
-						if(parseInt(variables["bot_behavior"])==1)
-							setTimeout('botBehav3()', 2500);
+						if(Math.floor(Math.random()*100+1)<=parseInt(this.botReciprocity))
+							setTimeout('botBehav3()', 1000*((this.botChatRate.indexOf("-")>=0)?Math.floor(Math.random()*(parseInt(this.botChatRate.substring(4))-parseInt(this.botChatRate.substring(2,3))+1))+parseInt(this.botChatRate.substring(2,3)):parseInt(this.botChatRate.substring(2))));
 					}
 				}
 			}
@@ -3122,8 +3307,8 @@ function chatReceived(from_ids,message,to_ids) {
 					
 					if(parseInt(variables["bot_count"])>0)
 					{
-						if(parseInt(variables["bot_behavior"])==1)
-							setTimeout(function() {botBehav4(to_ids);}, 2500);
+						if(Math.floor(Math.random()*100+1)<=parseInt(this.botReciprocity))
+							setTimeout(function() {botBehav4(to_ids);}, 1000*((this.botChatRate.indexOf("-")>=0)?Math.floor(Math.random()*(parseInt(this.botChatRate.substring(4))-parseInt(this.botChatRate.substring(2,3))+1))+parseInt(this.botChatRate.substring(2,3)):parseInt(this.botChatRate.substring(2))));
 					}
 				}
 			}

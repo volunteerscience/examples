@@ -305,6 +305,7 @@ $('#step1secrem').html('&nbsp;');
 
 function initialize()
 {
+	initVars();
 	this.paper = Raphael("statsContainer", 800, 160);
 	minimumParticipants=(Math.log(variables['payoff'][0].length)/Math.log(variables['payoff'].length))+1;
 	instructionsPage=1;
@@ -1280,7 +1281,12 @@ function countDownStep3(){
 				if(scores[i][0]<=numPlayers)
 				{
 					if(scores[i][0]==myid)
+					{
+						if((i+1)==1)
+							writeAward("Experiment Winner");
+						writeScore(variables['Total_Payoff_Text'],scores[i][1]);
 						finalresulttablehtml+="You</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span></td></tr>";
+					}
 					else
 						finalresulttablehtml+=getName(scores[i][0])+"</span></td><td><span style='padding-left:7px;'>"+scores[i][1].toFixed(2)+"</span></td></tr>";
 				}
@@ -1290,6 +1296,9 @@ function countDownStep3(){
 			finalresulttablehtml+="</tbody>";
 			$('#finalresulttable').html(finalresulttablehtml);
 			$('#finalresulttable').fixedHeaderTable({ altClass: 'odd'});
+			enableSubmitFeedback();
+			$('#submit_feedback_btn').click(function() { showFeedbackForm(); });
+			enablePlayAgain();
 			countDownStep4();
 		}
 	 }else{  
@@ -1307,9 +1316,12 @@ function countDownStep4(){
 		var myurl = "http://"+window.location.host+"/stop_test";
 		window.location = myurl;
 	 }else{  
-		this.Step4Timer--;
-		document.getElementById("finalresulttext").innerHTML = this.Step4Timer; 
-		this.timeoutStep3=setTimeout("countDownStep4()", 1000);
+		if(!$('#feedback').is(":visible"))
+		{
+			this.Step4Timer--;
+			document.getElementById("finalresulttext").innerHTML = this.Step4Timer; 
+		}
+		this.timeoutStep4=setTimeout("countDownStep4()", 1000);
 	 }  
 }
 
@@ -1469,6 +1481,8 @@ function participantStatTable(rank, playerId)
 		tabContents.push(starImg3);
 		tabContents.push(starImg2);
 		tabContents.push(starImg1);
+		if(this.expRoundNum==2&&playerId==myid)
+			writeAward("First Round Winner");
 	}
 	if(rank==2)
 	{

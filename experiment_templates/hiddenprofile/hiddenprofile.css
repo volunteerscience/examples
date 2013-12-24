@@ -48,6 +48,10 @@
 	background-color:#F2F5A9;
 }
 
+.ui-dialog-titlebar-close {
+  visibility: hidden;
+}
+
 #notetable{
     border-collapse: separate;
     border-spacing: 0;
