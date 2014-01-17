@@ -1035,6 +1035,7 @@ function showResults() {
     var totalStars = 0;
     var table = $('#result_table');
     var foundShortest = false;
+    var numRoundsWithStar = 0;
     for (var rnd = 1; rnd <= numRounds; rnd++) {
       var note = "";
       var roundScore = scoreTable[rnd+FIRST_ACTUAL_ROUND-1];
@@ -1049,6 +1050,7 @@ function showResults() {
         stars = 5-Math.floor(roundScore/variables['close_score']);
       }
       if (!isNaN(stars) && stars > 0) {
+        numRoundsWithStar++;
         totalStars+=stars;
         for (var i = 0; i < stars; i++) {
           note+=star;
@@ -1072,6 +1074,12 @@ function showResults() {
     if (foundShortest) {
       writeAward("Shortest Path");
       writeScore("Shortest Path",1)
+    }
+    
+    if (numRoundsWithStar > 6) {
+      payAMT(true,0.0);      
+    } else {
+      payAMT(false,0.0);      
     }
     
 //    quit();
