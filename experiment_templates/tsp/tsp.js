@@ -1077,9 +1077,9 @@ function showResults() {
     }
     
     if (numRoundsWithStar > 6) {
-      payAMT(true,0.0);      
+      payAMT(true,1.00);      
     } else {
-      payAMT(false,0.0);      
+      payAMT(true,0.0);      
     }
     
 //    quit();
