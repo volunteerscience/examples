@@ -1,6 +1,7 @@
 <style>
 .testLink {
   float:left;
+  clear: both;
 }
 
 .contents {
@@ -27,9 +28,9 @@
 
 <h1>TSP Results</h1>
 AMT: 
-  Include<input type="radio" name="amt" value="include" checked="checked"/>
+  Include<input type="radio" name="amt" value="include"/>
   Exclude<input type="radio" name="amt" value="exclude"/>
-  Only<input type="radio" name="amt" value="exclusive"/>
+  Only<input type="radio" name="amt" value="exclusive" checked="checked"/>
   <br/>
 Start: <input type="text" id="startDate" name="start" value=""/> End: <input type="text" id="endDate" name="end" value=""/> 
  <input id="update" type="submit" value="Update"/>
