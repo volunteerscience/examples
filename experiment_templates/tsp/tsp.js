@@ -81,10 +81,10 @@ function initializeGameType() {
       showTeamModulo = 1;
       break;
   }
-  showTeamModulo = 1;  // delme
+//  showTeamModulo = 1;  // delme
   
   var best = Math.floor(Math.random()*2);
-  best = 1; // delme
+//  best = 1; // delme
 //  alert('best:'+best);
   switch (best) {
     case 0:
@@ -1076,7 +1076,7 @@ function showResults() {
       writeScore("Shortest Path",1)
     }
     
-    if (numRoundsWithStar > 6) {
+    if (numRoundsWithStar >= 3) {
       payAMT(true,1.00);      
     } else {
       payAMT(true,0.0);      
