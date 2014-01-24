@@ -15,7 +15,8 @@ function initializeVisualization() {
 }
 
 function updateSummary() {
-  args = {"format":"json","type":"summary"};
+  amt = $( "input:radio[name=amt]:checked" ).val();
+  args = {"format":"json","type":"summary","amt":amt};
   if ($('#startDate').val()) {
     args['start'] = $('#startDate').val();
   }
@@ -61,6 +62,18 @@ function addContents(id) {
     var canvas_id = "";
     for (idx in submissions) {
       var sub = submissions[idx];
+      try {        
+        var val = sub['val'];
+        var startup = val['startup'];
+        if (startup) {
+          contents.append('<div>Conditions:'+JSON.stringify(startup)+'</div><br/>');
+        }
+//        var best = startup['best'];
+//        var modulo = startup['teamModulo'];
+//        var forceBots = startup['forceBots'];
+//        var forceBots = startup['botType'];
+      } catch (err) {}
+      
       try {        
         // not all are solutions
         var round = sub['round']-100;

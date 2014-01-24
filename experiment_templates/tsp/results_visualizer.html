@@ -25,8 +25,13 @@
 .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
 </style>
 
-<h1>bar</h1>
- Start: <input type="text" id="startDate" name="start" value=""/> End: <input type="text" id="endDate" name="end" value=""/> 
+<h1>TSP Results</h1>
+AMT: 
+  Include<input type="radio" name="amt" value="include" checked="checked"/>
+  Exclude<input type="radio" name="amt" value="exclude"/>
+  Only<input type="radio" name="amt" value="exclusive"/>
+  <br/>
+Start: <input type="text" id="startDate" name="start" value=""/> End: <input type="text" id="endDate" name="end" value=""/> 
  <input id="update" type="submit" value="Update"/>
 
 <div id="results"></div>
