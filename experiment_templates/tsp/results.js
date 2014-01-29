@@ -100,3 +100,25 @@ function addContents(id) {
   }, args); 
 }
 
+var idCtr = 0;
+var idsToOpen = [];
+function openAll() {
+  idCtr = 0;
+  idsToOpen = [];
+  $('.testLink').each(function( index ) {
+  var div = $(this);
+  nxt = div.next();
+    if (!nxt.hasClass('contents')) {
+    id = div.attr('id');
+      idsToOpen.push(id);
+    }
+  }); 
+  openNext();
+}
+
+function openNext() {
+  addContents(idsToOpen[idCtr++]);
+  if (idsToOpen.length > idCtr) {
+    setTimeout(openNext,500); 
+  }
+}
