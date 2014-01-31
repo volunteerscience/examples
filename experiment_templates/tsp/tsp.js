@@ -69,22 +69,23 @@ function initialize() {
 function initializeGameType() {
   Math.seedrandom(seed);
   
-  var info = Math.floor(Math.random()*3);
+  var info = Math.floor(Math.random()*5);
   switch (info) {
     case 0:
       showTeamModulo = -1;
       break;
     case 1:
-      showTeamModulo = 3;
-      break;
     case 2:
       showTeamModulo = 1;
       break;
+    default:
+      showTeamModulo = 3;
+      break;
   }
-//  showTeamModulo = 1;  // delme
+//  showTeamModulo = 3;  // delme
   
   var best = Math.floor(Math.random()*2);
-//  best = 1; // delme
+  best = 1; // delme
 //  alert('best:'+best);
   switch (best) {
     case 0:
@@ -100,7 +101,8 @@ function initializeGameType() {
   }
   
   botType = Math.floor(Math.random()*2);
-
+//  botType = 0; // delme
+  
   $(".gameid").append(botType);
   
   if (showBest) {
@@ -486,11 +488,11 @@ function newMove(participant, index) {
  */
 function drawForceBotSolution(part, round, index, paper2) {
   //alert("drawForceBotSolution");
-//  doDrawTeamSolution(part, round, index, paper2, perfectBot());  
+//  doDrawTeamSolution(part, round, index, paper2, XMLizeBotSolution(perfectBot()));  
 
   switch(botType) {
   case 0:
-    doDrawTeamSolution(part, round, index, paper2, progressiveBot(index));  
+    doDrawTeamSolution(part, round, index, paper2, XMLizeBotSolution(progressiveBot(part, round)));  
     break;
   case 1:
     // dittoBot
@@ -561,7 +563,10 @@ function prevSolution() {
  * @returns
  */
 function getHumanReadableScore(score) {
-  return Math.round(score/antiscale);
+  if (score > 0) {    
+    return Math.round(score/antiscale);
+  }
+  return 10000;
 }
 
 /**
@@ -686,7 +691,7 @@ function doDrawTeamMap(paper2, myCities, answer) {
         circle.attr("stroke", "#000");
       }
      } catch (err) {
-       alert(err+" idx:"+idx+" city:"+city+" last:"+last+" myCities:"+Object.keys(myCities)+" answer:"+answer[idx]+" atyp:"+(typeof answer));
+//       alert(err+" idx:"+idx+" city:"+city+" last:"+last+" myCities:"+Object.keys(myCities)+" answer:"+answer[idx]+" atyp:"+(typeof answer));
      }    
     }
   } catch (err) {
@@ -725,10 +730,10 @@ function submitBotSolution(playerId) {
     // survey questions, instructions etc
     submitBot(playerId, currentRound, 'auto_submit');  
   } else {
-//    var botSolution = deviantBot(playerId, variables['bot_swaps']);
+//    var botSolution = deviantBot(playerId, variables['bot_swaps'], currentRound);
 
     // TODO: use botType
-    var botSolution = progressiveBot(playerId);
+    var botSolution = XMLizeBotSolution(progressiveBot(playerId, currentRound));
     submitBot(playerId, currentRound, botSolution);  
   }
 } 
@@ -744,7 +749,7 @@ function randomBot(numSwaps) {
   for (var i = 0; i < numCities; i++) {
     solution[i] = i;    
   }  
-  return XMLizeBotSolution(solution);
+  return solution;
 }
 
 /**
@@ -760,7 +765,7 @@ function perfectBot() {
   for (var i = 0; i < numCities; i++) {
     solution[i] = optimal[i];
   }
-  return XMLizeBotSolution(solution);
+  return solution;
 }
 
 /**
@@ -770,10 +775,11 @@ function perfectBot() {
  * @param numSwaps
  * @returns
  */
-function deviantBot(playerId, numSwaps) {
-    
+function deviantBot(playerId, numSwaps, round) {
+  // Note, setting the Math.seedrandom() will make consistent results
+  
   // this is the optimal solution
-  var optimal = map[getMapIndex(currentRound)][1];
+  var optimal = map[getMapIndex(round)][1];
   
   // copy it into the solution
   var solution = new Array();
@@ -781,15 +787,16 @@ function deviantBot(playerId, numSwaps) {
     solution[i] = optimal[i];
   }
 
+//  alert("dbot:"+playerId+" r:"+round);
   // swap some values    
-  Math.seedrandom(playerId+currentRound*100);
+  Math.seedrandom(playerId+round*100);
   for (var i = 0; i < numSwaps; i++) {
     var swapMe = Math.floor(Math.random()*(numCities-1))
     var temp = solution[swapMe];
     solution[swapMe] = solution[swapMe+1];
     solution[swapMe+1]=temp;
   }
-  return XMLizeBotSolution(solution);
+  return solution;
 }
 
 /**
@@ -798,12 +805,13 @@ function deviantBot(playerId, numSwaps) {
  * @param playerId
  * @returns
  */
-function progressiveBot(playerId) {
-  var remainingRounds = numRounds-gameRound;
-  Math.seedrandom(playerId+currentRound*100);
+function progressiveBot(playerId, round) {
+  var myGameRound = 1+round-FIRST_ACTUAL_ROUND;
+  var remainingRounds = numRounds-myGameRound;
+  Math.seedrandom(playerId+myGameRound*100);
   var additionalMistakes = Math.floor(Math.random()*3); // 3 = 0-2
 //  alert("additionalMistakes:"+additionalMistakes);
-  return deviantBot(playerId, remainingRounds+additionalMistakes);
+  return deviantBot(playerId, remainingRounds+additionalMistakes, round);
 }
 
 /**
@@ -857,6 +865,9 @@ function pushSolution() {
   
 }
 
+var myBestSolution = null;
+var myBestSolutionDist = 10000;
+var midRoundSurveyVal = null;
 var doSubmitLock = true;
 var midRoundClock = null;
 /**
@@ -868,16 +879,66 @@ var midRoundClock = null;
 function showMidRoundPopup(dist, millis) {
   doSubmitLock = false;
   var remainingRounds = FIRST_ACTUAL_ROUND+numRounds-currentRound-1;
-  if (remainingRounds > 0 && dist > 0) {
-    $("#midRoundText").html("Your distance was "+getHumanReadableScore(dist)+", can you make it shorter?");  
-    $("#midRoundOk").attr("value","Proceed to next round...");
+  if (remainingRounds > 0) {
+    var auto_click_millis = 3000;
     $("#midRoundOk").unbind( "click" );
-    $("#midRoundOk").bind( "click", function() { doSubmit(dist, millis); return false;});
+    $("#midRoundChoices").html("");
+    
+    if ((numPlayers == 1) && (showTeamModulo > 0) && ((gameRound+1) % showTeamModulo == 0)) {
+      auto_click_millis = 8000;
+      $("#midRoundText").html("Your distance last round was "+getHumanReadableScore(dist)+".  Which of these is the best solution?");  
+      var lastSolution = cityOrder.join();
+      if (myBestSolution == null || ((dist > 0) && (dist < myBestSolutionDist))) {
+        myBestSolution = lastSolution;
+        if (dist > 0) {
+          myBestSolutionDist = dist;          
+        }
+      }
+      
+      addMidRoundSolution("last",lastSolution, dist, millis);
+      addMidRoundSolution("best",myBestSolution, dist, millis);
+      switch(botType) {
+      case 0:
+        var pBotSol = progressiveBot(myid+1, currentRound).join();
+//        alert(pBotSol);
+        addMidRoundSolution("bot",pBotSol, dist, millis);
+        break;
+      default:
+        // dittoBot
+        addMidRoundSolution("bot",lastSolution, dist, millis);
+      }
+      
+      
+      $("#midRoundOk").attr("value","They are the same.");      
+      $("#midRoundOk").bind( "click", function() { 
+        midRoundSurveyVal = "same";
+        doSubmit(dist, millis); 
+        return false;
+      });      
+    } else {
+      $("#midRoundText").html("Your distance was "+getHumanReadableScore(dist)+", can you make it shorter?");  
+      $("#midRoundOk").attr("value","Proceed to next round...");
+      $("#midRoundOk").bind( "click", function() { doSubmit(dist, millis); return false;});      
+    }
+    
     $("#midRoundPopup").fadeIn();
-    midRoundClock = setInterval(function() {doSubmit(dist, millis)}, 3000);
+    midRoundClock = setInterval(function() {doSubmit(dist, millis)}, auto_click_millis);
   } else {
     doSubmit(dist, millis);
   }
+}
+
+function addMidRoundSolution(choiceName, city_order, dist, millis) {
+  var canvas_id = "choice_"+choiceName;
+  var wrapper_id = "wrapper_"+choiceName;
+  $("#midRoundChoices").append('<div id="'+wrapper_id+'"><div id="'+canvas_id+'"></div></div>');
+  $("#"+wrapper_id).click(function() {
+    midRoundSurveyVal = choiceName;
+    doSubmit(dist, millis);
+//    alert(choiceName);
+  });
+  var paper = Raphael(canvas_id, (width+cityRad*2)*tFac, (height+cityRad*2)*tFac);
+  doDrawTeamMap(paper,buildMap(currentRound),city_order.split(","));
 }
 
 /**
@@ -893,7 +954,8 @@ function doSubmit(dist, millis) {
     clearInterval(midRoundClock);
     midRoundClock = null;
   }
-  var solutionXML = '<solution map="'+getMapIndex(currentRound)+'" dist="'+dist+'" millis="'+millis+'">'+cityOrder.join()+'</solution>';
+  var solutionXML = '<solution map="'+getMapIndex(currentRound)+'" dist="'+dist+'" millis="'+millis+'"'+(midRoundSurveyVal==null ? '' : ' midRound="'+midRoundSurveyVal+'"')+'>'+cityOrder.join()+'</solution>';
+  midRoundSurveyVal = null;
 //  alert(solutionXML);
   submit(solutionXML);  
 }

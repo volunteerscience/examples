@@ -248,10 +248,22 @@
 
 #midRoundOk {
     position: absolute;
-    bottom: 40%;
+    bottom: 30%;
     width: 25%;
     left: 38%;
     height: 80px;
 }
 
+#midRoundChoices {
+  width: 100%;
+}
 
+#midRoundChoices div {
+  float: left;
+  margin: 0 5px;
+}
+
+#midRoundText {
+  text-align: center; 
+}
+}
