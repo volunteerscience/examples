@@ -82,7 +82,7 @@ function initializeGameType() {
       showTeamModulo = 3;
       break;
   }
-//  showTeamModulo = 3;  // delme
+//  showTeamModulo = 1;  // delme
   
   var best = Math.floor(Math.random()*2);
   best = 1; // delme
@@ -865,8 +865,30 @@ function pushSolution() {
   
 }
 
+function shuffle(array) {
+  var currentIndex = array.length
+    , temporaryValue
+    , randomIndex
+    ;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
 var myBestSolution = null;
-var myBestSolutionDist = 10000;
+var myBestSolutionDist = 1000000;
 var midRoundSurveyVal = null;
 var doSubmitLock = true;
 var midRoundClock = null;
@@ -884,32 +906,57 @@ function showMidRoundPopup(dist, millis) {
     $("#midRoundOk").unbind( "click" );
     $("#midRoundChoices").html("");
     
-    if ((numPlayers == 1) && (showTeamModulo > 0) && ((gameRound+1) % showTeamModulo == 0)) {
-      auto_click_millis = 8000;
+    if (numPlayers == 1) {
+      auto_click_millis = 15000;
       $("#midRoundText").html("Your distance last round was "+getHumanReadableScore(dist)+".  Which of these is the best solution?");  
       var lastSolution = cityOrder.join();
+      if (myBestSolution == null) {
+        myBestSolution = lastSolution;
+      }
+      
+      var shuffleOrder = [0,1];
+      var drawBot = false;
+      if ((showTeamModulo > 0) && ((gameRound+1) % showTeamModulo == 0)) {  
+        drawBot = true;
+        shuffleOrder.push(2);
+      }
+      
+      Math.seedrandom(seed*currentRound);
+      shuffleOrder = shuffle(shuffleOrder);
+//      alert(shuffleOrder);
+      for (var i = 0; i < shuffleOrder.length; i++) {
+        switch(shuffleOrder[i]) {
+        case 0:
+          addMidRoundSolution("last",lastSolution, dist, millis);
+          break;
+        case 1:
+          addMidRoundSolution("best",myBestSolution, dist, millis);
+          break;
+        case 2:
+          switch(botType) {
+          case 0:
+            var pBotSol = progressiveBot(myid+1, currentRound).join();
+    //        alert(pBotSol);
+            addMidRoundSolution("bot",pBotSol, dist, millis);
+            break;
+          default:
+            // dittoBot
+            addMidRoundSolution("bot",lastSolution, dist, millis);
+          }
+          break;
+        }
+      }
+      
       if (myBestSolution == null || ((dist > 0) && (dist < myBestSolutionDist))) {
         myBestSolution = lastSolution;
         if (dist > 0) {
           myBestSolutionDist = dist;          
         }
       }
-      
-      addMidRoundSolution("last",lastSolution, dist, millis);
-      addMidRoundSolution("best",myBestSolution, dist, millis);
-      switch(botType) {
-      case 0:
-        var pBotSol = progressiveBot(myid+1, currentRound).join();
-//        alert(pBotSol);
-        addMidRoundSolution("bot",pBotSol, dist, millis);
-        break;
-      default:
-        // dittoBot
-        addMidRoundSolution("bot",lastSolution, dist, millis);
-      }
+
       
       
-      $("#midRoundOk").attr("value","They are the same.");      
+      $("#midRoundOk").attr("value","They are all the same.");      
       $("#midRoundOk").bind( "click", function() { 
         midRoundSurveyVal = "same";
         doSubmit(dist, millis); 

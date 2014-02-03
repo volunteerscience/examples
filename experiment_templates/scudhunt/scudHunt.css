@@ -42,7 +42,7 @@
   -o-border-radius: 5px;
   border-radius: 5px;
   background-color: #c7d4e7;
-  border:1px solid black;
+  border: 1px solid black;
   cursor: pointer;
   width: 260px;
   min-height: 64px;
@@ -246,4 +246,53 @@
   padding: 4px 2px 7px;
 }
 .ui-slider-vertical { height: 100%; }
-.ui-slider-range { background-color: #FFFFFF;} 
+.ui-slider-range { background-color: #FFFFFF;}
+
+
+#marker_panel {
+  font: Arial;
+  font-size: 20px;
+  float:right;
+  text-align: center;
+  font-weight: bold;
+  margin-right: 16px;
+}
+
+#marker_panel p {
+  vertical-align: bottom;
+  float: left;
+  font: Arial;
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 9px;
+}
+
+.marker_btn {
+  float:right;
+  width: 27px;
+  margin: 5px;
+  background-color: #c7d4e7;
+  -webkit-border-radius: 5px; 
+  -moz-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid black;
+  cursor: pointer;
+}
+
+#marker_x {
+  color: #cc4444;
+}
+
+#marker_q {
+  color: #ffff44;
+}
+
+#marker_z {
+  color: #44cc44;
+}
+
+
+
+
+

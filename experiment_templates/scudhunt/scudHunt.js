@@ -38,6 +38,7 @@ var ASSET_WAIT_COLOR = "#dddddd";
 
 var paper = null;
 var selectedUnit = null;
+var selectedMarker = null;
 
 // initialized in initializeUnits;
 var TARGET_ROLE = 0;
@@ -62,6 +63,8 @@ var difficulty = 0;
 var DIF_EASY = 10;
 var DIF_MEDIUM = 20;
 var DIF_HARD = 30;
+
+var userMarkers = {} // round => [[region,symbol,note],...]
 
 
 function setDifficulty(d) {
@@ -205,7 +208,7 @@ function Region(id,name, x,y, x1,y1, polygon) {
 
     // this is the popup behavior to determine which unit claimed the status
     txt.click(function() {
-      if (selectedUnit == null) {
+      if (selectedUnit == null && selectedMarker == null) {
         var dY = -30;
         if (me.row == 0) {
           dY = 30;
@@ -216,7 +219,7 @@ function Region(id,name, x,y, x1,y1, polygon) {
       }
     });
     txt.mouseover(function() {
-      if (selectedUnit == null) {
+      if (selectedUnit == null && selectedMarker == null) {
         var dY = -30;
         if (me.row == 0) {
           dY = 30;
@@ -227,7 +230,7 @@ function Region(id,name, x,y, x1,y1, polygon) {
       }      
     });
     txt.mouseout(function() {
-      if (selectedUnit == null) {
+      if (selectedUnit == null && selectedMarker == null) {
         hidePopup(0);
       }
     });
@@ -241,6 +244,24 @@ function Region(id,name, x,y, x1,y1, polygon) {
   
   polygon.attr('fill',REGION_BACKGROUND_COLOR);
   this.onClick = function() {
+    if (selectedMarker != null) {
+
+      var letter = VALUE_DISPLAY[VALUE_NOTHING]; // marker_z
+      if (selectedMarker == "marker_q") {
+        letter = VALUE_DISPLAY[VALUE_DECOY];        
+      } else if (selectedMarker == "marker_x") {
+        letter = VALUE_DISPLAY[VALUE_TARGET];        
+      }
+      if (!(currentRound in userMarkers)) {
+        userMarkers[currentRound] = [];
+      }
+      var note = "user defined";
+      userMarkers[currentRound].push([me.id,letter,note]);
+      me.addStatus(letter, note);
+      deselectAllMarkers();
+      return;
+    }
+    
     if (selectedUnit != null) {
       if (selectedUnit.effect(me).length == 0) {
         if (inInstructions) {
@@ -363,12 +384,13 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
     this.avatar = avatarFactory.build(avatarId,-100,-100); // build avatar off screen
     this.avatar.origMouseDown = this.avatar.onMouseDown;
     this.avatar.onMouseDown = function(e) {
-      if (selectedUnit == null) {
+      if (selectedUnit == null && selectedMarker == null) {
         if (isMyUnit(unitMe) || unitMe.ownerId == TARGET_ROLE) {
           unitMe.select();
           return;
         }
       }
+      // passthrough
       unitMe.avatar.origMouseDown(e);
     }
     
@@ -379,6 +401,7 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
   
   this.select = function() {
     deselectAllUnits();
+    deselectAllMarkers();
     if (currentRound == FIRST_ACTUAL_ROUND+numRounds) {
       if (this.ownerId != TARGET_ROLE) return; // on target selection round, only targets may be moved
     } else if (currentRound > FIRST_ACTUAL_ROUND+numRounds) {
@@ -604,6 +627,13 @@ function deselectAllUnits() {
   clearRegionHighlights();  
 }
 
+function deselectAllMarkers() {
+  selectedMarker = null;
+  $('.marker_btn').each(function() {
+    $(this).css('background-color',ASSET_BACKGROUND_COLOR); 
+  });
+}
+
 function assignPlayersRoundRobin() {
   roleToPlayer = new Array();
   var pid = 1;
@@ -618,6 +648,9 @@ function assignPlayersRoundRobin() {
 
 
 function initialize() {
+  setDifficulty(variables['difficulty']);
+  roundDuration = parseInt(variables['round_duration']);
+  
   for (var r = ROUND_ZERO; r <= FIRST_ACTUAL_ROUND+numRounds; r++) { // also the submission round
     commandHistory[r] = new Array();
   }
@@ -628,6 +661,7 @@ function initialize() {
   
 //  alert(roleUnits[1][0].name);
   initializeGameBoard();
+  initializeMarkerButtons();
   
   runAllInstructions();
 }
@@ -716,6 +750,37 @@ function initializeAssets(myUnits) {
     }
     
     if (selectedUnit != null && $(this).attr('asset') == selectedUnit.id) {
+      $(this).css('background-color',ASSET_SELECTION_COLOR);       
+    } else {
+      $(this).css('background-color',ASSET_BACKGROUND_COLOR); 
+    }
+  });
+}
+
+function initializeMarkerButtons() {
+  $('.marker_btn').click(function() {
+    var oldSelectedMarker = selectedMarker;
+    deselectAllUnits();
+    deselectAllMarkers();
+    
+    var markerId = $(this).attr('id');
+    if (oldSelectedMarker == markerId) {
+      return; // clicking again deselects
+    }
+    selectedMarker = markerId
+    $(this).css('background-color',ASSET_SELECTION_COLOR);
+  });
+  
+  $('.marker_btn').hover(function() {   
+    var markerId = $(this).attr('id');
+    if (selectedMarker != null && selectedMarker == markerId) {
+      $(this).css('background-color',ASSET_SELECTION_COLOR);       
+    } else {
+      $(this).css('background-color',ASSET_HOVER_COLOR);           
+    }
+  },function() {
+    var markerId = $(this).attr('id');
+    if (selectedMarker != null && selectedMarker == markerId) {
       $(this).css('background-color',ASSET_SELECTION_COLOR);       
     } else {
       $(this).css('background-color',ASSET_BACKGROUND_COLOR); 
@@ -924,11 +989,6 @@ function endRound() {
     addRoundTab(currentRound-ROUND_ZERO);
   }
   setRound(currentRound+1);
-  if (globalMapScans) {
-    updateBoardFromCommands(commandHistory[currentRound-1]);
-  } else if (localMapScans) {
-    updateBoardFromCommands([commandHistory[currentRound-1][myid]]);
-  }
   if (globalSitRep) {
     addSituationReports(commandHistory[currentRound-1]);
   } else if (localSitRep) {
@@ -951,9 +1011,9 @@ function showBoardFromRound(round) {
   round+=ROUND_ZERO;
   clearUnitsFromBoard();
   if (globalMapScans) {
-    updateBoardFromCommands(commandHistory[round]);
+    updateBoardFromCommands(commandHistory[round], round);
   } else if (localMapScans) {
-    updateBoardFromCommands([commandHistory[round][myid]]);
+    updateBoardFromCommands([commandHistory[round][myid]], round);
   }
   var moves = commandHistory[round];
   for (var m in moves) {
@@ -980,9 +1040,9 @@ function showCurrentBoard() {
         for (var round = FIRST_ACTUAL_ROUND; round < currentRound; round++) {
           allScans = allScans.concat(commandHistory[round]);
         }
-        updateBoardFromCommands(allScans);
+        updateBoardFromCommands(allScans, -1);
       } else {
-        updateBoardFromCommands(commandHistory[currentRound-1]);
+        updateBoardFromCommands(commandHistory[currentRound-1], -1); // or currentRound-1?
       }
     } else if (localMapScans) {
       if (cumulativeMapScans) {
@@ -990,9 +1050,9 @@ function showCurrentBoard() {
         for (var round = FIRST_ACTUAL_ROUND; round < currentRound; round++) {
           allScans.push(commandHistory[round][myid]);
         }
-        updateBoardFromCommands(allScans);
+        updateBoardFromCommands(allScans, -1);
       } else {
-        updateBoardFromCommands([commandHistory[currentRound-1][myid]]);
+        updateBoardFromCommands([commandHistory[currentRound-1][myid]], -1);
       }
     }
   }
@@ -1065,8 +1125,9 @@ function updateUnitFromCommands(moves) {
  * Draw the region status (x,?,0)
  * 
  * @param moves
+ * @param userMarkersRound -1 = all rounds
  */
-function updateBoardFromCommands(moves) {
+function updateBoardFromCommands(moves, userMarkersRound) {
   clearRegionStatus();
   for (var m in moves) {
     var move = moves[m];
@@ -1083,6 +1144,24 @@ function updateBoardFromCommands(moves) {
         }
       }
     });
+  }
+  
+  if (userMarkersRound == -1) {
+    for (var round = FIRST_ACTUAL_ROUND; round < FIRST_ACTUAL_ROUND+numRounds; round++) {
+      displayUserMarkers(round);
+    }
+  } else {
+    displayUserMarkers(userMarkersRound);
+  }
+}
+
+function displayUserMarkers(round) {
+  if (!(round in userMarkers)) return;
+  var markers = userMarkers[round];
+  for (var m in markers) {
+    var mark = markers[m];
+    var region = regions[mark[0]];
+    region.addStatus(mark[1],mark[2]);
   }
 }
 

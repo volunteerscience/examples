@@ -1,4 +1,17 @@
 Todo:
+  user defined markers:
+    popup to set note   
+    browser reload:
+      submitMove() with the note etc, include index
+      userMarkers table includes index
+      reload the userMarker table with the submitted moves
+
+
+
+
+
+
+
   game:    
     ability to place 2 units in same square:
       display the units side by side (and scaled down)
@@ -11,8 +24,6 @@ Todo:
             if green, fade out all the affected regions
     
   opening:
-    reward for watching story
-    skip story
     rewards for watching rules for each player type
     skip instructions
     
