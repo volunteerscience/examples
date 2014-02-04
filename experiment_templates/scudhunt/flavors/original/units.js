@@ -30,7 +30,7 @@ function initializeUnits(minPlayers) {
     "<p>The elite fanatical Poronan Revolutionary Guard Special Artillery Regiment (PRGSAR), with a number of mobile missile launchers, "+
       "has deployed from its depot to a secret hide site.</p>",
     "<p>This deployment is supported by deception operations that may confuse our sensors.</p>",
-    "<p>"+(actualNumPlayers == 1 ? "You " : ("Your team of "+numPlayers+" joint operations commanders"))+" must identify the locations of "+
+    "<p>"+(actualNumPlayers == 1 ? "You " : ("Your team of "+actualNumPlayers+" joint operations commanders"))+" must identify the locations of "+
       (showNumberOfTargets ? numTargets : "one or more")+" "+TARGET_NOUN_PLURAL+(showNumberOfRounds ? " in the next "+numRounds+" days" : "")+".</p>",
     "<p>The fate of hundreds of thousands of Kartunans depend on your success.</p>"
   ];        

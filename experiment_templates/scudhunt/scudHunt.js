@@ -64,6 +64,7 @@ var DIF_EASY = 10;
 var DIF_MEDIUM = 20;
 var DIF_HARD = 30;
 
+var userMarkerCtr = 1;
 var userMarkers = {} // round => [[region,symbol,note],...]
 
 
@@ -186,6 +187,7 @@ function showPopup(x,y,txt,delay) {
 var STATI_PER_ROW = 4;
 var STATI_PER_COL = 4;
 
+
 function Region(id,name, x,y, x1,y1, polygon) {
   var me = this;
   this.id = id;
@@ -195,7 +197,7 @@ function Region(id,name, x,y, x1,y1, polygon) {
   this.y = y;
   this.polygon = polygon;
   this.status = []; // text element on the region: 0,?,X
-  this.addStatus = function(letter, unitName) {
+  this.addStatus = function(letter, unitName, removeId) {
     // tX, tY are where the letter goes, based on how many there are already
     var xOff = Math.floor(this.status.length/(STATI_PER_ROW*STATI_PER_COL))*10; // if we fill up the whole square, start putting more in between the letters
     var tX = x1 + xOff +// left side
@@ -215,11 +217,35 @@ function Region(id,name, x,y, x1,y1, polygon) {
         }
         showPopup(tX,tY+dY,unitName,0);
       } else {
-        me.onClick();
+        if (selectedMarker == "marker_c") {
+          if (removeId) {
+            for (var round in userMarkers) {
+              var list = userMarkers[round];
+              for (var idx in list) {
+                var item = list[idx];
+                if (item[3] == removeId) {
+                  submit('<unmark idx="'+removeId+'"/>');
+                  list.splice(idx,1);
+                  txt.remove();
+                  deselectAllMarkers();                  
+                  hidePopup(0);
+                  return;
+                }
+              }
+            }
+            userMarkers[currentRound].push([me.id,letter,note,userMarkerCtr]);
+          } else {
+            deselectAllMarkers();
+            alert("You can only remove markers that you added.");
+            hidePopup(0);
+          }
+        } else {
+          me.onClick();          
+        }
       }
     });
     txt.mouseover(function() {
-      if (selectedUnit == null && selectedMarker == null) {
+      if (selectedUnit == null) {
         var dY = -30;
         if (me.row == 0) {
           dY = 30;
@@ -246,18 +272,28 @@ function Region(id,name, x,y, x1,y1, polygon) {
   this.onClick = function() {
     if (selectedMarker != null) {
 
-      var letter = VALUE_DISPLAY[VALUE_NOTHING]; // marker_z
-      if (selectedMarker == "marker_q") {
+      var letter = null;
+      if (selectedMarker == "marker_z") {
+        letter = VALUE_DISPLAY[VALUE_NOTHING];
+      } else if (selectedMarker == "marker_q") {
         letter = VALUE_DISPLAY[VALUE_DECOY];        
       } else if (selectedMarker == "marker_x") {
         letter = VALUE_DISPLAY[VALUE_TARGET];        
       }
+      
+      if (letter == null) {
+        alert("Click a marker to remove it.");
+        return;
+      }
+      
       if (!(currentRound in userMarkers)) {
         userMarkers[currentRound] = [];
       }
       var note = "user defined";
-      userMarkers[currentRound].push([me.id,letter,note]);
-      me.addStatus(letter, note);
+      submit('<mark region="'+me.id+'" letter="'+letter+'" note="'+note+'" idx="'+userMarkerCtr+'"/>');
+      userMarkers[currentRound].push([me.id,letter,note,userMarkerCtr]);
+      me.addStatus(letter, note, userMarkerCtr);
+      userMarkerCtr++;
       deselectAllMarkers();
       return;
     }
@@ -640,13 +676,14 @@ function assignPlayersRoundRobin() {
   for (var r = 1; r <= num_roles; r++) {
     roleToPlayer[r] = pid;
     pid++;
-    if (pid > numPlayers) {
+    if (pid > numPlayersAndBots) {
       pid = 1;
     }
   }
 }
 
-
+var numBots = 0;
+var numPlayersAndBots = 1;
 function initialize() {
   setDifficulty(variables['difficulty']);
   roundDuration = parseInt(variables['round_duration']);
@@ -655,7 +692,10 @@ function initialize() {
     commandHistory[r] = new Array();
   }
 
-  initializeUnits(1);
+  numBots = Math.max(0,parseInt(variables['min_players'])-numPlayers);
+  numPlayersAndBots = numPlayers+numBots;
+  initializeUnits(numPlayersAndBots);
+  
   
   assignPlayersRoundRobin();
   
@@ -847,6 +887,21 @@ function submitMove() {
   }
   
   submit(submission);
+  
+  if (shouldRunBots()) {
+    runBots();    
+  }
+}
+
+// who handles bots
+function shouldRunBots() {
+  for (var i = 1; i < myid; i++) {
+    if (activePlayers[i]) {
+      // someone lower than me is still active
+      return false;
+    }
+  }  
+  return true;
 }
 
 function q1(confidence) {
@@ -915,7 +970,7 @@ function playerDisconnect(playerNum) {
 
 function fetchResponse(val,participant,round,index) {
   var tagName = $(val).prop("tagName");
-  log("fetchResponse("+tagName+" r:"+round+") cr:"+currentRound);
+  log("fetchResponse("+tagName+" r:"+round+" part:"+participant+") cr:"+currentRound);
   if (tagName == "COMMAND" || tagName == "CONFIDENCE"|| tagName=="READY") {
     // this contains 1 or more commands
     if (typeof commandHistory[round][participant] === "undefined") {
@@ -926,7 +981,7 @@ function fetchResponse(val,participant,round,index) {
       submitted = true;
     }
     var done = true;
-    for (var pid = 1; pid <= numPlayers; pid++) {
+    for (var pid = 1; pid <= numPlayersAndBots; pid++) {
       if (typeof commandHistory[currentRound][pid] === "undefined") {
         done = false;
         break;
@@ -956,7 +1011,45 @@ function fetchResponse(val,participant,round,index) {
     if (round == currentRound) {
       unit.setNextRegion(region);
     }
+  } else if (tagName == "MARK") {
+    if (!(currentRound in userMarkers)) {
+      userMarkers[currentRound] = [];
+    }
+//  '<mark region="'+me.id+'" letter="'+letter+'" note="'+note+'" idx="'+userMarkerCtr+'"/>'
+    var mark = $(val);
+    var letter = mark.attr('letter');
+    var note = mark.attr('note');
+    var removeId = mark.attr('idx');
+    var region = mark.attr('region');
+    if (userMarkerCtr <= removeId) {
+      userMarkerCtr = removeId+1;
+    }
+    for (var round in userMarkers) {
+      var list = userMarkers[round];
+      for (var idx in list) {
+        var item = list[idx];
+        if (item[3] == removeId) {
+          return;
+        }
+      }
+    }
+    userMarkers[currentRound].push([region,letter,note,removeId]);  
+  } else if (tagName == "UNMARK") {
+    var unmark = $(val);
+    var removeId = unmark.attr('idx');
+    
+    for (var round in userMarkers) {
+      var list = userMarkers[round];
+      for (var idx in list) {
+        var item = list[idx];
+        if (item[3] == removeId) {
+          list.splice(idx,1);
+          return;
+        }
+      }
+    }
   }
+    
 }
 
 /**
@@ -966,12 +1059,13 @@ function fetchResponse(val,participant,round,index) {
  * @param index
  */
 function newMove(participant, index, round) {
-//  log("newMove("+participant+" i:"+index+" r:"+round+") cr:"+currentRound);
+  log("newMove("+participant+" i:"+index+" r:"+round+") cr:"+currentRound);
   fetchMove(participant, currentRound, index, fetchResponse);
 }
 
 function endRound() {
   if (currentRound < FIRST_ACTUAL_ROUND) {
+    // end of instructions
     clearInstructions();
     setRound(FIRST_ACTUAL_ROUND);
     initRound();
@@ -979,12 +1073,14 @@ function endRound() {
   }
 
   if (currentRound > ROUND_ZERO+numRounds) {
+    // end of last round
     showCurrentBoard();
     showAirstrike();
     setRound(currentRound+1);
     return;
   }
   
+  // end of normal round
   if (allowMapHistory) {
     addRoundTab(currentRound-ROUND_ZERO);
   }
@@ -1067,7 +1163,7 @@ function showCurrentBoard() {
 
 
 function initRound() {
-  log("initRound:"+currentRound);
+//  log("initRound:"+currentRound);
   if (currentRound-ROUND_ZERO <= numRounds) {
     // normal round
     addBeginTurnSitRep(currentRound-ROUND_ZERO, numRounds);
@@ -1077,7 +1173,7 @@ function initRound() {
     }
   } else {
     // answer round
-    log("answerRound");
+//    log("answerRound");
     // take all the units that stay on the board off
     for (var uid in units) {
       var unit = units[uid];
@@ -1086,7 +1182,7 @@ function initRound() {
     }
     clearUnitsFromBoard();
     initializeAssets(roleUnits[TARGET_ROLE]);
-    log("answerRound: done");
+//    log("answerRound: done");
   }
   showCurrentBoard();
   $('#go').html("End Turn");
@@ -1161,7 +1257,7 @@ function displayUserMarkers(round) {
   for (var m in markers) {
     var mark = markers[m];
     var region = regions[mark[0]];
-    region.addStatus(mark[1],mark[2]);
+    region.addStatus(mark[1],mark[2],mark[3]);
   }
 }
 

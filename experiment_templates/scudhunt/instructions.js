@@ -556,6 +556,14 @@ function doneInstructions() {
   if (!inInstructions) return;
   $("#iskip").attr('value',"Waiting for Team");
   submit('<ready />');
+  
+  if (shouldRunBots()) {
+    for (var i = 1; i <= numPlayersAndBots; i++) {
+      if (!activePlayers[i]) {
+        submitBot(i, currentRound, '<ready />');
+      }
+    }
+  }
 }
 
 /**
