@@ -16,6 +16,9 @@ function initializeUnits(minPlayers) {
   TARGET_NOUN = "mobile missile launcher";
   TARGET_NOUN_PLURAL = "mobile missile launchers";
 
+  ENEMY_NOUN = "Porona";
+  ALLY_NOUN = "Kartuna";
+  
   roleName[SPACE_COMMAND] = "Space Command";
   roleName[AIR_COMMAND] = "Air Command";
   roleName[SPY_MASTER] = "Spy Master";
@@ -240,7 +243,7 @@ function initializeUnits(minPlayers) {
     return 0;
   };
 
-  seals = new Unit(6, SPEC_OPS, "Navy SEALS", "Deploy on Cost; Walk from there",
+  seals = new Unit(6, SPEC_OPS, "Navy SEALS", "Deploy on Coast; Walk from there",
       "May only be inserted on the coast (row E).  Searchs grid square with excellent reliability.  "+
       "Can reliably distinguish between deception and launchers.  "+
       "Each turn that the Navy SEALS team is in play, there is a chance the team "+
@@ -281,7 +284,7 @@ function initializeUnits(minPlayers) {
   };
   
   for (var i = 0; i < numTargets; i++) {
-    var scud = new Unit(7+i, TARGET_ROLE, "Enemy "+i, "Hidden Target", 
+    var scud = new Unit(7+i, TARGET_ROLE, "Target "+(i+1), TARGET_NOUN, 
         "Based on your operations over the previous days, place each the "+TARGET_NOUN+" in the most likely location.", 
         getFile("scud.png"), 7, null);
   }

@@ -51,6 +51,8 @@ var ROUND_NOUN = "Round"; // what you call a Round: Day, Hour, Turn... etc
 var ROUND_NOUN_PLURAL = "Rounds"; 
 var TARGET_NOUN = "Target"; 
 var TARGET_NOUN_PLURAL = "Targets";
+var ENEMY_NOUN = "our enemy";
+var ALLY_NOUN = "our ally";
 var numRounds = 5;
 var numTargets = 4;
 var choiceAvatarId = 1; // what to render as the user's choice
@@ -67,6 +69,22 @@ var DIF_HARD = 30;
 var userMarkerCtr = 1;
 var userMarkers = {} // round => [[region,symbol,note],...]
 
+var ranks = ["2nd Lieutenant","1st Lieutenant","Captain","Major","Lt Colonel","Colonel","Brigadier Gen","Major Gen","Lt Gen","General","GOA"];
+var rank = -1;
+
+function getRank() {
+  if (ranks[5] in awards[myid]) {
+    // TODO score based rank
+    return 5;
+  } else {
+    for (var i = 4; i >= 0; i--) {
+      if (ranks[i] in awards[myid]) {
+        return i;
+      }
+    }
+  }
+  return -1;
+}
 
 function setDifficulty(d) {
   if (typeof d =="string") {
@@ -671,10 +689,15 @@ function deselectAllMarkers() {
 }
 
 function assignPlayersRoundRobin() {
+  Math.seedrandom(seed);
+  role_radix = Math.floor(Math.random()*num_roles);
   roleToPlayer = new Array();
   var pid = 1;
-  for (var r = 1; r <= num_roles; r++) {
-    roleToPlayer[r] = pid;
+  for (var r = 0; r < num_roles; r++) {
+    var idx = 1+(r+role_radix) % num_roles;
+//    alert(idx+" => "+pid);
+    roleToPlayer[idx] = pid;
+    
     pid++;
     if (pid > numPlayersAndBots) {
       pid = 1;
@@ -685,6 +708,7 @@ function assignPlayersRoundRobin() {
 var numBots = 0;
 var numPlayersAndBots = 1;
 function initialize() {
+  rank = getRank();
   setDifficulty(variables['difficulty']);
   roundDuration = parseInt(variables['round_duration']);
   
@@ -914,11 +938,76 @@ function q1(confidence) {
     }
   }
   submit(submission);
+  if (shouldRunBots()) {
+    for (var i = 1; i <= numPlayersAndBots; i++) {
+      if (!activePlayers[i]) {
+        submitBot(i, currentRound, '<confidence value="-1"/>');
+      }
+    }
+  }
   $("#q1").html('<h2>Waiting for team.</h2>');
 }
 
 function showAirstrike() {
   $("#q1").fadeOut();
+  
+  var numHits = 0;
+  for (var unitIdx in roleUnits[TARGET_ROLE]) {
+    var unit = roleUnits[TARGET_ROLE][unitIdx];
+    if ((unit.nextRegion != null) && (unit.nextRegion.value == VALUE_TARGET)) {
+      numHits++;
+    }
+  }
+  var score = 0;
+  
+  switch(difficulty) {
+  case DIF_EASY:
+    if (numHits >= 1 && !("2nd Lieutenant" in awards[myid])) {
+      writeAward("2nd Lieutenant");      
+    }
+    if (numHits >= 3 && !("1st Lieutenant" in awards[myid])) {
+      writeAward("1st Lieutenant");      
+    }
+    if (numHits == numTargets) {
+      score = 1000;
+      if (!("Captain" in awards[myid])) {
+        writeAward("Captain");
+      }
+    } else {
+      score = numHits * 100;
+    }
+    break;
+  case DIF_MEDIUM:
+    if (numHits >= 3 && !("Major" in awards[myid])) {
+      writeAward("Major");      
+    }
+    if (numHits == numTargets) {
+      score = 2000;
+      if (!("Lt Colonel" in awards[myid])) {
+        writeAward("Lt Colonel");
+      }
+    } else {
+      score = numHits * 200;
+    }
+    break;
+  case DIF_HARD:
+    if (numHits >= 3 && !("Colonel" in awards[myid])) {
+      writeAward("Colonel");      
+    }
+    if (numHits == numTargets) {
+      score = 5000;
+    } else {
+      score = numHits * 300;
+    }
+    break;
+  }
+  
+  if (numHits == 0) {
+    alert("You missed every "+TARGET_NOUN+"!  "+ALLY_NOUN+" has taken severy casualties.  Try harder next time!");
+  } else {
+    writeScore("score",score);
+    alert("Congratulations!  You destroyed "+numHits+" "+TARGET_NOUN_PLURAL+"!  You scored "+score+" points.  Your current rank is "+ranks[getRank()]+".");    
+  }
   
   var targetCtr = 0;
   for (idx in regions) {
@@ -1059,7 +1148,7 @@ function fetchResponse(val,participant,round,index) {
  * @param index
  */
 function newMove(participant, index, round) {
-  log("newMove("+participant+" i:"+index+" r:"+round+") cr:"+currentRound);
+//  log("newMove("+participant+" i:"+index+" r:"+round+") cr:"+currentRound);
   fetchMove(participant, currentRound, index, fetchResponse);
 }
 
