@@ -174,7 +174,7 @@ function initializeUnits(minPlayers) {
       "but cannot reliably distinguish launcher from deception operations.", 
       getFile("headphones.png"), 3, [[0.6,0.35,0.05],[0.2,0.6,0.2],[0.1,0.3,0.6]]);
   
-  var humint = new Unit(4, SPY_MASTER, "Spy", "Deploy anywhere; Walk from there", 
+  var humint = new Unit(4, SPY_MASTER, "Spy", "Deploy to any square; Walk from there", 
       "We can deploy our spy to search any region with excellent reliablity.  "+
       "The agent has limited mobility; after initial placement on any square, " +
       "he may only remain in the same square or move to an adjacent grid square." +
@@ -208,7 +208,7 @@ function initializeUnits(minPlayers) {
     return 0;
   };
 
-  specOps = new Unit(5, SPEC_OPS, "Spec Ops", "Deply anywhere; Walk from there",
+  specOps = new Unit(5, SPEC_OPS, "Spec Ops", "Deploy to any square; Walk from there",
       "May be inserted to search any grid square with excellent reliability.  "+
       "Can reliably distinguish between deception and launchers.  "+
       "Each turn that the Spec Ops team is in play, there is a chance the team "+

@@ -1,13 +1,19 @@
-Rank,,How to get,Permissions
-,<none>,,"easy, single-player"
-O-1,2nd Lieutenant,Kill 1 Missile,"easy, single-player"
+Rank,Name,How to get,Permissions
+,private,start,"easy, single-player"
+O-1,2nd Lieutenant,Kill 1 Missile on easy,"easy, single-player"
 O-2,1st Lieutenant,Kill 3 Missiles on easy,"easy, multi-player"
 O-3,Captain,Kill 4 Missiles on easy,"medium, multi"
 O-4,Major,Kill 3 Missiles on medium,"medium, multi"
 O-5,Lt Colonel,Kill 4 Missiles on medium,"hard, multi"
-O-6,Colnel,Kill 3 Missiles on hard,
+O-6,Colonel,Kill 3 Missiles on hard,
 O-7,Brigadier Gen,O-6 and Top 100,
 O-8,Major Gen,O-6 and Top 50,
 O-9,Lt Gen,O-6 and Top 10,
 O-10,General,O-6 and Top 5,
 Special,GOA,O-6 and #1,
+,,,
+,,,
+Points,per target,perfect,
+easy,100,1000,
+medium,200,2000,
+hard,300,5000,
