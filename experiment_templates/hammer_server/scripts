@@ -10,8 +10,29 @@ def hit_cpu(thread, amount):
 def hit_db(thread, amount):
   print "%s %s" % (thread,urllib2.urlopen("%shit_db/%s/" % (server,amount)).read())
 
-for i in range(10):
-  Thread(target=hit_cpu, args=(i,1)).start()
+for i in range(15):
+  Thread(target=hit_thread, args=(i,30)).start()
+
+
+for i in range(45):
+  Thread(target=hit_db, args=(i,130)).start()
+
+
+for i in range(15):
+  Thread(target=hit_db, args=(i,3)).start()
+
+
+mythreads = []
+
+for i in range(15):
+  t = Thread(target=hit_thread, args=(i,20))
+  mythreads.append(t)
+  t.start()
+
+
+for i in range(15):
+  Thread(target=hit_cpu, args=(i,3)).start()
+
   
   
 server = "http://127.0.0.1:7999/"
