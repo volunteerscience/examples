@@ -1,6 +1,6 @@
 import urllib2
 from threading import Thread
-server = "http://127.0.0.1:7999/"
+server = "http://volunteerscience.com/"
 def hit_thread(thread, amount):
   print "%s %s" % (thread,urllib2.urlopen("%shit_thread/%s/" % (server,amount)).read())
 
@@ -14,14 +14,14 @@ for i in range(2):
   Thread(target=hit_thread, args=(i,5)).start()
 
 
-for i in range(45):
+for i in range(10):
   Thread(target=hit_db, args=(i,130)).start()
 
 
 for i in range(15):
   Thread(target=hit_db, args=(i,3)).start()
 
-server = "http://volunteerscience.com/"
+server = "http://127.0.0.1:7999/"
 
 mythreads = []
 
