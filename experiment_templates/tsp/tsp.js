@@ -56,6 +56,9 @@ var forceBots = 0; // number of bots _not_ due to dropouts
 var botType = 0;
 
 function initialize() {
+  numCities = parseInt(variables['num_cities']);
+  loadMaps(numCities);
+  chooseTestMapIndex();
   initializeGameType();
   interactiveInstructions1();
 }
@@ -119,11 +122,56 @@ function initializeGameType() {
 
 }
 
+var testMapIndex = 0;
+
+function chooseTestMapIndex() {
+  // try from the experiment specified preferredMaps
+  var preferredMaps = [];
+  try {
+    preferredMaps = variables['preferred_maps_'+numCities].split(',');
+  } catch (err) {
+  }
+  if (pickTestMapIndex(preferredMaps)) {
+    return;
+  }
+  
+  // try any of the maps
+  for (var i = 0; i < map.length; i++) {
+    preferredMaps[i] = i; 
+  }
+  if (pickTestMapIndex(preferredMaps)) {
+    return;
+  }
+
+  // pick a random map
+  testMapIndex = pickRandomMap();
+}
+
+function pickTestMapIndex(preferredMaps) {
+  for (var i in preferredMaps) {
+    var awardString = "map_"+numCities+"_"+preferredMaps[i];
+    var fail = false;
+    for (var tid in awards) {
+      if (awardString in awards[tid]) {
+        fail = true;
+      }
+    }
+    if (!fail) {
+      testMapIndex = preferredMaps[i];
+      return true;
+    }
+  }
+  return false;  
+}
+
 /**
  * Set up the game board and the smaller windows for "team solutions"
  */
 function initializeGame() {
   $("#interactiveInstructions1").hide();  
+  
+  chooseTestMapIndex();
+  alert(testMapIndex);
   
   width = 570;
   height = 460;
@@ -178,9 +226,12 @@ function initializeGame() {
  * Maps are generated with a program and stored in maps.js.  This function picks a random one.
  */
 function getMapIndex(round) {
+  return testMapIndex;
+}
+
+function pickRandomMap() {
   Math.seedrandom(seed);
 
-  var mapSeed = seed+round;
   var numMaps = map.length;
   
   var mapIndex = Math.floor(Math.random()*numMaps);
@@ -343,6 +394,11 @@ function initializeRound(round) {
 
 //  alert('initRound:'+round);
   gameRound = 1+round-FIRST_ACTUAL_ROUND;
+  
+  if (gameRound == 2) {
+    writeAward("map_"+numCities+"_"+testMapIndex);
+  }
+  
   $('#round').html('Round '+gameRound+' of '+numRounds);
   $('#submitButton').attr("value","Submit");
 
@@ -461,11 +517,13 @@ function newMove(participant, index) {
 //  alert('newMove: '+currentRound+' '+participant+' '+index);
 //  if ((numPlayers > 1) && (participant == myid)) return;
 //  drawTeamSolution(participant, currentRound, index, tPaper[participant]);
+  
+//  log(remainingRounds+" cr:"+currentRound+" m:"+moves);
   var done = true;
 //  alert(Object.keys(moves));
   for (var i = 1; i <= numPlayers; i++) {
 //    alert(i+" "+moves[i]);
-    if (moves[i] < 1) {
+    if (!moves[i] || moves[i] < 1) {
       done = false;
       break;
     }
@@ -906,7 +964,7 @@ function showMidRoundPopup(dist, millis) {
     $("#midRoundOk").unbind( "click" );
     $("#midRoundChoices").html("");
     
-    if (numPlayers == 1) {
+    if (false && numPlayers == 1) {
       auto_click_millis = 15000;
       $("#midRoundText").html("Your distance last round was "+getHumanReadableScore(dist)+".  Which of these is the best solution?");  
       var lastSolution = cityOrder.join();
@@ -1087,7 +1145,7 @@ function updateClock() {
  * Initialize the round or survey question.
  */
 function startNextRound() {
-//  alert("snr:"+currentRound);
+//  log("snr:"+currentRound);
   var remainingRounds = FIRST_ACTUAL_ROUND+numRounds-currentRound-1;
 //  alert(remainingRounds);
 //  if (currentRound < (FIRST_ACTUAL_ROUND+numRounds-1)) {
