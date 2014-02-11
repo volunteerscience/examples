@@ -171,7 +171,7 @@ function initializeGame() {
   $("#interactiveInstructions1").hide();  
   
   chooseTestMapIndex();
-  alert(testMapIndex);
+//  alert(testMapIndex);
   
   width = 570;
   height = 460;
