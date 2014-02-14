@@ -72,13 +72,13 @@ function initialize() {
 function initializeGameType() {
   Math.seedrandom(seed);
   
-  var info = Math.floor(Math.random()*5);
+  var info = Math.floor(Math.random()*3);
   switch (info) {
     case 0:
       showTeamModulo = -1;
       break;
     case 1:
-    case 2:
+//    case 2:
       showTeamModulo = 1;
       break;
     default:
@@ -177,7 +177,7 @@ function initializeGame() {
   height = 460;
 
   distScale = parseInt(variables['scale']);
-  antiScale = parseInt(variables['antiscale']);
+  antiscale = parseInt(variables['antiscale']);
   numRounds = parseInt(variables['num_rounds']);
   
   if (!showScore) {
@@ -958,19 +958,30 @@ var midRoundClock = null;
  */
 function showMidRoundPopup(dist, millis) {
   doSubmitLock = false;
+
+  var lastSolution = cityOrder.join();
+  if (myBestSolution == null) {
+    myBestSolution = lastSolution;
+  }
+  var lastBestSolution = myBestSolution; // best solution before this round
+
+  if (myBestSolution == null || ((dist > 0) && (dist < myBestSolutionDist))) {
+    myBestSolution = lastSolution;
+    if (dist > 0) {
+      myBestSolutionDist = dist;          
+    }
+  }
+  
   var remainingRounds = FIRST_ACTUAL_ROUND+numRounds-currentRound-1;
   if (remainingRounds > 0) {
     var auto_click_millis = 3000;
     $("#midRoundOk").unbind( "click" );
     $("#midRoundChoices").html("");
-    
+
+
     if (false && numPlayers == 1) {
       auto_click_millis = 15000;
       $("#midRoundText").html("Your distance last round was "+getHumanReadableScore(dist)+".  Which of these is the best solution?");  
-      var lastSolution = cityOrder.join();
-      if (myBestSolution == null) {
-        myBestSolution = lastSolution;
-      }
       
       var shuffleOrder = [0,1];
       var drawBot = false;
@@ -988,7 +999,7 @@ function showMidRoundPopup(dist, millis) {
           addMidRoundSolution("last",lastSolution, dist, millis);
           break;
         case 1:
-          addMidRoundSolution("best",myBestSolution, dist, millis);
+          addMidRoundSolution("best",lastBestSolution, dist, millis);
           break;
         case 2:
           switch(botType) {
@@ -1005,13 +1016,6 @@ function showMidRoundPopup(dist, millis) {
         }
       }
       
-      if (myBestSolution == null || ((dist > 0) && (dist < myBestSolutionDist))) {
-        myBestSolution = lastSolution;
-        if (dist > 0) {
-          myBestSolutionDist = dist;          
-        }
-      }
-
       
       
       $("#midRoundOk").attr("value","They are all the same.");      
@@ -1162,7 +1166,78 @@ function startNextRound() {
 function q1(val) {
   submit(val);
   $("#q1").hide();
-  showResults();
+  showOptimalPanel();
+}
+
+var numRoundsWithStar = 0;
+function showOptimalPanel() {
+//  #yourBest
+//  #optimalSolution
+  fetchMove(myid, currentRound-1, 0, function(val) {
+    updateScore(currentRound-1, val); // get the final score
+    var star = '<img src="'+FILE_PATH+files['small_gold_star.png']+'"/>';
+    
+    var totalStars = 0;
+    var table = $('#result_table');
+    var foundShortest = false;
+    numRoundsWithStar = 0;
+    for (var rnd = 1; rnd <= numRounds; rnd++) {
+      var note = "";
+      var roundScore = scoreTable[rnd+FIRST_ACTUAL_ROUND-1];
+      var stars = 0;
+      if (roundScore == 0) {
+        if (rnd == 1) {
+          writeAward("First Try");
+        }
+        stars = 10;
+        foundShortest = true;
+      } else {
+        stars = 5-Math.floor(roundScore/variables['close_score']);
+      }
+      if (!isNaN(stars) && stars > 0) {
+        numRoundsWithStar++;
+        totalStars+=stars;
+        for (var i = 0; i < stars; i++) {
+          note+=star;
+        }
+      }
+      table.append('<tr><td>'+rnd+'</td><td>'+scoreTable[rnd+FIRST_ACTUAL_ROUND-1]+'</td><td>'+note+'</td></tr>');
+    }
+    
+    var foo = '<tr class="blank_row" style="border-top:thick solid black"></tr><tr><td>Total</td><td colspan="2">';
+    for (var i = 0; i < totalStars; i++) {
+        foo+=star;
+    }
+    foo+='</td></tr><tr class="blank_row"></tr>';
+    table.append(foo);    
+//    table.append('<tr class="blank_row" style="border-top:thick solid black"></tr><tr><td>Total</td><td colspan="2">'+star+' x '+totalStars+'</td></tr><tr class="blank_row"></tr>');
+    
+    writeScore("Points",totalStars*100);
+    if (foundShortest) {
+      writeAward("Shortest Path");
+      writeScore("Shortest Path",1)
+    }
+    
+    var map_id = getMapIndex(-1);
+    
+    var paper = Raphael("yourBest_canvas", (width+cityRad*2)*tFac, (height+cityRad*2)*tFac);
+    doDrawTeamMap(paper,buildMapFromIndex(map_id),myBestSolution.split(","));
+    var score = Math.round(myBestSolutionDist/antiscale);
+    if (myBestSolutionDist == 1000000) {
+      score = variables['failScore'];
+    }
+    $("#yourBest_score").html(score);
+
+    paper = Raphael("optimalSolution_canvas", (width+cityRad*2)*tFac, (height+cityRad*2)*tFac);
+    doDrawTeamMap(paper,buildMapFromIndex(map_id),map[map_id][1]);
+    score = Math.round(map[map_id][2][0]/antiscale);
+    $("#optimalSolution_score").html(score);
+    
+    $("#optimalSolutionPanel").show();
+  });
+
+  
+//  showResults();  
 }
 
 /**
@@ -1195,61 +1270,17 @@ function hideGame() {
  * Score screen at the end
  */
 function showResults() {
-  var star = '<img src="'+FILE_PATH+files['small_gold_star.png']+'"/>';
-  fetchMove(myid, currentRound-1, 0, function(val) {
-    updateScore(currentRound-1, val); // get the final score
-    
-    var totalStars = 0;
-    var table = $('#result_table');
-    var foundShortest = false;
-    var numRoundsWithStar = 0;
-    for (var rnd = 1; rnd <= numRounds; rnd++) {
-      var note = "";
-      var roundScore = scoreTable[rnd+FIRST_ACTUAL_ROUND-1];
-      var stars = 0;
-      if (roundScore == 0) {
-        if (rnd == 1) {
-          writeAward("First Try");
-        }
-        stars = 10;
-        foundShortest = true;
-      } else {
-        stars = 5-Math.floor(roundScore/variables['close_score']);
-      }
-      if (!isNaN(stars) && stars > 0) {
-        numRoundsWithStar++;
-        totalStars+=stars;
-        for (var i = 0; i < stars; i++) {
-          note+=star;
-        }
-      }
-      table.append('<tr><td>'+rnd+'</td><td>'+scoreTable[rnd+FIRST_ACTUAL_ROUND-1]+'</td><td>'+note+'</td></tr>');
-    }
-    
-    var foo = '<tr class="blank_row" style="border-top:thick solid black"></tr><tr><td>Total</td><td colspan="2">';
-    for (var i = 0; i < totalStars; i++) {
-        foo+=star;
-    }
-    foo+='</td></tr><tr class="blank_row"></tr>';
-    table.append(foo);    
-//    table.append('<tr class="blank_row" style="border-top:thick solid black"></tr><tr><td>Total</td><td colspan="2">'+star+' x '+totalStars+'</td></tr><tr class="blank_row"></tr>');
-    
-    
-    $('#results').show();
-    enablePlayAgain();
-    writeScore("Points",totalStars*100);
-    if (foundShortest) {
-      writeAward("Shortest Path");
-      writeScore("Shortest Path",1)
-    }
-    
-    if (numRoundsWithStar >= 3) {
-      payAMT(true,1.00);      
-    } else {
-      payAMT(true,0.0);      
-    }
+  $("#optimalSolutionPanel").hide();
+        
+  $('#results').show();
+  enablePlayAgain();
+  
+  if (numRoundsWithStar >= 3) {
+    payAMT(true,0.20);      
+  } else {
+    payAMT(true,0.0);      
+  }
     
 //    quit();
-  });
   
 }
