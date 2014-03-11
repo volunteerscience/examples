@@ -40,6 +40,7 @@ var interactiveInstructions = false;
 var iiState = 0;
 var demoMap = [[20,20],[20,160],[260,160],[260,20]];
 function interactiveInstructions1() {
+  completeInstructionsTimer = setTimeout(doneInteractiveInstructions1,90000);
   interactiveInstructions = true;
   currentInstruction = $("#instruction_b");
   incomingInstruction = $("#instruction_a");
@@ -150,6 +151,7 @@ function iiSubmit() {
 }
 
 function doneInteractiveInstructions1() {
+  clearTimeout(completeInstructionsTimer);
   try {
     paper.remove();
     paper = null;
