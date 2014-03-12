@@ -49,6 +49,9 @@ function interactiveInstructions1() {
       '<p>Your job is to create an itinerary that <i>minimizes the total miles traveled</i> and <i>visit each city only once</i>.</p>'+
       '<p>Click <span style="color:'+greenButtonColor+'">Next</span> to continue.</p>');
   //   doneAllInstructions();
+  if (!variables['show_instructions']) {
+    doneInteractiveInstructions1();
+  }
 }
 
 var demoPaper = null;

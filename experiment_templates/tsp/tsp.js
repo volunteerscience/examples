@@ -1276,6 +1276,7 @@ function showResults() {
   enablePlayAgain();
   
   if (numRoundsWithStar >= 3) {
+    writeAward("No Instruction Needed");
     payAMT(true,0.20);      
   } else {
     payAMT(true,0.0);      
