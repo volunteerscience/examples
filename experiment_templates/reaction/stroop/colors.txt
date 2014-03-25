@@ -1,0 +1,16 @@
+#FFFFFF white 
+#808080 gray,silver
+ #000000 black
+#FF0000 red
+#800000 maroon,red
+#FFA500 orange  
+#FFFF00 yellow
+ #808000 olive,yellow,brown
+#00FF00 green,lime
+#008000 green
+#00FFFF blue,aqua
+#008080 blue,teal
+#0000FF blue
+#000080 blue,navy
+#FF00FF pink,fuchsia,purple,magenta
+#800080 purple,violet
