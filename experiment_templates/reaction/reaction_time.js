@@ -10,18 +10,18 @@
  */
 
 var num_examples = 2;
-var num_trials = 5;
+var num_trials = 15;
 var focus_delay = 1500;
 var focus_icon = "+";
 var focus_icon_color = "#FFFFFF";
-var mid_round_delay = 3000;
+var mid_round_delay = 2500;
 
 function initialize() {
   try { if ("num_examples" in variables) num_examples=parseInt(variables["num_examples"]); } catch (err) {}
   try { if ("num_trials" in variables) num_trials=parseInt(variables["num_trials"]); } catch (err) {}
   try { if ("focus_delay" in variables) focus_delay=parseInt(variables["focus_delay"]); } catch (err) {}
-  try { if ("focus_icon" in variables) focus_icon=parseInt(variables["focus_icon"]); } catch (err) {}
-  try { if ("focus_icon_color" in variables) focus_icon_color=parseInt(variables["focus_icon_color"]); } catch (err) {}
+  try { if ("focus_icon" in variables) focus_icon=variables["focus_icon"]; } catch (err) {}
+  try { if ("focus_icon_color" in variables) focus_icon_color=variables["focus_icon_color"]; } catch (err) {}
   try { if ("mid_round_delay" in variables) mid_round_delay=parseInt(variables["mid_round_delay"]); } catch (err) {}
   
   $("#instructions_link").click(popup_instructions);
@@ -41,8 +41,8 @@ function popup_instructions() {
 }
 
 function done_instructions() {
-//  $("#instructions").fadeOut(function() { loadExampleRound(1); });
-  $("#instructions").fadeOut(function() { loadTrialRound(1) });
+  $("#instructions").fadeOut(function() { loadExampleRound(1); });
+//  $("#instructions").fadeOut(function() { loadTrialRound(1) });
 }
 
 var in_example = true;
