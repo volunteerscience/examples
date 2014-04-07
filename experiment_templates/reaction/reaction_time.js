@@ -17,7 +17,8 @@ var focus_icon_color = "#FFFFFF";
 var mid_round_delay = 2500;
 
 function initialize() {
-  try { if ("num_examples" in variables) num_examples=parseInt(variables["num_examples"]); } catch (err) {}
+  num_examples = rounds[0][1].length;
+//  try { if ("num_examples" in variables) num_examples=parseInt(variables["num_examples"]); } catch (err) {}
   try { if ("num_trials" in variables) num_trials=parseInt(variables["num_trials"]); } catch (err) {}
   try { if ("focus_delay" in variables) focus_delay=parseInt(variables["focus_delay"]); } catch (err) {}
   try { if ("focus_icon" in variables) focus_icon=variables["focus_icon"]; } catch (err) {}
@@ -49,21 +50,35 @@ var in_example = true;
 function loadExampleRound(rnd) {
   setRound(rnd);
   in_example = true;
-  switch(rnd) {
-  case 1:
-    loadRound(rnd,"Example",rnd,num_examples,"Green","#0000FF","blue");
-    break;
-  default: 
-    loadRound(rnd,"Example",rnd,num_examples,"Blue","#0000FF","blue");
-    break;    
-  }
+  
+  var round = rounds[0][1][rnd-1]; // group 0 is the instructions, item 1 is the list, [rnd-1] is the item
+  loadRound(rnd,"Example",rnd,num_examples,round[0],round[1],round[2]);
 }
 
 function loadTrialRound(rnd) {
   setRound(rnd+100);
   in_example = false;
-  var ridx = Math.floor(Math.random()*rounds.length);
-  var round = rounds[ridx];
+  
+  // group[0] is the probability that the group should be chosen
+  // group[1] is the list of choices
+  
+  // Step 1: Choose the Group based on the group's probability
+  var group_rnd = Math.random();
+  var group = null;
+  var prob_sum = 0;
+  for (grp_idx in rounds) {
+    if (grp_idx > 0) {
+      group = rounds[grp_idx];
+      prob_sum+=group[0];
+      if (group_rnd < prob_sum) {
+        break;
+      }
+    }
+  }
+  
+  // Step 2: Choose an element of the group
+  var ridx = Math.floor(Math.random()*group[1].length);
+  var round = group[1][ridx];
   loadRound(rnd+100,"Trial",rnd,num_trials,round[0],round[1],round[2]);
 }
 
