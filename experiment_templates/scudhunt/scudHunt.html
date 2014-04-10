@@ -1,7 +1,19 @@
 <link href='http://fonts.googleapis.com/css?family=Coda+Caption:800' rel='stylesheet' type='text/css'>
 
 <div id="game">
-  <h1 id="gameTitle">Shadow Force</h1>
+  <div style="float:left;"><h1 id="gameTitle">Shadow Force</h1></div>
+  <div id="tips_button" class="btn-success btn-small" style="margin-left: 100px; margin-top: 7px; float:left;">Help</div>
+
+  <div id="tips_popup" style="display:none;">
+    <div id="tips_wrapper">
+      <div id="tips_index" class="tips_top">Tip</div>
+      <div id="tip_title" class="tips_top">No Tips Yet</div>
+      <div id="tips_close" class="tips_nav">X</div>
+      <div id="tip_text"></div>
+      <div id="tips_prev" class="tips_nav">Previous Tip</div>
+      <div id="tips_next" class="tips_nav">Next Tip</div>
+    </div>
+  </div>
 
   <div id="instructions">
      <div id="instruction_a" class="instruction" style="display:none;"></div>

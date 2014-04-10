@@ -11,7 +11,7 @@
   border-radius: 5px;
   background-color: #FFFFFF;
   font-size: 34px;
-  width: 90px;
+  min-width: 90px;
   float: left;
   z-index:2;
   position: relative;

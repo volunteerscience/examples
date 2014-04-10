@@ -1009,6 +1009,7 @@ function showAirstrike() {
     alert("Congratulations!  You destroyed "+numHits+" "+TARGET_NOUN_PLURAL+"!  You scored "+score+" points.  Your current rank is "+ranks[getRank()]+".");    
   }
   enableSubmitFeedback();
+  disableQuitConfirm();
   
   var targetCtr = 0;
   for (idx in regions) {
