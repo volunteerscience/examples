@@ -1,3 +1,21 @@
+#tips_button {
+	border-radius: 4px;
+	min-width: 38px;
+	text-align: center;
+}
+
+#tips_button:hover {
+  color: #555555;
+}
+
+#tips_button_unviewed {
+	border: 1px solid #000000;
+	font-size:90%;
+	border-radius:6px;
+	background-color: #999999;
+	padding: 1px 3px 0 3px;
+}
+
 #tip_window {
   background-color: #FFFFFF;  
 }
@@ -11,7 +29,8 @@
   left: 10%;
   top: 200px;
   width: 80%;
-  height: 200px;
+  max-width: 500px;
+  
 }
 /*  display: none; */
 /*  display: block; */
@@ -38,17 +57,32 @@
 
 
 #tip_title {
-  text-align: center;
-	width: 100%;
   font-size: 200%;
+  margin-left: 25%;
+  text-align: center;
+  width: 50%;
 }
 
 #tip_text {
-	text-align: center;
+  margin-bottom: 3em;
+  min-height: 65px;
+  text-align: justify;
+  padding: 15px;
+}
+
+#tip_text p {
+  line-height: 1.3em;
+  margin-bottom: 0.6em;
+}
+
+#tip_image {
+	float: left;
+	max-width:100px;
+	max-height:100px;
+	padding: 0 10px;
 }
 
 .tips_nav {
-  position: absolute;
   border: 2px solid #000000;
   padding: 3px 7px;
   cursor: pointer;
@@ -59,19 +93,64 @@
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+	background-color: #FFFFFF;
+}
+
+#tips_bottom {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  background-color: #C7D4E7;
 }
 
 #tips_prev {
-  position: absolute;
-  left: 0;
-  bottom: 0;
+	float: left;
 }
 
 #tips_next {
-  right: 0;
-  bottom: 0;
+  float: right;
+}
+
+#tips_nav_bar {
+  margin-top: 4px;
+  text-align: left;
+  display: inline-block;
+  margin-bottom: 0;
+  padding-left: 3px;
+}
+
+#tips_nav_bar span {
+	display:inline-block; 
+	vertical-align:middle;
+}
+
+.tip_nav_item {
+  min-width: 10px;
+  cursor: pointer;
+  padding-left: 1px;
+}
+
+.tip_nav_current {
+	text-decoration: underline;
+}
+
+.tip_nav_unviewed {
+	font-weight:bold;
 }
 
 .tips_nav_active {
 	background-color: #7DAF27;
+}
+
+.btn-warning {
+	color: #000000;
+}
+
+@keyframes tips_blink_border { 
+  50% { border-color: #000000; } 
+}
+.tips_blink {
+  border: 2px solid #FF0000;
+  animation: tips_blink_border .5s step-end infinite alternate;
 }

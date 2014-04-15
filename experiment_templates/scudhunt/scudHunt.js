@@ -16,6 +16,7 @@ var allowGroupTargetPlace = false; // true if the group decides where the target
 var highestRankingOfficerChoose = true; // true if the highest ranking player gets to choose who controls what
 
 var skipAllInstructions = true;
+var skipInstructionsAfter = S_STORY;
 
 var roundDuration = 90;
 var numRows = 5;
@@ -100,6 +101,8 @@ function setDifficulty(d) {
   }
   
   if (difficulty <= DIF_EASY) {
+    skipAllInstructions = false;
+    skipInstructionsAfter = S_STORY;
     allyUnitPlacement = true;
   } else {
     allyUnitPlacement = false;    
@@ -112,6 +115,9 @@ function setDifficulty(d) {
     globalSitRep = false;    
   }
   
+  if (numPlayers < 2) {
+    playerChat = false;
+  }
 }
 
 function getUnits(playerId) {
@@ -224,7 +230,7 @@ function Region(id,name, x,y, x1,y1, polygon) {
       20* (Math.floor(this.status.length/STATI_PER_ROW) % STATI_PER_COL);
 
     // add a new txt element
-    var txt = paper.text(tX,tY,letter).attr({'text-anchor': 'start', 'font-size': '20px', 'font-weight':'bold', 'fill': VALUE_COLOR[VALUE_DISPLAY.indexOf(letter)]});
+    var txt = paper.text(tX,tY,letter).attr({'text-anchor': 'start', 'font-size': '20px', 'cursor':'default', 'font-weight':'bold', 'fill': VALUE_COLOR[VALUE_DISPLAY.indexOf(letter)]});
 
     // this is the popup behavior to determine which unit claimed the status
     txt.click(function() {
@@ -307,7 +313,7 @@ function Region(id,name, x,y, x1,y1, polygon) {
       if (!(currentRound in userMarkers)) {
         userMarkers[currentRound] = [];
       }
-      var note = "user defined";
+      var note = "your mark";
       submit('<mark region="'+me.id+'" letter="'+letter+'" note="'+note+'" idx="'+userMarkerCtr+'"/>');
       userMarkers[currentRound].push([me.id,letter,note,userMarkerCtr]);
       me.addStatus(letter, note, userMarkerCtr);
@@ -317,6 +323,7 @@ function Region(id,name, x,y, x1,y1, polygon) {
     }
     
     if (selectedUnit != null) {
+      if (cancelDeployAssetTip) cancelDeployAssetTip();
       if (selectedUnit.effect(me).length == 0) {
         if (inInstructions) {
           if (instructionCantMove(selectedUnit, me)) {
@@ -332,7 +339,10 @@ function Region(id,name, x,y, x1,y1, polygon) {
         showCurrentBoard();
       }
       selectedUnit.setNextRegion(me);
-
+      cancelEndTurnTip = delayAddTip(5000,2,"End Turn",
+          '<p>When you have finished deploying your assets, press <span style="background-color:#7DAF27; color:#FFFFFF; padding:2px;">End Turn</span>.</p>',
+          "#go");
+      
       deselectAllUnits();
     }
   };
@@ -499,7 +509,6 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
       }
     }
 
-    
     this.nextRegion = region;
     if (region == null) {
       this.clearLocation();
@@ -509,7 +518,6 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
       if (this.ownerId == TARGET_ROLE && !inInstructions && !$("#currentRound").hasClass('selectedTab')) return; // if target moves, only change it on if we're on the currentRoundTab
       this.setLocation(region);
     }
-    
   };
   
   this.setCurrentRegion = function(region) {
@@ -518,6 +526,41 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
     if (this.remainsOnBoard) {
       if (this.wait == 0) {
         this.setNextRegion(region);
+
+        // tips
+          if (isMyUnit(unitMe)) {
+            var myGlow = null;
+            addUniqueTip(6,"Move on Battlefield",
+                "<p>Some of your units remain on the battlefiled after a turn.  You can move them by clicking on the unit and moving it to an adjancent region..</p>",
+                function(active) {
+                  if (myGlow) {
+                    myGlow.remove();
+                    myGlow = null;
+                  }
+                  
+                  if (active) {
+                    myGlow = unitMe.avatar.currentlyOn.polygon.glow({"color":"#FF0000"});
+                    myGlow.toFront();
+                  }
+                },
+                unitMe.icon);          
+          } else {
+            var myGlow = null;
+            addUniqueTip(3,"Ally's Asset",
+                "<p>Your ally has placed an asset on the board.  You do not control this asset, however you can see its location.</p>",
+                function(active) {
+                  if (myGlow) {
+                    myGlow.remove();
+                    myGlow = null;
+                  }
+                  
+                  if (active) {
+                    myGlow = unitMe.avatar.currentlyOn.polygon.glow({"color":"#FF0000"});
+                    myGlow.toFront();
+                  }
+                },
+                unitMe.icon);
+          }
       }
     }
   }
@@ -560,13 +603,21 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
       this.resurrect();
     }
 
-    if (this.wait == 0) {
-      // enable button
-      $('.asset[asset="'+this.id+'"]').css('background-color',ASSET_BACKGROUND_COLOR); // enable button
-    } else {
-      // disable button      
-      var myUnits = getUnits(myid);
-      $('.asset[asset="'+this.id+'"]').css('background-color',ASSET_WAIT_COLOR); // disable button
+    if (isMyUnit(unitMe)) {
+      if (this.wait == 0) {
+        // enable button
+        $('.asset[asset="'+this.id+'"]').css('background-color',ASSET_BACKGROUND_COLOR); // enable button
+      } else {
+        // disable button    
+        $('.asset[asset="'+this.id+'"]').css('background-color',ASSET_WAIT_COLOR); // disable button
+        
+        addUniqueTip(7,"Disabled Asset",
+            "<p>The gray button indicates that this asset has become disabled.</p>" +
+            "<p>You can see that its status is "+unitMe.waitString+".</p>"+
+            "<p>Some assets can recover, others remain disabled thoughout the engagemnt.</p>",
+            '.asset[asset="'+this.id+'"]',
+            unitMe.icon);        
+      }
     }
     this.setWaitStatus(wait);
   }
@@ -782,8 +833,16 @@ function initializeAssets(myUnits) {
     var assetDiv = assetWrapper.append(
         '<div class="asset" asset="'+unit.id+'" title="'+unit.long_description+'"><img src="'+unit.icon+'"/>'+
           '<div class="status">'+(unit.nextRegion == null ? "" : unit.nextRegion.name)+'</div>'+
-          '<p class="heading">'+unit.name+'</p><p>'+unit.short_description+'</p></div>');
+          '<p class="heading">'+unit.name+'</p><p>'+unit.short_description+'</p><div class="asset_info">?</div></div>');
   }
+  
+  $('.asset_info').click(function() {
+    var unitId = $(this).parent().attr('asset');    
+    var unit = units[unitId];
+    addTipPopup(1000+unit.id,unit.name,unit.long_description,'.asset[asset="'+unit.id+'"]',unit.icon);
+    setTimeout(deselectAllUnits,500);
+  });
+  
   $('.asset').click(function() {
     var unitId = $(this).attr('asset');
     var unit = units[unitId];
@@ -831,7 +890,7 @@ function initializeMarkerButtons() {
     if (oldSelectedMarker == markerId) {
       return; // clicking again deselects
     }
-    selectedMarker = markerId
+    selectedMarker = markerId;
     $(this).css('background-color',ASSET_SELECTION_COLOR);
   });
   
@@ -859,6 +918,7 @@ var commandHistory = new Array();
 var submitted = false;
 var guess = new Array();
 function submitMove() {
+  tips.hide();
   if (inInstructions) {
     instructionSubmitMove();
     return;
@@ -952,12 +1012,23 @@ function showAirstrike() {
   $("#q1").fadeOut();
   
   var numHits = 0;
+  var hitLoc = null;
+  var missFireLoc = null;
+  var attackLocations = {};
   for (var unitIdx in roleUnits[TARGET_ROLE]) {
     var unit = roleUnits[TARGET_ROLE][unitIdx];
-    if ((unit.nextRegion != null) && (unit.nextRegion.value == VALUE_TARGET)) {
-      numHits++;
+    attackLocations[unit.nextRegion.id] = true;
+    if (unit.nextRegion != null) {
+      if (unit.nextRegion.value == VALUE_TARGET) {
+        hitLoc = unit.nextRegion;
+        numHits++;
+      } else {
+        missFireLoc = unit.nextRegion;
+      }
     }
   }
+  
+  var numMisses = numTargets-numHits;
   var score = 0;
   
   switch(difficulty) {
@@ -1015,16 +1086,82 @@ function showAirstrike() {
   for (idx in regions) {
     var region = regions[idx];
     if (region.value == VALUE_TARGET) {
+      if (!(region.id in attackLocations)) {
+        missLoc = region;
+      }
+      
       var unit = roleUnits[TARGET_ROLE][targetCtr++]
       if (typeof unit != "undefined") {
         // place the targets in the actual locations
         if (unit.nextRegion != null) {
+          // this is the explosion
           unitAvatarFactory.build(choiceAvatarId,unit.nextRegion.x, unit.nextRegion.y);
         }
+        // this is the truck
         unit.setNextRegion(region);
       }
     }
   }
+  
+  // tip about a hit
+  if (numHits > 0) {
+    var hitStr = "<p>We successfully disabled "+numHits+" "+TARGET_NOUN_PLURAL+".</p>";
+    if (numHits == 1) {
+      hitStr = "<p>We successfully disabled 1 "+TARGET_NOUN+".</p>";
+    }
+    var myGlow = null;  
+    addUniqueTip(11,"Hit!!",
+        "<p>Airstrikes were conducted based on your target designations.</p>"+
+        hitStr +
+        "<p>The explosion shows the locations you chose.</p>",
+        function(active) {
+          if (myGlow) {
+            myGlow.remove();
+            myGlow = null;
+          }
+          
+          if (active) {
+            myGlow = hitLoc.polygon.glow({"color":"#FF0000"});
+            myGlow.toFront();
+          }
+        },
+        getFile("explosion.png"));          
+  }
+
+  // tip about a miss
+  if (numMisses > 0) {
+    var missStr = "<p>"+numMisses+" "+TARGET_NOUN_PLURAL+" survived!</p>";
+    if (numMisses == 1) {
+      missStr = "<p>1 "+TARGET_NOUN+" survived!</p>";
+    }
+    var missGlow = null;  
+    var missFireGlow = null;  
+    addUniqueTip(12,"Miss!!",
+        missStr +
+        "<p>The explosion shows the locations you chose.</p>",
+        function(active) {
+          if (missGlow) {
+            missGlow.remove();
+            missGlow = null;
+          }
+          if (missFireGlow) {
+            missFireGlow.remove();
+            missFireGlow = null;
+          }
+          
+          if (active) {
+            if (missLoc) {
+              missGlow = missLoc.polygon.glow({"color":"#FF0000"});
+              missGlow.toFront();
+            }
+            if (missFireLoc) {
+              missFireGlow = missFireLoc.polygon.glow({"color":"#FF0000"});
+              missFireGlow.toFront();              
+            }
+          }
+        },
+        getFile("scud.png"));               
+  }  
 }
 
 /**
@@ -1172,6 +1309,7 @@ function endRound() {
   }
   
   // end of normal round
+  if (cancelEndTurnTip) cancelEndTurnTip();
   if (allowMapHistory) {
     addRoundTab(currentRound-ROUND_ZERO);
   }
@@ -1253,10 +1391,26 @@ function showCurrentBoard() {
 }
 
 
+var cancelEndTurnTip = null;
+var cancelDeployAssetTip = null;
+
 function initRound() {
 //  log("initRound:"+currentRound);
   if (currentRound-ROUND_ZERO <= numRounds) {
     // normal round
+    cancelDeployAssetTip = delayAddTip(2000,1,"Deploy Assets",
+      "<p>Deploy one or more of your assets to help search for a "+TARGET_NOUN+".</p>"+
+      "<p>Click an Asset, then click a region in the battlefield.</p>"+
+      "<p>Note: Some units have restricted deployment zones.</p>",
+      ["#playerControls","#canvas"],
+      getUnits(myid)[0].icon);
+
+    if (currentRound-ROUND_ZERO == 4) {
+      addUniqueTip(8,"Round History",
+          "<p>You can click on these tabs to see the history of your game.</p>",
+          "#roundHistory");      
+    }
+
     addBeginTurnSitRep(currentRound-ROUND_ZERO, numRounds);
     for (var unit_idx in units) {
       var unit = units[unit_idx];
@@ -1273,7 +1427,16 @@ function initRound() {
     }
     clearUnitsFromBoard();
     initializeAssets(roleUnits[TARGET_ROLE]);
-//    log("answerRound: done");
+
+    $("#playerAssetsTitle").html("Target Locations");
+    
+    addUniqueTip(10,"Identify the Target Locations",
+        "<p>Use the information you gained throughout the campaign to determine the most probable location of each "+TARGET_NOUN+".</p>"+
+        "<p>Indicate your choice by placing each target indicator on the battlefield map.</p>",
+        ["#playerControls","#canvas"],
+        roleUnits[TARGET_ROLE][0].icon);      
+
+    //    log("answerRound: done");
   }
   showCurrentBoard();
   $('#go').html("End Turn");
@@ -1392,22 +1555,69 @@ function addSituationReports(moves) {
         }
       }
       reports = unit.buildSituationReport(no, possible, confirmed, wait);
+      if (isMyUnit(unit)) {
+        delayAddTip(600, 4,"Situation Report",
+            "<p>Your assets have delivered information about "+TARGET_NOUN+" locations.</p>"+
+            "<p><i>Each asset has a chance of being incorrect about their assessment.</i></p>"+
+            "<p>Some assets are more accurate than others.</p>"+
+            "<p>Your assets automatically mark the battlefield map with:</p><ul>"+
+            '<li><span style="color:'+VALUE_COLOR[0]+'; font-style:bold;">0</span> - nothing significant to report</li>'+
+            '<li><span style="color:#B4B415; font-style:bold;">?</span> - vehicles detected (may be launchers, deception operations, or routine civilian traffic)</li>'+
+            '<li><span style="color:'+VALUE_COLOR[2]+'; font-style:bold;">X</span> - launchers detected</li></ul>',
+            function(active) {
+              if (active) {
+                $(".sr_me").css("background-color","#FF0000");
+                $("#sitRep_wrapper").addClass(defaultAttrs);
+              } else {
+                $(".sr_me").css("background-color","");                
+                $("#sitRep_wrapper").removeClass(defaultAttrs);
+              }
+            },
+            unit.icon);
+      } else {
+        delayAddTip(400,5,"Ally Situation Report",
+            "<p>Your allies have delivered information about the locations of "+TARGET_NOUN_PLURAL+".</p>"+
+            "<p>Use a marker to jot relevant information on the battlefield map from your allied units.</p>"+
+            "<p>Make sure to check the situation reports at the beginning of every turn.</p>",
+            function(active) {
+              if (active) {
+                $(".sr_team").css("background-color","#FF0000");
+                $("#marker_panel").addClass(defaultAttrs);
+                $("#sitRep_wrapper").addClass(defaultAttrs);
+              } else {
+                $(".sr_team").css("background-color","");   
+                $("#marker_panel").removeClass(defaultAttrs);
+                $("#sitRep_wrapper").removeClass(defaultAttrs);
+              }
+            },
+            unit.icon);        
+      }
       for (i in reports) {
         var report = reports[i];
-        appendSitRep(unit.name,report);
+        appendSitRep(unit.name,report,isMyUnit(unit));
       }
     });
   }
 }
 
-function appendSitRep(title,value) {
-  $("#sitRep").append('<tr><th>&nbsp;&nbsp;'+title+'</th><td>'+value+'</td></tr>'); 
+function appendSitRep(title,value,mine) {
+  var srClass = "sr_team";
+  if (mine) {
+    srClass = "sr_me";
+  }
+  
+  $("#sitRep").append('<tr class='+srClass+'><th>&nbsp;&nbsp;'+title+'</th><td>'+value+'</td></tr>'); 
   sitRepScrollbar.slider("value",0);
 }
 
+var cancelChatTip = null;
 var DEFAULT_CHAT = "<type chat here>";
 function initChat() {
   if (playerChat) {
+    cancelChatTip = delayAddTip(15000, 9, "Chat",
+        "<p>You should use the chat panel to coordinate wiht your allies.</p>",
+        "#chatPanel");            
+
     $("#chatPanel").show();
     
     $("#chatInput").val(DEFAULT_CHAT);
@@ -1423,6 +1633,7 @@ function initChat() {
     });
     
     $("#chatInput").keypress(function(e) {
+      if (cancelChatTip) { cancelChatTip(); cancelChatTip = null; }
       if (e.which == 13) {
         callSendChat();
         $("#chatInput").val("");
@@ -1434,6 +1645,7 @@ function initChat() {
 }
 
 function callSendChat() {
+  if (cancelChatTip) { cancelChatTip(); cancelChatTip = null; }
   if ($("#chatInput").val() == DEFAULT_CHAT) {
     return;
   }

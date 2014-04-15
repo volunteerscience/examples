@@ -32,7 +32,7 @@ function initializeUnits(minPlayers) {
     "<p>Your mission is to locate the missile launchers, using various ground, space, air, and intelligence assets.</p>",
     "<p>The elite fanatical Poronan Revolutionary Guard Special Artillery Regiment (PRGSAR), with a number of mobile missile launchers, "+
       "has deployed from its depot to a secret hide site.</p>",
-    "<p>This deployment is supported by deception operations that may confuse our sensors.</p>",
+    "<p>This deployment is supported by deception operations that may confuse our assets.</p>",
     "<p>"+(actualNumPlayers == 1 ? "You " : ("Your team of "+actualNumPlayers+" joint operations commanders"))+" must identify the locations of "+
       (showNumberOfTargets ? numTargets : "one or more")+" "+TARGET_NOUN_PLURAL+(showNumberOfRounds ? " in the next "+numRounds+" days" : "")+".</p>",
     "<p>The fate of hundreds of thousands of Kartunans depend on your success.</p>"

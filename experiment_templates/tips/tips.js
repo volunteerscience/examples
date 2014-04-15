@@ -1,12 +1,150 @@
-function addTip(tip) {
-  tips.addTip(tip);
+/**
+ * Add something like this to the html:
+  <div id="tips_button" class="btn-success btn-small" style="margin-left: 100px; margin-top: 7px; float:left; display: none;">Help</div>
+
+  <div id="tips_popup" style="display:none;">
+    <div id="tips_wrapper">
+      <div id="tips_index" class="tips_top">Tip</div>
+      <div id="tip_title" class="tips_top">No Tips Yet</div>
+      <div id="tips_close" class="tips_nav">X</div>
+      <div id="tip_image"></div>
+      <div id="tip_text"></div>
+      <div id="tips_bottom">
+        <span id="tips_prev" class="tips_nav">Previous Tip</span>
+        <p id="tips_nav_bar"></p>
+        <span id="tips_next" class="tips_nav">Next Tip</span>
+      </div>
+    </div>
+  </div>
+
+ * 
+ * 
+ * cssChanges highlights the selected elements when the tip is showing, it has many options:
+ * 
+ * 1) string(selector) -- will apply the class "tips_blink" to the listed selector
+ * 2) array of selector -- will apply the class "tips_blank" to all selectors
+ * 3) map: string(selector) -> string(class) will apply each class to each selector
+ * 4) map: string(selector) -> map{ string(css) -> string(css_attr) will apply each css_attr to each css in each selector
+ * 5) function(active) -- will call with true when activated and false when deactivated
+ * 
+ * @param title
+ * @param text
+ * @param cssChanges
+ * @param icon
+ * @param uid
+ */
+
+function addTip(title, text, cssChanges, icon, uid) {
+  if (arguments.length == 1) {
+    return tips.addTip(arguments[0]);
+  }
+
+  return tips.addTip(new Tip(title, text, cssChanges, icon, uid));
 }
 
-function Tip(title,text,cssChanges,icon) {
+function addUniqueTip(uid, title, text, cssChanges, icon) {
+  return addTip(title, text, cssChanges, icon, uid);
+}
+
+function addTipPopup(uid, title, text, cssChanges, icon) {
+  tips.setTip(addUniqueTip(uid, title, text, cssChanges, icon));
+  tips.show();
+}
+
+function delayAddTip(delay, uid, title, text, cssChanges, icon) {
+  var timeout = setTimeout(function() {
+    addTip(title, text, cssChanges, icon, uid);    
+  }, delay);
+  
+  // return cancellable
+  return function() {
+    clearTimeout(timeout);
+  };
+}
+
+//var defaultAttrs = {"border":"2px dashed #FF0000"};
+//var defaultAttrs = {"animation":"blink .5s step-end infinite alternate"};
+var defaultAttrs = "tips_blink";
+function Tip(title,text,cssChanges,icon,uid) {
+  var me = this;
   this.title = title;
   this.text = text;
   this.cssChanges = cssChanges;
   this.icon = icon;
+  this.viewed = false;
+  if (uid) {
+    this.uid = uid;    
+  } else {
+    this.uid = -1;
+  }
+  
+//  alert(typeof (me.cssChanges));
+  if (typeof me.cssChanges == "string") {
+    me.cssChanges = [ me.cssChanges];
+  } 
+  
+  if (me.cssChanges instanceof Array) {
+    var newCssChanges = {}; 
+    for (var idx in me.cssChanges) {
+      newCssChanges[me.cssChanges[idx]] = defaultAttrs;
+    }
+    me.cssChanges = newCssChanges;
+  }
+
+  
+  this.activate = function() {
+    me.viewed = true;
+    try {
+      
+      if (me.cssChanges) {
+        if (typeof me.cssChanges == "function") {
+          me.cssChanges(true);
+        } else {        
+          for (var selector in me.cssChanges) {
+            var jqSelector = $(selector);
+            var attrs = me.cssChanges[selector];
+            if (typeof attrs == "string") {
+              jqSelector.addClass(attrs);
+            } else {
+              for (var attr in attrs) {
+                var val = attrs[attr];
+                jqSelector.css(attr,val);
+              }
+            }
+          }
+        }
+      }
+      
+    } catch (err) { 
+      //alert(err); 
+    }
+  }
+  
+  this.deactivate = function() {
+    try {
+
+      if (me.cssChanges) {
+        if (typeof me.cssChanges == "function") {
+          me.cssChanges(false);
+        } else {        
+          for (var selector in me.cssChanges) {
+            var jqSelector = $(selector);
+            var attrs = me.cssChanges[selector];
+            if (typeof attrs == "string") {
+              jqSelector.removeClass(attrs);
+            } else {
+              for (var attr in attrs) {
+                jqSelector.css(attr,"");
+              }
+            }
+          }
+        }
+      }
+      
+    } catch (err) { 
+      //alert(err); 
+    }
+  }
 }
 
 /**
@@ -24,11 +162,12 @@ function Tips(button_selector, popup_selector) {
   this.tip_list = [];
   this.button = $(button_selector);
   this.popup = $(popup_selector);
+  this.navBar = $("#tips_nav_bar");
   this.auto_popup = true;
   this.auto_advance = false;
-  this.auto_shake = true;
-
+  
   // to shake the button
+  this.auto_shake = false;
   var base_padding_left = this.button.css('padding-left');
   var base_padding_right = this.button.css('padding-right');
   var shakeAmt = 5;
@@ -41,6 +180,17 @@ function Tips(button_selector, popup_selector) {
   this.index = 0;
   
   this.addTip = function(tip) {
+    // toss out duplicates
+    if (tip.uid > 0) {
+      for (var idx in me.tip_list) {
+        var t = me.tip_list[idx];
+        if (t.uid > 0) {
+          if (t.uid == tip.uid) return t.index;
+        }
+      }
+    }
+    
+    tip.index = this.tip_list.length;
     this.tip_list.push(tip);    
     if (me.showing) {
       if (this.tip_list.length == 1) {
@@ -56,6 +206,8 @@ function Tips(button_selector, popup_selector) {
         me.startShake();
       }
     }
+    me.updateNav();
+    return tip.index;
   };
   
   this.hide = function() {
@@ -71,6 +223,20 @@ function Tips(button_selector, popup_selector) {
         };
     $("#tips_wrapper").hide();
     me.popup.animate(newCss,{"complete":function() {me.popup.fadeOut();}});
+    if (me.tip_list.length > 0) {
+      var t = me.tip_list[me.index];
+      setTimeout(t.deactivate,2000)
+    }    
+    
+    // set to the last unviewed tip
+    for (var idx in me.tip_list) {
+      var t = me.tip_list[idx];
+      if (!t.viewed) {
+        log("setting unviewed tip:"+t.index);
+        me.setTip(t.index);
+      }
+    }
+    me.changeGreen();
   };
   
   this.show = function() {
@@ -86,14 +252,24 @@ function Tips(button_selector, popup_selector) {
         };
     me.popup.css(newCss);
     $("#tips_wrapper").show();
+    if (me.tip_list.length > 0) {
+      var t = me.tip_list[me.index];
+      t.activate();
+    }
     me.popup.fadeIn();
     me.changeGreen();
+    me.updateNav();
   };
   
   this.setTip = function(index) {
     if (me.tip_list.length == 0) {
       return;
     }
+    
+    if (index != me.index) {
+      me.tip_list[me.index].deactivate();
+    }
+    
     if (index >= me.tip_list.length-1) {
       index = me.tip_list.length-1;
       $("#tips_next").removeClass("tips_nav_active");
@@ -112,19 +288,28 @@ function Tips(button_selector, popup_selector) {
     $("#tip_title").html(t.title);
     $("#tip_text").html(t.text);
     $("#tips_index").html("Tip #"+(me.index+1)+" of "+this.tip_list.length);
-
+    if (t.icon) {
+      $("#tip_image").html('<img src="'+t.icon+'"/>');    
+    } else {
+      $("#tip_image").html('');
+    }
+    
+    if (me.showing) {
+      t.activate();
+      me.updateNav();
+    }
   };
   
   
   this.changeRed = function() {
-    me.button.switchClass("btn-success","btn-danger");
-  }
+    me.button.switchClass("btn-success","btn-warning");
+  };
   
   this.changeGreen = function () {
-//    me.button.switchClass("btn-danger","btn-success");    
+//    me.button.switchClass("btn-warning","btn-success");    
     me.button.addClass("btn-success");    
-    me.button.removeClass("btn-danger");    
-  }
+    me.button.removeClass("btn-warning");    
+  };
   
   this.shake = function() {
     me.changeRed();
@@ -149,10 +334,52 @@ function Tips(button_selector, popup_selector) {
       me.button.stop(true);
       me.button.css(me.shake_center);
     }
-  }
+  };
+
+  this.navItemClicked = function() {
+    var idx = parseInt($(this).attr('idx'));
+    me.setTip(idx);
+  };
   
-  log("here");
-  this.button.click(this.show);
+  this.updateNav = function() {
+    var s = "";
+    var numUnviewed = 0;
+    for (var idx in me.tip_list) {
+      var t = me.tip_list[idx];
+      var d_idx = parseInt(idx)+1;
+      if (idx == me.index) {
+        s+='<span idx="'+idx+'" class="tip_nav_item tip_nav_current"> '+d_idx+' </span>';
+        if (!me.showing && !t.viewed) {
+          numUnviewed++;          
+        }
+      } else {
+        if (t.viewed) {
+          s+='<span idx="'+idx+'" class="tip_nav_item"> '+d_idx+' </span>';          
+        } else {
+          s+='<span idx="'+idx+'" class="tip_nav_item tip_nav_unviewed"> '+d_idx+' </span>';          
+          numUnviewed++;
+        }
+      }
+    }
+    me.navBar.html(s);
+    $(".tip_nav_item").click(me.navItemClicked);
+  
+    if (numUnviewed == 0) {
+      me.button.html('Help');
+      me.button.attr('title','Help');      
+    } else {
+      me.button.html('Help <span id="tips_button_unviewed">'+numUnviewed+'</span>');
+      me.button.attr('title','Help: '+numUnviewed+' not yet viewed');
+    }
+  };
+
+  this.button.click(function() {
+    if (me.showing) {
+      me.hide();
+    } else {
+      me.show();      
+    }
+  });
   $('#tips_close').click(this.hide);
   $('#tips_prev').click(function() { me.setTip(me.index-1);} );
   $('#tips_next').click(function() { me.setTip(me.index+1);} );
@@ -161,7 +388,7 @@ function Tips(button_selector, popup_selector) {
 var tips = null;
 $(function() {
   tips = new Tips("#tips_button", "#tips_popup");
-  testTips();
+//  testTips();
 });
 
 

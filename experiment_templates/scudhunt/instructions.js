@@ -170,7 +170,11 @@ var SPECIAL_RULE_SECTION = 9; // TODO: set me
 
 
 function initializeSection() {
-  log("initializeSection:"+section);
+  log("initializeSection:"+section+" skipAfter:"+skipInstructionsAfter);
+  if (section > skipInstructionsAfter) {
+    doneInstructions();
+    return;
+  }
   switch(section) {
   case S_STORY: 
     $("#userBoard").fadeOut();
@@ -590,4 +594,6 @@ function clearInstructions() {
   $('#playerControls').show();
   $('#situationReport').show();
   $('#userBoard').show();
+  $('#marker_panel').show();
+  $('#tips_button').show();
 }

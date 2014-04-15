@@ -2,16 +2,20 @@
 
 <div id="game">
   <div style="float:left;"><h1 id="gameTitle">Shadow Force</h1></div>
-  <div id="tips_button" class="btn-success btn-small" style="margin-left: 100px; margin-top: 7px; float:left;">Help</div>
+  <div id="tips_button" class="btn-success btn-small" style="margin-left: 100px; margin-top: 7px; float:left; display: none;">Help</div>
 
   <div id="tips_popup" style="display:none;">
     <div id="tips_wrapper">
       <div id="tips_index" class="tips_top">Tip</div>
       <div id="tip_title" class="tips_top">No Tips Yet</div>
       <div id="tips_close" class="tips_nav">X</div>
+      <div id="tip_image"></div>
       <div id="tip_text"></div>
-      <div id="tips_prev" class="tips_nav">Previous Tip</div>
-      <div id="tips_next" class="tips_nav">Next Tip</div>
+      <div id="tips_bottom">
+	      <span id="tips_prev" class="tips_nav">Previous Tip</span>
+	      <p id="tips_nav_bar"></p>
+	      <span id="tips_next" class="tips_nav">Next Tip</span>
+      </div>
     </div>
   </div>
 
@@ -37,12 +41,12 @@
         <div id="canvas" class="round-corner15"></div>
         <div class="under_canvas">
           <div id="go" class="btn-success btn-large left" onclick="submitMove();" style="display: none;">End Turn</div>
-          <div id="marker_panel">
+          <div id="marker_panel" style="display: none;">
             <p>Markers:</p>
-            <div id="marker_c" class="marker_btn">C</div>
-            <div id="marker_z" class="marker_btn">0</div>
-            <div id="marker_q" class="marker_btn">?</div>
-            <div id="marker_x" class="marker_btn">X</div>
+            <div id="marker_c" class="marker_btn" title="Clear a mark.">C</div>
+            <div id="marker_z" class="marker_btn" title="Mark a region as empty.">0</div>
+            <div id="marker_q" class="marker_btn" title="Mark a region as a possible target.">?</div>
+            <div id="marker_x" class="marker_btn" title="Mark a region as having a target.">X</div>
           </div>
         </div>
       </div>
