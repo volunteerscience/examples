@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<experiment name="SCUDHunt">
+  <test id="2240" date="2014-04-15 08:53:36.481000" round_duration="9990" min_players="2" difficulty="easy">
+    <subject id="1" uid="447d9d6559a5163e5297" gender="male" age_bin="5" ach_1st_Lieutenant="8" ach_2nd_Lieutenant="9" ach_Captain="9"/>
+    <submit subject="1" round="0" time="2"><game targets="11,4,3,21"/></submit>
+    <submit subject="1" round="1" time="17"><ready/></submit>
+    <submit subject="2" round="1" time="17"><ready/></submit>
+    <submit subject="1" round="1" time="18"><ready/></submit>
+    <submit subject="2" round="1" time="18"><ready/></submit>
+    <submit subject="1" round="101" time="84"><place unit="1" region="20"/></submit>
+    <submit subject="1" round="101" time="95"><command unit="1" region="20" scan="20,21,22,23,24" result="0,X,0,0,0" wait="1"/><command unit="2" wait="0"/><command unit="5" wait="0"/><command unit="6" wait="0"/></submit>
+    <submit subject="2" round="101" time="95"><command unit="0" region="11" scan="1,6,11,16,21" result="0,0,X,0,X" wait="0"/><command unit="3" region="5" scan="5" result="0" wait="0"/><command unit="4" region="18" scan="18" result="0" wait="-1"/></submit>
+    <submit subject="1" round="102" time="466"><place unit="2" region="0"/></submit>
+    <submit subject="1" round="102" time="468"><place unit="5" region="21"/></submit>
+    <submit subject="1" round="102" time="471"><place unit="6" region="21"/></submit>
+    <submit subject="1" round="102" time="474"><place unit="5" region="2"/></submit>
+    <submit subject="1" round="102" time="491"><mark region="5" letter="0" note="your mark" idx="1"/></submit>
+    <submit subject="1" round="102" time="498"><mark region="18" letter="0" note="your mark" idx="2"/></submit>
+    <submit subject="1" round="102" time="508"><mark region="1" letter="0" note="your mark" idx="3"/></submit>
+    <submit subject="1" round="102" time="510"><mark region="6" letter="0" note="your mark" idx="4"/></submit>
+    <submit subject="1" round="102" time="512"><mark region="16" letter="0" note="your mark" idx="5"/></submit>
+    <submit subject="1" round="102" time="518"><mark region="11" letter="X" note="your mark" idx="6"/></submit>
+    <submit subject="1" round="102" time="521"><mark region="21" letter="X" note="your mark" idx="7"/></submit>
+    <submit subject="1" round="102" time="531"><command unit="1" wait="0"/><command unit="2" region="0" scan="0,1,2,3,4" result="0,0,0,X,0" wait="0"/><command unit="5" region="2" scan="2" result="0" wait="0"/><command unit="6" region="21" scan="21" result="?" wait="0"/></submit>
+    <submit subject="2" round="102" time="531"><command unit="0" region="17" scan="2,7,12,17,22" result="X,0,0,0,0" wait="0"/><command unit="3" region="19" scan="19" result="0" wait="0"/><command unit="4" wait="-1"/></submit>
+    <submit subject="1" round="103" time="558"><place unit="5" region="8"/></submit>
+    <submit subject="1" round="103" time="561"><place unit="6" region="17"/></submit>
+    <submit subject="1" round="103" time="564"><place unit="1" region="15"/></submit>
+    <submit subject="1" round="103" time="567"><place unit="2" region="10"/></submit>
+    <submit subject="1" round="103" time="614"><mark region="19" letter="0" note="your mark" idx="8"/></submit>
+    <submit subject="1" round="103" time="627"><mark region="2" letter="X" note="your mark" idx="9"/></submit>
+    <submit subject="1" round="103" time="632"><mark region="22" letter="0" note="your mark" idx="10"/></submit>
+    <submit subject="1" round="103" time="634"><mark region="17" letter="0" note="your mark" idx="11"/></submit>
+    <submit subject="1" round="103" time="635"><mark region="12" letter="0" note="your mark" idx="12"/></submit>
+    <submit subject="1" round="103" time="637"><mark region="7" letter="0" note="your mark" idx="13"/></submit>
+    <submit subject="1" round="103" time="642"><command unit="1" region="15" scan="15,16,17,18,19" result="0,0,0,0,X" wait="1"/><command unit="2" region="10" scan="10,11,12,13,14" result="0,X,?,0,?" wait="3"/><command unit="5" region="8" scan="8" result="?" wait="0"/><command unit="6" region="17" scan="17" result="0" wait="0"/></submit>
+    <submit subject="2" round="103" time="642"><command unit="0" region="6" scan="1,6,11,16,21" result="0,0,?,0,X" wait="0"/><command unit="3" region="8" scan="8" result="?" wait="0"/><command unit="4" wait="-1"/></submit>
+    <submit subject="1" round="104" time="691"><place unit="5" region="14"/></submit>
+    <submit subject="1" round="104" time="694"><place unit="6" region="11"/></submit>
+    <submit subject="1" round="104" time="700"><place unit="5" region="9"/></submit>
+    <submit subject="1" round="104" time="717"><mark region="11" letter="?" note="your mark" idx="14"/></submit>
+    <submit subject="1" round="104" time="722"><mark region="21" letter="X" note="your mark" idx="15"/></submit>
+    <submit subject="1" round="104" time="748"><place unit="5" region="9"/></submit>
+    <submit subject="1" round="104" time="751"><command unit="1" wait="0"/><command unit="2" wait="2"/><command unit="5" region="9" scan="9" result="0" wait="0"/><command unit="6" region="11" scan="11" result="X" wait="0"/></submit>
+    <submit subject="2" round="104" time="751"><command unit="0" region="0" scan="0,5,10,15,20" result="0,0,?,0,0" wait="0"/><command unit="3" region="0" scan="0" result="0" wait="0"/><command unit="4" wait="-1"/></submit>
+    <submit subject="1" round="105" time="768"><mark region="0" letter="0" note="your mark" idx="16"/></submit>
+    <submit subject="1" round="105" time="775"><mark region="10" letter="?" note="your mark" idx="17"/></submit>
+    <submit subject="1" round="105" time="786"><place unit="6" region="7"/></submit>
+    <submit subject="1" round="105" time="789"><place unit="5" region="3"/></submit>
+    <submit subject="1" round="105" time="799"><command unit="1" wait="0"/><command unit="2" wait="1"/><command unit="5" region="3" scan="3" result="X" wait="2"/><command unit="6" region="7" scan="7" result="0" wait="2"/></submit>
+    <submit subject="2" round="105" time="799"><command unit="0" region="17" scan="2,7,12,17,22" result="0,0,0,?,0" wait="0"/><command unit="3" region="7" scan="7" result="?" wait="0"/><command unit="4" wait="-1"/></submit>
+    <submit subject="1" round="106" time="1156"><place unit="7" region="3"/></submit>
+    <submit subject="1" round="106" time="1157"><place unit="8" region="11"/></submit>
+    <submit subject="1" round="106" time="1161"><place unit="9" region="19"/></submit>
+    <submit subject="1" round="106" time="1163"><place unit="10" region="21"/></submit>
+    <submit subject="1" round="106" time="1182"><confidence value="2"/><target unit="7" region="3"/><target unit="8" region="11"/><target unit="9" region="19"/><target unit="10" region="21"/></submit>
+    <submit subject="2" round="106" time="1182"><confidence value="-1"/></submit>
+  </test>
+</experiment>
