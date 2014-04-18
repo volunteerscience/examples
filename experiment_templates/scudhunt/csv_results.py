@@ -43,10 +43,8 @@ def build_csv_from_xml(xml_string):
       self.part_uid = "bot"
       self.difficulty = -1
       self.round_duration = -1
-      self.mark_clear = []
-      self.mark_possible = []
-      self.mark_confirm = []
       self.attack_time = 0
+      self.rank = -1
       
     def __str__(self):
       return 'Game %s %s' % (self.id,self.pid)
@@ -89,6 +87,12 @@ def build_csv_from_xml(xml_string):
       self.mark_clear = []
       self.mark_possible = []
       self.mark_confirm = []
+      self.time = 0
+      
+    def getRoundDuration(self):
+      if self.round_num == 101:
+        return self.time-game_start_d[self.id]
+      return self.time-getRound(self.id,self.pid,self.round_num-1).time
   
   def getRound(id,part_pid,round_num):
     if not id in round_d:
@@ -173,11 +177,11 @@ def build_csv_from_xml(xml_string):
         region = int(mark_tag.attrib['region'])
         letter = mark_tag.attrib['letter']
         if letter == "0":
-          game.mark_clear.append(region)
+          round.mark_clear.append(region)
         if letter == "?":
-          game.mark_possible.append(region)
+          round.mark_possible.append(region)
         if letter == "X":
-          game.mark_confirm.append(region)
+          round.mark_confirm.append(region)
   
       for command_tag in submit.findall('command'):
         unit=int(command_tag.attrib['unit'])
@@ -191,13 +195,11 @@ def build_csv_from_xml(xml_string):
           for i in range(len(scan_result)):
             if scan_result[i] == '0':
               asset.mark_clear.append(scan[i])
-              round.mark_clear.append(scan[i])
             if scan_result[i] == '?':
               asset.mark_possible.append(scan[i])
-              round.mark_possible.append(scan[i])
             if scan_result[i] == 'X':
               asset.mark_confirm.append(scan[i])
-              round.mark_confirm.append(scan[i])
+        round.time = time
               
       for confidence_tag in submit.findall('confidence'):
         game.confidence = int(confidence_tag.attrib['value'])
@@ -219,38 +221,32 @@ def build_csv_from_xml(xml_string):
     
   ret.write("\n\n")  
   ret.write("Single-Player Game Level\n")
-  # print "Participant,GameNum,PlayerNum,Difficulty,RoundDuration,Hits,Confidence,Rank,Assets,AI_Assets,TotalTime,TargetLocations,Choices,TargetClear,TargetPossible,TargetConfirm"
-  ret.write("Participant,GameNum,PlayerNum,Difficulty,RoundDuration,Hits,Confidence,Assets,AI_Assets,TotalTime,TargetLocations,Choices,TargetClear,TargetPossible,TargetConfirm\n")
+  ret.write("Participant,GameNum,PlayerNum,Difficulty,MaxRoundDuration,Hits,Confidence,Rank(Not Implemented),Assets,AI_Assets,TotalTime,TargetLocations,Choices\n")
   for game_id in sorted(game_d):
     g_table = game_d[game_id]
     for g in g_table.itervalues():
       if g.part_uid != 'bot': # hasattr(g, 'part_uid'):
-        ret.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (
-          g.part_uid, g.id, g.pid, g.difficulty, g.round_duration, g.hits(), g.confidence, 
+        ret.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (
+          g.part_uid, g.id, g.pid, g.difficulty, g.round_duration, g.hits(), g.confidence, g.rank,
           ';'.join(map(str, g.assetList())), ';'.join(map(str, g.otherAssets())), g.totalTime(), 
-          ';'.join(map(str, g.target_list)),';'.join(map(str, sorted(g.attack_choices))),
-          ';'.join(map(str, g.mark_clear)),';'.join(map(str, g.mark_possible)),';'.join(map(str, g.mark_confirm)),
+          ';'.join(map(str, g.target_list)),';'.join(map(str, sorted(g.attack_choices)))
           ))
   
   ret.write("\n\n")  
   ret.write("Single-player Round Table\n")
-  ret.write("Participant,GameNum,PlayerNum,Round,RoundTime,TargetClear,TargetPossible,TargetConfirm\n")
-  # for g_table in round_d.itervalues():
+  ret.write("Participant,GameNum,PlayerNum,Round,RoundDuration,MarkClear,MarkPossible,MarkConfirm\n")
   for game_id in sorted(round_d):
     g_table = round_d[game_id]
     
-  #   for p_table in g_table.itervalues():
     for p_id in sorted(g_table):
       p_table = g_table[p_id]
       
-      
-  #     for r_table in p_table.itervalues():
       for round in range(101,106):
         if round in p_table:
           r = p_table[round]
           if r.part_uid != 'bot': # hasattr(g, 'part_uid'):
             ret.write("%s,%s,%s,%s,%s,%s,%s,%s\n" % (
-              r.part_uid, r.id, r.pid, (r.round_num-100),"ImplementME", 
+              r.part_uid, r.id, r.pid, (r.round_num-100),r.getRoundDuration(), 
               ';'.join(map(str, r.mark_clear)),';'.join(map(str, r.mark_possible)),';'.join(map(str, r.mark_confirm)),
               ))
     
@@ -259,23 +255,19 @@ def build_csv_from_xml(xml_string):
   
   ret.write("\n\n")  
   ret.write("Single-player Assets in Each Round\n")
-  ret.write("Participant,GameNum,PlayerNum,Round,AssetType,TargetClear,TargetPossible,TargetConfirm\n")
-  # for g_table in asset_d.itervalues():
+  ret.write("Participant,GameNum,PlayerNum,Round,AssetType,ReportClear,ReportPossible,ReportConfirm\n")
   for game_id in sorted(asset_d):
     g_table = asset_d[game_id]
   
     for r in range(101,106):
       for p_id in sorted(g_table):
         p_table = g_table[p_id]
-  #     for r in range(101,106):
         r_table = {}
         if r in p_table:
           r_table = p_table[r]
           
-  #       for a in r_table.itervalues():
         for a_id in sorted(r_table):
             a = r_table[a_id]
-  #         if a.part_uid != 'bot': # hasattr(g, 'part_uid'):
             ret.write("%s,%s,%s,%s,%s,%s,%s,%s\n" % (
               a.part_uid, a.id, a.pid, (a.round_num-100), a.asset_num,
               ';'.join(map(str, a.mark_clear)),';'.join(map(str, a.mark_possible)),';'.join(map(str, a.mark_confirm)),

@@ -1,24 +1,25 @@
+pydev debugger: starting (pid: 2220)
 Participant Table
 Participant,Age,Sex,FBInfo
 447d9d6559a5163e5297,30,0,N/A
 
 
 Single-Player Game Level
-Participant,GameNum,PlayerNum,Difficulty,RoundDuration,Hits,Confidence,Assets,AI_Assets,TotalTime,TargetLocations,Choices,TargetClear,TargetPossible,TargetConfirm
-447d9d6559a5163e5297,2240,1,10,9990,3,2,1;2;5;6,0;3;4,1164,3;4;11;21,3;11;19;21,5;18;1;6;16;19;22;17;12;7;0,11;10,11;21;2;21
+Participant,GameNum,PlayerNum,Difficulty,MaxRoundDuration,Hits,Confidence,Rank,Assets,AI_Assets,TotalTime,TargetLocations,Choices
+447d9d6559a5163e5297,2240,1,10,9990,3,2,-1,1;2;5;6,0;3;4,1164,3;4;11;21,3;11;19;21
 
 
 Single-player Round Table
-Participant,GameNum,PlayerNum,Round,AssetType,TargetClear,TargetPossible,TargetConfirm
-447d9d6559a5163e5297,2240,1,1,20;22;23;24,,21
-447d9d6559a5163e5297,2240,1,2,0;1;2;4;2,21,3
-447d9d6559a5163e5297,2240,1,3,15;16;17;18;10;13;17,12;14;8,19;11
-447d9d6559a5163e5297,2240,1,4,9,,11
-447d9d6559a5163e5297,2240,1,5,7,,3
+Participant,GameNum,PlayerNum,Round,RoundDuration,MarkClear,MarkPossible,MarkConfirm
+447d9d6559a5163e5297,2240,1,1,77,,,
+447d9d6559a5163e5297,2240,1,2,436,5;18;1;6;16,,11;21
+447d9d6559a5163e5297,2240,1,3,111,19;22;17;12;7,,2
+447d9d6559a5163e5297,2240,1,4,109,,11,21
+447d9d6559a5163e5297,2240,1,5,48,0,10,
 
 
 Single-player Assets in Each Round
-Participant,GameNum,PlayerNum,Round,AssetType,TargetClear,TargetPossible,TargetConfirm
+Participant,GameNum,PlayerNum,Round,AssetType,ReportClear,ReportPossible,ReportConfirm
 447d9d6559a5163e5297,2240,1,1,1,20;22;23;24,,21
 447d9d6559a5163e5297,2240,1,1,2,,,
 447d9d6559a5163e5297,2240,1,1,5,,,
@@ -54,3 +55,4 @@ bot,2240,2,4,4,,,
 bot,2240,2,5,0,2;7;12;22,17,
 bot,2240,2,5,3,,7,
 bot,2240,2,5,4,,,
+
