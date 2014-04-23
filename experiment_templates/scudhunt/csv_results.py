@@ -151,64 +151,66 @@ def build_csv_from_xml(xml_string):
       round_duration = int(test.attrib['round_duration'])
     
     for subject in test.findall('subject'):
-      part = getPart(subject.attrib['uid'])
-      part.pid = int(subject.attrib['id'])
-      try:
-        part.age = int(subject.attrib['age_bin']) 
-      except:
-        part.age = -1
-      try:
-        part.sex = 0 if subject.attrib['gender'] == 'male' else 1
-      except:
-        part.sex = -1
-      
-      game = getGame(test_id,part.pid)
-      game.part_uid = part.uid
-      game.difficulty=difficulty
-      game.round_duration=round_duration
-      
-      # ranks
-#       1 = 2LT
-#       2 = 1LT
-#       3 = CPT
-#       4 = MAJ
-#       5 = LTC
-#       6 = COL
-#       7 = BG
-#       8 = MG
-#       9 = GEN
-#       10 = GA
-      game.rank_before = 0
-      if "ach_2nd_Lieutenant" in subject.attrib:
-        game.rank_before = 1
-      if "ach_1st_Lieutenant" in subject.attrib:
-        game.rank_before = 2
-      if "ach_Captain" in subject.attrib:
-        game.rank_before = 3
-      if "ach_Major" in subject.attrib:
-        game.rank_before = 4
-      if "ach_Lt_Colonel" in subject.attrib:
-        game.rank_before = 5
-      if "ach_Colonel" in subject.attrib:
-        game.rank_before = 6
-      
-      
-      for achievement in subject.findall('achievement'):
-        ach_name = achievement.attrib['name']
-        if ach_name == '2nd Lieutenant':
-          game.rank_after = max(1, game.rank_after)
-        if ach_name == '1st Lieutenant':
-          game.rank_after = max(2, game.rank_after)
-        if ach_name == 'Captain':
-          game.rank_after = max(3, game.rank_after)
-        if ach_name == 'Major':
-          game.rank_after = max(4, game.rank_after)
-        if ach_name == 'Lt Colonel':
-          game.rank_after = max(5, game.rank_after)
-        if ach_name == 'Colonel':
-          game.rank_after = max(6, game.rank_after)
-          
-      game.rank_after = max(game.rank_before, game.rank_after)
+      uid = subject.attrib['uid']
+      if uid != "0":
+        part = getPart(subject.attrib['uid'])
+        part.pid = int(subject.attrib['id'])
+        try:
+          part.age = int(subject.attrib['age_bin']) 
+        except:
+          part.age = -1
+        try:
+          part.sex = 0 if subject.attrib['gender'] == 'male' else 1
+        except:
+          part.sex = -1
+        
+        game = getGame(test_id,part.pid)
+        game.part_uid = part.uid
+        game.difficulty=difficulty
+        game.round_duration=round_duration
+        
+        # ranks
+  #       1 = 2LT
+  #       2 = 1LT
+  #       3 = CPT
+  #       4 = MAJ
+  #       5 = LTC
+  #       6 = COL
+  #       7 = BG
+  #       8 = MG
+  #       9 = GEN
+  #       10 = GA
+        game.rank_before = 0
+        if "ach_2nd_Lieutenant" in subject.attrib:
+          game.rank_before = 1
+        if "ach_1st_Lieutenant" in subject.attrib:
+          game.rank_before = 2
+        if "ach_Captain" in subject.attrib:
+          game.rank_before = 3
+        if "ach_Major" in subject.attrib:
+          game.rank_before = 4
+        if "ach_Lt_Colonel" in subject.attrib:
+          game.rank_before = 5
+        if "ach_Colonel" in subject.attrib:
+          game.rank_before = 6
+        
+        
+        for achievement in subject.findall('achievement'):
+          ach_name = achievement.attrib['name']
+          if ach_name == '2nd Lieutenant':
+            game.rank_after = max(1, game.rank_after)
+          if ach_name == '1st Lieutenant':
+            game.rank_after = max(2, game.rank_after)
+          if ach_name == 'Captain':
+            game.rank_after = max(3, game.rank_after)
+          if ach_name == 'Major':
+            game.rank_after = max(4, game.rank_after)
+          if ach_name == 'Lt Colonel':
+            game.rank_after = max(5, game.rank_after)
+          if ach_name == 'Colonel':
+            game.rank_after = max(6, game.rank_after)
+            
+        game.rank_after = max(game.rank_before, game.rank_after)
     
     last_ready = 0
     for submit in test.findall('submit'):
