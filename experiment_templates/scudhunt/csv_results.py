@@ -153,8 +153,14 @@ def build_csv_from_xml(xml_string):
     for subject in test.findall('subject'):
       part = getPart(subject.attrib['uid'])
       part.pid = int(subject.attrib['id'])
-      part.age = int(subject.attrib['age_bin']) 
-      part.sex = 0 if subject.attrib['gender'] == 'male' else 1
+      try:
+        part.age = int(subject.attrib['age_bin']) 
+      except:
+        part.age = -1
+      try:
+        part.sex = 0 if subject.attrib['gender'] == 'male' else 1
+      except:
+        part.sex = -1
       
       game = getGame(test_id,part.pid)
       game.part_uid = part.uid
