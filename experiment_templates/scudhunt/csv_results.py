@@ -20,14 +20,14 @@ def build_csv_from_xml(xml_string):
   class Part:
     def __init__(self, uid):
       self.uid = uid
-      self.age = 3
+      self.age = -1
       
     def __str__(self):
       return 'Part %s %s' % (self.uid,self.age)
 
     def getAge(self):
-      if age > 0:
-        return age*6
+      if self.age > 0:
+        return self.age*6
       return "-1"
     
   def getPart(uid):
