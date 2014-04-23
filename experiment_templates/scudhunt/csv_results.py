@@ -44,7 +44,8 @@ def build_csv_from_xml(xml_string):
       self.difficulty = -1
       self.round_duration = -1
       self.attack_time = 0
-      self.rank = -1
+      self.rank_before = -1
+      self.rank_after = -1
       
     def __str__(self):
       return 'Game %s %s' % (self.id,self.pid)
@@ -53,6 +54,12 @@ def build_csv_from_xml(xml_string):
       if hasattr(self,'target_list'):
         return len(set(self.target_list) & set(self.attack_choices))
       return 'n/a'
+
+    def print_target_list(self):
+      if hasattr(self,'target_list'):
+        return ';'.join(map(str, self.target_list))
+      return 'n/a'
+    
     
     def assetList(self):
       return sorted(self.assets.keys())
@@ -153,6 +160,49 @@ def build_csv_from_xml(xml_string):
       game.part_uid = part.uid
       game.difficulty=difficulty
       game.round_duration=round_duration
+      
+      # ranks
+#       1 = 2LT
+#       2 = 1LT
+#       3 = CPT
+#       4 = MAJ
+#       5 = LTC
+#       6 = COL
+#       7 = BG
+#       8 = MG
+#       9 = GEN
+#       10 = GA
+      game.rank_before = 0
+      if "ach_2nd_Lieutenant" in subject.attrib:
+        game.rank_before = 1
+      if "ach_1st_Lieutenant" in subject.attrib:
+        game.rank_before = 2
+      if "ach_Captain" in subject.attrib:
+        game.rank_before = 3
+      if "ach_Major" in subject.attrib:
+        game.rank_before = 4
+      if "ach_Lt_Colonel" in subject.attrib:
+        game.rank_before = 5
+      if "ach_Colonel" in subject.attrib:
+        game.rank_before = 6
+      
+      
+      for achievement in subject.findall('achievement'):
+        ach_name = achievement.attrib['name']
+        if ach_name == '2nd Lieutenant':
+          game.rank_after = max(1, game.rank_after)
+        if ach_name == '1st Lieutenant':
+          game.rank_after = max(2, game.rank_after)
+        if ach_name == 'Captain':
+          game.rank_after = max(3, game.rank_after)
+        if ach_name == 'Major':
+          game.rank_after = max(4, game.rank_after)
+        if ach_name == 'Lt Colonel':
+          game.rank_after = max(5, game.rank_after)
+        if ach_name == 'Colonel':
+          game.rank_after = max(6, game.rank_after)
+          
+      game.rank_after = max(game.rank_before, game.rank_after)
     
     last_ready = 0
     for submit in test.findall('submit'):
@@ -166,23 +216,23 @@ def build_csv_from_xml(xml_string):
         round = getRound(test_id,pid,round_num)
         round.part_uid = game.part_uid
   
+        for mark_tag in submit.findall('mark'):
+          region = int(mark_tag.attrib['region'])
+          letter = mark_tag.attrib['letter']
+          if letter == "0":
+            round.mark_clear.append(region)
+          if letter == "?":
+            round.mark_possible.append(region)
+          if letter == "X":
+            round.mark_confirm.append(region)
+
       
       for game_tag in submit.findall('game'):
         game.target_list = sorted([int(x) for x in game_tag.attrib['targets'].split(',')])
       
       for ready_tag in submit.findall('ready'):
         last_ready = max( last_ready, time )
-  
-      for mark_tag in submit.findall('mark'):
-        region = int(mark_tag.attrib['region'])
-        letter = mark_tag.attrib['letter']
-        if letter == "0":
-          round.mark_clear.append(region)
-        if letter == "?":
-          round.mark_possible.append(region)
-        if letter == "X":
-          round.mark_confirm.append(region)
-  
+    
       for command_tag in submit.findall('command'):
         unit=int(command_tag.attrib['unit'])
         game.assets[int(command_tag.attrib['unit'])] = True
@@ -221,15 +271,15 @@ def build_csv_from_xml(xml_string):
     
   ret.write("\n\n")  
   ret.write("Single-Player Game Level\n")
-  ret.write("Participant,GameNum,PlayerNum,Difficulty,MaxRoundDuration,Hits,Confidence,Rank(Not Implemented),Assets,AI_Assets,TotalTime,TargetLocations,Choices\n")
+  ret.write("Participant,GameNum,PlayerNum,Difficulty,MaxRoundDuration,Hits,Confidence,Rank Before,Rank After,Assets,AI_Assets,TotalTime,TargetLocations,Choices\n")
   for game_id in sorted(game_d):
     g_table = game_d[game_id]
     for g in g_table.itervalues():
       if g.part_uid != 'bot': # hasattr(g, 'part_uid'):
-        ret.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (
-          g.part_uid, g.id, g.pid, g.difficulty, g.round_duration, g.hits(), g.confidence, g.rank,
+        ret.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (
+          g.part_uid, g.id, g.pid, g.difficulty, g.round_duration, g.hits(), g.confidence, g.rank_before, g.rank_after,
           ';'.join(map(str, g.assetList())), ';'.join(map(str, g.otherAssets())), g.totalTime(), 
-          ';'.join(map(str, g.target_list)),';'.join(map(str, sorted(g.attack_choices)))
+          g.print_target_list(),';'.join(map(str, sorted(g.attack_choices)))
           ))
   
   ret.write("\n\n")  
@@ -278,7 +328,7 @@ if __name__ == "__main__":
   # parse the file
 #   tree = ET.parse('scud_hunt_results_all.xml')
 #                 
-  with open ("scud_hunt_results.xml", "r") as myfile:
+  with open ("scud_hunt_results_all.xml", "r") as myfile:
     xml_string=myfile.read()
     print build_csv_from_xml(xml_string).getvalue()
 #   build_csv_from_xml('scud_hunt_results.xml')

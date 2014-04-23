@@ -8,7 +8,7 @@ var localSitRep = true; // situation reports show your local reports (overridden
 var globalSitRep = true; // situation reports show everyone's reports
 var localMapScans = true; // show your assets' scans on the map
 var globalMapScans = false; // show everyone's assets' scans on the map (overrides local)
-var cumulativeMapScans = true; // if true, current round shows cumulation of all scans so far, not just yesterday
+var cumulativeMapScans = true; // if true, current round shows culmination of all scans so far, not just yesterday
 var allowMapHistory = true; // allow players to view previous states of the board
 var showNumberOfRounds = true;  // do we tell the players how many rounds they have?
 var showNumberOfTargets = true;  // do we tell the players how many targets they have?
@@ -1009,6 +1009,8 @@ function q1(confidence) {
 }
 
 function showAirstrike() {
+  stopCountdown("timer");
+
   $("#q1").fadeOut();
   
   var numHits = 0;
@@ -1180,18 +1182,16 @@ function roundInitialized(round) {
  * if someone drops out durning the instructions, submit a ready for them
  */
 function playerDisconnect(playerNum) {
-//alert('playerDisconnect '+playerNum);
+//  alert('playerDisconnect '+playerNum);
 
   // see if I have the lowest live id
-  for (var i = 1; i < myid; i++) {
-    if (activePlayers[i]) {
-      // someone lower than me is still active
-      return;
-    }
-  }
+  if (!shouldRunBots()) return;
+  
   // get past the instructions; TODO: activate bot
   if (currentRound < ROUND_ZERO) {
     submitBot(playerNum, currentRound, '<ready />');
+  } else {
+    runBots();
   }
 }
 
@@ -1240,28 +1240,32 @@ function fetchResponse(val,participant,round,index) {
       unit.setNextRegion(region);
     }
   } else if (tagName == "MARK") {
-    if (!(currentRound in userMarkers)) {
-      userMarkers[currentRound] = [];
-    }
-//  '<mark region="'+me.id+'" letter="'+letter+'" note="'+note+'" idx="'+userMarkerCtr+'"/>'
-    var mark = $(val);
-    var letter = mark.attr('letter');
-    var note = mark.attr('note');
-    var removeId = mark.attr('idx');
-    var region = mark.attr('region');
-    if (userMarkerCtr <= removeId) {
-      userMarkerCtr = removeId+1;
-    }
-    for (var round in userMarkers) {
-      var list = userMarkers[round];
-      for (var idx in list) {
-        var item = list[idx];
-        if (item[3] == removeId) {
-          return;
+    if (participant == myid) {
+      if (!(round in userMarkers)) {
+        userMarkers[round] = [];
+      }
+  //  '<mark region="'+me.id+'" letter="'+letter+'" note="'+note+'" idx="'+userMarkerCtr+'"/>'
+      var mark = $(val);
+      var letter = mark.attr('letter');
+      var note = mark.attr('note');
+      var removeId = mark.attr('idx');
+      var region = mark.attr('region');
+      if (userMarkerCtr <= removeId) {
+        userMarkerCtr = removeId+1;
+      }
+      for (var round in userMarkers) {
+        var list = userMarkers[round];
+        for (var idx in list) {
+          var item = list[idx];
+          if (item[3] == removeId) {
+            return;
+          }
         }
       }
+      userMarkers[round].push([region,letter,note,removeId]);
+    } else {
+      // ally mark
     }
-    userMarkers[currentRound].push([region,letter,note,removeId]);  
   } else if (tagName == "UNMARK") {
     var unmark = $(val);
     var removeId = unmark.attr('idx');
