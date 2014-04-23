@@ -264,8 +264,10 @@ def build_csv_from_xml(xml_string):
               asset.mark_possible.append(scan[i])
             if scan_result[i] == 'X':
               asset.mark_confirm.append(scan[i])
-        round.time = time
-              
+        try:
+          round.time = time
+        except:
+          pass    
       for confidence_tag in submit.findall('confidence'):
         game.confidence = int(confidence_tag.attrib['value'])
   
