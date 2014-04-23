@@ -24,7 +24,12 @@ def build_csv_from_xml(xml_string):
       
     def __str__(self):
       return 'Part %s %s' % (self.uid,self.age)
-      
+
+    def getAge(self):
+      if age > 0:
+        return age*6
+      return "-1"
+    
   def getPart(uid):
     if not uid in part_d:
       part_d[uid] = Part(uid)
@@ -277,7 +282,7 @@ def build_csv_from_xml(xml_string):
   ret.write("Participant Table\n")
   ret.write("Participant,Age,Sex,FBInfo\n")
   for p in part_d.itervalues():
-    ret.write("%s,%s,%s,%s\n" % (p.uid,(p.age*6),p.sex,"N/A"))
+    ret.write("%s,%s,%s,%s\n" % (p.uid,p.getAge(),p.sex,"N/A"))
     
   ret.write("\n\n")  
   ret.write("Single-Player Game Level\n")
