@@ -140,5 +140,6 @@ function buildSquareMap(num_rows, num_cols, num_targets, num_decoys) {
       assigned[regionId] = true;
     }
   }
+  var water = paper.rect(20,MAP_HEIGHT-20,MAP_WIDTH-40,20,0).attr({'fill':REGION_WATER_COLOR, 'stroke':REGION_WATER_COLOR, 'opacity':0.7 });
 }
 

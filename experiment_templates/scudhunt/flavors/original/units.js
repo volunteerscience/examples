@@ -119,7 +119,7 @@ function initializeUnits(minPlayers) {
   
   var satellite = new Unit(0, SPACE_COMMAND, "Recon Satellite", "Scan column", 
       "Searches one entrie column.  High probability of confirming the absence of vehicles, "+
-      "but cnannot reliably distinguish between launchers and dummies.", 
+      "but cnannot reliably distinguish between launchers and dummies.", null,
       getFile("satellite.png"), 0, 
       [[0.7,0.2,0.1],[0.2,0.6,0.2],[0.1,0.2,0.7]]);
   satellite.effect = function(region) {
@@ -130,7 +130,7 @@ function initializeUnits(minPlayers) {
       "May fly only along the Gulf (Row E) outside Poronan airspace.  "+
       "It searches the coastal grid squares with excellent reliability, "+
       "and two rows inland (Rows C and D) with reduced reliablity.  "+
-      "Must rest at leat one turn between flights due to crew fatigue and maintenance requirements.", 
+      "Must rest at leat one turn between flights due to crew fatigue and maintenance requirements.", null,
       getFile("SR-71.png"), 1, 
       [ 
         [],
@@ -155,7 +155,7 @@ function initializeUnits(minPlayers) {
       "May enter Poronan airspace to search any row.  It has good search reliability.  "+
       "For each grid square it enters, there is a chance that it will crash or be shot down, "+
       "which aborts any further search on that turn.  "+
-      "There is a variable probability that a lost UAV will be replaced the next day.", 
+      "There is a variable probability that a lost UAV will be replaced the next day.", null,
       getFile("uav.png"), 2, [[0.7,0.2,0.1],[0.2,0.6,0.2],[0.1,0.2,0.7]]);
   uav.effect = function(region) {
     return region.groups[ROW];
@@ -171,7 +171,7 @@ function initializeUnits(minPlayers) {
   
   var sigint = new Unit(3, SPY_MASTER, "SigInt", "Scan Square", 
       "Signals Intelligence can examine a region for increased communications chatter, " +
-      "but cannot reliably distinguish launcher from deception operations.", 
+      "but cannot reliably distinguish launcher from deception operations.", null, 
       getFile("headphones.png"), 3, [[0.6,0.35,0.05],[0.2,0.6,0.2],[0.1,0.3,0.6]]);
   
   var humint = new Unit(4, SPY_MASTER, "Spy", "Deploy to any square; Walk from there", 
@@ -179,7 +179,7 @@ function initializeUnits(minPlayers) {
       "The agent has limited mobility; after initial placement on any square, " +
       "he may only remain in the same square or move to an adjacent grid square." +
       "Each turn the agent is on the board, there is a chance he will be caught and executed."+
-      "He cannot be replaced.", 
+      "He cannot be replaced.", null,
       getFile("spy.png"), 4, [[0.90,0.05,0.05],[0.2,0.6,0.2],[0.1,0.4,0.5]]);
   humint.effect = function(region) {
     if (humint.currentRegion == null) {
@@ -213,7 +213,7 @@ function initializeUnits(minPlayers) {
       "Can reliably distinguish between deception and launchers.  "+
       "Each turn that the Spec Ops team is in play, there is a chance the team "+
       "will be compromised and forced to perform an emergency extraction.  "+
-      "If extracted, the team will be unavailable for 1 or more days to rest and refit.", 
+      "If extracted, the team will be unavailable for 1 or more days to rest and refit.", null,
       getFile("spec_ops.png"), 5, [[0.5,0.3,0.2],[0.1,0.8,0.1],[0.05,0.15,0.8]]);
   specOps.effect = function(region) {
     if (specOps.currentRegion == null) {
@@ -248,7 +248,7 @@ function initializeUnits(minPlayers) {
       "Can reliably distinguish between deception and launchers.  "+
       "Each turn that the Navy SEALS team is in play, there is a chance the team "+
       "will be compromised and forced to perform an emergency extraction.  "+
-      "If extracted, the team will be unavailable for 1 or more days to rest and refit.", 
+      "If extracted, the team will be unavailable for 1 or more days to rest and refit.", null,
       getFile("seals.png"), 6, [[0.6,0.3,0.1],[0.1,0.8,0.1],[0.05,0.15,0.8]]);
   seals.effect = function(region) {
     if (seals.currentRegion == null) {
@@ -286,6 +286,7 @@ function initializeUnits(minPlayers) {
   for (var i = 0; i < numTargets; i++) {
     var scud = new Unit(7+i, TARGET_ROLE, "Target "+(i+1), TARGET_NOUN, 
         "Based on your operations over the previous days, place each the "+TARGET_NOUN+" in the most likely location.", 
+        "Site "+(i+1),
         getFile("scud.png"), 7, null);
   }
 

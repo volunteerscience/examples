@@ -36,6 +36,11 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
     this.active = true;
     this.currentlyOn = null;
     this.scale = factory.SCALE;
+    this.text = null; // the text to put there
+    this.text_color = "#FFFFFF";
+    this.label = null; // the text object
+    this.text_loc = "bottom";
+      
     var me = this;
 
     // call this periodically to make the avatar walk
@@ -145,7 +150,7 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
     };
     
     this.setLocation = function(x,y) {
-//      log('setLocation('+x+','+y+')');
+      log('setLocation('+x+','+y+')');
       this.x=x;
       this.y=y;
       this.update();
@@ -174,6 +179,29 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
            "r"+this.angle+","+rx+","+ry +
            ""
       });
+      
+      if (me.text) {
+        var text_y = me.y; // center
+        if (me.text_loc == "bottom") {
+          text_y = me.y+SW2*me.scale-10;
+        }
+        if (me.label) {
+          me.label.attr({
+            "text":me.text,
+            "x":me.x,            
+            "y":text_y,
+            });
+        } else {
+          me.label = PAPER.text(me.x,text_y,me.text);
+          me.label.attr({ "font-size": 16, "font-family": "Arial, Helvetica, sans-serif", "font-weight": "bold", "fill": me.text_color });
+        }
+        me.label.toFront();
+      } else {
+        if (this.label) {
+          me.label.remove();
+          me.label = null;
+        }        
+      }
     }
     
     this.bubble = null;

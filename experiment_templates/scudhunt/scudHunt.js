@@ -28,11 +28,12 @@ var MAP_HEIGHT = 420;
 var ROUND_ZERO = 100;
 var FIRST_ACTUAL_ROUND = 101;
 
-var REGION_BACKGROUND_COLOR = "#c7d4e7";
+var REGION_BACKGROUND_COLOR = "#7DAF27" // "#44aa44"; // "#c7d4e7";
 var REGION_SELECTION_COLOR = "#b7e4d7";
 var REGION_FAIL_COLOR = "#f7d4e7";
+var REGION_WATER_COLOR = "#c7d4e7";
 
-var ASSET_BACKGROUND_COLOR = REGION_BACKGROUND_COLOR;
+var ASSET_BACKGROUND_COLOR = REGION_WATER_COLOR;
 var ASSET_SELECTION_COLOR = REGION_SELECTION_COLOR;
 var ASSET_HOVER_COLOR = REGION_FAIL_COLOR;
 var ASSET_WAIT_COLOR = "#dddddd";
@@ -144,7 +145,7 @@ var VALUE_NOTHING = 0;
 var VALUE_DECOY = 1;
 var VALUE_TARGET = 2;
 var VALUE_DISPLAY = ['0','?','X'];
-var VALUE_COLOR = ['#44CC44','#FFFF44','#CC4444'];
+var VALUE_COLOR = ['#AAFF88 ','#FFFF44','#CC4444'];// ['#44CC44','#FFFF44','#CC4444'];
 
 
 var popupDelay = null;
@@ -424,7 +425,7 @@ function isMyUnit(unit) {
  * @returns                 
  *                   
  */
-function Unit(id, ownerId, name, short_description, long_description, icon, avatarId, reportTable) {
+function Unit(id, ownerId, name, short_description, long_description, label, icon, avatarId, reportTable) {
   var unitMe = this;
   units[id] = this;
   this.id = id;
@@ -438,6 +439,7 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
   this.wait = 0;
   this.remainsOnBoard = false; // set this to true for all assets that stay on the board after a turn
   this.waitString = "Dead";
+  this.label = label;
   
   roleUnits[ownerId].push(this);
   
@@ -446,6 +448,9 @@ function Unit(id, ownerId, name, short_description, long_description, icon, avat
   
   this.buildAvatar = function(avatarFactory) {
     this.avatar = avatarFactory.build(avatarId,-100,-100); // build avatar off screen
+    if (this.label) {
+      this.avatar.text = this.label;
+    }
     this.avatar.origMouseDown = this.avatar.onMouseDown;
     this.avatar.onMouseDown = function(e) {
       if (selectedUnit == null && selectedMarker == null) {
@@ -776,6 +781,7 @@ function initialize() {
   
 //  alert(roleUnits[1][0].name);
   initializeGameBoard();
+  
   initializeMarkerButtons();
   
   runAllInstructions();
@@ -1084,6 +1090,7 @@ function showAirstrike() {
   enableSubmitFeedback();
   disableQuitConfirm();
   
+  // draw the avatars on the map
   var targetCtr = 0;
   for (idx in regions) {
     var region = regions[idx];
@@ -1092,12 +1099,22 @@ function showAirstrike() {
         missLoc = region;
       }
       
-      var unit = roleUnits[TARGET_ROLE][targetCtr++]
+      var unit = roleUnits[TARGET_ROLE][targetCtr++];
+      unit.avatar.text = null;
       if (typeof unit != "undefined") {
         // place the targets in the actual locations
         if (unit.nextRegion != null) {
           // this is the explosion
-          unitAvatarFactory.build(choiceAvatarId,unit.nextRegion.x, unit.nextRegion.y);
+          var explosion = unitAvatarFactory.build(choiceAvatarId,unit.nextRegion.x, unit.nextRegion.y);
+          if (unit.nextRegion.value == VALUE_TARGET) {
+            explosion.text = "HIT";            
+          } else {
+            explosion.text = "MISS";                        
+          }
+          explosion.text_loc = "center";
+          explosion.text_color = "#FF4444";
+          explosion.update();
+//          explosion.text = "MISS";
         }
         // this is the truck
         unit.setNextRegion(region);
@@ -1422,6 +1439,8 @@ function initRound() {
     }
   } else {
     // answer round
+    disableChat();
+
 //    log("answerRound");
     // take all the units that stay on the board off
     for (var uid in units) {
@@ -1517,10 +1536,6 @@ function displayUserMarkers(round) {
     var region = regions[mark[0]];
     region.addStatus(mark[1],mark[2],mark[3]);
   }
-}
-
-function addMoveReports(moves) {
-
 }
 
 function addBeginTurnSitRep(round, numRounds) {
@@ -1665,6 +1680,16 @@ function chatReceived(tid,val) {
   value = val;
   $("#chat").append('<tr><th>&nbsp;&nbsp;'+title+'</th><td>'+value+'</td></tr>'); 
   chatScrollbar.slider("value",0);
+}
+
+function disableChat() {
+  $('#sendChat').attr("disabled","disabled");
+  $('#sendChat').attr("title","Chat is disabled in this round.");
+  $('#sendChat').css("cursor","not-allowed");
+  $('#sendChat').attr("onclick","");
+  
+  $('#chatInput').prop("disabled",true);
+  $("#chatInput").val("<chat disabled>");
 }
 
 var animTimer = null;
