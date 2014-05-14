@@ -14,8 +14,9 @@ var targetRegions = "";
 function buildSquareMap(num_rows, num_cols, num_targets, num_decoys) {
   var X_OFF = 20;
   var Y_OFF = 20;
-  var R_WIDTH =  (MAP_WIDTH -2*X_OFF)/num_cols; // border on left and right
-  var R_HEIGHT = (MAP_HEIGHT-Y_OFF)/num_rows;
+  var R_WIDTH =  (MAP_WIDTH - 2*X_OFF)/num_cols; // border on left and right
+  var R_HEIGHT = (MAP_HEIGHT- 2*Y_OFF)/num_rows; // border north an south
+  log("R_WIDTH:"+R_WIDTH+" R_HEIGHT:"+R_HEIGHT);
   REGION_WIDTH = R_WIDTH;
   // build labels
   regionGroup[COL] = new Array();
@@ -54,10 +55,10 @@ function buildSquareMap(num_rows, num_cols, num_targets, num_decoys) {
       
       // draw a square
       var s = "M ";
-      s+=(X_OFF+x*R_WIDTH)+    ","+(Y_OFF+y*R_WIDTH)+" L ";
-      s+=(X_OFF+x*R_WIDTH)+    ","+(Y_OFF+(y+1)*R_WIDTH)+" L ";
-      s+=(X_OFF+(x+1)*R_WIDTH)+","+(Y_OFF+(y+1)*R_WIDTH)+" L ";
-      s+=(X_OFF+(x+1)*R_WIDTH)+","+(Y_OFF+y*R_WIDTH)+" L ";
+      s+=(X_OFF+x*R_WIDTH)+    ","+(Y_OFF+y*R_HEIGHT)+" L ";
+      s+=(X_OFF+x*R_WIDTH)+    ","+(Y_OFF+(y+1)*R_HEIGHT)+" L ";
+      s+=(X_OFF+(x+1)*R_WIDTH)+","+(Y_OFF+(y+1)*R_HEIGHT)+" L ";
+      s+=(X_OFF+(x+1)*R_WIDTH)+","+(Y_OFF+y*R_HEIGHT)+" L ";
       s+= "Z";
       var polygon = paper.path(s); 
       var region = new Region(
@@ -140,6 +141,6 @@ function buildSquareMap(num_rows, num_cols, num_targets, num_decoys) {
       assigned[regionId] = true;
     }
   }
-  var water = paper.rect(20,MAP_HEIGHT-20,MAP_WIDTH-40,20,0).attr({'fill':REGION_WATER_COLOR, 'stroke':REGION_WATER_COLOR, 'opacity':0.7 });
+  var water = paper.rect(20,MAP_HEIGHT-20,MAP_WIDTH-40,20,0).attr({'fill':REGION_WATER_COLOR, 'stroke':REGION_WATER_COLOR});
 }
 

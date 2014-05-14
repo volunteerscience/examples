@@ -23,20 +23,24 @@ var numRows = 5;
 var numCols = 5;
 
 var MAP_WIDTH = 440;
-var MAP_HEIGHT = 420;
+var MAP_HEIGHT = 440;
 
 var ROUND_ZERO = 100;
 var FIRST_ACTUAL_ROUND = 101;
 
-var REGION_BACKGROUND_COLOR = "#7DAF27" // "#44aa44"; // "#c7d4e7";
-var REGION_SELECTION_COLOR = "#b7e4d7";
+var REGION_BACKGROUND_COLOR = "#48B028"; //"#7DAF27" // "#44aa44"; // "#c7d4e7";
+var REGION_SELECTION_COLOR = "#99E0FF"; //"#b7e4d7";
 var REGION_FAIL_COLOR = "#f7d4e7";
 var REGION_WATER_COLOR = "#c7d4e7";
 
+var STRIKE_EXPLOSION_COLOR = "#FF4444";
+
 var ASSET_BACKGROUND_COLOR = REGION_WATER_COLOR;
-var ASSET_SELECTION_COLOR = REGION_SELECTION_COLOR;
+var ASSET_SELECTION_COLOR = "#b7e4d7";
 var ASSET_HOVER_COLOR = REGION_FAIL_COLOR;
 var ASSET_WAIT_COLOR = "#dddddd";
+var ASSET_ARROW_COLOR = "#FF0000";
+
 
 var paper = null;
 var selectedUnit = null;
@@ -221,6 +225,7 @@ function Region(id,name, x,y, x1,y1, polygon) {
   this.x = x;
   this.y = y;
   this.polygon = polygon;
+  this.polygon.attr({"opacity":0.7});
   this.status = []; // text element on the region: 0,?,X
   this.addStatus = function(letter, unitName, removeId) {
     // tX, tY are where the letter goes, based on how many there are already
@@ -355,6 +360,7 @@ function Region(id,name, x,y, x1,y1, polygon) {
     if (selectedUnit != null) {
       clearRegionHighlights();
       selectedUnit.showEffect(me);
+      selectedUnit.showArrow(me);
     }
   };
 
@@ -363,6 +369,7 @@ function Region(id,name, x,y, x1,y1, polygon) {
       clearRegionHighlights();
       if (selectedUnit.nextRegion != null) {
         selectedUnit.showEffect(selectedUnit.nextRegion);        
+        selectedUnit.showArrow(selectedUnit.nextRegion);        
       }
     }
   }
@@ -440,6 +447,7 @@ function Unit(id, ownerId, name, short_description, long_description, label, ico
   this.remainsOnBoard = false; // set this to true for all assets that stay on the board after a turn
   this.waitString = "Dead";
   this.label = label;
+  this.arrow = null; // arrow span of effect range
   
   roleUnits[ownerId].push(this);
   
@@ -490,18 +498,24 @@ function Unit(id, ownerId, name, short_description, long_description, label, ico
 //    log(this.id+" clearLocation");
     this.avatar.currentlyOn = null;
     this.avatar.setLocation(-200, -200);    
+    if (unitMe.arrow) {
+      unitMe.arrow.remove();
+      unitMe.arrow = null;
+    }
   }
   
   this.setLocation = function(region) {
     if (region == null) {
-      log(this.id+" null");
+//      log(this.id+" null");
       this.clearLocation();
       return;
     }
     if (allyUnitPlacement || isMyUnit(unitMe)) {
-      log(this.id+" "+region.id);
+//      log(this.id+" "+region.id);
       this.avatar.currentlyOn = region;
       this.avatar.setLocation(region.x, region.y);
+      
+      unitMe.showArrow(region);
     }
   }
   
@@ -581,14 +595,54 @@ function Unit(id, ownerId, name, short_description, long_description, label, ico
   
   this.showEffect = function(region) {
     var regions = this.effect(region);
-    for (idx in regions) {
-      var r = regions[idx];
-      r.highlight(true);
-    }
+
+    // highlight
+//    for (idx in regions) {
+//      var r = regions[idx];
+//      r.highlight(true);      
+//    }
+    
     if (regions.length == 0) {
       region.markInvalid();
+    } else {
+      region.highlight(true); 
     }
   };
+
+  this.showArrow = function(region) {
+    var regions = this.effect(region);
+
+    // highlight and arrows
+    var minX = 50000;
+    var maxX = 0;
+    var minY = 50000;
+    var maxY = 0;
+    for (idx in regions) {
+      var r = regions[idx];
+      minX = Math.min(minX,r.x);
+      maxX = Math.max(maxX,r.x);
+      minY = Math.min(minY,r.y);
+      maxY = Math.max(maxY,r.y);
+    }
+    
+    if (regions.length > 1) {
+      // draw arrows
+      var path = "M"+minX+","+minY+"L"+maxX+","+maxY;
+//      var path = "M"+maxX+","+maxY+"L"+minX+","+minY;
+      if (unitMe.arrow) {
+        unitMe.arrow.attr({"path":path});
+      } else {
+        unitMe.arrow = paper.path(path);
+        unitMe.arrow.attr({"arrow-end":"diamond-wide-long", "arrow-start":"diamond-wide-long", "stroke":ASSET_ARROW_COLOR, "stroke-width":3});        
+        unitMe.arrow.toBack();
+      }
+    } else {
+      if (unitMe.arrow) {
+        unitMe.arrow.remove();
+        unitMe.arrow = null;
+      }
+    }
+  }
   
   /**
    * Calculate if the unit should wait next turn.
@@ -1112,7 +1166,7 @@ function showAirstrike() {
             explosion.text = "MISS";                        
           }
           explosion.text_loc = "center";
-          explosion.text_color = "#FF4444";
+          explosion.text_color = STRIKE_EXPLOSION_COLOR;
           explosion.update();
 //          explosion.text = "MISS";
         }
@@ -1468,7 +1522,7 @@ function initRound() {
 }
 
 function clearUnitsFromBoard() {
-  log("clearUnitsFromBoard()");
+//  log("clearUnitsFromBoard()");
   for (var unit_idx in units) {
     var unit = units[unit_idx];
     unit.clearLocation();
@@ -1539,7 +1593,7 @@ function displayUserMarkers(round) {
 }
 
 function addBeginTurnSitRep(round, numRounds) {
-  log("addBeginTurnSitRep("+round+")");
+//  log("addBeginTurnSitRep("+round+")");
   if (showNumberOfRounds) {
     $("#sitRep").append('<tr><th class="roundHeading">'+ROUND_NOUN+' '+round+' of '+numRounds+':</th></tr>');
   } else {

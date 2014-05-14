@@ -150,7 +150,6 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
     };
     
     this.setLocation = function(x,y) {
-      log('setLocation('+x+','+y+')');
       this.x=x;
       this.y=y;
       this.update();
@@ -168,17 +167,20 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
       // rotate around me
       var rx = SW2+(this.color)*SW;
       var ry = SW2+(this.stance)*SW;
+      // clip rectangle
       var cr = (this.x-(SW2+S_CLIP)*this.scale)+" "+(this.y-(SW2+S_CLIP)*this.scale)+" "+((SW-2*S_CLIP)*this.scale)+" "+((SW-2*S_CLIP)*this.scale);
 
-      this.img.attr({
-  //    this.img.animate({
-         "clip-rect" : cr,
-         "transform" : 
-           "t"+(this.x-rx)+","+(this.y-ry) + // move the image start left/up (-SW2 -SW*this.color), then add x
-           "s"+this.scale+","+this.scale+","+rx+","+ry+
-           "r"+this.angle+","+rx+","+ry +
-           ""
-      });
+      var iAttr = {
+          //    this.img.animate({
+          "clip-rect" : cr,
+          "transform" : 
+            "t"+(this.x-rx)+","+(this.y-ry) + // move the image start left/up (-SW2 -SW*this.color), then add x
+            "s"+this.scale+","+this.scale+","+rx+","+ry+
+            "r"+this.angle+","+rx+","+ry +
+            ""
+       };
+      this.img.attr(iAttr);
+      
       
       if (me.text) {
         var text_y = me.y; // center
