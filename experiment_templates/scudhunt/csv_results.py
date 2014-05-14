@@ -69,11 +69,11 @@ def build_csv_from_xml(xml_string):
     def assetList(self):
       return sorted(self.assets.keys())
       
-    def otherAssets(self):
+    def aiAssets(self):
       ret = []
       for g in game_d[self.id].values():
   #       print "%s %s %s %s %s %s %s" % (self.id, self.pid, self.assetList(), g.id, g.pid, g.assetList(), g.assets)
-        if g != self:
+        if g != self and g.part_uid == 'bot':
           ret.extend(g.assetList())
       return sorted(ret)
       
@@ -243,7 +243,12 @@ def build_csv_from_xml(xml_string):
 
       
       for game_tag in submit.findall('game'):
-        game.target_list = sorted([int(x) for x in game_tag.attrib['targets'].split(',')])
+        # game targets is only set by subject 1, but we need to put it in all the tables
+        target_list = sorted([int(x) for x in game_tag.attrib['targets'].split(',')])
+        
+        for temp_pid in game_d[test_id]:
+          g = getGame(test_id,temp_pid)
+          g.target_list = target_list
       
       for ready_tag in submit.findall('ready'):
         last_ready = max( last_ready, time )
@@ -287,7 +292,7 @@ def build_csv_from_xml(xml_string):
     ret.write("%s,%s,%s,%s\n" % (p.uid,p.getAge(),p.sex,"N/A"))
     
   ret.write("\n\n")  
-  ret.write("Single-Player Game Level\n")
+  ret.write("Player Game Level\n")
   ret.write("Participant,GameNum,PlayerNum,Difficulty,MaxRoundDuration,Hits,Confidence,Rank Before,Rank After,Assets,AI_Assets,TotalTime,TargetLocations,Choices\n")
   for game_id in sorted(game_d):
     g_table = game_d[game_id]
@@ -295,12 +300,12 @@ def build_csv_from_xml(xml_string):
       if g.part_uid != 'bot': # hasattr(g, 'part_uid'):
         ret.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (
           g.part_uid, g.id, g.pid, g.difficulty, g.round_duration, g.hits(), g.confidence, g.rank_before, g.rank_after,
-          ';'.join(map(str, g.assetList())), ';'.join(map(str, g.otherAssets())), g.totalTime(), 
+          ';'.join(map(str, g.assetList())), ';'.join(map(str, g.aiAssets())), g.totalTime(), 
           g.print_target_list(),';'.join(map(str, sorted(g.attack_choices)))
           ))
   
   ret.write("\n\n")  
-  ret.write("Single-player Round Table\n")
+  ret.write("Player Round Table\n")
   ret.write("Participant,GameNum,PlayerNum,Round,RoundDuration,MarkClear,MarkPossible,MarkConfirm\n")
   for game_id in sorted(round_d):
     g_table = round_d[game_id]
@@ -321,7 +326,7 @@ def build_csv_from_xml(xml_string):
   # sys.exit(0)
   
   ret.write("\n\n")  
-  ret.write("Single-player Assets in Each Round\n")
+  ret.write("Player Assets in Each Round\n")
   ret.write("Participant,GameNum,PlayerNum,Round,AssetType,ReportClear,ReportPossible,ReportConfirm\n")
   for game_id in sorted(asset_d):
     g_table = asset_d[game_id]
@@ -345,7 +350,7 @@ if __name__ == "__main__":
   # parse the file
 #   tree = ET.parse('scud_hunt_results_all.xml')
 #                 
-  with open ("scud_hunt_results_all.xml", "r") as myfile:
+  with open ("scud_hunt_results.xml", "r") as myfile:
     xml_string=myfile.read()
     print build_csv_from_xml(xml_string).getvalue()
 #   build_csv_from_xml('scud_hunt_results.xml')
