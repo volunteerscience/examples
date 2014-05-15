@@ -800,11 +800,12 @@ function deselectAllMarkers() {
 
 function assignPlayersRoundRobin() {
   Math.seedrandom(seed);
-  role_radix = Math.floor(Math.random()*num_roles);
+  first_player = 1+Math.floor(Math.random()*numPlayersAndBots);
+  
   roleToPlayer = new Array();
-  var pid = 1;
+  var pid = first_player;
   for (var r = 0; r < num_roles; r++) {
-    var idx = 1+(r+role_radix) % num_roles;
+    var idx = 1+r;
 //    alert(idx+" => "+pid);
     roleToPlayer[idx] = pid;
     
