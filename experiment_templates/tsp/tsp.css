@@ -60,9 +60,11 @@
 }
 
 .leftTable input[type="submit"] {
+  font-size:18px;
   width: 128px;
   height: 58px;
   white-space: normal;
+  padding:0;
 }
 
 .leftTable td {
@@ -99,13 +101,13 @@
  }
  
 .teamSolution {
-  border: 1px solid black;
-  float: left;
-  height: 204px;
-  margin: 17px 10px;
-  padding: 0;
-  width: 194px;
+  border: 1px solid #000000;
   border-radius: 15px;
+  float: left;
+  height: 224px;
+  margin: 0px 10px 17px;
+  padding: 0;
+  width: 200px;
 }
 
 .teamSolution * {
@@ -156,6 +158,8 @@
 
 .instruction p {
   font-size: 140%;
+  font-weight: bold;
+  line-height: 1em;
 }
 
 .bottomPanel {
@@ -230,6 +234,7 @@
 
 .mainPanel {
   position: relative;
+  min-width: 760px;
 }
 
 #midRoundPopup {
@@ -249,9 +254,10 @@
 #midRoundOk {
     position: absolute;
     bottom: 30%;
-    width: 25%;
+    widthh: 25%;
     left: 38%;
     height: 80px;
+    
 }
 
 #midRoundChoices {

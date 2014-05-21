@@ -4,19 +4,17 @@
   <table id="result_table">
     <tr><th>Round</th><th>Distance from<br/>best answer</th><th></th></tr>
   </table>
-  <br/>
-  <input class="btn-success right" type="submit" value="Submit Feedback" onclick="showFeedbackForm();"/>
 </div>
 
 <div id="q1" style="display: none;">
 <h2>Survey</h2>
   How confident were you that you had the best possible solution to this Traveling Salesperson Problem?<br/><br/>
 
-  <br/><div><input class="btn-success" type="submit" value="Very confident" onclick="q1('1')"/></div>
-  <br/><div><input class="btn-success" type="submit" value="Somewhat confident" onclick="q1('2')"/></div>
-  <br/><div><input class="btn-success" type="submit" value="Neither confident nor unsure" onclick="q1('3')"/></div>
-  <br/><div><input class="btn-success" type="submit" value="Somewhat unsure" onclick="q1('4')"/></div>
-  <br/><div><input class="btn-success" type="submit" value="Very unsure" onclick="q1('5')"/></div>
+  <br/><div><input class="btn btn-primary" type="submit" value="Very confident" onclick="q1('1')"/></div>
+  <br/><div><input class="btn btn-primary" type="submit" value="Somewhat confident" onclick="q1('2')"/></div>
+  <br/><div><input class="btn btn-primary" type="submit" value="Neither confident nor unsure" onclick="q1('3')"/></div>
+  <br/><div><input class="btn btn-primary" type="submit" value="Somewhat unsure" onclick="q1('4')"/></div>
+  <br/><div><input class="btn btn-primary" type="submit" value="Very unsure" onclick="q1('5')"/></div>
 
 </div>
 
@@ -26,7 +24,7 @@
     <div id="yourBest" class="teamSolution"><h4 class="gameLabel">Your Best</h4><div id="yourBest_canvas"></div><div id="yourBest_score" class="score"></div></div>
     <div id="optimalSolution" class="teamSolution"><h4 class="gameLabel">Optimal</h4><div id="optimalSolution_canvas"></div><div id="optimalSolution_score" class="score"></div></div>
   </div>
-  <br/><input class="btn-success" type="submit" value="Continue" onclick="showResults(); return false;"/>
+  <br/><input class="btn btn-primary" type="submit" value="Continue" onclick="showResults(); return false;"/>
 </div>
 
 <div id="interactiveInstructions1" style="display: none;">
@@ -40,13 +38,13 @@
         </div>
       </td></tr>
       <tr><td>
-        <input id="iireset" class="btn-large btn-success dropdown-toggle" type="submit" onclick="iireset(); return false;" value="Reset" style="display: none;"/>
+        <input id="iireset" class="btn btn-large btn-primary dropdown-toggle" type="submit" onclick="iireset(); return false;" value="Reset" style="display: none;"/>
       </td></tr>
       <tr><td>
-        <input id="ii_prev_solution" class="btn-large btn-success dropdown-toggle" type="submit" onclick="iiLoadPrev(); return false;" value="Load Previous Solution" style="white-space: normal; display: none;"/>
+        <input id="ii_prev_solution" class="btn btn-large btn-primary dropdown-toggle" type="submit" onclick="iiLoadPrev(); return false;" value="Load Previous Solution" style="white-space: normal; display: none;"/>
       </td></tr>
       <tr><td>
-        <input id="iisubmitButton" class="btn-large btn-success dropdown-toggle" type="submit" onclick="iiSubmit(); return false;" value="Submit" style="display: none;"/>
+        <input id="iisubmitButton" class="btn btn-large btn-primary dropdown-toggle" type="submit" onclick="iiSubmit(); return false;" value="Submit" style="display: none;"/>
       </td></tr>
       <tr><td></td></tr>
     </table>
@@ -58,8 +56,8 @@
     </div>
     <div id="interactiveMap" style="display: none; float: left; width: 330px;"></div>
     <div class="bottomPanel">
-      <input id="iiskip_instructions" class="btn-large btn-success dropdown-toggle" type="submit" value="Skip Instructions" onclick="doneInteractiveInstructions1();"/>
-      <input id="iinext" class="btn-large btn-success dropdown-toggle" type="submit" value="Next" onclick="interactiveInstructionsNext();"/>
+      <input id="iiskip_instructions" class="btn btn-large btn-primary dropdown-toggle" type="submit" value="Skip Instructions" onclick="doneInteractiveInstructions1();"/>
+      <input id="iinext" class="btn btn-large btn-primary dropdown-toggle" type="submit" value="Next" onclick="interactiveInstructionsNext();"/>
     </div>
   </div>
 </div>
@@ -79,7 +77,7 @@
   <div id="midRoundPopup" style="display: none;">
     <h2 id="midRoundText"></h2>
     <div id="midRoundChoices"></div>
-    <input id="midRoundOk" class="btn-large btn-success dropdown-toggle" type="submit" value="Proceed to next round..." />
+    <input id="midRoundOk" class="btn btn-large btn-primary dropdown-toggle" type="submit" value="Proceed to next round..." />
   </div>
   
   <div id="status_box">
@@ -95,13 +93,13 @@
         </div>
       </td></tr>
       <tr><td>
-        <input class="btn-large btn-success dropdown-toggle" type="submit" onclick="reset(); return false;" value="Reset" />
+        <input class="btn btn-large btn-primary dropdown-toggle" type="submit" onclick="reset(); return false;" value="Reset" />
       </td></tr>
       <tr><td>
-        <input id="prev_solution" class="btn-large btn-success dropdown-toggle" type="submit" onclick="prevSolution(); return false;" value="Load Previous Solution" disabled="true" style="white-space: normal;" />
+        <input id="prev_solution" class="btn btn-large btn-primary dropdown-toggle" type="submit" onclick="prevSolution(); return false;" value="Load Previous Solution" disabled="true" style="white-space: normal;" />
       </td></tr>
       <tr><td>
-        <input class="btn-large btn-success dropdown-toggle" id="submitButton" type="submit" onclick="pushSolution(); return false;" value="Submit" />
+        <input class="btn btn-large btn-primary dropdown-toggle" id="submitButton" type="submit" onclick="pushSolution(); return false;" value="Submit" />
       </td></tr>
       <tr><td></td></tr>
     </table>

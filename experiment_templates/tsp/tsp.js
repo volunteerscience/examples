@@ -56,6 +56,7 @@ var forceBots = 0; // number of bots _not_ due to dropouts
 var botType = 0;
 
 function initialize() {
+  cityRad = parseInt(variables['cityRad']);
   numCities = parseInt(variables['num_cities']);
   loadMaps(numCities);
   chooseTestMapIndex();
@@ -1273,7 +1274,8 @@ function showResults() {
   $("#optimalSolutionPanel").hide();
         
   $('#results').show();
-  enablePlayAgain();
+  experimentComplete();
+//  enablePlayAgain();
   
   if (numRoundsWithStar >= 3) {
     writeAward("No Instruction Needed");
