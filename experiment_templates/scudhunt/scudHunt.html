@@ -2,7 +2,7 @@
 
 <div id="game">
   <div style="float:left;"><h1 id="gameTitle">Shadow Force</h1></div>
-  <div id="tips_button" class="btn-success btn-small" style="margin-left: 100px; margin-top: 7px; float:left; display: none;">Help</div>
+  <div id="tips_button" class="btn btn-primary btn-small" style="margin-left: 100px; margin-top: 7px; float:left; display: none;">Help</div>
 
   <div id="tips_popup" style="display:none;">
     <div id="tips_wrapper">
@@ -28,11 +28,11 @@
     <div id="q1" class="modalQuestion" style="display: none;">
       <h2>How confident are you that you found the targets?</h2>
       <br/><br/>
-      <br/><div><input class="btn-success" type="submit" value="Very confident" onclick="q1('1')"/></div>
-      <br/><div><input class="btn-success" type="submit" value="Somewhat confident" onclick="q1('2')"/></div>
-      <br/><div><input class="btn-success" type="submit" value="Neither confident nor unsure" onclick="q1('3')"/></div>
-      <br/><div><input class="btn-success" type="submit" value="Somewhat unsure" onclick="q1('4')"/></div>
-      <br/><div><input class="btn-success" type="submit" value="Very unsure" onclick="q1('5')"/></div>
+      <br/><div><input class="btn btn-primary" type="submit" value="Very confident" onclick="q1('1')"/></div>
+      <br/><div><input class="btn btn-primary" type="submit" value="Somewhat confident" onclick="q1('2')"/></div>
+      <br/><div><input class="btn btn-primary" type="submit" value="Neither confident nor unsure" onclick="q1('3')"/></div>
+      <br/><div><input class="btn btn-primary" type="submit" value="Somewhat unsure" onclick="q1('4')"/></div>
+      <br/><div><input class="btn btn-primary" type="submit" value="Very unsure" onclick="q1('5')"/></div>
     </div>
     <div id="timer" class="countdown" style="display: none;"></div>
     <div class="leftSide">
@@ -40,7 +40,7 @@
       <div style="min-height:460px;">
         <div id="canvas" class="round-corner15"></div>
         <div class="under_canvas">
-          <div id="go" class="btn-success btn-large left" onclick="submitMove();" style="display: none;">End Turn</div>
+          <div id="go" class="btn btn-primary left" onclick="submitMove();" style="display: none;">End Turn</div>
           <div id="marker_panel" style="display: none;">
             <p>Markers:</p>
             <div id="marker_c" class="marker_btn" title="Clear a mark.">C</div>
@@ -67,7 +67,7 @@
         <table class="scroll-content" id="sitRep"></table>
       </div>
       <div id="chatPanel" style="display:none;">
-        <div id="sendChat" class="btn-success btn-large" onclick="callSendChat();">Send</div>
+        <div id="sendChat" class="btn btn-primary" onclick="callSendChat();">Send</div>
         <input id="chatInput" type="text"/>
         <div id="chat_wrapper" class="scroll-pane ui-corner-all">
            <div class="scroll-bar-wrap ui-widget-content ui-corner-bottom">
@@ -80,9 +80,9 @@
   </div>
   <div id="bottomPanel">
     <div class="pushUpPanel">
-      <input id="iback" class="btn-large btn-success dropdown-toggle" type="submit" value="Back" onclick="interactiveInstructionsBack();"/>
-      <input id="inext" class="btn-large btn-success dropdown-toggle" type="submit" value="Next" onclick="interactiveInstructionsNext();"/>
-      <input id="iskip" class="btn-large btn-success dropdown-toggle" type="submit" value="Skip Story" onclick="skipInstructions();" style="float: right;"/>
+      <input id="iback" class="btn btn-primary dropdown-toggle" type="submit" value="Back" onclick="interactiveInstructionsBack();"/>
+      <input id="inext" class="btn btn-primary dropdown-toggle" type="submit" value="Next" onclick="interactiveInstructionsNext();"/>
+      <input id="iskip" class="btn btn-primary dropdown-toggle" type="submit" value="Skip Story" onclick="skipInstructions();" style="float: right;"/>
     </div>
   </div>
   

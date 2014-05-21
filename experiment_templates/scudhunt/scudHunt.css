@@ -37,7 +37,7 @@
 }
 
 .asset {
-	 position: relative;	
+   position: relative;  
   -webkit-border-radius: 5px; 
   -moz-border-radius: 5px;
   -o-border-radius: 5px;
@@ -97,10 +97,10 @@
 
 #sendChat {
   float: right;
-  height: 17px;
+  height: 22px;
   margin: 0;
-  padding: 5px;
-  width: 34px;
+  padding: 0;
+  width: 48px;
   text-align: center;
 }
 
@@ -128,7 +128,7 @@
 }
 
 .modalQuestion {
-  background-color: rgba(200, 200, 200, 0.65);
+  background-color: rgba(200, 200, 200, 0.80);
   height: 570px;
   left: 0;
   position: absolute;
@@ -146,6 +146,7 @@
 
 .modalQuestion h2 {
   font-size: 200%;
+  font-weight: bold;
 }
 
 #game {
@@ -153,13 +154,14 @@
 
 #gameTitle {
   font-family: 'Coda Caption', sans-serif;  
+  margin-top: 0px;
 }
 
 #instructions {
   font-family: 'Coda Caption', sans-serif;  
   text-align: center;
   position: relative;
-  height:200px;
+  height:250px;
   padding: 20px;
 }
 
@@ -176,7 +178,7 @@
 
 .instruction p {
   font-family: 'Coda Caption', sans-serif;  
-  font-size: 160%;
+  font-size: 160% !important;
   line-height: 32px;
   margin: 20px;
   max-width: 700px;
@@ -307,7 +309,7 @@
   color: #44cc44;
 }
 
-.btn-small {
+.btn-primary {
   cursor: pointer;
 }
 

@@ -1080,13 +1080,15 @@ function showAirstrike() {
   var attackLocations = {};
   for (var unitIdx in roleUnits[TARGET_ROLE]) {
     var unit = roleUnits[TARGET_ROLE][unitIdx];
-    attackLocations[unit.nextRegion.id] = true;
-    if (unit.nextRegion != null) {
-      if (unit.nextRegion.value == VALUE_TARGET) {
-        hitLoc = unit.nextRegion;
-        numHits++;
-      } else {
-        missFireLoc = unit.nextRegion;
+    if (unit.nextRegion) {      
+      attackLocations[unit.nextRegion.id] = true;
+      if (unit.nextRegion != null) {
+        if (unit.nextRegion.value == VALUE_TARGET) {
+          hitLoc = unit.nextRegion;
+          numHits++;
+        } else {
+          missFireLoc = unit.nextRegion;
+        }
       }
     }
   }
@@ -1137,7 +1139,7 @@ function showAirstrike() {
   }
   
   if (numHits == 0) {
-    alert("You missed every "+TARGET_NOUN+"!  "+ALLY_NOUN+" has taken severy casualties.  Try harder next time!");
+    alert("You missed every "+TARGET_NOUN+"!  "+ALLY_NOUN+" has taken severe casualties.  Try harder next time!");
   } else {
     writeScore("score",score);
     alert("Congratulations!  You destroyed "+numHits+" "+TARGET_NOUN_PLURAL+"!  You scored "+score+" points.  Your current rank is "+ranks[getRank()]+".");    

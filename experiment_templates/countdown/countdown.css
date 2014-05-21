@@ -10,13 +10,14 @@
   vertical-align: middle; 
   border-radius: 5px;
   background-color: #FFFFFF;
-  font-size: 34px;
-  min-width: 90px;
+  font-size: 31px;
+  width: 90px;
   float: left;
   z-index:2;
   position: relative;
   left:0;
   top:0;
+  line-height: 1.1em;
 }
 
 .countdown-bar {
@@ -25,8 +26,8 @@
   background-color: #FFFFFF;
   border-radius: 0 12px 12px 0;
   position: relative;
-  top: 8px;
-  left: 93px;
+  top: 7px;
+  left: 89px;
   margin-right:93px;
   z-index:1;
 }
@@ -38,7 +39,7 @@
   left:0;
   background-color: #7DAF27;
   border-radius: 0 11px 12px 0;
-  height:25px;
+  height:23px;
 }
   
   
