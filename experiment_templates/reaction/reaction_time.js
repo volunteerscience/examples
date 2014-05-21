@@ -249,7 +249,5 @@ function showScoreScreenHelper() {
   $("#score_screen").fadeIn();
   
 
-  enableSubmitFeedback();
-  disableQuitConfirm();
-  enablePlayAgain();
+  experimentComplete();
 }

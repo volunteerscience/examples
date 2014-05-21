@@ -249,8 +249,5 @@ function showScoreScreenHelper() {
   $("#ave_response").html(ave_response_time);
   $("#score_screen").fadeIn();
   
-
-  enableSubmitFeedback();
-  disableQuitConfirm();
-  enablePlayAgain();
+  experimentComplete();
 }
