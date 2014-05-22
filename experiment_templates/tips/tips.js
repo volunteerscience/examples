@@ -217,8 +217,10 @@ function Tips(button_selector, popup_selector) {
     var newCss = {
         "left":buttonOff.left+me.button.outerWidth(true)-me.button.outerWidth(false), // last 2 account for margin
         "top":buttonOff.top+me.button.outerHeight(true)-me.button.outerHeight(false), // last 2 account for margin
-        "width":(me.button.outerWidth(false)-(me.popup.outerWidth()-me.popup.width()))+"px", // last 2 account for border
-        "height":(me.button.outerHeight(false)-(me.popup.outerHeight()-me.popup.height()))+"px", // last 2 account for border
+//        "width":(me.button.outerWidth(false)-(me.popup.outerWidth()-me.popup.width()))+"px", // last 2 account for border
+//        "height":(me.button.outerHeight(false)-(me.popup.outerHeight()-me.popup.height()))+"px", // last 2 account for border
+        "width":(me.button.outerWidth(false))+"px", // last 2 account for border
+        "height":(me.button.outerHeight(false))+"px", // last 2 account for border
         "opacity":0.5
         };
     $("#tips_wrapper").hide();
@@ -375,7 +377,8 @@ function Tips(button_selector, popup_selector) {
 
   this.button.click(function() {
     if (me.showing) {
-      me.hide();
+//      me.hide();
+      me.setTip(me.index+1);
     } else {
       me.show();      
     }

@@ -1476,6 +1476,21 @@ function initRound() {
 //  log("initRound:"+currentRound);
   if (currentRound-ROUND_ZERO <= numRounds) {
     // normal round
+    if (currentRound-ROUND_ZERO == 1) {
+      if (! (ranks[0] in awards[myid])) {
+        roundDuration = 360;
+//        setCountdown("timer",360);
+        addTip("How To Play",
+            '<p>Shadow Force is a complex game of deploying military assets to hunt down enemies.</p>'+
+            '<p>We will teach you to play by providing "Tips" along the way.</p>'+
+            '<p>When the "Help" button above turns orange, click it for advice.</p>'+
+            '<p>You can also navigate the tips with the blue panel below.</p>',
+            "#tips_button",units[4].icon,7777);
+        tips.show();
+      }
+    }
+    
+    
     cancelDeployAssetTip = delayAddTip(2000,1,"Deploy Assets",
       "<p>Deploy one or more of your assets to help search for a "+TARGET_NOUN+".</p>"+
       "<p>Click an Asset, then click a region in the battlefield.</p>"+
