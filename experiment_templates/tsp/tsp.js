@@ -480,7 +480,7 @@ var tPaper = new Array();
  */
 function addSolution(idx, name) {
   //alert("addSolution("+idx+","+name+")");
-  $('#canvas').after('<div id="solution_'+idx+'" class="teamSolution" style="display:none;"><h4 class="gameLabel">'+name+'</h4><div id="canvas_'+idx+'"></div><div id="score_'+idx+'" class="score">10,000</div></div>');
+  $('#canvas').after('<div id="solution_'+idx+'" class="teamSolution" style="display:none;"><h4 class="gameLabel">'+name+'</h4><div id="canvas_'+idx+'" class="teamCanvas"></div><div id="score_'+idx+'" class="score">10,000</div></div>');
   tPaper[idx] = Raphael("canvas_"+idx, (width+cityRad*2)*tFac, (height+cityRad*2)*tFac);
 }
 
