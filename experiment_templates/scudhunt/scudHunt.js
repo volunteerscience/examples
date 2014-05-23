@@ -1144,8 +1144,8 @@ function showAirstrike() {
     writeScore("score",score);
     alert("Congratulations!  You destroyed "+numHits+" "+TARGET_NOUN_PLURAL+"!  You scored "+score+" points.  Your current rank is "+ranks[getRank()]+".");    
   }
-  enableSubmitFeedback();
-  disableQuitConfirm();
+  
+  experimentComplete();
   
   // draw the avatars on the map
   var targetCtr = 0;
