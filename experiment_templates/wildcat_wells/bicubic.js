@@ -2,15 +2,21 @@ var paper = null;
 
 var MAP_W = 512;
 var MAP_H = MAP_W;
-var P = 2; // pixels per square
+var P = 1; // pixels per square
 
 var map = null;
 
+// Initialize form
 function startBicubic() {
   $("#seed").val(seed);
   for (var i = 1; i < 10; i++) {
-    var max = (1/i).toFixed(2);
-    $("#controlTable").append('<tr><th>Octave '+i+'</th><td><input id="active_'+i+'" type="checkbox" '+( (i>1 && i<9) ? 'checked="checked"' : '')+'/> Min:<input id="min_'+i+'" value="0" type="text"/>  Max:<input id="max_'+i+'" value="'+max+'" type="text" /> Sharpness:<input id="jagged_'+i+'" value="1.5" type="text"/></td></tr>');
+//  var max = (1/i).toFixed(2);
+    var max = 1;
+    if (i > 1) {
+      max = 1/Math.pow(2, i-2);
+    }
+    var sharpness = i+1;
+    $("#controlTable").append('<tr><th>Octave '+i+'</th><td><input id="active_'+i+'" type="checkbox" '+( (i>1 && i<6) ? 'checked="checked"' : '')+'/> Min:<input id="min_'+i+'" value="0" type="text"/>  Max:<input id="max_'+i+'" value="'+max+'" type="text" /> Sharpness:<input id="jagged_'+i+'" value="'+sharpness+'" type="text"/></td></tr>');
     
     // Min:<input id="max_'+i+'" value="'+(1/o)+'"/> Jaggedness:<input id="jagged_'+i+'" value="1.5"/>
   }
@@ -20,6 +26,13 @@ function submitSettings() {
   submit("name:"+$("#name").val()+" "+$("#settings").html());
 }
 
+function drawBicubic2() {
+  initializeMap(MAP_W, MAP_H, 0);
+  buildMap(seed);
+  drawBitMap();
+}
+  
+// generate, render map from form
 function drawBicubic() {
 //  paper = Raphael("canvas", MAP_W*P, MAP_H*P);
   try {
@@ -68,6 +81,17 @@ function addNextOctave() {
   setTimeout(addNextOctave,10);
 }
 
+// hard-coded fractal
+function buildMap(r_seed) {
+  for (var i = 2; i <= 5; i++) {
+    var min = 0;
+    var max = 1/Math.pow(2, i-2);
+    var sharpness = i+1;
+    addInterval(Math.pow(2,i),Math.pow(2,i),min,max,
+        sharpness,r_seed);
+  }
+}
+
 function addOctave(o,min,max,r_seed) {
   log("addOctave("+o+","+min+","+max+")");
   if (!$("#active_"+o).is(':checked')) {
@@ -87,7 +111,7 @@ function initializeMap(w, h, v) {
 //    log("initializeMap()"+x);
     map[x] = new Array(h);
     for (var y = 0; y < h; y++) {
-      map[x][y] = 0; //(y%100)/100;
+      map[x][y] = v; //(y%100)/100;
     }
   }
 }
