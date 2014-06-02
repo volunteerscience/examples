@@ -5,6 +5,11 @@ var num_rounds = 15;
 function initializeGame() {
   initializeHistory();
   initializeGameBoard();
+  
+  // delme, for testing color
+//  for (var i = 1; i <= num_rounds; i++) {
+//    setBar(myid,i,Math.floor(max_score*i/num_rounds), i*10, i*10);
+//  }
 }
 
 function initializeGameBoard() {
@@ -21,10 +26,21 @@ function initializeGameBoard() {
 
 function initializeHistory() {
   addHistoryPanel(myid, "You");
+  addHistoryPanel(2, "Player 2");
+  addHistoryPanel(3, "Player 3");
+  addHistoryPanel(4, "Player 4");
 }
 
+var panelCtr = 0;
 function addHistoryPanel(playerNum, name) {
-  var s = '<div class="history_panel">'+
+  // first 3 have the bottom dashed
+  panelCtr++;
+  var extraClass = " bottom_dashed";
+  if (panelCtr == 4) {
+    extraClass = "";
+  }
+  
+  var s = '<div class="history_panel'+extraClass+'">'+
             '<div class="history_title">'+name+'</div><div class="history_middle">'+
             '<div class="left_text rotate">Score</div>'+
             '<table class="history_table">';
@@ -33,16 +49,7 @@ function addHistoryPanel(playerNum, name) {
   }
             s+='<tr>';
   for (var i = 1; i <= num_rounds; i++) {
-//    if (i>6) {
       s+='<td class="history_bar" height="85%" width="1"><div id="bar_'+playerNum+'_'+i+'" class="pre_round">?</div></td>';
-//    } else {
-//      if (i==3) {
-//        s+='<td class="history_bar" height="85%" width="1"><div class="skip_round">X</div></td>';        
-//      } else {
-//        var h = i*10; 
-//        s+='<td class="history_bar" height="85%" width="1"><div style="background-color:#0000FF; height:'+h+'%;"></div></td>';              
-//      }
-//    }
   }
           s+= '</tr><tr>';
   for (var i = 1; i <= num_rounds; i++) {
@@ -79,14 +86,29 @@ function setBar(player,round,value, x, y) {
     return;
   }
   
-  var height = Math.floor(100*value/max_score);
+  var fraction = Math.min(1.0,Math.max(0,value/max_score)); // 0-1
+  var height = Math.floor(100*fraction);
   $("#mapValue").html(height);
-  
-  var color = "#0000FF";
+
+  var midpoint = 0.4; // where yellow is; lower for more red on the chart, higher for more blue on the chart
+  var r = 255;
+  var g = 0;
+  var b = 0;
+  if (fraction < midpoint) {
+    // blue => yellow
+    r = g = Math.floor(255.0 * fraction/midpoint);
+    b = 255-r;
+  } else {
+    // yellow => red
+    r = 255;
+    g = 255 - Math.floor(255* (fraction-midpoint)/(1.0-midpoint) );
+    //b = 0; // from above    
+  }
+  var color = "rgb("+r+","+g+","+b+")";
   bar.html("");
   bar.css("background-color",color);
   bar.css("height",height+"%");
   
   var point = paper.rect(x-1,y-1,3,3);
-  point.attr({fill: color});
+  point.attr({fill: color, stroke: color});
 }

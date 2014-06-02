@@ -10,8 +10,11 @@
   height: 25%;
   position: relative;
   font-size:80%;
-  border-bottom: 2px dashed #000000;
 }  
+
+.bottom_dashed {
+  border-bottom: 2px dashed #000000;
+}
   
 .history_title {
   font-size:120%;
