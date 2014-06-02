@@ -8,11 +8,13 @@ function initializeGame() {
 }
 
 function initializeGameBoard() {
+//  alert(getFile("ground.jpg"));
+  
   initializeMap(MAP_W, MAP_H, 0);
   buildMap(seed);
-
+  $("#canvas").css("background-image","url('"+getFile("ground.jpg")+"')");
   paper = Raphael("canvas", MAP_W*P, MAP_H*P);
-  paper.circle(256,256,256);
+//  paper.circle(256,256,256);
   
   $('#canvas').bind('click', mapClick);  
 }
@@ -64,10 +66,10 @@ function mapClick(evt) {
   var y = evt.clientY-offset.top;
   var score = getScore(x,y);
   $("#mapValue").html(score);
-  setBar(myid, round++, score)
+  setBar(myid, round++, score, x, y);
 }
 
-function setBar(player,round,value) {
+function setBar(player,round,value, x, y) {
   var bar = $("#bar_"+player+"_"+round)
   
   bar.removeClass('pre_round');
@@ -84,4 +86,7 @@ function setBar(player,round,value) {
   bar.html("");
   bar.css("background-color",color);
   bar.css("height",height+"%");
+  
+  var point = paper.rect(x-1,y-1,3,3);
+  point.attr({fill: color});
 }

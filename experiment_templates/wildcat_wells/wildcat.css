@@ -87,7 +87,6 @@
 
 #canvas {
   float: left;
-  background-image: url('./images/ground.jpg');
   background-repeat: no-repeat;
   width:512px;
 }
