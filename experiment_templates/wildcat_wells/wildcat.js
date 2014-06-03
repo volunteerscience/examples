@@ -56,7 +56,8 @@ function initializeNetwork() {
     break;
   case 16:
     
-    if (network_type.toLowerCase() == "a") {
+    switch(network_type.toLowerCase()) {
+    case 'a':
       network[1] =  [ 2, 3, 4];
       network[2] =  [ 1, 3, 4];
       network[3] =  [ 1, 2, 5];
@@ -72,7 +73,134 @@ function initializeNetwork() {
       network[13] = [12,14,15];
       network[14] = [13,15,16];
       network[15] = [13,14,16];
-      network[16] = [11,14,15];      
+      network[16] = [11,14,15];
+      break;
+    case 'b':
+      network[1] =  [ 2, 3, 4];
+      network[2] =  [ 1, 3, 4];
+      network[3] =  [ 1, 2, 5];
+      network[4] =  [ 1, 2, 5];
+      network[5] =  [ 3, 4, 6];
+      network[6] =  [ 5, 7, 8];
+      network[7] =  [ 6, 8, 9];
+      network[8] =  [ 6, 7,10];
+      network[9] =  [ 7,10,11];
+      network[10] = [ 8, 9,11];
+      network[11] = [ 9,10,12];
+      network[12] = [11,13,16];
+      network[13] = [12,14,15];
+      network[14] = [13,15,16];
+      network[15] = [13,14,16];
+      network[16] = [12,14,15];      
+      break;
+    case 'c':
+      network[1] =  [ 2, 3, 4];
+      network[2] =  [ 1, 3, 4];
+      network[3] =  [ 1, 4, 5];
+      network[4] =  [ 1, 2, 5];
+      network[5] =  [ 3, 4, 6];
+      network[6] =  [ 5,11,16];
+      network[7] =  [ 8, 9,10];
+      network[8] =  [ 7, 9,10];
+      network[9] =  [ 7, 8,11];
+      network[10] = [ 7, 8,11];
+      network[11] = [ 6, 9,10];
+      network[12] = [13,14,15];
+      network[13] = [12,14,15];
+      network[14] = [12,13,16];
+      network[15] = [12,13,16];
+      network[16] = [ 6,14,15];      
+      break;
+    case 'd':
+      network[1] =  [ 2, 3,16];
+      network[2] =  [ 1, 3, 4];
+      network[3] =  [ 1, 2, 4];
+      network[4] =  [ 2, 3, 5];
+      network[5] =  [ 4, 6, 7];
+      network[6] =  [ 5, 7, 8];
+      network[7] =  [ 5, 6, 8];
+      network[8] =  [ 6, 7, 9];
+      network[9] =  [ 8,10,11];
+      network[10] = [ 9,11,12];
+      network[11] = [ 9,10,12];
+      network[12] = [10,11,13];
+      network[13] = [12,14,15];
+      network[14] = [13,15,16];
+      network[15] = [13,14,16];
+      network[16] = [14,15, 1];      
+      break;
+    case 'e':
+      network[1] =  [ 2, 3, 6];
+      network[2] =  [ 1, 5,10];
+      network[3] =  [ 1, 4, 8];
+      network[4] =  [ 3, 5, 7];
+      network[5] =  [ 2, 4, 9];
+      network[6] =  [ 1, 7,11];
+      network[7] =  [ 4, 6,13];
+      network[8] =  [ 3,12,16];
+      network[9] =  [ 5,13,14];
+      network[10] = [ 2,15,12];
+      network[11] = [ 6,12,14];
+      network[12] = [ 8,10,11];
+      network[13] = [ 7, 9,15];
+      network[14] = [ 9,11,16];
+      network[15] = [10,13,16];
+      network[16] = [ 8,14,15];      
+      break;
+    case 'f':
+      network[1] =  [ 2, 3, 7];
+      network[2] =  [ 1, 5, 6];
+      network[3] =  [ 1, 4, 8];
+      network[4] =  [ 3, 7, 9];
+      network[5] =  [ 2, 8,10];
+      network[6] =  [ 2, 9,10];
+      network[7] =  [ 1, 4,11];
+      network[8] =  [ 3, 5,11];
+      network[9] =  [ 4, 6,12];
+      network[10] = [ 5, 6,14];
+      network[11] = [ 7, 8,13];
+      network[12] = [ 9,13,16];
+      network[13] = [11,12,15];
+      network[14] = [10,15,16];
+      network[15] = [13,14,16];
+      network[16] = [12,14,15];      
+      break;
+    case 'g':
+      network[1] =  [ 2, 3, 5];
+      network[2] =  [ 1, 4, 8];
+      network[3] =  [ 1, 6, 9];
+      network[4] =  [ 2, 5,11];
+      network[5] =  [ 1, 4,12];
+      network[6] =  [ 3, 7,10];
+      network[7] =  [ 6, 8, 9];
+      network[8] =  [ 2, 7,15];
+      network[9] =  [ 3, 7,13];
+      network[10] = [ 6,11,14];
+      network[11] = [ 4,10,13];
+      network[12] = [ 5,14,15];
+      network[13] = [ 9,11,16];
+      network[14] = [10,12,16];
+      network[15] = [ 8,12,16];
+      network[16] = [13,14,15];      
+      break;
+    case 'h':
+      network[1] =  [ 2, 3, 5];
+      network[2] =  [ 1, 3, 4];
+      network[3] =  [ 1, 2, 4];
+      network[4] =  [ 2, 3, 7];
+      network[5] =  [ 1, 6, 8];
+      network[6] =  [ 5, 9,11];
+      network[7] =  [ 4, 9,10];
+      network[8] =  [ 5,11,12];
+      network[9] =  [ 6, 7,12];
+      network[10] = [ 7, 8,11];
+      network[11] = [ 6,10,15];
+      network[12] = [ 8, 9,13];
+      network[13] = [12,14,16];
+      network[14] = [13,15,16];
+      network[15] = [11,14,16];
+      network[16] = [13,14,15];      
+      break;
     }
     break;
   default:
