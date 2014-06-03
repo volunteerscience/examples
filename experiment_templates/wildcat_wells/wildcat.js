@@ -96,7 +96,7 @@ function initializeNetwork() {
     case 'c':
       network[1] =  [ 2, 3, 4];
       network[2] =  [ 1, 3, 4];
-      network[3] =  [ 1, 4, 5];
+      network[3] =  [ 1, 2, 5];
       network[4] =  [ 1, 2, 5];
       network[5] =  [ 3, 4, 6];
       network[6] =  [ 5,11,16];
@@ -139,7 +139,7 @@ function initializeNetwork() {
       network[7] =  [ 4, 6,13];
       network[8] =  [ 3,12,16];
       network[9] =  [ 5,13,14];
-      network[10] = [ 2,15,12];
+      network[10] = [ 2,12,15];
       network[11] = [ 6,12,14];
       network[12] = [ 8,10,11];
       network[13] = [ 7, 9,15];
@@ -191,7 +191,7 @@ function initializeNetwork() {
       network[5] =  [ 1, 6, 8];
       network[6] =  [ 5, 9,11];
       network[7] =  [ 4, 9,10];
-      network[8] =  [ 5,11,12];
+      network[8] =  [ 5,10,12];
       network[9] =  [ 6, 7,12];
       network[10] = [ 7, 8,11];
       network[11] = [ 6,10,15];
