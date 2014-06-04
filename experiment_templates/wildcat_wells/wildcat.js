@@ -9,13 +9,30 @@ var network = [];
 var playerRadix = 0; // converts between playerId and networkId.
 var myNetworkId = 1;
 var myNetwork = []; // in playerId, not networkId
-var network_type = "a"; // load from variable
+var network_types = ["a","b","c","d","e","f","g","h"]; // load from variable
+var network_type = "a"; // load from above
 var min_distance2 = 25; // square of: can't put in a new well closer than this
 
+var click_color = "#000000";
+var round_seconds = 30;
+var total_score = 0;
+
 function initializeGame() {
+  try {
+    total_players = parseInt(variables['total_players']);
+  } catch (err) {
+    alert(err);
+  }
+  try {
+    network_types = variables['network_types'].split(",");
+  } catch (err) {
+    alert(err);
+  }
+  
   initializeNetwork();
   initializeHistory();
   initializeGameBoard();
+  setInterval(advanceCountdowns, 100);
   
   // delme, for testing color
 //  for (var i = 1; i <= num_rounds; i++) {
@@ -33,6 +50,9 @@ function initializeGameBoard() {
 //  paper.circle(256,256,256);
   
   $('#canvas').bind('click', mapClick);  
+  $('#drill').bind('click', drill);  
+  $('#x_coord').bind("keyup change",updateUserClick);
+  $('#y_coord').bind("keyup change",updateUserClick);
 }
 
 /**
@@ -42,6 +62,8 @@ function initializeNetwork() {
   Math.seedrandom(seed);
   playerRadix = Math.floor(Math.random()*total_players);
   myNetworkId = getNetworkId(myid);
+  network_type = network_types[Math.floor(Math.random()*network_types.length)];
+  $(".gameid").append(network_type);
     
 //  var s = "playerRadix:"+playerRadix+"\n";
 //  for (var i = 1; i < total_players; i++) {
@@ -52,10 +74,12 @@ function initializeNetwork() {
   
   switch(total_players) {
   case 4:
-    
+    network[1] =  [ 2, 3, 4];
+    network[2] =  [ 1, 3, 4];
+    network[3] =  [ 1, 2, 4];
+    network[4] =  [ 1, 2, 3];    
     break;
   case 16:
-    
     switch(network_type.toLowerCase()) {
     case 'a':
       network[1] =  [ 2, 3, 4];
@@ -265,16 +289,61 @@ function getScore(x,y) {
   return Math.min(max_score,Math.max(0,Math.floor(scale*map[x][y])));
 }
 
+var userClick = null;
+function updateUserClick() {
+  fail = false;
+  var x = $("#x_coord").val();
+  if (x.length > 0) {
+    x = parseInt(x);
+    if (isNaN(x) || x < 0 || x > MAP_W) {
+      $("#x_coord").val("");
+      fail = true;
+    }     
+  }
+  var y = $("#y_coord").val();
+  if (y.length > 0) {
+    y = parseInt(y);
+    if (isNaN(y) || y < 0 || y > MAP_H) {
+      $("#y_coord").val("");
+      fail = true;
+    }     
+  }
+
+  if (fail) {
+    if (userClick != null) {
+      userClick.remove();
+      userClick = null;
+    }
+  }
+  
+  if (userClick == null) {
+    userClick = paper.rect(x-1,y-1,3,3);
+    userClick.attr({fill: click_color, stroke: click_color});    
+  } else {
+    userClick.attr({x: x-1, y: y-1});
+  }
+}
+
 var round = 1;
 function mapClick(evt) {
   var offset = $(this).offset();
-  var x = evt.clientX-offset.left;
-  var y = evt.clientY-offset.top;
-  makeChoice(x,y);
-  
-//  var score = getScore(x,y);
-//  $("#mapValue").html(score);
-//  setBar(myid, round++, score, x, y);
+  var x = evt.pageX-offset.left;
+  var y = evt.pageY-offset.top;
+  $("#x_coord").val(x);
+  $("#y_coord").val(y);
+  updateUserClick();
+}
+
+function drill() {
+  var x = $("#x_coord").val();
+  var y = $("#y_coord").val();
+  if (x.length == 0 || y.length == 0) {
+    alert("Please click a new well site on the map.");
+    return;
+  }
+  x = parseInt(x);
+  y = parseInt(y);
+  makeChoice(x,y);  
 }
 
 function setBar(networkId,round,value, x, y) {
@@ -317,9 +386,44 @@ function setBar(networkId,round,value, x, y) {
 var gameRound = 0;
 var submissions = {}; // round => networkId => [x,y,val]; keep track of who submitted for bot behavior
 function initializeGameRound(newGameRound) {
+  if (userClick != null) {
+    userClick.remove();
+    userClick = null;
+  }
   gameRound = newGameRound;
   setRound(gameRound+FIRST_ACTUAL_ROUND-1);
   submissions[currentRound] = {};
+  $("#x_coord").val("");
+  $("#y_coord").val("");
+
+  var seconds = round_seconds;
+  if (gameRound == 1) {
+    seconds = 90;
+  }
+  setCountdown("timer",seconds);
+  
+  $("#round").html(gameRound);
+  $("#score").html(numberWithCommas(total_score));
+  $("#drill").val("Drill!");
+}
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function countdownExpired(id) {
+  var x = $("#x_coord").val();
+  var y = $("#y_coord").val();
+  
+  if (x.length == 0 || y.length == 0 || !checkDistance(myid,x,y)) {
+    x = -1;
+    y = -1;
+    // TODO: notify user
+  }
+  x = parseInt(x);
+  y = parseInt(y);
+  submitMyChoice(x,y);
+  submitRemainingBots();
 }
 
 function completeRound() {
@@ -330,9 +434,24 @@ function completeRound() {
       neighbor = network[myNetworkId][i];
     }
     var val = submissions[currentRound][neighbor];
+    if (i < 3) {
+      if (val[2] > 0) {
+        total_score+=val[2];
+      }
+    }
     setBar(neighbor,gameRound,val[2],val[0],val[1]);
   }
-  initializeGameRound(gameRound+1);
+  
+  if (gameRound < num_rounds) {
+    initializeGameRound(gameRound+1);    
+  } else {
+    endGame();
+  }
+}
+
+function endGame() {
+  experimentComplete();
+  alert("Congratulations!  You collected "+numberWithCommas(total_score)+" barrels of oil.");  
 }
 
 // player's choice, return false if too close
@@ -341,7 +460,7 @@ function makeChoice(x,y) {
     alert("Too close to an existing well!");
     return;
   }
-  submitChoice(myid,x,y);
+  submitMyChoice(x,y);
   submitRemainingBots();
 }
 
@@ -381,8 +500,20 @@ function checkDistance(playerId, x, y) {
   return true;
 }
 
+function submitMyChoice(x,y) {
+  $("#drill").val("Waiting for other players.");
+  stopCountdown("timer");
+  submitChoice(myid,x,y);
+}
+
 function submitChoice(playerId,x,y) {
-  var score = getScore(x,y); 
+  var score = -1;
+  try {
+    score = getScore(x,y); 
+  } catch (err) {
+    x = -1;
+    y = -1;
+  }
   submitBot(playerId, currentRound, JSON.stringify([x,y,score]));
 }
 
@@ -391,10 +522,12 @@ function submitRemainingBots() {
   for (var i = 1; i < myid; i++) {
     if (activePlayers[i]) return; 
   }
+  log('submitRemainingBots');
   
   // submit anyone who needs it
   for (var i = 1; i <= total_players; i++) {
-    if (!(i in submissions[currentRound])) {
+//    log(i+" in "+JSON.stringify(submissions[currentRound]));
+    if (!(String.valueOf(i) in submissions[currentRound])) {
       if (i > numPlayers || !activePlayers[i]) { // bot from beginning || dropped player
         doBotBehavior(i);
       }
@@ -403,6 +536,7 @@ function submitRemainingBots() {
 }
 
 function doBotBehavior(playerId) {
+  log('doBotBehavior:'+playerId);
   var x = Math.floor(Math.random()*MAP_W);
   var y = Math.floor(Math.random()*MAP_H);
   // TODO: loop with checkDistance()

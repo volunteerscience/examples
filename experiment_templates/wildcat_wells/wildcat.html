@@ -1,8 +1,24 @@
+<div id="wild_wrapper">
 <div id="history_wrapper"></div>
-<div id="canvas"></div>
-<br/>
-<p>Value: <span id="mapValue">N/A</span></p>
-
+<div id="right_side">
+  <div id="canvas"></div>
+  <table id="bottom_panels"><tr>
+    <td id="left_panel" class="bottom_panel">
+      X:<input id="x_coord" class="coord_input" type="text" value="" />
+      Y:<input id="y_coord" class="coord_input" type="text" value="" /><br/>
+      <input id="drill" type="submit" value="Drill!"/>
+    </td>
+    <td id="middle_panel" class="bottom_panel">
+      Time left:<br/>
+      <div id="timer"><span id="countdown-clock">0:30</span></div>
+      Current Round: <span id="round">1</span>    
+    </td>
+    <td id="right_panel" class="bottom_panel">
+      TOTAL: <span id="score">0</span>
+    </td>
+  </table>
+</div>
+</div>
 <script>
   function initialize() {
     initializeGame(); 
