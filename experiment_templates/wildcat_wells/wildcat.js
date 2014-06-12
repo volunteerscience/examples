@@ -12,6 +12,9 @@ var myNetwork = []; // in playerId, not networkId
 var network_types = ["a","b","c","d","e","f","g","h"]; // load from variable
 var network_type = "a"; // load from above
 var min_distance2 = 25; // square of: can't put in a new well closer than this
+var showTeamModulo = -1;
+var map_num = 1;
+var num_maps = 50;
 
 var click_color = "#000000";
 var round_seconds = 30;
@@ -23,11 +26,40 @@ function initializeGame() {
   } catch (err) {
     alert(err);
   }
+  
   try {
     network_types = variables['network_types'].split(",");
   } catch (err) {
     alert(err);
   }
+
+  try {
+    num_maps = parseInt(variables['num_maps']);
+  } catch (err) {
+    alert(err);
+  }
+  
+  try {
+    showTeamModulo = parseInt(variables['showTeamModulo']);
+  } catch (err) {
+    alert(err);
+  }
+  if (showTeamModulo < 0) {    
+    var info = Math.floor(Math.random()*3);
+    switch (info) {
+      case 0:
+        showTeamModulo = -1;
+        break;
+      case 1:
+  //    case 2:
+        showTeamModulo = 1;
+        break;
+      default:
+        showTeamModulo = 3;
+        break;
+    }
+  }
+  
   
   initializeNetwork();
   initializeHistory();
@@ -44,7 +76,7 @@ function initializeGameBoard() {
 //  alert(getFile("ground.jpg"));
   
   initializeMap(MAP_W, MAP_H, 0);
-  buildMap(seed);
+  buildMap((seed % num_maps)+1);
   $("#canvas").css("background-image","url('"+getFile("ground.jpg")+"')");
   paper = Raphael("canvas", MAP_W*P, MAP_H*P);
 //  paper.circle(256,256,256);
@@ -63,7 +95,7 @@ function initializeNetwork() {
   playerRadix = Math.floor(Math.random()*total_players);
   myNetworkId = getNetworkId(myid);
   network_type = network_types[Math.floor(Math.random()*network_types.length)];
-  $(".gameid").append(network_type);
+  $(".gameid").append(network_type+" "+showTeamModulo);
     
 //  var s = "playerRadix:"+playerRadix+"\n";
 //  for (var i = 1; i < total_players; i++) {
@@ -73,11 +105,19 @@ function initializeNetwork() {
 //  alert(s);
   
   switch(total_players) {
+  case 1:
+  case 2:
+  case 3:
   case 4:
-    network[1] =  [ 2, 3, 4];
-    network[2] =  [ 1, 3, 4];
-    network[3] =  [ 1, 2, 4];
-    network[4] =  [ 1, 2, 3];    
+    // fully connected
+    for (var i = 1; i <= total_players; i++) {
+      network[i] = [];
+      for (var j = 1; j <= total_players; j++) {
+        if (i != j) {
+          network[i].push(j);
+        }
+      }
+    }
     break;
   case 16:
     switch(network_type.toLowerCase()) {
@@ -242,7 +282,7 @@ function getPlayerId(networkId) {
 
 function initializeHistory() {
   addHistoryPanel(myNetworkId, "Player "+myNetworkId+" (You)");
-  for (var i = 0; i <= 2; i++) {
+  for (var i = 0; i < Math.min(3,network[myNetworkId].length); i++) {
     var myBuddy = getPlayerId(network[myNetworkId][i]);
     myNetwork.push(myBuddy);
     addHistoryPanel(network[myNetworkId][i], "Player "+network[myNetworkId][i]);
@@ -428,18 +468,26 @@ function countdownExpired(id) {
 
 function completeRound() {
   // draw the bar/points
-  for (var i = 0; i < 4; i++) {
-    var neighbor = myNetworkId;
-    if (i < 3) {
-      neighbor = network[myNetworkId][i];
+  
+  // mine
+  var neighbor = myNetworkId;
+  var val = submissions[currentRound][neighbor];
+  if (val[2] > 0) {
+    total_score+=val[2];
+  }
+  setBar(neighbor,gameRound,val[2],val[0],val[1]);
+
+  if ((showTeamModulo > 0) && ((gameRound) % showTeamModulo == 0)) {
+    log("rendering neighbors gameRound:"+gameRound+" currentRound:"+currentRound);
+    // fill in your neighbor's information
+    for (var roundDif = -(showTeamModulo-1); roundDif <= 0; roundDif++) { // how many rounds back to render
+      log("rendering round:"+(gameRound+roundDif));
+      for (var i = 0; i < network[myNetworkId].length; i++) {
+        neighbor = network[myNetworkId][i];
+        val = submissions[currentRound+roundDif][neighbor];
+        setBar(neighbor,gameRound+roundDif,val[2],val[0],val[1]);
+      }      
     }
-    var val = submissions[currentRound][neighbor];
-    if (i < 3) {
-      if (val[2] > 0) {
-        total_score+=val[2];
-      }
-    }
-    setBar(neighbor,gameRound,val[2],val[0],val[1]);
   }
   
   if (gameRound < num_rounds) {
@@ -479,14 +527,18 @@ function checkDistance(playerId, x, y) {
   
   var networkId = getNetworkId(playerId);
   for (var round = FIRST_ACTUAL_ROUND; round < currentRound; round++) {
-    for (var i = 0; i < 4; i++) {
-      var sub = null;
-      if (i < 3) {
-        sub = submissions[round][network[networkId][i]]; // neighbor
-      } else {
-        sub = submissions[round][networkId]; // self
+    var sub = submissions[round][networkId]; // self
+    if (sub[2] >= 0) { // there's a valid submission
+      var dx = x-sub[0];
+      var dy = y-sub[1];
+      var d2 = dx*dx + dy*dy;
+      if (d2 < min_distance2) {
+        return false;
       }
-      
+    }
+    
+    for (var i = 0; i < network[myNetworkId].length; i++) {
+      sub = submissions[round][network[networkId][i]]; // neighbor
       if (sub[2] >= 0) { // there's a valid submission
         var dx = x-sub[0];
         var dy = y-sub[1];
