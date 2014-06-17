@@ -1,0 +1,61 @@
+#dealer_row {
+  width: 100%;
+}
+
+.dealer {
+  border: 2px solid #000000;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  width: 144px;
+}
+
+.hand {
+  
+}
+
+#players {
+  clear: both;
+  margin: auto;
+  display: inline-block;
+}
+
+.player {
+  display: inline-block;
+  border: 2px solid #000000;
+  margin-right: 20px;
+  text-align: center;
+  float: right;
+}
+
+.handValue {
+  clear: both;
+  text-align: center;
+}
+
+.row_wrapper {
+  width: 100%;  
+}
+
+#player_buttons {
+  margin-left: auto;
+  margin-right: auto;
+  width: 400px;
+}
+
+.buttons div {
+  display: inline-block;
+  border: 1px solid #000000;
+  border-radius: 4px;
+  background-color: #33BB33;
+  width: 100px;
+  text-align: center;
+  cursor: pointer;
+  
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
