@@ -48,7 +48,7 @@ function initializeGame() {
     var info = Math.floor(Math.random()*3);
     switch (info) {
       case 0:
-        showTeamModulo = -1;
+        showTeamModulo = 0;
         break;
       case 1:
   //    case 2:
@@ -66,10 +66,19 @@ function initializeGame() {
   initializeGameBoard();
   setInterval(advanceCountdowns, 100);
   
+  initializeInstructions();
   // delme, for testing color
 //  for (var i = 1; i <= num_rounds; i++) {
 //    setBar(myid,i,Math.floor(max_score*i/num_rounds), i*10, i*10);
 //  }
+}
+
+function initializeInstructions() {
+  $('#instructions').modal('show');
+  
+//  $('#close_instructions').click(function() {
+//    $(quit_dialog).modal('hide');
+//  });
 }
 
 function initializeGameBoard() {
