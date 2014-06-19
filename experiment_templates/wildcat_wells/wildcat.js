@@ -45,6 +45,7 @@ function initializeGame() {
     alert(err);
   }
   if (showTeamModulo < 0) {    
+    Math.seedrandom(seed);
     var info = Math.floor(Math.random()*3);
     switch (info) {
       case 0:
