@@ -54,6 +54,7 @@ var greenButtonColor = "green";
 
 var forceBots = 0; // number of bots _not_ due to dropouts
 var botType = 0;
+var showScoreWhenNotMap = true;
 
 function initialize() {
   cityRad = parseInt(variables['cityRad']);
@@ -72,21 +73,21 @@ function initialize() {
  */
 function initializeGameType() {
   Math.seedrandom(seed);
-  
-  var info = Math.floor(Math.random()*3);
-  switch (info) {
-    case 0:
-      showTeamModulo = -1;
-      break;
-    case 1:
-//    case 2:
-      showTeamModulo = 1;
-      break;
-    default:
-      showTeamModulo = 3;
-      break;
+  showTeamModulo = parseInt(variables['showTeamModulo']);
+  if (showTeamModulo == -1) {  
+    var info = Math.floor(Math.random()*3);
+    switch (info) {
+      case 0:
+        showTeamModulo = 0;
+        break;
+      case 1:
+        showTeamModulo = 1;
+        break;
+      default:
+        showTeamModulo = 3;
+        break;
+    }
   }
-//  showTeamModulo = 1;  // delme
   
   var best = Math.floor(Math.random()*2);
   best = 1; // delme
@@ -101,7 +102,7 @@ function initializeGameType() {
   }
   
   if (numPlayers < 2) { // delme
-    forceBots = 1;
+    forceBots = 2;
   }
   
   botType = Math.floor(Math.random()*2);
@@ -114,11 +115,7 @@ function initializeGameType() {
   } else {
     $(".gameid").append("L");  
   }
-  if (showTeamModulo < 1) {
-    $(".gameid").append("0");
-  } else {
-    $(".gameid").append(showTeamModulo);
-  }
+  $(".gameid").append(showTeamModulo);
 //  alert(showTeamModulo+" "+showBest);
 
 }
@@ -203,7 +200,7 @@ function initializeGame() {
   if (showOptimal) {
     addSolution(optimal_id,"Optimal");
   }
-  if (showTeamModulo > 0) {
+  if (showTeamModulo > 0 || showScoreWhenNotMap) {
     for (var i = numPlayers; i >= 1; i--) {
       if (myid != i) {
         addSolution(i,getName(i));
@@ -445,25 +442,34 @@ function showTeamSolutions(round) {
       if (i != myid) {
         if ((showTeamModulo > 0) && ((gameRound) % showTeamModulo == 0)) {
           if (i <= numPlayers) {
-            drawTeamSolution(i, round-1, 0, tPaper[i]);
+            drawTeamSolution(i, round-1, 0, tPaper[i], false);
           } else {
-            drawForceBotSolution(i, round-1, 0, tPaper[i]);
+            drawForceBotSolution(i, round-1, 0, tPaper[i], false);
           }
           $('#solution_'+i).show();
         } else {
-          $('#solution_'+i).hide();
+          if (showScoreWhenNotMap) {
+            if (i <= numPlayers) {
+              drawTeamSolution(i, round-1, 0, tPaper[i], true);
+            } else {
+              drawForceBotSolution(i, round-1, 0, tPaper[i], true);
+            }            
+            $('#solution_'+i).show();
+          } else {
+            $('#solution_'+i).hide();
+          }
         }
       }
     }
     if (showMe || showBest) {
-      drawTeamSolution(myid, round-1, 0, tPaper[myid]);
+      drawTeamSolution(myid, round-1, 0, tPaper[myid], false);
       $('#solution_'+myid).show();
     } else {
       $('#solution_'+myid).hide();    
     }
     
     if (showOptimal) {    
-      doDrawTeamSolution(optimal_id, round-1, 0, tPaper[optimal_id], '<solution map="'+getMapIndex(round-1)+'" dist="'+map[getMapIndex(round-1)][2][0]+'">'+map[getMapIndex(round-1)][1]+'</solution>');
+      doDrawTeamSolution(optimal_id, round-1, 0, tPaper[optimal_id], '<solution map="'+getMapIndex(round-1)+'" dist="'+map[getMapIndex(round-1)][2][0]+'">'+map[getMapIndex(round-1)][1]+'</solution>',false);
       $('#solution_'+optimal_id).show();
     } else {
       $('#solution_'+optimal_id).hide();    
@@ -545,18 +551,18 @@ function newMove(participant, index) {
  * @param index
  * @param paper2
  */
-function drawForceBotSolution(part, round, index, paper2) {
+function drawForceBotSolution(part, round, index, paper2, scoreOnly) {
   //alert("drawForceBotSolution");
 //  doDrawTeamSolution(part, round, index, paper2, XMLizeBotSolution(perfectBot()));  
 
   switch(botType) {
   case 0:
-    doDrawTeamSolution(part, round, index, paper2, XMLizeBotSolution(progressiveBot(part, round)));  
+    doDrawTeamSolution(part, round, index, paper2, XMLizeBotSolution(progressiveBot(part, round)), scoreOnly);  
     break;
   case 1:
     // dittoBot
     fetchMove(myid, round, index, function(val) {
-      doDrawTeamSolution(part, round, index, paper2, val);
+      doDrawTeamSolution(part, round, index, paper2, val, scoreOnly);
     });
     break;
   }
@@ -569,10 +575,10 @@ function drawForceBotSolution(part, round, index, paper2) {
  * @param index this should always be zero unless we allow users to submit more than one solution per round
  * @param paper2 where to render it
  */
-function drawTeamSolution(part, round, index, paper2) {
+function drawTeamSolution(part, round, index, paper2, scoreOnly) {
 //  alert('drawTeam:'+paper2);
   fetchMove(part, round, index, function(val) {
-    doDrawTeamSolution(part, round, index, paper2, val);
+    doDrawTeamSolution(part, round, index, paper2, val, scoreOnly);
   });
 }
 
@@ -652,7 +658,7 @@ function updateScore(round, xmlVal) {
  * Helper to draw the solution on the paper.
  */
 // <solution map="2" dist="3">1,3,2,5,7,4,6</map>
-function doDrawTeamSolution(part, round, index, paper2, xmlVal) {
+function doDrawTeamSolution(part, round, index, paper2, xmlVal, scoreOnly) {
    
    //alert("doDrawTeamSolution("+part+","+index+","+xmlVal+")");
    var teamSolution = $(xmlVal);
@@ -677,6 +683,13 @@ function doDrawTeamSolution(part, round, index, paper2, xmlVal) {
      otherScore = Math.round(otherScore/antiscale);
    }
    $('#score_'+part).html(otherScore);
+   if (scoreOnly) {
+     var txt = paper2.text(100,80,"?");
+     txt.attr("font-size","100");
+     txt.attr("font-weight","bold");
+     txt.attr("fill","#000000");
+     return;
+   }
 
 //   alert(otherScore);
    var val = teamSolution.html();

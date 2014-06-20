@@ -11,14 +11,16 @@ var myNetworkId = 1;
 var myNetwork = []; // in playerId, not networkId
 var network_types = ["a","b","c","d","e","f","g","h"]; // load from variable
 var network_type = "a"; // load from above
-var min_distance2 = 25; // square of: can't put in a new well closer than this
+var min_distance2 = 0; //25; // square of: can't put in a new well closer than this
 var showTeamModulo = -1;
 var map_num = 1;
 var num_maps = 50;
+var showScoreWhenNotMap = true;
 
 var click_color = "#000000";
 var round_seconds = 30;
 var total_score = 0;
+
 
 function initializeGame() {
   try {
@@ -429,8 +431,10 @@ function setBar(networkId,round,value, x, y) {
   bar.css("background-color",color);
   bar.css("height",height+"%");
   
-  var point = paper.rect(x-1,y-1,3,3);
-  point.attr({fill: color, stroke: color});
+  if (x >= 0) {
+    var point = paper.rect(x-1,y-1,3,3);
+    point.attr({fill: color, stroke: color});    
+  }
 }
 
 var gameRound = 0;
@@ -496,7 +500,17 @@ function completeRound() {
         neighbor = network[myNetworkId][i];
         val = submissions[currentRound+roundDif][neighbor];
         setBar(neighbor,gameRound+roundDif,val[2],val[0],val[1]);
-      }      
+      }
+    }
+  } else {
+    // draw the bar, but not the point
+    if (showScoreWhenNotMap) {      
+      log("rendering neighbors barOnly gameRound:"+gameRound+" currentRound:"+currentRound);
+      for (var i = 0; i < network[myNetworkId].length; i++) {
+        neighbor = network[myNetworkId][i];
+        val = submissions[currentRound][neighbor];
+        setBar(neighbor,gameRound,val[2],-1,-1);
+      }    
     }
   }
   
