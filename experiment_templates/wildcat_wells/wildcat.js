@@ -548,6 +548,7 @@ function playerDisconnect(playerId) {
  */
 function checkDistance(playerId, x, y) {
 //  if (gameRound == 1) return true; // first round
+  return true; // abandon this feature
   
   var networkId = getNetworkId(playerId);
   for (var round = FIRST_ACTUAL_ROUND; round < currentRound; round++) {
@@ -613,11 +614,38 @@ function submitRemainingBots() {
 
 function doBotBehavior(playerId) {
   log('doBotBehavior:'+playerId);
+  if (currentRound - FIRST_ACTUAL_ROUND < 5) {
+    botExplore(playerId);
+  } else {
+    botCopy(playerId);    
+  }
+}
+
+function botExplore(playerId) {
   var x = Math.floor(Math.random()*MAP_W);
   var y = Math.floor(Math.random()*MAP_H);
-  // TODO: loop with checkDistance()
-  // TODO: copy behavior
-  submitChoice(playerId,x,y);
+  submitChoice(playerId,x,y);  
+}
+
+function botCopy(playerId) {
+  var bestSub = null;
+  
+  var myNet = network[getNetworkId(playerId)].slice(0);
+  myNet.push(getNetworkId(playerId));
+  for (var round_idx = FIRST_ACTUAL_ROUND; round_idx < currentRound; round_idx++) {
+    for (neighbor_idx in myNet) {
+      var sub = submissions[round_idx][myNet[neighbor_idx]];
+      if ((bestSub == null) || (sub[2] > bestSub[2])) {
+        bestSub = sub;
+      }
+    }
+  }
+  
+  if (bestSub != null) {
+    submitChoice(playerId,bestSub[0],bestSub[1]);
+  } else {
+    botExplore(playerId);
+  }
 }
 
 function newMove(playerId, idx, round) {
