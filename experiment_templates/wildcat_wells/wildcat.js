@@ -76,12 +76,31 @@ function initializeGame() {
 //  }
 }
 
+var instructionPanel = 1;
 function initializeInstructions() {
   $('#instructions').modal('show');
   
-//  $('#close_instructions').click(function() {
-//    $(quit_dialog).modal('hide');
-//  });
+  $('#close_instructions').click(instructionNext);
+}
+
+function instructionNext() {
+  switch(instructionPanel) {
+  case 1:
+    $('#instructions1').fadeOut(400, function() {
+      $('#instructions2').fadeIn(400);      
+    });
+    break;
+  case 2:
+    $('#close_instructions').html("Play");
+    $('#instructions2').fadeOut(400, function() {
+      $('#instructions3').fadeIn(400);      
+    });
+    break;
+  case 3:
+    $('#instructions').modal('hide');
+    break;
+  }
+  instructionPanel++;
 }
 
 function initializeGameBoard() {
@@ -379,8 +398,8 @@ function updateUserClick() {
 var round = 1;
 function mapClick(evt) {
   var offset = $(this).offset();
-  var x = evt.pageX-offset.left;
-  var y = evt.pageY-offset.top;
+  var x = Math.floor(evt.pageX-offset.left);
+  var y = Math.floor(evt.pageY-offset.top);
   $("#x_coord").val(x);
   $("#y_coord").val(y);
   updateUserClick();
@@ -430,10 +449,18 @@ function setBar(networkId,round,value, x, y) {
   bar.html("");
   bar.css("background-color",color);
   bar.css("height",height+"%");
+  bar.attr("title",value);
+  bar.click(function() {
+    $("#x_coord").val(x);
+    $("#y_coord").val(y);
+    updateUserClick();    
+  });
+  
+  
   
   if (x >= 0) {
     var point = paper.rect(x-1,y-1,3,3);
-    point.attr({fill: color, stroke: color});    
+    point.attr({fill: color, stroke: color, title: value});    
   }
 }
 

@@ -5,6 +5,8 @@
         <h2 class="modal-title">Instructions</h2>
       </div>
       <div class="modal-body">
+      
+        <div id="instructions1">
         <p>You are exploring land for oil.  On each round, you can choose a spot of land to drill for oil.  
         At the start of the following round, you will see how much oil you obtained (and therefore how many points you earned).<br><br>
         The amount of oil you got for drilling will be indicated by a colored square where you drilled 
@@ -13,23 +15,29 @@
         
         <p>You can also mouse over the bar or the colored square to see exactly how much oil (and therefore how many points) 
         that spot gave you.</p>
-        
+        </div> 
+
+        <div id="instructions2" style="display:none;">
         <p>Other people will be playing the game at the same time as you.  
         You will be able to see where they drilled and how much oil they got for drilling in those locations, 
         and they will be able to see where you drilled and how much you got.  
         If you drill in the same spot as someone else you will receive the same amount of oil, 
         even if it is on the same round.  In other words, oil is <u>not</u> divided by the number of people drilling in the same spot.  
         In fact, you can copy someone's success by clicking on their bar on the left.</p>
+        </div> 
         
+        <div id="instructions3" style="display:none;">
         <p>For each patch of land, you will have <b>15</b> rounds of drilling.<br><br>
         You will have <b>90</b> seconds for the first round, and <b>30</b> seconds for all remaining rounds.</p>
         
         <p>The game will move to the next round once every player has drilled or the time is up. 
         If the time passes before you choose a place to drill, you will get no points for that round, 
-        which will be seen as an empty bar with a red "X" in the middle (as in the figure on the right).</p>
+        which will be seen as an empty bar with a red "X" in the middle.</p>
+        </div> 
+
       </div>
       <div class="modal-footer">
-        <button id="close_instructions" type="button" class="btn btn-primary" data-dismiss="modal">Play</button>
+        <button id="close_instructions" type="button" class="btn btn-primary">Next</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
