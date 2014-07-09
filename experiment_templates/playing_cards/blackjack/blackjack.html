@@ -1,12 +1,14 @@
 <h1>Blackjack</h1>
 
 <div id="dealer_row" class="row_wrapper">
-  <div class="dealer">
-    Dealer<br/>
-    <div id="hand_0_0" class="hand"></div>
-    <div class="buttons"><div id="deal">Deal</div></div>
+  <div class="dealer_wrapper">
+    <div class="dealer">
+      Dealer<br/>
+      <div id="hand_0_0" class="hand"></div>
+      <div class="buttons"><div id="deal">Deal</div></div>
+    </div>
+    <div id="shoe">52</div>
   </div>
-  <div id="shoe"></div>
 </div><br/><br/>
 
 <div class="row_wrapper">
@@ -14,7 +16,12 @@
 </div>
 
 <div class="row_wrapper">
-  <div id="player_buttons" class="buttons"><div id="hit">Hit</div><div id="stand">Stand</div><div id="double">Double</div><div id="split">Split</div></div>
+  <div id="player_buttons" class="buttons">
+    <div id="hit"    class="player_button">Hit</div>
+    <div id="stand"  class="player_button">Stand</div>
+    <div id="double" class="player_button">Double</div>
+    <div id="split"  class="player_button">Split</div>
+  </div>
 </div>
 
 

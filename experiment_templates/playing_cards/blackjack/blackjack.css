@@ -1,17 +1,36 @@
 #dealer_row {
   width: 100%;
+  height: 200px;
+}
+
+.dealer_wrapper {
+  margin-left: auto;
+  margin-right: auto;
+  width: 244px;
 }
 
 .dealer {
   border: 2px solid #000000;
-  margin-left: auto;
-  margin-right: auto;
   text-align: center;
-  width: 144px;
+  min-width: 146px;
+  float: left;
+}
+
+.shoe {
+  height: 200px;
+  width: 100px;
+  float: left;
 }
 
 .hand {
-  
+  border: 1px solid #000000;
+  min-width: 140px;
+  margin: 2px;
+  padding-top: 2px;
+}
+
+.activeHand {
+  background-color: #bbbbff;
 }
 
 #players {
