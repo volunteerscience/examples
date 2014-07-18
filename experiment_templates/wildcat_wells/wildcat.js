@@ -21,6 +21,7 @@ var click_color = "#000000";
 var round_seconds = 30;
 var total_score = 0;
 
+var botBehavior = {}; // playerId => roundNum => function
 
 function initializeGame() {
   try {
@@ -28,6 +29,7 @@ function initializeGame() {
   } catch (err) {
     alert(err);
   }
+  
   
   try {
     network_types = variables['network_types'].split(",");
@@ -65,6 +67,7 @@ function initializeGame() {
   
   
   initializeNetwork();
+  initializeBots();
   initializeHistory();
   initializeGameBoard();
   setInterval(advanceCountdowns, 100);
@@ -621,6 +624,91 @@ function submitChoice(playerId,x,y) {
   submitBot(playerId, currentRound, JSON.stringify([x,y,score]));
 }
 
+/**
+ * 
+ * 
+ * @param jsonString [['explore', 3],[ 'exploit',5],[ 'random', 2],['explore',8]]
+ * @returns // round => array of functions to call for the bot's behavior
+ */
+function initializeBotOrder(jsonString) {
+  var ret = [];
+
+  try {
+    var orders = JSON.parse(jsonString);
+    for (var c in orders) {
+      for (var i = 0; i < orders[c][1]; i++) {
+        if (orders[c][0] == "explore") {
+          ret.push(botExplore);
+        } else if (orders[c][0] == "random") {
+          ret.push(botRandom);
+        } else if (orders[c][0] == "exploit") {
+          ret.push(botExploit);
+        } else if (orders[c][0] == "copy") {
+          ret.push(botCopy);
+        } 
+      }
+    }
+
+  } catch (err) {
+    alert("Error parsing "+jsonString+"\n"+err);
+  }
+
+  return ret;
+}
+
+var bot_peakLimit = 5;
+var bot_random_rule = "50,25,25"; // explore, exploit, copy;  converted to array of numbers
+var bot_random_rule_sum = 100;
+var bot_exploit_near = 10;
+var botExploitLocation = "random";
+var bot_copy_rule = "random";
+
+function initializeBots() {
+  var clusterBehavior = initializeBotOrder(variables['cluster']);
+  var humanBehavior = initializeBotOrder(variables['human']);
+  var num_clusters_remaining = parseInt(variables['num_cluster_bots']);
+  try {
+    bot_peakLimit = parseInt(variables['peakLimit']);    
+  } catch (err) { alert(err); }
+  
+  try {
+    bot_random_rule = variables['random_rule'];    
+  } catch (err) { alert(err); }
+  bot_random_rule = bot_random_rule.split(",").map( function(val) { return parseInt(val); }); // string of numbers to array of numbers
+  bot_random_rule_sum = bot_random_rule.reduce( function(total, num){ return total + num }, 0);
+
+  try {
+    bot_exploit_near = parseInt(variables['near']);    
+  } catch (err) { alert(err); }
+
+  // assume random exploitation location
+  var x = Math.floor(Math.random()*MAP_W);
+  var y = Math.floor(Math.random()*MAP_H);
+  botExploitLocation = [x,y];
+  var foo = variables['exploit_location'].split(",");
+  if (foo.length == 2) {
+    botExploitLocation = foo.map( function(val) { return parseInt(val); });      
+  }
+    
+  try {
+    bot_copy_rule = variables['copy_rule'];    
+  } catch (err) { alert(err); }
+  
+  
+  
+  for (var i = 1; i <= total_players; i++) {
+    var playerId = i; //getPlayerId(i);
+    botBehavior[playerId] = humanBehavior; // human dropouts, and default bots
+    
+    // cluster bots get different behavior
+    if ( (i > numPlayers) && (num_clusters_remaining > 0) ) {
+      log("player "+getNetworkId(playerId)+"("+playerId+") is a clusterBot");
+      botBehavior[playerId] = clusterBehavior;
+      num_clusters_remaining--;
+    }
+  }
+}
+
 function submitRemainingBots() {
   // abort if I'm not the lowest active player
   for (var i = 1; i < myid; i++) {
@@ -641,21 +729,8 @@ function submitRemainingBots() {
 
 function doBotBehavior(playerId) {
   log('doBotBehavior:'+playerId);
-  if (currentRound - FIRST_ACTUAL_ROUND < 5) {
-    botExplore(playerId);
-  } else {
-    botCopy(playerId);    
-  }
-}
-
-function botExplore(playerId) {
-  var x = Math.floor(Math.random()*MAP_W);
-  var y = Math.floor(Math.random()*MAP_H);
-  submitChoice(playerId,x,y);  
-}
-
-function botCopy(playerId) {
-  var bestSub = null;
+  
+  var bestSub = null; // x,y,val
   
   var myNet = network[getNetworkId(playerId)].slice(0);
   myNet.push(getNetworkId(playerId));
@@ -667,11 +742,128 @@ function botCopy(playerId) {
       }
     }
   }
+
+  // hard coded grab for good spot
+  if (bestSub != null && bestSub[2] >= bot_peakLimit) {
+    botCopy(playerId,bestSub);
+    return;
+  }
   
+  botBehavior[playerId][currentRound-FIRST_ACTUAL_ROUND](playerId,bestSub);
+}
+
+function botExplore(playerId, bestSub) {
+  log('botExplore:'+playerId);
+  var x = Math.floor(Math.random()*MAP_W);
+  var y = Math.floor(Math.random()*MAP_H);
+  submitChoice(playerId,x,y);  
+}
+
+function botCopy(playerId, bestSub) {
+  log('botCopy:'+playerId);
   if (bestSub != null) {
-    submitChoice(playerId,bestSub[0],bestSub[1]);
+    botCopyHelper(playerId, bestSub, bot_copy_rule);
   } else {
-    botExplore(playerId);
+    botExplore(playerId, bestSub);
+  }
+}
+
+var bot_copy_options = ["highest","any","users_last"];
+function botCopyHelper(playerId, bestSub, copyType) {
+  log('botCopyHelper:'+playerId+","+copyType);
+  if (copyType == "random") {
+    botCopyHelper(playerId, bestSub, bot_copy_options[Math.floor(Math.random()*bot_copy_options.length)]);
+    return;
+  } 
+
+  if (copyType == "highest") {
+    submitChoice(playerId,bestSub[0],bestSub[1]);
+    return;
+  }
+  
+  if (copyType == "any") {
+    var options = [];
+    var myNet = network[getNetworkId(playerId)].slice(0);
+    for (var round_idx = FIRST_ACTUAL_ROUND; round_idx < currentRound; round_idx++) {
+      for (neighbor_idx in myNet) {
+        var sub = submissions[round_idx][myNet[neighbor_idx]];
+        if (sub[2] > 0) {
+          options.push(sub);          
+        }
+      }
+    }
+    
+    if (options.length < 1) {
+      botExplore(playerId,bestSub);
+      return;
+    }
+    var bestSub = options[Math.floor(Math.random()*options.length)];
+    submitChoice(playerId,bestSub[0],bestSub[1]);
+    return;
+  }
+  
+  if (copyType == "users_last") {
+    var options = [];
+    var myNet = network[getNetworkId(playerId)].slice(0);
+    for (neighbor_idx in myNet) {
+      var otherPid = getPlayerId(myNet[neighbor_idx]);
+      if (otherPid < numPlayers) {
+        var sub = submissions[currentRound][myNet[neighbor_idx]];
+        options.push();        
+      }
+    }
+    if (options.length < 1) {
+      botExplore(playerId,bestSub);
+      return;
+    }
+    var bestSub = options[Math.floor(Math.random()*options.length)];
+    submitChoice(playerId,bestSub[0],bestSub[1]);
+    return;
+  }
+
+  // default behavior
+  botExplore(playerId, bestSub);
+}
+
+
+function botExploit(playerId, bestSub) {
+//  log('botExploit:'+playerId+" "+botExploitLocation);
+//  if (bestSub != null) {
+    var direction = Math.random()*Math.PI*2.0;
+    var distance = Math.random()*bot_exploit_near;
+    var x = Math.floor(botExploitLocation[0]+Math.cos(direction)*distance);
+    var y = Math.floor(botExploitLocation[1]+Math.sin(direction)*distance);
+    x = Math.min(MAP_W, Math.max(0,x)); // bounds check
+    y = Math.min(MAP_H, Math.max(0,y)); // bounds check
+    log('botExploit:'+playerId+" "+botExploitLocation+" direction:"+direction+" ("+x+","+y+")");
+    submitChoice(playerId,x,y);    
+//  } else {
+//    botExplore(playerId, bestSub);
+//  }  
+}
+
+function botRandom(playerId, bestSub) {
+  log('botRandom:'+playerId);
+  var roll = Math.floor(Math.random()*bot_random_rule_sum);
+  var choice = 0;
+  var choiceSum = 0;
+  for (choice = 0; choice < bot_random_rule.length;  choice++) {
+    choiceSum+=bot_random_rule[choice];
+    if (roll < choiceSum) {
+      break;
+    }
+  }
+  
+  switch(choice) {
+  case 0:
+    botExplore(playerId, bestSub);
+    break;
+  case 1:
+    botExploit(playerId, bestSub);
+    break;
+  default:
+    botCopy(playerId, bestSub);
+    break;
   }
 }
 
