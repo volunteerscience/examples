@@ -321,8 +321,13 @@ function initializeHistory() {
     myNetwork.push(myBuddy);
     addHistoryPanel(network[myNetworkId][i], "Player "+network[myNetworkId][i]);
   }
+      initialization
+  var initialization = {'networkType':network_type, 'myNetworkId':myNetworkId, 'myNeighbors':myNetwork};
+  for (var i in botBehavior) {
+    initialization['bot'+i] = botBehavior[i]['name'];
+  }
   
-  submit(JSON.stringify({'networkType':network_type, 'myNetworkId':myNetworkId, 'myNeighbors':myNetwork}));
+  submit(JSON.stringify(initialization));
   initializeGameRound(1);
 }
 
@@ -630,7 +635,7 @@ function submitChoice(playerId,x,y) {
  * @param jsonString [['explore', 3],[ 'exploit',5],[ 'random', 2],['explore',8]]
  * @returns // round => array of functions to call for the bot's behavior
  */
-function initializeBotOrder(jsonString) {
+function initializeBotOrder(jsonString, name) {
   var ret = [];
 
   try {
@@ -653,6 +658,7 @@ function initializeBotOrder(jsonString) {
     alert("Error parsing "+jsonString+"\n"+err);
   }
 
+  ret["name"] = name;
   return ret;
 }
 
@@ -664,8 +670,8 @@ var botExploitLocation = "random";
 var bot_copy_rule = "random";
 
 function initializeBots() {
-  var clusterBehavior = initializeBotOrder(variables['cluster']);
-  var humanBehavior = initializeBotOrder(variables['human']);
+  var clusterBehavior = initializeBotOrder(variables['cluster'],'cluster');
+  var humanBehavior = initializeBotOrder(variables['human'],'human');
   var num_clusters_remaining = parseInt(variables['num_cluster_bots']);
   try {
     bot_peakLimit = parseInt(variables['peakLimit']);    
