@@ -131,3 +131,7 @@
 #right_panel {
   font-weight: bold;
 }
+
+#instruction_time_limit {
+  float: right;
+}

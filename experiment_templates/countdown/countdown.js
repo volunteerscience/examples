@@ -6,9 +6,11 @@
  * 
  * Call setCountdown("timer",90);  // set "timer" to 90 seconds.
  * 
- * Routinely call advanceCountdowns();  // setInterval(advanceCountdowns, 100);
+ * Routinely call advanceCountdowns();
  * 
  * Implement countdownExpried(id) to be notified when it's done.
+ * 
+ * Can also implement countdownUpdate(id,millis,clockString)
  * 
  */
 
@@ -45,21 +47,25 @@ function updateCountdown(id) {
   var now = +new Date();
   var diff = countdowns[id][0]-now;
   
+  var clockString = "0:00";
   if (diff > 0) {
     var fraction = 100*diff/countdowns[id][1];
     var seconds = ~~(diff/1000);
     var mins = Math.floor(seconds/60);
     var secondRemainder = seconds%60;
     var secondsStr = ('0'+secondRemainder).slice(-2); // add leading zero, then use last 2 digits
-    $('#'+id+' .countdown-clock').html(mins+":"+secondsStr);
+    clockString = mins+":"+secondsStr;
     $('#'+id+' .countdown-progress').css("width",fraction+"%");
   } else {
-    $('#'+id+' .countdown-clock').html("0:00");
     $('#'+id+' .countdown-progress').css("width","0");
     if(typeof countdownExpired == 'function') {
       countdownExpired(id);
     }
     delete countdowns[id];
+  }
+  $('#'+id+' .countdown-clock').html(clockString);
+  if (typeof countdownUpdate == "function") {
+    countdownUpdate(id,diff,clockString);
   }
 }
 

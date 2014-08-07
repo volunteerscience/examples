@@ -18,6 +18,7 @@ var num_maps = 50;
 var showScoreWhenNotMap = true;
 
 var click_color = "#000000";
+var initial_round_seconds = 90;
 var round_seconds = 30;
 var total_score = 0;
 
@@ -28,6 +29,11 @@ function initializeGame() {
     total_players = parseInt(variables['total_players']);
   } catch (err) {
     alert(err);
+  }
+  
+  // at least as many players as the game launched with
+  if (total_players < numPlayers) {
+    total_players = numPlayers;
   }
   
   
@@ -81,7 +87,13 @@ function initializeGame() {
 
 var instructionPanel = 1;
 function initializeInstructions() {
-  $('#instructions').modal('show');
+  if (numPlayers == 1) {
+    // don't start timer if single player
+    $('#instructions').on('hidden.bs.modal', function(e) {
+      setCountdown("timer",initial_round_seconds);    
+    });    
+  }
+  $('#instructions').modal({'show':true,'backdrop':"static"});
   
   $('#close_instructions').click(instructionNext);
 }
@@ -94,6 +106,7 @@ function instructionNext() {
     });
     break;
   case 2:
+    $('#im_ready').hide();
     $('#close_instructions').html("Play");
     $('#instructions2').fadeOut(400, function() {
       $('#instructions3').fadeIn(400);      
@@ -370,6 +383,7 @@ function getScore(x,y) {
 
 var userClick = null;
 function updateUserClick() {
+  if (submitted) return;
   fail = false;
   var x = $("#x_coord").val();
   if (x.length > 0) {
@@ -475,6 +489,7 @@ function setBar(networkId,round,value, x, y) {
 var gameRound = 0;
 var submissions = {}; // round => networkId => [x,y,val]; keep track of who submitted for bot behavior
 function initializeGameRound(newGameRound) {
+  submitted = false;
   if (userClick != null) {
     userClick.remove();
     userClick = null;
@@ -487,9 +502,13 @@ function initializeGameRound(newGameRound) {
 
   var seconds = round_seconds;
   if (gameRound == 1) {
-    seconds = 90;
+    seconds = initial_round_seconds;
   }
-  setCountdown("timer",seconds);
+  
+  // no timer on round one if single player
+  if (gameRound > 1 || numPlayers > 1) {
+    setCountdown("timer",seconds);    
+  }
   
   $("#round").html(gameRound);
   $("#score").html(numberWithCommas(total_score));
@@ -498,6 +517,10 @@ function initializeGameRound(newGameRound) {
 
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function countdownUpdate(id,diff,clockString) {
+  $("#instruction_time_limit").html(clockString);
 }
 
 function countdownExpired(id) {
@@ -517,6 +540,7 @@ function countdownExpired(id) {
 
 function completeRound() {
   // draw the bar/points
+  stopCountdown("timer");
   
   // mine
   var neighbor = myNetworkId;
@@ -612,9 +636,11 @@ function checkDistance(playerId, x, y) {
   return true;
 }
 
+var submitted = false;
 function submitMyChoice(x,y) {
+  if (submitted) return;
+  submitted = true;
   $("#drill").val("Waiting for other players.");
-  stopCountdown("timer");
   submitChoice(myid,x,y);
 }
 
