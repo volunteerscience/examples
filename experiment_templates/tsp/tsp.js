@@ -21,7 +21,8 @@ var CLICK = 2;
 var COMPLETE = 3;
 var TIMEOUT_ONLY = 4;
 
-var showScore = false;
+var showScore = true; // changed to true/false
+var showMap = true; // changed to true/false
 var submitType = TIMEOUT_ONLY;
 
 var FIRST_ACTUAL_ROUND = 101;
@@ -54,7 +55,7 @@ var greenButtonColor = "green";
 
 var forceBots = 0; // number of bots _not_ due to dropouts
 var botType = 0;
-var showScoreWhenNotMap = true;
+var showScoreWhenNotMap = false;
 
 function initialize() {
   cityRad = parseInt(variables['cityRad']);
@@ -107,6 +108,60 @@ function initializeGameType() {
   
   botType = Math.floor(Math.random()*2);
 //  botType = 0; // delme
+
+  try {
+    showScore = parseInt(variables['showScore']);
+    if (isNaN(showScore)) {
+      throw "showScore not valid" // throw error
+    }
+    if (showScore < 0) {
+      showScore = Math.floor(Math.random*2); // 0 or 1
+    }      
+    switch(showScore) {
+    case 0:
+      showScore = false;
+      break;
+    default:
+      showScore = true;
+      break;
+    } 
+  } catch (err) {
+//    alert(err);
+    try {
+      showScore = variables['showScore'].toLowerCase() == 'true';
+    } catch (err2) {
+      showScore = true;
+//      alert(err2);
+    }
+  }
+  
+  try {
+    showMap = parseInt(variables['showMap']);
+    if (isNaN(showMap)) {
+      throw "showMap not valid" // throw error
+    }
+    if (showMap < 0) {
+      showMap = Math.floor(Math.random*2); // 0 or 1
+    }      
+    switch(showMap) {
+    case 0:
+      showMap = false;
+      break;
+    default:
+      showMap = true;
+      break;
+    } 
+  } catch (err) {
+//    alert(err);
+    try {
+      showMap = variables['showMap'].toLowerCase() == 'true';
+    } catch (err2) {
+      showMap = true;
+//      alert(err2);
+    }
+  }
+  
+
   
   $(".gameid").append(botType);
   
@@ -178,11 +233,6 @@ function initializeGame() {
   antiscale = parseInt(variables['antiscale']);
   numRounds = parseInt(variables['num_rounds']);
   
-  if (!showScore) {
-    $('#score').hide();
-    $('#otherScore').hide();  
-  }
-
   if (submitType != BUTTON) {
 //    $('#submitButton').hide();
   }
@@ -659,7 +709,6 @@ function updateScore(round, xmlVal) {
  */
 // <solution map="2" dist="3">1,3,2,5,7,4,6</map>
 function doDrawTeamSolution(part, round, index, paper2, xmlVal, scoreOnly) {
-   
    //alert("doDrawTeamSolution("+part+","+index+","+xmlVal+")");
    var teamSolution = $(xmlVal);
    var mapIndex = teamSolution.attr('map');   
@@ -682,8 +731,11 @@ function doDrawTeamSolution(part, round, index, paper2, xmlVal, scoreOnly) {
    } else {
      otherScore = Math.round(otherScore/antiscale);
    }
+   if (scoreOnly || !showScore && part != myid) {  // never hide your own
+     otherScore = "?"
+   }
    $('#score_'+part).html(otherScore);
-   if (scoreOnly) {
+   if (scoreOnly || !showMap && part != myid) { // never hide your own
      var txt = paper2.text(100,80,"?");
      txt.attr("font-size","100");
      txt.attr("font-weight","bold");
@@ -1267,7 +1319,7 @@ function doneAllInstructions() {
     }
   }
   
-  submit('<startup best="'+showBest+'" teamModulo="'+showTeamModulo+'" forceBots="'+forceBots+'" botType="'+botType+'"/>');
+  submit('<startup best="'+showBest+'" teamModulo="'+showTeamModulo+'" forceBots="'+forceBots+'" botType="'+botType+'" showScore="'+showScore+'" showMap="'+showMap+'"/>');
   
   $("#waiting").show();
 }
