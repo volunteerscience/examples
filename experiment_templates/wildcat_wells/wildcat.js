@@ -15,7 +15,7 @@ var min_distance2 = 0; //25; // square of: can't put in a new well closer than t
 var showTeamModulo = -1;
 var map_num = 1;
 var num_maps = 50;
-var showScoreWhenNotMap = true;
+var showScoreWhenNotMap = false;
 
 var click_color = "#000000";
 var initial_round_seconds = 90;
@@ -23,10 +23,21 @@ var round_seconds = 30;
 var total_score = 0;
 
 var botBehavior = {}; // playerId => roundNum => function
+var showScore = true; // changed to true/false
+var showMap = true; // changed to true/false
 
 function initializeGame() {
   try {
     total_players = parseInt(variables['total_players']);
+  } catch (err) {
+    alert(err);
+  }
+  
+  try {
+    round_seconds = parseInt(variables['round_seconds']);
+    if (isNaN(round_seconds)) {
+      round_seconds = 30;
+    }
   } catch (err) {
     alert(err);
   }
@@ -49,13 +60,13 @@ function initializeGame() {
     alert(err);
   }
   
+  Math.seedrandom(seed);
   try {
     showTeamModulo = parseInt(variables['showTeamModulo']);
   } catch (err) {
     alert(err);
   }
   if (showTeamModulo < 0) {    
-    Math.seedrandom(seed);
     var info = Math.floor(Math.random()*3);
     switch (info) {
       case 0:
@@ -71,12 +82,67 @@ function initializeGame() {
     }
   }
   
+  try {
+    showScore = parseInt(variables['showScore']);
+    if (isNaN(showScore)) {
+      throw "showScore not valid" // throw error
+    }
+    if (showScore < 0) {
+      showScore = Math.floor(Math.random*2); // 0 or 1
+    }      
+    switch(showScore) {
+    case 0:
+      showScore = false;
+      break;
+    default:
+      showScore = true;
+      break;
+    } 
+  } catch (err) {
+//    alert(err);
+    try {
+      showScore = variables['showScore'].toLowerCase() == 'true';
+    } catch (err2) {
+      showScore = true;
+//      alert(err2);
+    }
+  }
+  
+  try {
+    showMap = parseInt(variables['showMap']);
+    if (isNaN(showMap)) {
+      throw "showMap not valid" // throw error
+    }
+    if (showMap < 0) {
+      showMap = Math.floor(Math.random*2); // 0 or 1
+    }      
+    switch(showMap) {
+    case 0:
+      showMap = false;
+      break;
+    default:
+      showMap = true;
+      break;
+    } 
+  } catch (err) {
+//    alert(err);
+    try {
+      showMap = variables['showMap'].toLowerCase() == 'true';
+    } catch (err2) {
+      showMap = true;
+//      alert(err2);
+    }
+  }
   
   initializeNetwork();
   initializeBots();
   initializeHistory();
   initializeGameBoard();
   setInterval(advanceCountdowns, 100);
+
+  if (!showScore) {
+    setNeighborBarVisibility(false);
+  }
   
   initializeInstructions();
   // delme, for testing color
@@ -334,8 +400,9 @@ function initializeHistory() {
     myNetwork.push(myBuddy);
     addHistoryPanel(network[myNetworkId][i], "Player "+network[myNetworkId][i]);
   }
-      initialization
-  var initialization = {'networkType':network_type, 'myNetworkId':myNetworkId, 'myNeighbors':myNetwork};
+  
+  var initialization = {'networkType':network_type, 'myNetworkId':myNetworkId, 'myNeighbors':myNetwork, 'teamModulo':showTeamModulo, 'showScore':showScore, 'showMap':showMap};
+
   for (var i in botBehavior) {
     initialization['bot'+i] = botBehavior[i]['name'];
   }
@@ -356,7 +423,8 @@ function addHistoryPanel(networkId, name) {
   }
   
   var s = '<div class="history_panel'+extraClass+'">'+
-            '<div class="history_title">'+name+'</div><div class="history_middle">'+
+            '<div class="history_title">'+name+'</div>'+
+            '<div id="history_'+networkId+'" class="history_middle">'+
             '<div class="left_text rotate">Score</div>'+
             '<table class="history_table">';
   for (var i = 1; i <= num_rounds; i++) {
@@ -371,7 +439,8 @@ function addHistoryPanel(networkId, name) {
             s+='<td class=""  height="15%" width="1">'+i+'</td>';
   }
         s+= '</tr></table>'+
-            '</div><div class="history_foot">Round</div>'+
+            '<div class="history_foot">Round</div></div>'+
+            '<div class="history_bg history_hide" id="history_bg_'+networkId+'">?</div>'+
           '</div>';
 //  alert(s);
   $("#history_wrapper").append(s);
@@ -472,19 +541,33 @@ function setBar(networkId,round,value, x, y) {
   bar.css("background-color",color);
   bar.css("height",height+"%");
   bar.attr("title",value);
-  bar.click(function() {
-    $("#x_coord").val(x);
-    $("#y_coord").val(y);
-    updateUserClick();    
-  });
+  if (showMap || networkId == myNetworkId) {    
+    bar.click(function() {
+      $("#x_coord").val(x);
+      $("#y_coord").val(y);
+      updateUserClick();    
+    });
+  }
   
   
   
   if (x >= 0) {
     var point = paper.rect(x-1,y-1,3,3);
-    point.attr({fill: color, stroke: color, title: value});    
+    point.realColor = color;
+    point.realValue = value;
+    if (networkId != myNetworkId) {
+      neighborPoints.push(point);      
+      if (!showScore) {
+        color = click_color;
+        value = "?";
+        point.toBack(); // so black ones don't cover colored ones especially if copy
+      }
+    }
+    point.attr({fill: color, stroke: color, title: value});
   }
 }
+
+var neighborPoints = [];
 
 var gameRound = 0;
 var submissions = {}; // round => networkId => [x,y,val]; keep track of who submitted for bot behavior
@@ -513,6 +596,21 @@ function initializeGameRound(newGameRound) {
   $("#round").html(gameRound);
   $("#score").html(numberWithCommas(total_score));
   $("#drill").val("Drill!");
+  
+}
+
+/**
+ * the points on the map
+ * @param enable
+ */
+function setNeighborPointVisibility(enable) {
+  for (var p in neighborPoints) {
+    if (enable) {
+      neighborPoints[p].show();
+    } else {
+      neighborPoints[p].hide();      
+    }
+  }
 }
 
 function numberWithCommas(x) {
@@ -550,27 +648,61 @@ function completeRound() {
   }
   setBar(neighbor,gameRound,val[2],val[0],val[1]);
 
+//  log("rendering neighbors gameRound:"+gameRound+" currentRound:"+currentRound);
+  // fill in your neighbor's information
+  for (var i = 0; i < network[myNetworkId].length; i++) {
+    neighbor = network[myNetworkId][i];
+    val = submissions[currentRound][neighbor];
+    setBar(neighbor,gameRound,val[2],val[0],val[1]);
+  }
   if ((showTeamModulo > 0) && ((gameRound) % showTeamModulo == 0)) {
-    log("rendering neighbors gameRound:"+gameRound+" currentRound:"+currentRound);
-    // fill in your neighbor's information
-    for (var roundDif = -(showTeamModulo-1); roundDif <= 0; roundDif++) { // how many rounds back to render
-      log("rendering round:"+(gameRound+roundDif));
-      for (var i = 0; i < network[myNetworkId].length; i++) {
-        neighbor = network[myNetworkId][i];
-        val = submissions[currentRound+roundDif][neighbor];
-        setBar(neighbor,gameRound+roundDif,val[2],val[0],val[1]);
-      }
+//    for (var roundDif = -(showTeamModulo-1); roundDif <= 0; roundDif++) { // how many rounds back to render
+////    log("rendering round:"+(gameRound+roundDif));
+//      for (var i = 0; i < network[myNetworkId].length; i++) {
+//        neighbor = network[myNetworkId][i];
+//        val = submissions[currentRound+roundDif][neighbor];
+//        setBar(neighbor,gameRound+roundDif,val[2],val[0],val[1]);
+//      }
+//    }
+    if (showScore) {        
+      setNeighborBarVisibility(true);
+    }
+    if (showMap) {
+      setNeighborPointVisibility(true);
     }
   } else {
     // draw the bar, but not the point
     if (showScoreWhenNotMap) {      
-      log("rendering neighbors barOnly gameRound:"+gameRound+" currentRound:"+currentRound);
-      for (var i = 0; i < network[myNetworkId].length; i++) {
-        neighbor = network[myNetworkId][i];
-        val = submissions[currentRound][neighbor];
-        setBar(neighbor,gameRound,val[2],-1,-1);
-      }    
+//      log("rendering neighbors barOnly gameRound:"+gameRound+" currentRound:"+currentRound);
+//      for (var i = 0; i < network[myNetworkId].length; i++) {
+//        neighbor = network[myNetworkId][i];
+//        val = submissions[currentRound][neighbor];
+//        setBar(neighbor,gameRound,val[2],-1,-1);
+//        if (showScore) {        
+//          setBarVisibility(neighbor,true);
+//        }
+//        if (showMap) {
+//          setNeighborPointVisibility(true);
+//        }
+//      }    
+      if (showScore) {       
+        setNeighborBarVisibility(true);
+      }
+      if (showMap) {
+        setNeighborPointVisibility(true);
+      }
+    } else {
+      setNeighborBarVisibility(false);
+      setNeighborPointVisibility(false);
     }
+  }
+  
+  if (!showMap) {
+    setNeighborPointVisibility(false);
+  }
+
+  if (!showScore) {
+    setNeighborBarVisibility(false);
   }
   
   if (gameRound < num_rounds) {
@@ -580,7 +712,31 @@ function completeRound() {
   }
 }
 
+function setNeighborBarVisibility(enable) {
+  for (var i = 0; i < network[myNetworkId].length; i++) {
+    var neighbor = network[myNetworkId][i];
+    setBarVisibility(neighbor,enable);
+  }
+}
+
+function setBarVisibility(neighbor, enable) {
+  if (enable) {
+    $("#history_"+neighbor).removeClass("history_hide");
+    $("#history_bg_"+neighbor).addClass("history_hide");
+  } else {
+    $("#history_"+neighbor).addClass("history_hide");    
+    $("#history_bg_"+neighbor).removeClass("history_hide");
+  }
+}
+
 function endGame() {
+  //properly color them all in the map
+  for (p in neighborPoints) {
+    var point = neighborPoints[p];
+    point.attr({fill: point.realColor, stroke: point.realColor, title: point.realValue});
+  }
+  setNeighborBarVisibility(true);
+  setNeighborPointVisibility(true);
   experimentComplete();
   alert("Congratulations!  You collected "+numberWithCommas(total_score)+" barrels of oil.");  
 }
