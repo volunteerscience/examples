@@ -2,6 +2,7 @@ var FIRST_ACTUAL_ROUND = 101;
 
 var max_score = 1000;
 var scale = 900;
+var scaleFactor = 1.0; // divide the scale by this
 var num_rounds = 15;
 var total_players = 16; // TODO: get from variable
 var network = [];
@@ -38,6 +39,12 @@ function initializeGame() {
     if (isNaN(round_seconds)) {
       round_seconds = 30;
     }
+  } catch (err) {
+    alert(err);
+  }
+  
+  try {
+    num_rounds = parseInt(variables['num_rounds']);
   } catch (err) {
     alert(err);
   }
@@ -133,6 +140,17 @@ function initializeGame() {
 //      alert(err2);
     }
   }
+  
+  try {
+    var randScale = parseFloat(variables['randScale']); // .7 means .7 to 1
+    var randRange = 1.0-randScale;
+    scaleFactor = randScale + Math.random() * randRange;
+    scale *= scaleFactor; 
+//    alert(scale+" "+scaleFactor);
+  } catch (err) {
+  }
+  
+
   
   initializeNetwork();
   initializeBots();
@@ -401,7 +419,7 @@ function initializeHistory() {
     addHistoryPanel(network[myNetworkId][i], "Player "+network[myNetworkId][i]);
   }
   
-  var initialization = {'networkType':network_type, 'myNetworkId':myNetworkId, 'myNeighbors':myNetwork, 'teamModulo':showTeamModulo, 'showScore':showScore, 'showMap':showMap};
+  var initialization = {'networkType':network_type, 'myNetworkId':myNetworkId, 'myNeighbors':myNetwork, 'teamModulo':showTeamModulo, 'showScore':showScore, 'showMap':showMap, 'scaleFactor':scaleFactor};
 
   for (var i in botBehavior) {
     initialization['bot'+i] = botBehavior[i]['name'];
@@ -840,6 +858,11 @@ function initializeBotOrder(jsonString, name) {
     alert("Error parsing "+jsonString+"\n"+err);
   }
 
+  // repeat the last move until the end -- this is in case the instructions are shorter than the number of rounds
+  while (ret.length < num_rounds) {
+    ret.push(ret[ret.length-1]);
+  }
+  
   ret["name"] = name;
   return ret;
 }
@@ -856,7 +879,7 @@ function initializeBots() {
   var humanBehavior = initializeBotOrder(variables['human'],'human');
   var num_clusters_remaining = parseInt(variables['num_cluster_bots']);
   try {
-    bot_peakLimit = parseInt(variables['peakLimit']);    
+    bot_peakLimit = parseInt(variables['peakLimit']) * scaleFactor;    
   } catch (err) { alert(err); }
   
   try {
