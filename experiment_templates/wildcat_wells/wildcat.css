@@ -110,10 +110,19 @@
   border: 1px solid #000000;
   float: left;
   height: 512px;
-  margin: 0 0 4px 4px;
+  margin: -516px 0 4px 4px;
   width: 512px;
 }
 
+#myCanvas {
+  background-repeat: no-repeat;
+  border: 1px solid #000000;
+  float: left;
+  height: 512px;
+  margin: 0 0 4px 4px;
+  width: 512px;
+}
+  
 #bottom_panels {
   border: 1px solid #000000;
   background-color: #FFFFFF;
@@ -146,4 +155,18 @@
 
 #instruction_time_limit {
   float: right;
+}
+
+#q1 {
+  padding: 0 20px;
+}
+
+#q1 input {
+  float: right;
+  width: 300px;
+}
+
+#q1 div {
+  display: inline-block;
+  margin-bottom:10px;
 }

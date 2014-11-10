@@ -49,12 +49,31 @@
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
-</div>
+</div><!-- /.modal -->
+
+<div class="modal fade bs-example-modal-sm" id="survey1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div id="q1">
+      <h2>Survey</h2>
+        How confident were you that you had the best possible solution?<br/><br/>
+      
+        <br/><div><input class="btn btn-primary" type="submit" value="Very confident" onclick="q1('1')"/></div>
+        <br/><div><input class="btn btn-primary" type="submit" value="Somewhat confident" onclick="q1('2')"/></div>
+        <br/><div><input class="btn btn-primary" type="submit" value="Neither confident nor unsure" onclick="q1('3')"/></div>
+        <br/><div><input class="btn btn-primary" type="submit" value="Somewhat unsure" onclick="q1('4')"/></div>
+        <br/><div><input class="btn btn-primary" type="submit" value="Very unsure" onclick="q1('5')"/></div>
+      
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 <div id="wild_wrapper">
 <div id="history_wrapper"></div>
 <div id="right_side">
+  <canvas id="myCanvas" style="border:1px solid #d3d3d3;background:#ffffff;" height="512" width="512"> YourbrowserdoesnotsupporttheHTML5canvastag.</canvas>
   <div id="canvas"></div>
   <table id="bottom_panels"><tr>
     <td id="left_panel" class="bottom_panel">

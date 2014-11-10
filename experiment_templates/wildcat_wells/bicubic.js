@@ -212,7 +212,7 @@ function drawBitMap() {
       
       var v2 = Math.floor(255-v*255);
 
-      img.data[ctr++] = 255; //Math.min(255, Math.max(0, map[x][y]*255)); // r
+      img.data[ctr++] = v2; //Math.min(255, Math.max(0, map[x][y]*255)); // r
       img.data[ctr++] = v2; // g
       img.data[ctr++] = v2; // b
       img.data[ctr++] = 255; // a
@@ -222,6 +222,7 @@ function drawBitMap() {
   setStatus("drawBitMap() done");
 }
 
+// ************** old raphael version ************** //
 var curRow = 0;
 function drawMap() {  
   curRow = 0;

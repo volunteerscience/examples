@@ -208,7 +208,7 @@ function initializeGameBoard() {
   
   initializeMap(MAP_W, MAP_H, 0);
   buildMap((seed % num_maps)+1);
-  $("#canvas").css("background-image","url('"+getFile("ground.jpg")+"')");
+  $("#myCanvas").css("background-image","url('"+getFile("ground.jpg")+"')");
   paper = Raphael("canvas", MAP_W*P, MAP_H*P);
 //  paper.circle(256,256,256);
   
@@ -726,9 +726,22 @@ function completeRound() {
   if (gameRound < num_rounds) {
     initializeGameRound(gameRound+1);    
   } else {
-    endGame();
+    showSurvey();
   }
 }
+
+function showSurvey() {
+  $('#survey1').modal({'show':true,'backdrop':"static"});
+  
+}
+
+//called when done with survey question
+function q1(val) {
+  submit(val);
+  $('#survey1').modal('hide');
+  endGame();    
+}
+
 
 function setNeighborBarVisibility(enable) {
   for (var i = 0; i < network[myNetworkId].length; i++) {
@@ -747,6 +760,14 @@ function setBarVisibility(neighbor, enable) {
   }
 }
 
+/**
+ * render the map under the points
+ */
+function revealMap() {
+  drawBitMap();  
+//  $("#myCanvas").css("background-image","");
+}
+
 function endGame() {
   //properly color them all in the map
   for (p in neighborPoints) {
@@ -755,6 +776,7 @@ function endGame() {
   }
   setNeighborBarVisibility(true);
   setNeighborPointVisibility(true);
+  revealMap();
   experimentComplete();
   alert("Congratulations!  You collected "+numberWithCommas(total_score)+" barrels of oil.");  
 }
