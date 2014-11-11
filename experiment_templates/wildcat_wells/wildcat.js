@@ -1,3 +1,4 @@
+var INSTRUCTION_ROUND = 10;
 var FIRST_ACTUAL_ROUND = 101;
 
 var max_score = 1000;
@@ -19,7 +20,7 @@ var num_maps = 50;
 var showScoreWhenNotMap = false;
 
 var click_color = "#000000";
-var initial_round_seconds = 90;
+var instruction_timeout = 45;
 var round_seconds = 30;
 var total_score = 0;
 
@@ -28,6 +29,13 @@ var showScore = true; // changed to true/false
 var showMap = true; // changed to true/false
 
 function initializeGame() {
+  
+  
+  try {
+    instruction_timeout = parseInt(variables['instruction_timeout']);
+  } catch (err) {
+  }
+  
   try {
     total_players = parseInt(variables['total_players']);
   } catch (err) {
@@ -171,13 +179,15 @@ function initializeGame() {
 
 var instructionPanel = 1;
 function initializeInstructions() {
-  if (numPlayers == 1) {
+  setRound(INSTRUCTION_ROUND);
+  $('#instructions').modal({'show':true,'backdrop':"static"}).on('hidden.bs.modal', function (e) {
+    instructionsComplete();
+  });
+  
+  if (numPlayers > 1) {
     // don't start timer if single player
-    $('#instructions').on('hidden.bs.modal', function(e) {
-      setCountdown("timer",initial_round_seconds);    
-    });    
+    setCountdown("instruction_time_limit",instruction_timeout);    
   }
-  $('#instructions').modal({'show':true,'backdrop':"static"});
   
   $('#close_instructions').click(instructionNext);
 }
@@ -201,6 +211,18 @@ function instructionNext() {
     break;
   }
   instructionPanel++;
+}
+
+/**
+ * called when instructions are closed (forcably or not)
+ */
+function instructionsComplete() {
+  stopCountdown("instruction_time_limit");
+  submit("Instructions Complete");
+  if (currentRound == INSTRUCTION_ROUND) {  // this check is only needed for reconnect    
+    submitted = true;
+    $("#drill").val("Waiting for other players.");
+  }
 }
 
 function initializeGameBoard() {
@@ -426,7 +448,7 @@ function initializeHistory() {
   }
   
   submit(JSON.stringify(initialization));
-  initializeGameRound(1);
+//  initializeGameRound(1);  // if starts under instructions
 }
 
 var panelCtr = 0;
@@ -506,6 +528,8 @@ function updateUserClick() {
 
 var round = 1;
 function mapClick(evt) {
+  if (submitted) return;
+  
   var offset = $(this).offset();
   var x = Math.floor(evt.pageX-offset.left);
   var y = Math.floor(evt.pageY-offset.top);
@@ -515,6 +539,8 @@ function mapClick(evt) {
 }
 
 function drill() {
+  if (currentRound < FIRST_ACTUAL_ROUND) return; // waiting for instructions
+  
   var x = $("#x_coord").val();
   var y = $("#y_coord").val();
   if (x.length == 0 || y.length == 0) {
@@ -602,9 +628,6 @@ function initializeGameRound(newGameRound) {
   $("#y_coord").val("");
 
   var seconds = round_seconds;
-  if (gameRound == 1) {
-    seconds = initial_round_seconds;
-  }
   
   // no timer on round one if single player
   if (gameRound > 1 || numPlayers > 1) {
@@ -635,11 +658,16 @@ function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function countdownUpdate(id,diff,clockString) {
-  $("#instruction_time_limit").html(clockString);
-}
+//function countdownUpdate(id,diff,clockString) {
+//  $("#instruction_time_limit").html(clockString);
+//}
 
 function countdownExpired(id) {
+  if (id=="instruction_time_limit") {
+    $('#instructions').modal('hide'); // calls instructionsComplete()
+    return;
+  }
+  
   var x = $("#x_coord").val();
   var y = $("#y_coord").val();
   
@@ -731,6 +759,7 @@ function completeRound() {
 }
 
 function showSurvey() {
+  setRound(300);
   $('#survey1').modal({'show':true,'backdrop':"static"});
   
 }
@@ -792,7 +821,10 @@ function makeChoice(x,y) {
 }
 
 function playerDisconnect(playerId) {
-  if (playerId < myid) {
+  log("Player Disconnect "+playerId);
+  
+  
+  if (playerId < myid || currentRound == INSTRUCTION_ROUND) {
     submitRemainingBots();
   }
 }
@@ -949,6 +981,16 @@ function submitRemainingBots() {
   }
   log('submitRemainingBots');
   
+  if (currentRound == INSTRUCTION_ROUND) {
+    for (var i = 1; i <= numPlayers; i++) {
+      if (!activePlayers[i]) {
+        log('submit Player Dropped '+i);
+        submitBot(i, currentRound, "Player Dropped");
+      }
+    }    
+    return;
+  }
+  
   // submit anyone who needs it
   for (var i = 1; i <= total_players; i++) {
 //    log(i+" in "+JSON.stringify(submissions[currentRound]));
@@ -1101,9 +1143,14 @@ function botRandom(playerId, bestSub) {
 }
 
 function newMove(playerId, idx, round) {
-//  if (round != currentRound) {
-//    return;
-//  }
+  // wait for everyone to close the instructions
+  if (round == INSTRUCTION_ROUND) {
+    for (var i = 1; i <= numPlayers; i++) {
+      if (moves[i] < 1) return;
+    }
+    initializeGameRound(1);
+    return;
+  }
   
   fetchMove(playerId, round, idx, function(val, participant, round, index) {
     submissions[round][getNetworkId(playerId)] = JSON.parse(val);
