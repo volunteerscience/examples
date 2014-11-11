@@ -30,6 +30,15 @@
   left: 89px;
   margin-right:93px;
   z-index:1;
+  text-align: center;
+}
+
+.countdown-text {
+  display: block;
+  padding-right: 70px;
+  position: absolute;
+  width: 100%;
+  z-index: 2;
 }
 
 .countdown-progress { 

@@ -178,6 +178,7 @@ function Tips(button_selector, popup_selector) {
   
   this.showing = false;
   this.index = 0;
+  this.alwaysPopUp = false;
   
   this.addTip = function(tip) {
     // toss out duplicates
@@ -207,6 +208,9 @@ function Tips(button_selector, popup_selector) {
       }
     }
     me.updateNav();
+    if (tips.alwaysPopUp) {
+      tips.show();
+    }
     return tip.index;
   };
   

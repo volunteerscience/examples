@@ -220,6 +220,14 @@ function AvatarFactory(src, width, num, positions, clip, walkPositions, speed, a
       this.bubble = new Bubble(text,this.x,this.y);
     };
     
+    this.remove = function() {
+      me.img.remove();
+      if (me.label) {
+        me.label.remove();
+      }
+      me.clearSay();
+    }
+    
     this.img = PAPER.image(SPRITE_SRC, 0, 0, S_IMG_W, S_IMG_H);
     
     this.img.mousedown(this.onMouseDown);   

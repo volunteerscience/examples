@@ -313,7 +313,23 @@
   cursor: pointer;
 }
 
+#series_indicators {
+  display: none;
+  float:right;
+}
 
+.series {
+  color: #999999;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 2px 4px;
+  margin: 2px;
+}
+
+.series_current {
+  color: #000000;
+  font-weight: bold;
+}
 
 
 

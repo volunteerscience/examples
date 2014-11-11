@@ -16,17 +16,25 @@ var allowGroupTargetPlace = false; // true if the group decides where the target
 var highestRankingOfficerChoose = true; // true if the highest ranking player gets to choose who controls what
 
 var skipAllInstructions = true;
-var skipInstructionsAfter = S_STORY;
+var skipInstructionsAfter = 0; // anything after this is automagically skipped (gets rid of the tutorial)
 
 var roundDuration = 90;
 var numRows = 5;
 var numCols = 5;
+var mid_series_delay = 30;
 
 var MAP_WIDTH = 440;
 var MAP_HEIGHT = 440;
 
-var ROUND_ZERO = 100;
-var FIRST_ACTUAL_ROUND = 101;
+// these are reset after tutorial, practice
+var MID_SERIES_DIFF = 50; // 150,250 are mid-round
+var TUTORIAL_ROUND = 100;
+var PRACTICE_ROUND = 200;
+var ACTUAL_ROUND = 500;
+var allSeries = [TUTORIAL_ROUND,PRACTICE_ROUND,ACTUAL_ROUND];
+
+var ROUND_ZERO = 500;
+var FIRST_ACTUAL_ROUND = 501;
 
 var REGION_BACKGROUND_COLOR = "#48B028"; //"#7DAF27" // "#44aa44"; // "#c7d4e7";
 var REGION_SELECTION_COLOR = "#99E0FF"; //"#b7e4d7";
@@ -819,12 +827,19 @@ function assignPlayersRoundRobin() {
 var numBots = 0;
 var numPlayersAndBots = 1;
 function initialize() {
+  allow_skip_story = variables['allow_skip_story'].indexOf("rue") == 1;
+  skipInstructionsAfter = S_STORY;
   rank = getRank();
   setDifficulty(variables['difficulty']);
   roundDuration = parseInt(variables['round_duration']);
   
-  for (var r = ROUND_ZERO; r <= FIRST_ACTUAL_ROUND+numRounds; r++) { // also the submission round
-    commandHistory[r] = new Array();
+  
+  for (var s in allSeries) {
+    var series = allSeries[s];
+    for (var r = 0+series; r <= series+1+numRounds; r++) { // also the submission round
+      commandHistory[r] = new Array();
+    }
+    commandHistory[series+MID_SERIES_DIFF] = new Array(); // for mid-series readies
   }
 
   numBots = Math.max(0,parseInt(variables['min_players'])-numPlayers);
@@ -840,6 +855,51 @@ function initialize() {
   initializeMarkerButtons();
   
   runAllInstructions();
+}
+
+function initializeTutorial() {
+  ROUND_ZERO = 100;
+  FIRST_ACTUAL_ROUND = 101;
+
+  // end of instructions
+  clearInstructions();
+  tips.alwaysPopUp = true;
+  $("#series_tutorial").addClass("series_current");
+  resetGame();
+
+}
+
+function initializePractice() {
+  ROUND_ZERO = 200;
+  FIRST_ACTUAL_ROUND = 201;
+  tips.alwaysPopUp = false;
+  $("#series_practice").addClass("series_current");
+  
+  resetGame();
+}
+
+function initializeActual() {
+  ROUND_ZERO = 500;
+  FIRST_ACTUAL_ROUND = 501;
+  tips.alwaysPopUp = false;
+  $("#series_actual").addClass("series_current");
+  
+  resetGame();
+}
+
+function resetGame() {
+  for (var unit_idx in units) {
+    var unit = units[unit_idx];
+    unit.currentRegion = null;
+    unit.setNextRegion(null);
+    unit.wait = 0;
+  }
+  clearRegionStatus();
+  initializeHistory();
+  initializeMyAssets();
+
+  setRound(FIRST_ACTUAL_ROUND);
+  initRound();  
 }
 
 
@@ -972,6 +1032,10 @@ function initializeMarkerButtons() {
   });
 }
 
+function isMidSeries() {
+  return (currentRound == TUTORIAL_ROUND+MID_SERIES_DIFF) || (currentRound == PRACTICE_ROUND+MID_SERIES_DIFF);
+}
+
 /**
  * maps round => role => list of commands
  */
@@ -985,9 +1049,14 @@ function submitMove() {
     return;
   }
   
+  if (isMidSeries()) {
+    submit('<ready />');
+    return;
+  }
+  
   if (submitted) return;
   submitted = true;
-  if (currentRound-ROUND_ZERO > numRounds) {
+  if (currentRound-ACTUAL_ROUND > numRounds) {
     $('#go').fadeOut();
     $("#playerControls").fadeOut();
     $("#q1").fadeIn();
@@ -1069,9 +1138,12 @@ function q1(confidence) {
   $("#q1").html('<h2>Waiting for team.</h2>');
 }
 
+var explosionAvitars = [];
+
 function showAirstrike() {
   stopCountdown("timer");
-
+  setCountdown("timer", mid_series_delay, "...Next Round Starting...");
+  
   $("#q1").fadeOut();
   
   var numHits = 0;
@@ -1096,18 +1168,25 @@ function showAirstrike() {
   var numMisses = numTargets-numHits;
   var score = 0;
   
+    
   switch(difficulty) {
   case DIF_EASY:
     if (numHits >= 1 && !("2nd Lieutenant" in awards[myid])) {
-      writeAward("2nd Lieutenant");      
+      if (currentRound > ACTUAL_ROUND) {
+        writeAward("2nd Lieutenant");      
+      }
     }
     if (numHits >= 3 && !("1st Lieutenant" in awards[myid])) {
-      writeAward("1st Lieutenant");      
+      if (currentRound > ACTUAL_ROUND) {
+        writeAward("1st Lieutenant");      
+      }
     }
     if (numHits == numTargets) {
       score = 1000;
       if (!("Captain" in awards[myid])) {
-        writeAward("Captain");
+        if (currentRound > ACTUAL_ROUND) {
+          writeAward("Captain");
+        }
       }
     } else {
       score = numHits * 100;
@@ -1115,12 +1194,16 @@ function showAirstrike() {
     break;
   case DIF_MEDIUM:
     if (numHits >= 3 && !("Major" in awards[myid])) {
-      writeAward("Major");      
+      if (currentRound > ACTUAL_ROUND) {
+        writeAward("Major");      
+      }
     }
     if (numHits == numTargets) {
       score = 2000;
       if (!("Lt Colonel" in awards[myid])) {
-        writeAward("Lt Colonel");
+        if (currentRound > ACTUAL_ROUND) {
+          writeAward("Lt Colonel");
+        }
       }
     } else {
       score = numHits * 200;
@@ -1128,7 +1211,9 @@ function showAirstrike() {
     break;
   case DIF_HARD:
     if (numHits >= 3 && !("Colonel" in awards[myid])) {
-      writeAward("Colonel");      
+      if (currentRound > ACTUAL_ROUND) {
+        writeAward("Colonel");      
+      }
     }
     if (numHits == numTargets) {
       score = 5000;
@@ -1139,13 +1224,17 @@ function showAirstrike() {
   }
   
   if (numHits == 0) {
-    alert("You missed every "+TARGET_NOUN+"!  "+ALLY_NOUN+" has taken severe casualties.  Try harder next time!");
+    if (currentRound > PRACTICE_ROUND) {
+      alert("You missed every "+TARGET_NOUN+"!  "+ALLY_NOUN+" has taken severe casualties.  Try harder next time!");
+    }
   } else {
-    writeScore("score",score);
-    alert("Congratulations!  You destroyed "+numHits+" "+TARGET_NOUN_PLURAL+"!  You scored "+score+" points.  Your current rank is "+ranks[getRank()]+".");    
+    if (currentRound > ACTUAL_ROUND) {
+      writeScore("score",score);
+    }
+    if (currentRound > PRACTICE_ROUND) {
+      alert("Congratulations!  You destroyed "+numHits+" "+TARGET_NOUN_PLURAL+"!  You scored "+score+" points.  Your current rank is "+ranks[getRank()]+".");    
+    }
   }
-  
-  experimentComplete();
   
   // draw the avatars on the map
   var targetCtr = 0;
@@ -1172,6 +1261,7 @@ function showAirstrike() {
           explosion.text_color = STRIKE_EXPLOSION_COLOR;
           explosion.update();
 //          explosion.text = "MISS";
+          explosionAvatars.push(explosion);
         }
         // this is the truck
         unit.setNextRegion(region);
@@ -1369,20 +1459,48 @@ function newMove(participant, index, round) {
   fetchMove(participant, currentRound, index, fetchResponse);
 }
 
-function endRound() {
-  if (currentRound < FIRST_ACTUAL_ROUND) {
-    // end of instructions
-    clearInstructions();
-    setRound(FIRST_ACTUAL_ROUND);
-    initRound();
+/**
+ * A series is a game (several rounds), but it may be tutorial, practice or actual
+ */
+function initializeSeries() {
+  log("initializeSeries():" + currentRound);
+  $("#series_indicators").fadeIn();
+  $(".series").removeClass("series_current");
+  
+  if (currentRound < TUTORIAL_ROUND) {
+    initializeTutorial();
     return;
   }
+  if (currentRound < PRACTICE_ROUND) {
+    initializePractice();
+    return;
+  }
+  if (currentRound < ACTUAL_ROUND) {
+    initializeActual();
+    return;
+  }
+  
+}
 
-  if (currentRound > ROUND_ZERO+numRounds) {
+function completeSeries() {
+  if (isMidSeries()) {
+    initializeSeries();
+    return;
+  }
+  experimentComplete();
+}
+
+function endRound() {
+  if (currentRound < FIRST_ACTUAL_ROUND || isMidSeries()) {
+    initializeSeries();
+    return;
+  }
+  
+  if (currentRound == ROUND_ZERO+numRounds+1) {
     // end of last round
     showCurrentBoard();
+    setRound(ROUND_ZERO+MID_SERIES_DIFF); // isMidSeries will return true
     showAirstrike();
-    setRound(currentRound+1);
     return;
   }
   

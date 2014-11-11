@@ -20,8 +20,14 @@ var countdowns = new Object(); // holds the timeout in milliseconds
 /**
  * @param id div id of timer
  * @param seconds
+ * @param word (what to say on the countdown)
  */
-function setCountdown(id,seconds) {
+function setCountdown(id,seconds,word) {
+  if (typeof word === "undefined") {
+    word = "";
+  }
+//  $('#'+id+' .countdown-text').html(word);
+
   countdowns[id] = [];
   countdowns[id][0] = +new Date() + seconds*1000;
   countdowns[id][1] = seconds*1000;
@@ -31,7 +37,7 @@ function setCountdown(id,seconds) {
   var secondRemainder = seconds%60;
   var secondsStr = ('0'+secondRemainder).slice(-2); // add leading zero, then use last 2 digits
   
-  $('#'+id).html('<div class="countdown-clock">'+mins+':'+secondsStr+'</div><div class="countdown-bar"><div class="countdown-progress"></div></div>');
+  $('#'+id).html('<div class="countdown-clock">'+mins+':'+secondsStr+'</div><div class="countdown-bar"><span class="countdown-text">'+word+'</span><div class="countdown-progress"></div></div>');
 }
 
 /**

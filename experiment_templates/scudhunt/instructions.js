@@ -1,6 +1,8 @@
 var currentInstruction = null;
 var incomingInstruction = null;
 var instructionCallback = null;
+var allow_skip_story = true;
+
 function fadeInstructions(sentence, cb) {
   // call the previous callback immeadiately
   if (instructionCallback != null) {
@@ -70,7 +72,10 @@ function runAllInstructions() {
     return;
   }
   
-  
+  if (allow_skip_story) {
+    $("#iskip").fadeIn();
+  }
+  tips.alwaysPopUp = true;
   initializeInstructions();
   initializeRoleSpecificInstructions();
   initializeSpecialRules();
@@ -559,6 +564,7 @@ function initializeSpecialRules() {
 function doneInstructions() {
   if (!inInstructions) return;
   $("#iskip").attr('value',"Waiting for Team");
+  $("#iskip").fadeIn();
   submit('<ready />');
   
   if (shouldRunBots()) {
@@ -577,15 +583,6 @@ function clearInstructions() {
   $('#bottomPanel').hide();
   $('#instructions').hide();
 
-  for (var unit_idx in units) {
-    var unit = units[unit_idx];
-    unit.currentRegion = null;
-    unit.setNextRegion(null);
-    unit.wait = 0;
-  }
-  clearRegionStatus();
-  initializeHistory();
-  initializeMyAssets();
 
   inInstructions = false;
   $('#roundHistory').show();
