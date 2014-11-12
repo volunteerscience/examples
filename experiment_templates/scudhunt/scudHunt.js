@@ -522,7 +522,7 @@ function Unit(id, ownerId, name, short_description, long_description, label, ico
       this.clearLocation();
       return;
     }
-    if (allyUnitPlacement || isMyUnit(unitMe)) {
+    if (allyUnitPlacement || isMyUnit(unitMe) || this.ownerId == TARGET_ROLE) {
 //      log(this.id+" "+region.id);
       this.avatar.currentlyOn = region;
       this.avatar.setLocation(region.x, region.y);
@@ -936,7 +936,21 @@ function initializeActual() {
   resetGame();
 }
 
+function recordTargets() {
+  // only do this on the user with the lowest id
+  for (var i = 1; i < myid; i++) {
+    if (activePlayers[i]) {
+      // someone lower than me is still active
+      return false;
+    }
+  }
+  submit('<game targets="'+targetRegions+'"/>');
+}
+
 function resetGame() {
+  assignTargets(seed+currentRound, numTargets, 0);
+  recordTargets();
+  
   for (var unit_idx in units) {
     var unit = units[unit_idx];
     unit.currentRegion = null;
@@ -969,10 +983,9 @@ function initializeGameBoard() {
   popup.txt = paper.text(0,0,"").attr({'text-anchor': 'middle', 'font-size': '20px', 'font-weight':'bold', 'fill': '#222222'});
   popup.txt.hide();
   
-  buildSquareMap(numRows, numCols, numTargets, 0);
-  if (myid == 1) {
-    submit('<game targets="'+targetRegions+'"/>');
-  }
+  buildSquareMap(numRows, numCols);
+  
+  
   initializeHistory();
   initializeAvatars();
   initChat();
@@ -1106,7 +1119,7 @@ function submitMove() {
   }
   
   if (isMidSeries()) {
-    submit('<ready />');
+    submitReady();
     return;
   }
   
@@ -1198,8 +1211,6 @@ var explosionAvatars = [];
 
 function showAirstrike() {
   stopCountdown("timer");
-  setCountdown("timer", mid_series_delay, "...Next Round Starting...");
-  
   $("#q1").fadeOut();
   
   var numHits = 0;
@@ -1291,7 +1302,7 @@ function showAirstrike() {
       writeScore("score",score);
     }
     if (currentRound > PRACTICE_ROUND) {
-      alert("Congratulations!  You destroyed "+numHits+" "+TARGET_NOUN_PLURAL+"!  You scored "+score+" points.  Your current rank is "+ranks[getRank()]+".");    
+      alert("Congratulations!  You destroyed "+numHits+" "+TARGET_NOUN_PLURAL+"!  You scored "+score+" points.");    
     }
   }
   
@@ -1387,6 +1398,14 @@ function showAirstrike() {
         },
         getFile("scud.png"));               
   }  
+  
+  
+  if (currentRound > allSeries[allSeries.length-1]) {
+    experimentComplete();
+  } else {
+    setCountdown("timer", mid_series_delay, "...Next Round Starting...");   
+    $('#go').html("Ready");
+  }  
 }
 
 /**
@@ -1411,10 +1430,21 @@ function playerDisconnect(playerNum) {
   if (!shouldRunBots()) return;
   
   // get past the instructions; TODO: activate bot
-  if (currentRound < ROUND_ZERO) {
-    submitBot(playerNum, currentRound, '<ready />');
+  if (currentRound < ROUND_ZERO || isMidSeries()) {
+    submitReady();
   } else {
     runBots();
+  }
+}
+
+function submitReady() {
+  submit('<ready />');
+  if (shouldRunBots()) {
+    for (var i = 1; i <= numPlayersAndBots; i++) {
+      if (!activePlayers[i]) {
+        submitBot(i, currentRound, '<ready />');
+      }
+    }
   }
 }
 

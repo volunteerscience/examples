@@ -11,7 +11,7 @@ var regionGroup = new Array();
 var REGION_WIDTH = 20;
 var targetRegions = "";
 
-function buildSquareMap(num_rows, num_cols, num_targets, num_decoys) {
+function buildSquareMap(num_rows, num_cols) {
   var X_OFF = 20;
   var Y_OFF = 20;
   var R_WIDTH =  (MAP_WIDTH - 2*X_OFF)/num_cols; // border on left and right
@@ -103,45 +103,6 @@ function buildSquareMap(num_rows, num_cols, num_targets, num_decoys) {
     }
   }
   
-  Math.seedrandom(seed);
-  var assigned = new Array();
-
-  for (var i = 0; i < num_targets; i++) {
-    // pick unique regionId
-    var regionId = Math.floor(Math.random()*id);
-    while (typeof assigned[regionId] != "undefined") {
-      regionId = Math.floor(Math.random()*id);
-    }
-    
-    regions[regionId].value = VALUE_TARGET;
-    if (i > 0) {
-      targetRegions+=",";
-    }
-    targetRegions+=regionId;
-    
-    assigned[regionId] = true;
-  }
-  
-  if (num_decoys > 0) {
-    targetRegions+=";";
-    
-    for (var i = 0; i < num_decoys; i++) {
-      // pick unique regionId
-      var regionId = Math.floor(Math.random()*id);
-      while (typeof assigned[regionId] != "undefined") {
-        regionId = Math.floor(Math.random()*id);
-      }
-      
-      regions[regionId].value = VALUE_DECOY;
-      if (i > 0) {
-        targetRegions+=",";
-      }
-      targetRegions+=regionId;
-      
-      assigned[regionId] = true;
-    }
-  }
-  
   // original sea
 //  var water = paper.rect(20,MAP_HEIGHT-20,MAP_WIDTH-40,20,0).attr({'fill':REGION_WATER_COLOR, 'stroke':REGION_WATER_COLOR});
 
@@ -160,3 +121,47 @@ function buildSquareMap(num_rows, num_cols, num_targets, num_decoys) {
 
 }
 
+function assignTargets(rseed, num_targets, num_decoys) {
+  Math.seedrandom(rseed);
+  var assigned = new Array();
+
+  for (var regionId = 0; regionId < regions.length; regionId++) {
+    regions[regionId].value = VALUE_NOTHING;
+  }
+    
+  for (var i = 0; i < num_targets; i++) {
+    // pick unique regionId
+    var regionId = Math.floor(Math.random()*regions.length);
+    while (typeof assigned[regionId] != "undefined") {
+      regionId = Math.floor(Math.random()*regions.length);
+    }
+    
+    regions[regionId].value = VALUE_TARGET;
+    if (i > 0) {
+      targetRegions+=",";
+    }
+    targetRegions+=regionId;
+    
+    assigned[regionId] = true;
+  }
+  
+  if (num_decoys > 0) {
+    targetRegions+=";";
+    
+    for (var i = 0; i < num_decoys; i++) {
+      // pick unique regionId
+      var regionId = Math.floor(Math.random()*regions.length);
+      while (typeof assigned[regionId] != "undefined") {
+        regionId = Math.floor(Math.random()*regions.length);
+      }
+      
+      regions[regionId].value = VALUE_DECOY;
+      if (i > 0) {
+        targetRegions+=",";
+      }
+      targetRegions+=regionId;
+      
+      assigned[regionId] = true;
+    }
+  }  
+}
