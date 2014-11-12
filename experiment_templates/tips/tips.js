@@ -72,6 +72,7 @@ function Tip(title,text,cssChanges,icon,uid) {
   this.cssChanges = cssChanges;
   this.icon = icon;
   this.viewed = false;
+  
   if (uid) {
     this.uid = uid;    
   } else {
@@ -165,7 +166,8 @@ function Tips(button_selector, popup_selector) {
   this.navBar = $("#tips_nav_bar");
   this.auto_popup = true;
   this.auto_advance = false;
-  
+  this.disabled = false;
+
   // to shake the button
   this.auto_shake = false;
   var base_padding_left = this.button.css('padding-left');
@@ -181,6 +183,7 @@ function Tips(button_selector, popup_selector) {
   this.alwaysPopUp = false;
   
   this.addTip = function(tip) {
+    if (me.disabled) return;
     // toss out duplicates
     if (tip.uid > 0) {
       for (var idx in me.tip_list) {
@@ -246,6 +249,8 @@ function Tips(button_selector, popup_selector) {
   };
   
   this.show = function() {
+    if (me.disabled) return;
+
     if (me.showing) return;
     me.showing = true;
     me.stopShake();

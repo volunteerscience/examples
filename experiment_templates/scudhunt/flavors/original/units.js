@@ -271,6 +271,9 @@ function initializeUnits(minPlayers) {
   seals.remainsOnBoard = true;
   seals.waitString = "Extracted";  
   seals.cantMoveAlert = function(region) {
+    if (seals.currentRegion != null) {
+      return "You may only move the "+seals.name+" one region per round.";
+    }
     return "You must deploy the "+seals.name+" from the coast (row E).";
   };
 

@@ -2,6 +2,8 @@
   background-color: #f7dab7;
   float: left;
   margin-right:10px;
+  max-height: 440px;
+  margin-bottom:5px;
 }
 
 .round-corner15 {

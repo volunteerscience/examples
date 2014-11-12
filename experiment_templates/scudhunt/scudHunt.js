@@ -26,6 +26,10 @@ var mid_series_delay = 30;
 var MAP_WIDTH = 440;
 var MAP_HEIGHT = 440;
 
+var useTutorial = true;
+var usePractice = true;
+var useActual = true;
+
 // these are reset after tutorial, practice
 var MID_SERIES_DIFF = 50; // 150,250 are mid-round
 var TUTORIAL_ROUND = 100;
@@ -827,6 +831,27 @@ function assignPlayersRoundRobin() {
 var numBots = 0;
 var numPlayersAndBots = 1;
 function initialize() {
+  useTutorial = variables['useTutorial'].indexOf("rue") == 1;
+  usePractice = variables['usePractice'].indexOf("rue") == 1;
+  useActual = variables['useActual'].indexOf("rue") == 1;
+  
+  
+  if (!useActual) {
+    allSeries.splice(2,1);
+    $("#series_actual").hide();    
+  }
+  
+  if (!usePractice) {
+    allSeries.splice(1,1);
+    $("#series_practice").hide();
+  }
+  
+  if (!useTutorial) {
+    allSeries.splice(0,1);
+    $("#series_tutorial").hide();
+  }
+  
+  
   allow_skip_story = variables['allow_skip_story'].indexOf("rue") == 1;
   skipInstructionsAfter = S_STORY;
   rank = getRank();
@@ -858,18 +883,37 @@ function initialize() {
 }
 
 function initializeTutorial() {
+  // end of instructions
+  clearInstructions();
+  
+  if (!useTutorial) {
+    initializePractice();
+    return;
+  }
+
   ROUND_ZERO = 100;
   FIRST_ACTUAL_ROUND = 101;
 
-  // end of instructions
-  clearInstructions();
   tips.alwaysPopUp = true;
   $("#series_tutorial").addClass("series_current");
   resetGame();
 
 }
 
+function disableTips() {
+  tips.disabled = true;
+  tips.hide();
+  $("#tips_button").hide();
+}
+
 function initializePractice() {
+  disableTips();
+  
+  if (!usePractice) {
+    initializeActual();
+    return;
+  }
+  
   ROUND_ZERO = 200;
   FIRST_ACTUAL_ROUND = 201;
   tips.alwaysPopUp = false;
@@ -879,6 +923,11 @@ function initializePractice() {
 }
 
 function initializeActual() {
+  if (!useActual) {
+    experimentComplete();
+    return;
+  }
+  
   ROUND_ZERO = 500;
   FIRST_ACTUAL_ROUND = 501;
   tips.alwaysPopUp = false;
@@ -894,10 +943,17 @@ function resetGame() {
     unit.setNextRegion(null);
     unit.wait = 0;
   }
+  
+  for (var e in explosionAvatars) {
+    explosionAvatars[e].remove();
+  }
+  explosionAvatars = [];
+  
   clearRegionStatus();
   initializeHistory();
   initializeMyAssets();
-
+  $("#sitRep").html("");
+  
   setRound(FIRST_ACTUAL_ROUND);
   initRound();  
 }
@@ -1138,7 +1194,7 @@ function q1(confidence) {
   $("#q1").html('<h2>Waiting for team.</h2>');
 }
 
-var explosionAvitars = [];
+var explosionAvatars = [];
 
 function showAirstrike() {
   stopCountdown("timer");
@@ -1167,7 +1223,10 @@ function showAirstrike() {
   
   var numMisses = numTargets-numHits;
   var score = 0;
-  
+
+  if (currentRound < PRACTICE_ROUND && !("Rookie" in awards[myid])) {
+    writeAward("Rookie"); // passed tutorial
+  }
     
   switch(difficulty) {
   case DIF_EASY:

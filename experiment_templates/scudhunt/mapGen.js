@@ -141,6 +141,22 @@ function buildSquareMap(num_rows, num_cols, num_targets, num_decoys) {
       assigned[regionId] = true;
     }
   }
-  var water = paper.rect(20,MAP_HEIGHT-20,MAP_WIDTH-40,20,0).attr({'fill':REGION_WATER_COLOR, 'stroke':REGION_WATER_COLOR});
+  
+  // original sea
+//  var water = paper.rect(20,MAP_HEIGHT-20,MAP_WIDTH-40,20,0).attr({'fill':REGION_WATER_COLOR, 'stroke':REGION_WATER_COLOR});
+
+  
+  //  sea across just the regions
+  var seaW = MAP_WIDTH/2-20;
+  var seaH = 25;
+  var water1 = paper.image(getFile("sea.jpg"),          20, MAP_HEIGHT-seaH+5, seaW, seaH);
+  var water2 = paper.image(getFile("sea.jpg"), MAP_WIDTH/2, MAP_HEIGHT-seaH+5, seaW, seaH);
+
+  // sea across the full bottom: (todo, round corners)
+//  var seaW = MAP_WIDTH/2;
+//  var seaH = 25;
+//  var water1 = paper.image(getFile("sea.jpg"),          0, MAP_HEIGHT-seaH+5, seaW, seaH);
+//  var water2 = paper.image(getFile("sea.jpg"), MAP_WIDTH/2, MAP_HEIGHT-seaH+5, seaW, seaH);
+
 }
 
