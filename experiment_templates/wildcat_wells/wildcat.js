@@ -50,12 +50,23 @@ function initializeGame() {
   } catch (err) {
     alert(err);
   }
+  $("#i_seconds").html(round_seconds);
   
+  // update the in-game clock too
+  var seconds = round_seconds;
+  var mins = Math.floor(seconds/60);
+  var secondRemainder = seconds%60;
+  var secondsStr = ('0'+secondRemainder).slice(-2); // add leading zero, then use last 2 digits
+  $("#timer .countdown-clock").html(mins+':'+secondsStr);
+    
   try {
     num_rounds = parseInt(variables['num_rounds']);
   } catch (err) {
     alert(err);
   }
+  
+  $("#i_rounds").html(num_rounds);
+
   
   // at least as many players as the game launched with
   if (total_players < numPlayers) {
@@ -180,6 +191,7 @@ function initializeGame() {
 var instructionPanel = 1;
 function initializeInstructions() {
   setRound(INSTRUCTION_ROUND);
+  
   $('#instructions').modal({'show':true,'backdrop':"static"}).on('hidden.bs.modal', function (e) {
     instructionsComplete();
   });
@@ -198,15 +210,15 @@ function instructionNext() {
     $('#instructions1').fadeOut(400, function() {
       $('#instructions2').fadeIn(400);      
     });
-    break;
-  case 2:
+//    break;
+//  case 2:
     $('#im_ready').hide();
     $('#close_instructions').html("Play");
-    $('#instructions2').fadeOut(400, function() {
-      $('#instructions3').fadeIn(400);      
-    });
+//    $('#instructions2').fadeOut(400, function() {
+//      $('#instructions3').fadeIn(400);      
+//    });
     break;
-  case 3:
+  case 2:
     $('#instructions').modal('hide');
     break;
   }
@@ -630,9 +642,7 @@ function initializeGameRound(newGameRound) {
   var seconds = round_seconds;
   
   // no timer on round one if single player
-  if (gameRound > 1 || numPlayers > 1) {
-    setCountdown("timer",seconds);    
-  }
+  setCountdown("timer",seconds);    
   
   $("#round").html(gameRound);
   $("#score").html(numberWithCommas(total_score));
