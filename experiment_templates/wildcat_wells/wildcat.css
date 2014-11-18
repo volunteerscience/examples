@@ -123,6 +123,35 @@
   width: 512px;
 }
   
+#waitForOthers {
+  background-color: #cccccc;
+  border: 5px double #000000;
+  font-size: 200%;
+  font-weight: bold;
+  height: 100px;
+  left: 38px;
+  padding-top: 25px;
+  position: absolute;
+  text-align: center;
+  top: 135px;
+  width: 672px;
+}
+   
+#scores {
+  background-color: #ffffff;
+  border: 5px double #000000;
+  left: 295px;
+  padding: 10px;
+  position: absolute;
+  text-align: left;
+  top: 135px;
+  width: 350px;
+}
+   
+#scoreTable {
+  width: 100%;
+}   
+   
 #bottom_panels {
   border: 1px solid #000000;
   background-color: #FFFFFF;

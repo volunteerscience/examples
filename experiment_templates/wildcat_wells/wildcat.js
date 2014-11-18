@@ -186,6 +186,14 @@ function initializeGame() {
 //  for (var i = 1; i <= num_rounds; i++) {
 //    setBar(myid,i,Math.floor(max_score*i/num_rounds), i*10, i*10);
 //  }
+
+  // attempt to capture space/enter, but it doesn't work in raphael
+//  $( "#canvas" ).keypress(function( event ) {
+//    alert(event.which);
+//    if ( event.which == 13 ) {
+//       event.preventDefault();
+//    }
+//  });
 }
 
 var instructionPanel = 1;
@@ -232,8 +240,7 @@ function instructionsComplete() {
   stopCountdown("instruction_time_limit");
   submit("Instructions Complete");
   if (currentRound == INSTRUCTION_ROUND) {  // this check is only needed for reconnect    
-    submitted = true;
-    $("#drill").val("Waiting for other players.");
+    waitForOtherPlayers();
   }
 }
 
@@ -646,7 +653,7 @@ function initializeGameRound(newGameRound) {
   
   $("#round").html(gameRound);
   $("#score").html(numberWithCommas(total_score));
-  $("#drill").val("Drill!");
+  doneWaitingForOtherPlayers();
   
 }
 
@@ -816,8 +823,11 @@ function endGame() {
   setNeighborBarVisibility(true);
   setNeighborPointVisibility(true);
   revealMap();
+  doneWaitingForOtherPlayers();
+  showScores();
   experimentComplete();
-  alert("Congratulations!  You collected "+numberWithCommas(total_score)+" barrels of oil.");  
+  
+//  alert("Congratulations!  You collected "+numberWithCommas(total_score)+" barrels of oil.");  
 }
 
 // player's choice, return false if too close
@@ -877,10 +887,66 @@ function checkDistance(playerId, x, y) {
 var submitted = false;
 function submitMyChoice(x,y) {
   if (submitted) return;
-  submitted = true;
-  $("#drill").val("Waiting for other players.");
+  waitForOtherPlayers();
   submitChoice(myid,x,y);
 }
+
+function waitForOtherPlayers() {
+  submitted = true;
+
+  $("#drill").val("Waiting for other players.");
+  $("#waitForOthers").fadeIn();
+}
+
+function doneWaitingForOtherPlayers() {
+  $("#drill").val("Drill!");  
+  $("#waitForOthers").fadeOut();
+}
+
+function showScores() {
+  var scores = [[0,0]]; // player 0
+  
+  for (var playerId = 1; playerId <= total_players; playerId++) {
+    scores.push([0,getNetworkId(playerId)]); // initialize array
+    for (var round = FIRST_ACTUAL_ROUND; round < FIRST_ACTUAL_ROUND+num_rounds; round++) {
+      var val = submissions[round][getNetworkId(playerId)][2]; // the score part of the array
+      if (val > 0) {
+        scores[playerId][0]+=val;
+      }
+    }
+  }
+  
+  scores.splice(0,1); // remove first element
+  
+  scores.sort(function(a,b) {
+    return b[0] - a[0];
+  });
+  
+  var lastRank = 1;
+  var last = 0;
+  for (var idx in scores) {
+    var rank = parseInt(idx)+1;
+    var playerName = "Player "+scores[idx][1];
+    if (scores[idx][1] == myNetworkId) {
+      playerName+= " (You)";
+    }
+    var scoreString = numberWithCommas(scores[idx][0]);
+    if (last==scores[idx][0]) {
+      rank = lastRank;
+    } else {
+      last=scores[idx][0];
+      lastRank = rank;
+    }
+    $("#scoreTable").append('<tr><th>#'+rank+'</th><td>'+playerName+'</td><td>'+scoreString+'</td></tr>');
+  }
+  
+  $("#scores").fadeIn();    
+}
+
+function hideScores() {
+  $("#scores").fadeOut();      
+}
+
 
 function submitChoice(playerId,x,y) {
   var score = -1;

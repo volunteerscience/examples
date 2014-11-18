@@ -65,6 +65,11 @@
 <div id="right_side">
   <canvas id="myCanvas" style="border:1px solid #d3d3d3;background:#ffffff;" height="512" width="512"> YourbrowserdoesnotsupporttheHTML5canvastag.</canvas>
   <div id="canvas"></div>
+  <div id="waitForOthers" style="">Waiting for the other players.</div>
+  <div id="scores" style="display: none;">
+    <table id="scoreTable"></table><br/>
+    <div><input class="btn btn-primary" type="submit" value="Close" onclick="hideScores()" style="float: right;" /></div>
+  </div>
   <table id="bottom_panels"><tr>
     <td id="left_panel" class="bottom_panel">
       X:<input id="x_coord" class="coord_input" type="text" value="" />

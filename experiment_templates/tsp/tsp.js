@@ -102,6 +102,11 @@ function initializeGameType() {
       break;
   }
   
+  if (showBest) {
+    $("#prev_solution").attr("value","Load Best Solution");
+    $("#ii_prev_solution").attr("value","Load Best Solution");
+  }
+  
   if (numPlayers < 2) { // delme
     forceBots = 2;
   }
@@ -518,7 +523,7 @@ function showTeamSolutions(round) {
       $('#solution_'+myid).hide();    
     }
     
-    if (showOptimal) {    
+    if (showOptimal) {    // this is the programatic optimal solution, not another player's
       doDrawTeamSolution(optimal_id, round-1, 0, tPaper[optimal_id], '<solution map="'+getMapIndex(round-1)+'" dist="'+map[getMapIndex(round-1)][2][0]+'">'+map[getMapIndex(round-1)][1]+'</solution>',false);
       $('#solution_'+optimal_id).show();
     } else {
@@ -658,7 +663,12 @@ function fireEvent(element,event) {
  * Load a previous solution by simulating clicking on each of the cities.
  */
 function prevSolution() {
-  fetchMove(myid, currentRound-1, 0, function(xmlVal) {    
+  var show_round = currentRound-1; // last round
+  if (showBest) {
+    show_round = myBestSolutionRound; // best round
+  }
+  
+  fetchMove(myid, show_round, 0, function(xmlVal) {    
     if (submitted) return;
     reset();
     var teamSolution = $(xmlVal);
@@ -1012,6 +1022,7 @@ function shuffle(array) {
 }
 
 var myBestSolution = null;
+var myBestSolutionRound = FIRST_ACTUAL_ROUND;
 var myBestSolutionDist = 1000000;
 var midRoundSurveyVal = null;
 var doSubmitLock = true;
@@ -1033,6 +1044,7 @@ function showMidRoundPopup(dist, millis) {
 
   if (myBestSolution == null || ((dist > 0) && (dist < myBestSolutionDist))) {
     myBestSolution = lastSolution;
+    myBestSolutionRound = currentRound;
     if (dist > 0) {
       myBestSolutionDist = dist;          
     }

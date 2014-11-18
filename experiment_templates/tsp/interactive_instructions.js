@@ -96,7 +96,11 @@ function interactiveInstructionsNext() {
     iiState++;
     break;    
   case 4:
-    setInstructions('<p>This button will <span style="color:'+greenButtonColor+'">Load your Previous Solution</span>.  '+
+    var fooText = "Load your Previous Solution";
+    if (showBest) {
+      fooText = "Load your Best Solution";
+    }
+    setInstructions('<p>This button will <span style="color:'+greenButtonColor+'">'+fooText+'</span>.  '+
         '<p>It is disabled on the first round.</p>'+
         '<p>Click it now.</p>');  
     $("#ii_prev_solution").show();
