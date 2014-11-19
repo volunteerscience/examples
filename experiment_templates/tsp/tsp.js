@@ -54,12 +54,24 @@ var fieldColor = "#0e76bc";
 var greenButtonColor = "green";
 
 var forceBots = 0; // number of bots _not_ due to dropouts
-var botType = 0;
+var botType = 0; // 0 is deviant/progressive 1 is ditto
 var showScoreWhenNotMap = false;
+
+var deviantPlan = {};
 
 function initialize() {
   cityRad = parseInt(variables['cityRad']);
   numCities = parseInt(variables['num_cities']);
+  
+  for (var i = 1; i <= 5; i++) {
+    try {
+      deviantPlan[i] = JSON.parse(variables['bot'+i]);
+    } catch (err) {}
+  }
+  
+  
+  
+  
   loadMaps(numCities);
   chooseTestMapIndex();
   initializeGameType();
@@ -111,7 +123,7 @@ function initializeGameType() {
     forceBots = 2;
   }
   
-  botType = Math.floor(Math.random()*2);
+//  botType = Math.floor(Math.random()*2);
 //  botType = 0; // delme
 
   try {
@@ -612,7 +624,7 @@ function drawForceBotSolution(part, round, index, paper2, scoreOnly) {
 
   switch(botType) {
   case 0:
-    doDrawTeamSolution(part, round, index, paper2, XMLizeBotSolution(progressiveBot(part, round)), scoreOnly);  
+    doDrawTeamSolution(part, round, index, paper2, XMLizeBotSolution(calculateBotSolution(part, round)), scoreOnly);  
     break;
   case 1:
     // dittoBot
@@ -864,10 +876,8 @@ function submitBotSolution(playerId) {
     // survey questions, instructions etc
     submitBot(playerId, currentRound, 'auto_submit');  
   } else {
-//    var botSolution = deviantBot(playerId, variables['bot_swaps'], currentRound);
-
     // TODO: use botType
-    var botSolution = XMLizeBotSolution(progressiveBot(playerId, currentRound));
+    var botSolution = XMLizeBotSolution(calculateBotSolution(playerId, currentRound));
     submitBot(playerId, currentRound, botSolution);  
   }
 } 
@@ -946,6 +956,20 @@ function progressiveBot(playerId, round) {
   var additionalMistakes = Math.floor(Math.random()*3); // 3 = 0-2
 //  alert("additionalMistakes:"+additionalMistakes);
   return deviantBot(playerId, remainingRounds+additionalMistakes, round);
+}
+
+function calculateBotSolution(playerId, round) {
+  if (deviantPlan[playerId] instanceof Array) {
+    var myGameRound = round-FIRST_ACTUAL_ROUND;
+    var numSwaps = round+3; // something in case the input is garbage
+    try {
+      numSwaps = parseInt(deviantPlan[playerId][deviantPlan[playerId].length-1]); // repeat the last choice if needed
+      numSwaps = parseInt(deviantPlan[playerId][myGameRound]);
+    } catch (err) {}
+    return deviantBot(playerId, numSwaps, round);
+  }
+  
+  return progressiveBot(playerId,round);
 }
 
 /**
@@ -1082,7 +1106,7 @@ function showMidRoundPopup(dist, millis) {
         case 2:
           switch(botType) {
           case 0:
-            var pBotSol = progressiveBot(myid+1, currentRound).join();
+            var pBotSol = calculateBotSolution(myid+1, currentRound).join();
     //        alert(pBotSol);
             addMidRoundSolution("bot",pBotSol, dist, millis);
             break;
