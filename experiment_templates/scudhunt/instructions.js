@@ -72,6 +72,8 @@ function runAllInstructions() {
     return;
   }
   
+  $("#iback").fadeIn();
+  $("#inext").fadeIn();
   if (allow_skip_story) {
     $("#iskip").fadeIn();
   }

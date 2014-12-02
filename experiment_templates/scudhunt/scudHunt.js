@@ -118,8 +118,6 @@ function setDifficulty(d) {
   }
   
   if (difficulty <= DIF_EASY) {
-    skipAllInstructions = false;
-    skipInstructionsAfter = S_STORY;
     allyUnitPlacement = true;
   } else {
     allyUnitPlacement = false;    
@@ -133,6 +131,7 @@ function setDifficulty(d) {
   }
   
   if (numPlayers < 2) {
+    skipAllInstructions = false;
     playerChat = false;
   }
 }
@@ -1555,6 +1554,7 @@ function initializeSeries() {
   log("initializeSeries():" + currentRound);
   $("#series_indicators").fadeIn();
   $(".series").removeClass("series_current");
+  enableChat();
   
   if (currentRound < TUTORIAL_ROUND) {
     initializeTutorial();
@@ -1685,7 +1685,7 @@ function initRound() {
     // normal round
     if (currentRound-ROUND_ZERO == 1) {
       if (! (ranks[0] in awards[myid])) {
-        roundDuration = 360;
+//        roundDuration = 360;
 //        setCountdown("timer",360);
         addTip("How To Play",
             '<p>Shadow Force is a complex game of deploying military assets to hunt down enemies.</p>'+
@@ -1970,6 +1970,18 @@ function disableChat() {
   $('#chatInput').prop("disabled",true);
   $("#chatInput").val("<chat disabled>");
 }
+
+function enableChat() {
+  $('#sendChat').attr("disabled",null);
+  $('#sendChat').attr("title",null);
+  $('#sendChat').css("cursor","default");
+  $('#sendChat').attr("onclick","callSendChat();");
+  
+  $('#chatInput').prop("disabled",false);
+  $("#chatInput").val(DEFAULT_CHAT);
+}
+
+
 
 var animTimer = null;
 function startAnimation() {

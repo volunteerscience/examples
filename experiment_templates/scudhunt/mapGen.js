@@ -122,6 +122,7 @@ function buildSquareMap(num_rows, num_cols) {
 }
 
 function assignTargets(rseed, num_targets, num_decoys) {
+  targetRegions = "";
   Math.seedrandom(rseed);
   var assigned = new Array();
 

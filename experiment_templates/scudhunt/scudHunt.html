@@ -25,7 +25,7 @@
   </div>
 
   <div id="instructions">
-     <div id="instruction_a" class="instruction" style="display:none;"></div>
+     <div id="instruction_a" class="instruction"><p>Loading...</p></div>
      <div id="instruction_b" class="instruction" style="display:none;"></div>
   </div>
   
@@ -85,8 +85,8 @@
   </div>
   <div id="bottomPanel">
     <div class="pushUpPanel">
-      <input id="iback" class="btn btn-primary dropdown-toggle" type="submit" value="Back" onclick="interactiveInstructionsBack();"/>
-      <input id="inext" class="btn btn-primary dropdown-toggle" type="submit" value="Next" onclick="interactiveInstructionsNext();"/>
+      <input id="iback" class="btn btn-primary dropdown-toggle" type="submit" value="Back" style="display:none;" onclick="interactiveInstructionsBack();"/>
+      <input id="inext" class="btn btn-primary dropdown-toggle" type="submit" value="Next" style="display:none;" onclick="interactiveInstructionsNext();"/>
       <input id="iskip" class="btn btn-primary dropdown-toggle" type="submit" value="Skip Story" onclick="skipInstructions();" style="float: right; display:none;"/>
     </div>
   </div>
