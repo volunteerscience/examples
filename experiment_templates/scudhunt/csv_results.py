@@ -1,4 +1,5 @@
-
+first_actual_round=501
+last_actual_round=506
 # print "imported scud hunt csv_results"
 
 def build_csv(exp, tests, part_data=True, section_data=False, summary=False, variables=[], awards=[], scores=[]):
@@ -102,7 +103,7 @@ def build_csv_from_xml(xml_string):
       self.time = 0
       
     def getRoundDuration(self):
-      if self.round_num == 101:
+      if self.round_num == first_actual_round:
         return self.time-game_start_d[self.id]
       return self.time-getRound(self.id,self.pid,self.round_num-1).time
   
@@ -227,7 +228,7 @@ def build_csv_from_xml(xml_string):
       time = int(submit.attrib['time'])
       
       round = None
-      if round_num > 100 and round_num < 106:
+      if round_num >= first_actual_round:
         round = getRound(test_id,pid,round_num)
         round.part_uid = game.part_uid
   
@@ -313,7 +314,7 @@ def build_csv_from_xml(xml_string):
     for p_id in sorted(g_table):
       p_table = g_table[p_id]
       
-      for round in range(101,106):
+      for round in range(first_actual_round,last_actual_round+1):
         if round in p_table:
           r = p_table[round]
           if r.part_uid != 'bot': # hasattr(g, 'part_uid'):
@@ -331,7 +332,7 @@ def build_csv_from_xml(xml_string):
   for game_id in sorted(asset_d):
     g_table = asset_d[game_id]
   
-    for r in range(101,106):
+    for r in range(first_actual_round,last_actual_round+1):
       for p_id in sorted(g_table):
         p_table = g_table[p_id]
         r_table = {}
@@ -341,7 +342,7 @@ def build_csv_from_xml(xml_string):
         for a_id in sorted(r_table):
             a = r_table[a_id]
             ret.write("%s,%s,%s,%s,%s,%s,%s,%s\n" % (
-              a.part_uid, a.id, a.pid, (a.round_num-100), a.asset_num,
+              a.part_uid, a.id, a.pid, (a.round_num-first_actual_round-1), a.asset_num,
               ';'.join(map(str, a.mark_clear)),';'.join(map(str, a.mark_possible)),';'.join(map(str, a.mark_confirm)),
               ))
   return ret
@@ -350,7 +351,7 @@ if __name__ == "__main__":
   # parse the file
 #   tree = ET.parse('scud_hunt_results_all.xml')
 #                 
-  with open ("scud_hunt_results.xml", "r") as myfile:
+  with open ("scud_hunt_results_a.xml", "r") as myfile:
     xml_string=myfile.read()
     print build_csv_from_xml(xml_string).getvalue()
 #   build_csv_from_xml('scud_hunt_results.xml')
