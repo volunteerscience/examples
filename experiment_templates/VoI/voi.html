@@ -1,0 +1,166 @@
+
+  <div id="testContainer" hidden style="margin-left:auto;margin-right:auto;width:1236px;">
+    <a name="TEST"></a>
+    <h1 id="titleName" style="text-align:center; color:Red">Training Session</h1>
+
+    <div id="givenData" style="width:362px;float:left;">
+      <h1 style="text-align:center;">Given Data Set</h1>
+      <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div2" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div3" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div4" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div5" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div6" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div7" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+    </div>
+
+    <div id="rankedLabels" style="width:150px;float:left;">
+      <h1 id="label0" style="text-align:center;width:155px; height:86px; margin:12px;"> </h1>
+      <h3 id="label1" style="text-align:center;width:150px; height:86px; margin:12px;">Highest VoI</h3>
+      <h3 id="label2" style="text-align:center;width:150px; height:86px; margin:12px;">2nd Highest</h3>
+      <h3 id="label3" style="text-align:center;width:150px; height:86px; margin:12px;">3rd Highest</h3>
+      <h3 id="label4" style="text-align:center;width:150px; height:86px; margin:12px;">4th Highest</h3>
+      <h3 id="label5" style="text-align:center;width:150px; height:86px; margin:12px;">5th Highest</h3>
+      <h3 id="label6" style="text-align:center;width:150px; height:86px; margin:12px;">6th Highest</h3>
+      <h3 id="label7" style="text-align:center;width:150px; height:86px; margin:12px;">Lowest VoI</h3>
+    </div>
+
+    <div id="rankedData" style="width:362px;float:left;">
+      <h1 style="text-align:center;">Ranked Data Set</h1>
+      <div id="div8" ondrop="drop(event)" ondragover="allowDrop(event)"></div> 
+      <div id="div9" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div10" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div11" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div12" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div13" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div14" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+    </div>
+
+    <div id="controls" style="width:362px;float:left;">
+      <textarea style="height: 115px; width: 258px; resize: none" readonly>Instructions: Please rank the Information Cards in the Left Column into the Spaces in the Right Column by dragging and dropping the Cards into the appropriate slot.
+      </textarea> 
+      <p>
+         <input type='button' id='session' autocomplete="off" style="height: 75px; width: 156px" value='Begin Training Session' onclick="newSession();" />
+      </p>
+      <p>
+         <input disabled type='button' id='scores' autocomplete="off" style="height: 75px; width: 156px" value='Enter Scores' onclick="nextHand();"  />
+      </p>
+      <p>
+         <input type='button' id='reset' autocomplete="off" style="height: 75px; width: 156px" value='Reset' onclick="resetHand();"  />
+      </p>
+      <p>
+         <input type='button' id='exit' autocomplete="off" style="height: 75px; width: 156px" value='Exit' onclick="exitTest();"  />
+      </p>
+      <p>
+         Count: <input type='text' autocomplete="off" id="counter" style="height: 29px; width: 69px" value='0' readonly/>
+      </p>
+    </div>
+  </div>
+  
+  <div style="clear:both;margin-left:auto;margin-right:auto;width:720px;" id="submissionContainer" >
+
+
+    <form id='form' action='voi_results.php' method="post" >
+      <div id='demographics'>
+
+        <h1>Demographics</h1>
+        <p>
+          Name: <input type='text' autocomplete="off" style="height: 29px; width: 200px" id="name" name='name' />
+          <script type="text/javascript">         
+            document.getElementById("name").onkeypress = function(evt) {
+              evt = evt || window.event;
+              var charCode = evt.keyCode || evt.which;
+              if (charCode == 13) {
+       
+                if (evt.preventDefault) {
+                  evt.preventDefault();
+                }
+                evt.returnValue = false;
+              }
+            };
+          </script>
+        </p>
+        <p>
+          MOS: <input type='text' autocomplete="off" style="height: 29px; width: 69px" id="mos" name='mos' />
+          <script type="text/javascript">         
+            document.getElementById("mos").onkeypress = function(evt) {
+              evt = evt || window.event;
+              var charCode = evt.keyCode || evt.which;
+              if (charCode == 13) {
+       
+                if (evt.preventDefault) {
+                  evt.preventDefault();
+                }
+                evt.returnValue = false;
+              }
+            };
+          </script>
+        </p>
+        <p>
+          Years of Service: <input type='number' min="0" max="40" step="1" autocomplete="off" style="height: 29px; width: 69px" id="yearsOfService" name='YoS' />
+          <script type="text/javascript">         
+            document.getElementById("yearsOfService").onkeypress = function(evt) {
+              evt = evt || window.event;
+              var charCode = evt.keyCode || evt.which;
+              if (charCode == 13) {
+       
+                if (evt.preventDefault) {
+                  evt.preventDefault();
+                }
+                evt.returnValue = false;
+              }
+            };
+          </script>
+        </p>
+        <p>
+          Number of Deployments: <input type='number' min="0" max="20" step="1" autocomplete="off" style="height: 29px; width: 69px" id="numberOfDeployments" name='NoD' />
+          <script type="text/javascript">         
+            document.getElementById("numberOfDeployments").onkeypress = function(evt) {
+              evt = evt || window.event;
+              var charCode = evt.keyCode || evt.which;
+              if (charCode == 13) {
+                if (evt.preventDefault) {
+                  evt.preventDefault();
+                }
+                evt.returnValue = false;
+              }
+            };
+          </script>
+        </p>
+        <p>
+          Email: <input type='email' autocomplete="off" style="height: 29px; width: 200px" id="email" name='email' />
+          <script type="text/javascript">         
+            document.getElementById("email").onkeypress = function(evt) {
+              evt = evt || window.event;
+              var charCode = evt.keyCode || evt.which;
+              if (charCode == 13) {
+       
+                if (evt.preventDefault) {
+                  evt.preventDefault();
+                }
+                evt.returnValue = false;
+              }
+            };
+          </script>
+        </p>
+        <p>
+          <input type='button' id='demoBtn' autocomplete="off" style="height: 75px; width: 156px" value='Submit Demographics' onClick="beginTest()" />
+        </p>
+      </div>
+      
+      <div id='results' hidden='true'>
+        <a name="RESULTS"></a>
+        <h1>Results</h1>
+          Data: <textarea style="height: 128px; width: 720px; resize: none;vertical-align:text-top;" form='form' id='resultsText' readonly name='data'></textarea>
+                  
+        <p>
+          <input type='button' id='editDemoBtn' autocomplete="off" style="height: 75px; width: 156px" value='Edit Demographics' onClick="editDemo()" />
+        </p>
+        <p>
+          <input type='submit' id='resultsBtn' autocomplete="off" style="height: 75px; width: 156px" value='Submit Results' />
+        </p>
+      </div>
+     </form>
+  </div>
+
+</body>
