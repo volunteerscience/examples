@@ -144,6 +144,26 @@ var endTime = 0;
 var elapsedTime = 0;
 var resultString;
 
+// 
+var description = [[
+  ["A","Reliable"],
+  ["B","Usually Reliable"],
+  ["C","Fairly Reliable"],
+  ["D","Not Usually Reliable"],
+  ["E","Unreliable"],
+],[
+  ["1","Confirmed"],
+  ["2","Probably True"],
+  ["3","Possibly True"],
+  ["4","Doubtfully True"],
+  ["5","Improbable"],   
+],[
+  ["Recent",""],  
+  ["Somewhat Recent",""],  
+  ["Old",""],     
+]]
+
+
 function newSession(){
   handCount = 0;
   
@@ -208,20 +228,9 @@ function endSession(){
   document.getElementById('scores').setAttribute("disabled", "true");
   document.getElementById('titleName').innerHTML = deckNames[deckCount];
   
-  document.getElementById('div1').innerHTML = "";
-  document.getElementById('div2').innerHTML = "";
-  document.getElementById('div3').innerHTML = "";
-  document.getElementById('div4').innerHTML = "";
-  document.getElementById('div5').innerHTML = "";
-  document.getElementById('div6').innerHTML = "";
-  document.getElementById('div7').innerHTML = "";
-  document.getElementById('div8').innerHTML = "";
-  document.getElementById('div9').innerHTML = "";
-  document.getElementById('div10').innerHTML = "";
-  document.getElementById('div11').innerHTML = "";
-  document.getElementById('div12').innerHTML = "";
-  document.getElementById('div13').innerHTML = "";
-  document.getElementById('div14').innerHTML = "";
+  for (var i = 1; i <= 14; i++) {
+    $('#div'+i).html("");
+  }
 }
 
 function nextHand(){
@@ -283,8 +292,29 @@ function gatherOriginalSequence(){
   results[resultsIndex++] = sequenceStr;
 }
 
+function getCardValues(card) {
+  var rel = Math.floor((card-1)/15);
+  var ic = Math.floor(((card - rel*15)-1) / 3);
+  var lat = (card-1) % 3;
+  
+  var ret = [rel, ic, lat];
+  
+  log("card:"+card+" ret:"+ret);
+  
+  return ret;
+}
+
 function getCard(card) {
-  return "<img id=\"card" + card + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + card + ".png\">";
+//  return "<img id=\"card" + card + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + card + ".png\">";
+  
+  var vals = getCardValues(card);
+  
+  return '<div id="card'+card+'" draggable="true" ondragstart="drag(event)" class="card"><table>'+
+         '<tr><th>Source Reliable</th><th>Information Content</th><th>Latency</th></tr><tr>'+
+           '<td><div class="card_val">'+description[0][vals[0]][0]+'</div><div class="card_val_desc">'+description[0][vals[0]][1]+'</div></td>'+
+           '<td><div class="card_val">'+description[1][vals[1]][0]+'</div><div class="card_val_desc">'+description[1][vals[1]][1]+'</div></td>'+
+           '<td><div class="card_val">'+description[2][vals[2]][0]+'</div></td>'+
+         '</tr></table></div>';
 }
 
 function dealHand(){
@@ -314,49 +344,67 @@ function dealHand(){
     }
     handSize = hand.length;
     
+    for (var i = 1; i <= 7; i++) {
+      if (i <= handSize) {
+        $('#div'+i).html(getCard(hand[i-1]));
+        
+        $('#div'+i).removeAttr("hidden");
+        $('#label'+i).removeAttr("hidden");
+        $('#div'+(i+7)).removeAttr("hidden");
+      } else {
+        $('#div'+i).attr("hidden","true");
+        $('#label'+i).attr("hidden","true");
+        $('#div'+(i+7)).attr("hidden","true");
+      }
+      $('#div'+(i+7)).html("");
+    }
+    
+    
+    
+    
     if(handSize == 7){
-      document.getElementById('div1').innerHTML = "<img id=\"card" + hand[0] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[0] + ".png\">";
-      document.getElementById('div2').innerHTML = "<img id=\"card" + hand[1] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[1] + ".png\">";
-      document.getElementById('div3').innerHTML = "<img id=\"card" + hand[2] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[2] + ".png\">";
-      document.getElementById('div4').innerHTML = "<img id=\"card" + hand[3] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[3] + ".png\">";
-      document.getElementById('div5').innerHTML = "<img id=\"card" + hand[4] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[4] + ".png\">";
-      document.getElementById('div6').innerHTML = "<img id=\"card" + hand[5] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[5] + ".png\">";
-      document.getElementById('div7').innerHTML = "<img id=\"card" + hand[6] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[6] + ".png\">";
-      document.getElementById('div6').removeAttribute("hidden");
-      document.getElementById('div7').removeAttribute("hidden");
+//      document.getElementById('div1').innerHTML = "<img id=\"card" + hand[0] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[0] + ".png\">";
+//      document.getElementById('div2').innerHTML = "<img id=\"card" + hand[1] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[1] + ".png\">";
+//      document.getElementById('div3').innerHTML = "<img id=\"card" + hand[2] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[2] + ".png\">";
+//      document.getElementById('div4').innerHTML = "<img id=\"card" + hand[3] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[3] + ".png\">";
+//      document.getElementById('div5').innerHTML = "<img id=\"card" + hand[4] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[4] + ".png\">";
+//      document.getElementById('div6').innerHTML = "<img id=\"card" + hand[5] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[5] + ".png\">";
+//      document.getElementById('div7').innerHTML = "<img id=\"card" + hand[6] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[6] + ".png\">";
+//      document.getElementById('div6').removeAttribute("hidden");
+//      document.getElementById('div7').removeAttribute("hidden");
       document.getElementById('label5').innerHTML = "5th Lowest";
-      document.getElementById('label6').removeAttribute("hidden");
-      document.getElementById('label7').removeAttribute("hidden");
-      document.getElementById('div8').innerHTML = "";
-      document.getElementById('div9').innerHTML = "";
-      document.getElementById('div10').innerHTML = "";
-      document.getElementById('div11').innerHTML = "";
-      document.getElementById('div12').innerHTML = "";
-      document.getElementById('div13').innerHTML = "";
-      document.getElementById('div14').innerHTML = "";
-      document.getElementById('div13').removeAttribute("hidden");
-      document.getElementById('div14').removeAttribute("hidden");
+//      document.getElementById('label6').removeAttribute("hidden");
+//      document.getElementById('label7').removeAttribute("hidden");
+//      document.getElementById('div8').innerHTML = "";
+//      document.getElementById('div9').innerHTML = "";
+//      document.getElementById('div10').innerHTML = "";
+//      document.getElementById('div11').innerHTML = "";
+//      document.getElementById('div12').innerHTML = "";
+//      document.getElementById('div13').innerHTML = "";
+//      document.getElementById('div14').innerHTML = "";
+//      document.getElementById('div13').removeAttribute("hidden");
+//      document.getElementById('div14').removeAttribute("hidden");
     }
     else{
-      document.getElementById('div1').innerHTML = "<img id=\"card" + hand[0] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[0] + ".png\">";
-      document.getElementById('div2').innerHTML = "<img id=\"card" + hand[1] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[1] + ".png\">";
-      document.getElementById('div3').innerHTML = "<img id=\"card" + hand[2] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[2] + ".png\">";
-      document.getElementById('div4').innerHTML = "<img id=\"card" + hand[3] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[3] + ".png\">";
-      document.getElementById('div5').innerHTML = "<img id=\"card" + hand[4] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[4] + ".png\">";
-      document.getElementById('div6').innerHTML = "";
-      document.getElementById('div7').innerHTML = "";
-      document.getElementById('div6').setAttribute("hidden","true");
-      document.getElementById('div7').setAttribute("hidden","true");
+//      document.getElementById('div1').innerHTML = "<img id=\"card" + hand[0] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[0] + ".png\">";
+//      document.getElementById('div2').innerHTML = "<img id=\"card" + hand[1] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[1] + ".png\">";
+//      document.getElementById('div3').innerHTML = "<img id=\"card" + hand[2] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[2] + ".png\">";
+//      document.getElementById('div4').innerHTML = "<img id=\"card" + hand[3] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[3] + ".png\">";
+//      document.getElementById('div5').innerHTML = "<img id=\"card" + hand[4] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[4] + ".png\">";
+//      document.getElementById('div6').innerHTML = "";
+//      document.getElementById('div7').innerHTML = "";
+//      document.getElementById('div6').setAttribute("hidden","true");
+//      document.getElementById('div7').setAttribute("hidden","true");
       document.getElementById('label5').innerHTML = "Lowest VoI";
-      document.getElementById('label6').setAttribute("hidden","true");
-      document.getElementById('label7').setAttribute("hidden","true");
-      document.getElementById('div8').innerHTML = "";
-      document.getElementById('div9').innerHTML = "";
-      document.getElementById('div10').innerHTML = "";
-      document.getElementById('div11').innerHTML = "";
-      document.getElementById('div12').innerHTML = "";
-      document.getElementById('div13').setAttribute("hidden","true");
-      document.getElementById('div14').setAttribute("hidden","true");      
+//      document.getElementById('label6').setAttribute("hidden","true");
+//      document.getElementById('label7').setAttribute("hidden","true");
+//      document.getElementById('div8').innerHTML = "";
+//      document.getElementById('div9').innerHTML = "";
+//      document.getElementById('div10').innerHTML = "";
+//      document.getElementById('div11').innerHTML = "";
+//      document.getElementById('div12').innerHTML = "";
+//      document.getElementById('div13').setAttribute("hidden","true");
+//      document.getElementById('div14').setAttribute("hidden","true");      
     }
     gatherOriginalSequence();
     handCount++;
