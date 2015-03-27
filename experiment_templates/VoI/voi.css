@@ -25,12 +25,15 @@
 }
 
 .card th {
-  text-align: center;
   font-size: 90%;
 }
 
+.card td {
+  font-size: 95%;
+}
+
 .card th:first-child {
-  width: 90px;
+  width: 100px;
 }
 
 .card th:last-child {
@@ -46,12 +49,13 @@
 }
 
 .card td, .card th {
+  text-align: center;
   border: 1px solid #999999;
   cursor: pointer;
 }
 
 .card_val {
-  font-size:120%;
+  font-size:130%;
   font-weight: bold;  
 }
 

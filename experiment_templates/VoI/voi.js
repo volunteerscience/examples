@@ -146,21 +146,21 @@ var resultString;
 
 // 
 var description = [[
-  ["A","Reliable"],
-  ["B","Usually Reliable"],
-  ["C","Fairly Reliable"],
-  ["D","Not Usually Reliable"],
-  ["E","Unreliable"],
+  ["A","Reliable","No doubt of authenticity, trustworthiness, or competency; has a history of complete reliability"],
+  ["B","Usually Reliable","Minor doubt about authenticity, trustworthiness, or competency; has a history of valid information most of the time"],
+  ["C","Fairly Reliable","Doubt of authenticity, trustworthiness, or competency but has provided valid information in the past"],
+  ["D","Not Usually Reliable","Significant Doubt about authenticity, trustworthiness, or competency but has provided valid information in the past"],
+  ["E","Unreliable","Lacking in authenticity, trustworthiness, and competency; history of invalid information"]
 ],[
-  ["1","Confirmed"],
-  ["2","Probably True"],
-  ["3","Possibly True"],
-  ["4","Doubtfully True"],
-  ["5","Improbable"],   
+  ["1","Confirmed","Confirmed by other independent source; logical in itself; Consistent with other information on the subject"],
+  ["2","Probably True","Not Confirmed; logical in itself; consistent with other information on the subject"],
+  ["3","Possibly True","Not Confirmed; reasonably logical in itself; agrees with some other information on the subject"],
+  ["4","Doubtfully True","Not Confirmed; possible but not logical; no other information on the subject"],
+  ["5","Improbable","Not Confirmed; not logical in itself; contradicted by other information on the subject"]
 ],[
-  ["Recent",""],  
-  ["Somewhat Recent",""],  
-  ["Old",""],     
+  ["Recent","",""],  
+  ["Somewhat Recent","",""],  
+  ["Old","",""]     
 ]]
 
 
@@ -311,8 +311,8 @@ function getCard(card) {
   
   return '<div id="card'+card+'" draggable="true" ondragstart="drag(event)" class="card"><table>'+
          '<tr><th>Source Reliable</th><th>Information Content</th><th>Latency</th></tr><tr>'+
-           '<td><div class="card_val">'+description[0][vals[0]][0]+'</div><div class="card_val_desc">'+description[0][vals[0]][1]+'</div></td>'+
-           '<td><div class="card_val">'+description[1][vals[1]][0]+'</div><div class="card_val_desc">'+description[1][vals[1]][1]+'</div></td>'+
+           '<td title="'+description[0][vals[0]][2]+'"><div class="card_val">'+description[0][vals[0]][0]+'</div><div class="card_val_desc">'+description[0][vals[0]][1]+'</div></td>'+
+           '<td title="'+description[1][vals[1]][2]+'"><div class="card_val">'+description[1][vals[1]][0]+'</div><div class="card_val_desc">'+description[1][vals[1]][1]+'</div></td>'+
            '<td><div class="card_val">'+description[2][vals[2]][0]+'</div></td>'+
          '</tr></table></div>';
 }
