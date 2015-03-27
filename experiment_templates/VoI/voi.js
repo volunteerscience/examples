@@ -415,25 +415,37 @@ function dealHand(){
 
 
 
-function allowDrop(ev){
-  ev.preventDefault();
+function allowDrop(ev) {
+  if ($(ev.target).hasClass("candrop")) {  // prevent double-drop
+    ev.preventDefault();
+  }
 }
 
-function drag(ev){
+function drag(ev) {
   ev.dataTransfer.setData("Text",ev.target.id);
 }
 
-function drop(ev){
+function drop(ev) {
   ev.preventDefault();
   var data=ev.dataTransfer.getData("Text");
   
-  if(ev.target.tagName != "IMG"){
+  if(!$(ev.target).hasClass("card")){
     ev.target.appendChild(document.getElementById(data));
   }  
 }
 
 function moveToResults (){window.location.hash="RESULTS";}
     
+function help() {
+  $('#helpCard').fadeIn();
+}
+
+function closeHelpCard() {
+  $('#helpCard').fadeOut();  
+}
+
+
+
        
 
 

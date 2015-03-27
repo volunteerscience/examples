@@ -1,17 +1,47 @@
 
+  <div id="helpCard">
+    <div class="closeBtn" onclick="closeHelpCard();">X</div>
+    
+    <div class="helpSide">
+    <h3>Evaluation of Source Reliability</h3>
+    <table>
+      <tr><th>Designator</th><th>Label</th><th>Explanation</th></tr>
+      <tr><td>A</td><td>Reliable</td><td><u>No doubt</u> of authenticity, trustworthiness, or competency; has a history of complete reliability</td></tr>
+      <tr><td>B</td><td>Usually Reliable</td><td><u>Minor doubt</u> about authenticity, trustworthiness, or competency; has a history of valid information most of the time</td></tr>
+      <tr><td>C</td><td>Fairly Reliable</td><td><u>Doubt</u> of authenticity, trustworthiness, or competency but has provided valid information in the past</td></tr>
+      <tr><td>D</td><td>Not Usually Reliable</td><td><u>Significant Doubt</u> about authenticity, trustworthiness, or competency but has provided valid information in the past</td></tr>
+      <tr><td>E</td><td>Unreliable</td><td><u>Lacking</u> in authenticity, trustworthiness, and competency; history of invalid information</td></tr>
+      <tr><td>F</td><td>Can Not Judge</td><td><u>No Basis</u> exists for evaluating the reliability of the source</td></tr>
+    </table>
+    </div>
+    
+    <div class="helpSide">
+    <h3>Evaluation of Information Content</h3>
+    <table>
+      <tr><th>Designator</th><th>Label</th><th>Explanation</th></tr>
+      <tr><td>1</td><td>Confirmed</td><td><u>Confirmed</u> by other independent source; <u>logical</u> in itself; <u>Consistent</u> with other information on the subject</td></tr>
+      <tr><td>2</td><td>Probably True</td><td>Not Confirmed; <u>logical</u> in itself; <u>consistent</u> with other information on the subject</td></tr>
+      <tr><td>3</td><td>Possibly True</td><td>Not Confirmed; <u>reasonably logical</u> in itself; <u>agrees with some</u> other information on the subject</td></tr>
+      <tr><td>4</td><td>Doubtfully True</td><td>Not Confirmed; possible but <u>not logical;</u> <u>no other information</u> on the subject</td></tr>
+      <tr><td>5</td><td>Improbable</td><td>Not Confirmed; <u>not logical</u> in itself; <u>contradicted</u> by other information on the subject</td></tr>
+      <tr><td>6</td><td>Can Not Judge</td><td><u>No Basis</u> exists for evaluating the validity of the source</td></tr>
+    </table>    
+    </div>
+  </div>
+
   <div id="testContainer" hidden style="margin-left:auto;margin-right:auto;width:1236px;">
     <a name="TEST"></a>
     <h1 id="titleName" style="text-align:center; color:Red">Training Session</h1>
 
     <div id="givenData" style="width:362px;float:left;">
       <h1 style="text-align:center;">Given Data Set</h1>
-      <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-      <div id="div2" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-      <div id="div3" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-      <div id="div4" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-      <div id="div5" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-      <div id="div6" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-      <div id="div7" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div1" class="candrop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div2" class="candrop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div3" class="candrop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div4" class="candrop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div5" class="candrop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div6" class="candrop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div7" class="candrop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
     </div>
 
     <div id="rankedLabels" style="width:150px;float:left;">
@@ -27,13 +57,13 @@
 
     <div id="rankedData" style="width:362px;float:left;">
       <h1 style="text-align:center;">Ranked Data Set</h1>
-      <div id="div8" ondrop="drop(event)" ondragover="allowDrop(event)"></div> 
-      <div id="div9" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-      <div id="div10" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-      <div id="div11" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-      <div id="div12" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-      <div id="div13" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-      <div id="div14" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div8" class="candrop" ondrop="drop(event)" ondragover="allowDrop(event)"></div> 
+      <div id="div9" class="candrop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div10" class="candrop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div11" class="candrop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div12" class="candrop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div13" class="candrop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="div14" class="candrop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
     </div>
 
     <div id="controls" style="width:362px;float:left;">
@@ -50,6 +80,9 @@
       </p>
       <p>
          <input type='button' id='exit' autocomplete="off" style="height: 75px; width: 156px" value='Exit' onclick="exitTest();"  />
+      </p>
+      <p>
+         <input type='button' id='help' autocomplete="off" style="height: 75px; width: 156px" value='Help' onclick="help();"  />
       </p>
       <p>
          Count: <input type='text' autocomplete="off" id="counter" style="height: 29px; width: 69px" value='0' readonly/>
@@ -163,4 +196,3 @@
      </form>
   </div>
 
-</body>

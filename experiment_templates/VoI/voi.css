@@ -21,7 +21,22 @@
   height:100%;
   background-color:#FFFFFF;
   padding: 4px;
+  font-size: 90%;
 }
+
+.card th {
+  text-align: center;
+  font-size: 90%;
+}
+
+.card th:first-child {
+  width: 90px;
+}
+
+.card th:last-child {
+  width: 80px;
+}
+
 
 .card table {
   border:2px solid #000000;
@@ -30,8 +45,9 @@
   text-align: center;
 }
 
-.card td,th {
+.card td, .card th {
   border: 1px solid #999999;
+  cursor: pointer;
 }
 
 .card_val {
@@ -39,3 +55,69 @@
   font-weight: bold;  
 }
 
+#helpCard {
+  display: none;
+  width: 96%;
+  margin: auto;
+  position: absolute;
+  border: 3px solid #000000;
+  background-color: #FFFFFF;
+  z-index: 5;
+}
+
+.closeBtn {
+  background-color: #cacaca;
+  cursor: pointer;
+  height: 20px;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+  width: 20px;
+}
+
+.helpSide {
+  width: 50%;
+  float:left;
+  padding: 5px;
+}
+
+#helpCard h3 {
+  text-align: center;
+}
+
+#helpCard table tr {
+  background-color: #b7c8e3;
+}
+
+#helpCard table tr:nth-child(odd) {
+  background-color: #cfd5e0;
+}
+
+#helpCard table tr:first-child {
+  background-color: #326ebc;
+  color: #FFFFFF;
+  font-size: 80%;
+  height: 40px;
+}
+
+#helpCard th, #helpCard td {
+  padding: 4px 6px;
+  vertical-align: top;
+}
+  
+#helpCard th {
+  text-align:left;
+}
+  
+#helpCard td, #helpCard th {
+  border: 2px solid #FFFFFF;
+}
+
+#helpCard tr td:first-child {
+  text-align: center;
+}
+
+#helpCard tr td:last-child {
+  font-weight: bold;  
+}
