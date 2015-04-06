@@ -39,6 +39,7 @@
 }
 
 #tips_close {
+  display: none;
   position:absolute;
   right:0;
   top:0;
@@ -158,4 +159,12 @@
 .tips_blink {
   border: 2px solid #FF0000;
   animation: tips_blink_border .5s step-end infinite alternate;
+}
+
+#tip_ok {
+  display: none;
+  float: right;
+  position: absolute;
+  bottom: 30px;
+  right: 50%;
 }

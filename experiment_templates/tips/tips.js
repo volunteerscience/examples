@@ -34,12 +34,14 @@
  * @param uid
  */
 
-function addTip(title, text, cssChanges, icon, uid) {
+var animate_tip_hide = false;
+
+function addTip(title, text, cssChanges, icon, uid, okButton) {
   if (arguments.length == 1) {
     return tips.addTip(arguments[0]);
   }
 
-  return tips.addTip(new Tip(title, text, cssChanges, icon, uid));
+  return tips.addTip(new Tip(title, text, cssChanges, icon, uid, okButton));
 }
 
 function addUniqueTip(uid, title, text, cssChanges, icon) {
@@ -62,16 +64,24 @@ function delayAddTip(delay, uid, title, text, cssChanges, icon) {
   };
 }
 
+var tip_default_required = true;
+
 //var defaultAttrs = {"border":"2px dashed #FF0000"};
 //var defaultAttrs = {"animation":"blink .5s step-end infinite alternate"};
 var defaultAttrs = "tips_blink";
-function Tip(title,text,cssChanges,icon,uid) {
+function Tip(title,text,cssChanges,icon,uid,okButton) {
   var me = this;
   this.title = title;
   this.text = text;
   this.cssChanges = cssChanges;
   this.icon = icon;
   this.viewed = false;
+  this.required = tip_default_required;
+  this.completed = false;
+  this.okButton = false;
+  if (okButton != null) {
+    this.okButton = okButton;
+  }
   
   if (uid) {
     this.uid = uid;    
@@ -231,10 +241,19 @@ function Tips(button_selector, popup_selector) {
         "opacity":0.5
         };
     $("#tips_wrapper").hide();
-    me.popup.animate(newCss,{"complete":function() {me.popup.fadeOut();}});
+    if (animate_tip_hide) {
+      me.popup.animate(newCss,{"complete":function() {me.popup.fadeOut();}});      
+    } else {
+      me.popup.hide();      
+    }
     if (me.tip_list.length > 0) {
       var t = me.tip_list[me.index];
-      setTimeout(t.deactivate,2000)
+      if (animate_tip_hide) {
+        setTimeout(t.deactivate,2000)
+      } else {
+        log("deactivate");
+        t.deactivate();
+      }
     }    
     
     // set to the last unviewed tip
@@ -296,6 +315,12 @@ function Tips(button_selector, popup_selector) {
     
     me.index = index;
     var t = me.tip_list[me.index];
+    
+    if (t.okButton) {
+      $("#tip_ok").show();
+    } else {
+      $("#tip_ok").hide();      
+    }
     $("#tip_title").html(t.title);
     $("#tip_text").html(t.text);
     $("#tips_index").html("Tip #"+(me.index+1)+" of "+this.tip_list.length);
@@ -395,7 +420,37 @@ function Tips(button_selector, popup_selector) {
   $('#tips_close').click(this.hide);
   $('#tips_prev').click(function() { me.setTip(me.index-1);} );
   $('#tips_next').click(function() { me.setTip(me.index+1);} );
+  $('#tip_ok').click(function() { me.tipOk(); } );
+
+  this.tipOk = function() {
+    me.completeTip(me.index);
+  }
+  
+  this.completeTip = function(index) {
+    me.tip_list[index].completed = true;
+    for (var idx in me.tip_list) {
+      if (!me.tip_list[idx].completed) {
+        me.setTip(idx);
+        return;
+      }
+    }
+    me.hide();
+  }
+
+  this.getTipByUid = function(uid) {
+    for (var tidx in me.tip_list) {
+      if (me.tip_list[tidx].uid == uid) {
+        return me.tip_list[tidx];
+      }
+    }
+    return null;
+  }
+  
+  this.lastTip = function() {
+    return me.tip_list[me.tip_list.length-1];
+  }
 };
+
 
 var tips = null;
 $(function() {
