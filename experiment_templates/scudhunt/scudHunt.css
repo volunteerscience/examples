@@ -318,6 +318,7 @@
 #series_indicators {
   display: none;
   float:right;
+  margin-right: 40%;
 }
 
 .series {
@@ -331,6 +332,22 @@
 .series_current {
   color: #000000;
   font-weight: bold;
+}
+
+.cursor_x {
+  cursor: url('/attachment/cursor_x.png') 15 16, default !important;
+}
+
+.cursor_q {
+  cursor: url('/attachment/cursor_q.png') 16 17 , default !important;
+}
+
+.cursor_z {
+  cursor: url('/attachment/cursor_z.png') 16 17, default !important;
+}
+
+.cursor_c {
+  cursor: url('/attachment/cursor_c.png') 16 17, default !important;
 }
 
 

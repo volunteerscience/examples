@@ -57,7 +57,13 @@ var ASSET_ARROW_COLOR = "#FF0000";
 
 var paper = null;
 var selectedUnit = null;
-var selectedMarker = null;
+var selectedMarker = null; // "marker_x", "marker_q", "marker_z", "marker_c" 
+var markerCursorMap = {
+    "marker_x"  : 'cursor_x',  
+    "marker_q"  : 'cursor_q',  
+    "marker_z"  : 'cursor_z',  
+    "marker_c"  : 'cursor_c'
+};
 
 // initialized in initializeUnits;
 var TARGET_ROLE = 0;
@@ -249,7 +255,7 @@ function Region(id,name, x,y, x1,y1, polygon) {
       20* (Math.floor(this.status.length/STATI_PER_ROW) % STATI_PER_COL);
 
     // add a new txt element
-    var txt = paper.text(tX,tY,letter).attr({'text-anchor': 'middle', 'font-size': '20px', 'cursor':'default', 'font-weight':'bold', 'fill': VALUE_COLOR[VALUE_DISPLAY.indexOf(letter)]});
+    var txt = paper.text(tX,tY,letter).attr({'text-anchor': 'middle', 'font-size': '20px', 'cursor':'inherit', 'font-weight':'bold', 'fill': VALUE_COLOR[VALUE_DISPLAY.indexOf(letter)]});
 
     // this is the popup behavior to determine which unit claimed the status
     txt.click(function() {
@@ -270,7 +276,9 @@ function Region(id,name, x,y, x1,y1, polygon) {
                   submit('<unmark idx="'+removeId+'"/>');
                   list.splice(idx,1);
                   txt.remove();
-                  deselectAllMarkers();                  
+                  if (!stickyMarker) {
+                    deselectAllMarkers();                                      
+                  }
                   hidePopup(0);
                   return;
                 }
@@ -322,7 +330,10 @@ function Region(id,name, x,y, x1,y1, polygon) {
         letter = VALUE_DISPLAY[VALUE_DECOY];        
       } else if (selectedMarker == "marker_x") {
         letter = VALUE_DISPLAY[VALUE_TARGET];        
-      }
+      } else if (selectedMarker == "marker_c") {
+        // this happens if there's an avatar on the region so the marker wasn't clicked
+        // TODO: detect which letter from mouse position
+      }      
       
       if (letter == null) {
         alert("Click a marker to remove it.");
@@ -822,6 +833,9 @@ function deselectAllMarkers() {
   $('.marker_btn').each(function() {
     $(this).css('background-color',ASSET_BACKGROUND_COLOR); 
   });
+  for (var m in markerCursorMap) {
+    $('.test-wrapper').removeClass(markerCursorMap[m]);
+  }
 }
 
 function assignPlayersRoundRobin() {
@@ -1106,6 +1120,9 @@ function initializeMarkerButtons() {
       return; // clicking again deselects
     }
     selectedMarker = markerId;
+
+    $('.test-wrapper').addClass(markerCursorMap[markerId]);
+    
     $(this).css('background-color',ASSET_SELECTION_COLOR);
   });
   

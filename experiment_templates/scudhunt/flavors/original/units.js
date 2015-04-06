@@ -126,7 +126,7 @@ function initializeUnits(minPlayers) {
     return region.groups[COL];
   };
   
-  var mannedAircraft = new Unit(1, AIR_COMMAND, "Manned Aircraft", "Search from the Coast", 
+  var mannedAircraft = new Unit(1, AIR_COMMAND, "Manned Aircraft", "Scan a row up to 3 squares in from the coast", 
       "May fly only along the Gulf (Row E) outside Poronan airspace.  "+
       "It searches the coastal grid squares with excellent reliability, "+
       "and two rows inland (Rows C and D) with reduced reliablity.  "+
