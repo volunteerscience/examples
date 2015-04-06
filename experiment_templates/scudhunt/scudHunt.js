@@ -50,6 +50,7 @@ var STRIKE_EXPLOSION_COLOR = "#FF4444";
 var ASSET_BACKGROUND_COLOR = REGION_WATER_COLOR;
 var ASSET_SELECTION_COLOR = "#b7e4d7";
 var ASSET_HOVER_COLOR = REGION_FAIL_COLOR;
+var ASSET_PLACED_COLOR = "#a7b4e7";
 var ASSET_WAIT_COLOR = "#dddddd";
 var ASSET_ARROW_COLOR = "#FF0000";
 
@@ -84,6 +85,7 @@ var DIF_EASY = 10;
 var DIF_MEDIUM = 20;
 var DIF_HARD = 30;
 
+var stickyMarker = true;
 var userMarkerCtr = 1;
 var userMarkers = {} // round => [[region,symbol,note],...]
 
@@ -159,7 +161,7 @@ function getFirstRole(playerId) {
 var VALUE_NOTHING = 0;
 var VALUE_DECOY = 1;
 var VALUE_TARGET = 2;
-var VALUE_DISPLAY = ['0','?','X'];
+var VALUE_DISPLAY = ['0','?','!'];
 var VALUE_COLOR = ['#AAFF88 ','#FFFF44','#CC4444'];// ['#44CC44','#FFFF44','#CC4444'];
 
 
@@ -240,14 +242,14 @@ function Region(id,name, x,y, x1,y1, polygon) {
   this.status = []; // text element on the region: 0,?,X
   this.addStatus = function(letter, unitName, removeId) {
     // tX, tY are where the letter goes, based on how many there are already
-    var xOff = Math.floor(this.status.length/(STATI_PER_ROW*STATI_PER_COL))*10; // if we fill up the whole square, start putting more in between the letters
+    var xOff = 10+Math.floor(this.status.length/(STATI_PER_ROW*STATI_PER_COL))*10; // if we fill up the whole square, start putting more in between the letters
     var tX = x1 + xOff +// left side
       20*(this.status.length % STATI_PER_ROW); // this makes the text word wrap
     var tY = 10+y1 + // top
       20* (Math.floor(this.status.length/STATI_PER_ROW) % STATI_PER_COL);
 
     // add a new txt element
-    var txt = paper.text(tX,tY,letter).attr({'text-anchor': 'start', 'font-size': '20px', 'cursor':'default', 'font-weight':'bold', 'fill': VALUE_COLOR[VALUE_DISPLAY.indexOf(letter)]});
+    var txt = paper.text(tX,tY,letter).attr({'text-anchor': 'middle', 'font-size': '20px', 'cursor':'default', 'font-weight':'bold', 'fill': VALUE_COLOR[VALUE_DISPLAY.indexOf(letter)]});
 
     // this is the popup behavior to determine which unit claimed the status
     txt.click(function() {
@@ -335,7 +337,9 @@ function Region(id,name, x,y, x1,y1, polygon) {
       userMarkers[currentRound].push([me.id,letter,note,userMarkerCtr]);
       me.addStatus(letter, note, userMarkerCtr);
       userMarkerCtr++;
-      deselectAllMarkers();
+      if (!stickyMarker) {
+        deselectAllMarkers();        
+      }
       return;
     }
     
@@ -556,6 +560,9 @@ function Unit(id, ownerId, name, short_description, long_description, label, ico
     if (this.remainsOnBoard) {
       if (this.wait == 0) {
         this.setNextRegion(region);
+        if (region != null) {
+          $('.asset[asset="'+this.id+'"]').css('background-color',ASSET_PLACED_COLOR); // enable button
+        }
 
         // tips
           if (isMyUnit(unitMe)) {
@@ -675,8 +682,12 @@ function Unit(id, ownerId, name, short_description, long_description, label, ico
 
     if (isMyUnit(unitMe)) {
       if (this.wait == 0) {
-        // enable button
-        $('.asset[asset="'+this.id+'"]').css('background-color',ASSET_BACKGROUND_COLOR); // enable button
+        // enable button        
+        if (unitMe.nextRegion == null) {
+          $('.asset[asset="'+this.id+'"]').css('background-color',ASSET_BACKGROUND_COLOR); // enable button
+        } else {
+          $('.asset[asset="'+this.id+'"]').css('background-color',ASSET_PLACED_COLOR); // enable button
+        }
       } else {
         // disable button    
         $('.asset[asset="'+this.id+'"]').css('background-color',ASSET_WAIT_COLOR); // disable button
@@ -793,7 +804,11 @@ function deselectAllUnits() {
     var unitId = $(this).attr('asset');
     var unit = units[unitId];
     if (unit.wait == 0) {
-      $(this).css('background-color',ASSET_BACKGROUND_COLOR); 
+      if (unit.nextRegion == null) {
+        $(this).css('background-color',ASSET_BACKGROUND_COLOR);         
+      } else {
+        $(this).css('background-color',ASSET_PLACED_COLOR);          
+      }      
     } else {
       $(this).css('background-color',ASSET_WAIT_COLOR); 
     }
@@ -1009,11 +1024,18 @@ function initializeAvatars() {
   }  
 }
 
+/**
+ * called from resetGame()
+ */
 function initializeMyAssets() {
   var myUnits = getUnits(myid);
   initializeAssets(myUnits);
 }
 
+/**
+ * called at beginning of game, and on last round
+ * @param myUnits
+ */
 function initializeAssets(myUnits) {
   var assetWrapper = $('#assets');
   assetWrapper.html("");
@@ -1064,7 +1086,11 @@ function initializeAssets(myUnits) {
     if (selectedUnit != null && $(this).attr('asset') == selectedUnit.id) {
       $(this).css('background-color',ASSET_SELECTION_COLOR);       
     } else {
-      $(this).css('background-color',ASSET_BACKGROUND_COLOR); 
+      if (unit.nextRegion == null) {
+        $(this).css('background-color',ASSET_BACKGROUND_COLOR);         
+      } else {
+        $(this).css('background-color',ASSET_PLACED_COLOR);          
+      }      
     }
   });
 }
@@ -1095,7 +1121,7 @@ function initializeMarkerButtons() {
     if (selectedMarker != null && selectedMarker == markerId) {
       $(this).css('background-color',ASSET_SELECTION_COLOR);       
     } else {
-      $(this).css('background-color',ASSET_BACKGROUND_COLOR); 
+      $(this).css('background-color',ASSET_BACKGROUND_COLOR);
     }
   });
 }
