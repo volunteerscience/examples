@@ -131,6 +131,7 @@ deck4[37] = [8,37,26,69,48,31,61];
 deck4[38] = [18,30,53,13,31,27,60];
 deck4[39] = [27,20,62,3,46];
 
+var deckNames = ["Training Session","Tactical Session",/*"Strategic Session",*/"Operational Session"];
 var decks = [deck1,deck2,/*deck3,*/deck4];
     
     
@@ -191,6 +192,7 @@ function printResults(){
 }
 
 function beginTest(){
+  submit('Demographics : '+$("#locale").val()+' "'+$("#occupation").val()+'" '+$("#age").val()+' '+$("#gender").val()+' '+$("#education").val()+' '+$("#military").val()); 
   document.getElementById('testContainer').removeAttribute("hidden");
   document.getElementById('submissionContainer').setAttribute("hidden",true);  
 }
