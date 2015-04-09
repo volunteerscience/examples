@@ -5,8 +5,6 @@ var deck4 = new Array();
 var results = new Array();
 var resultsIndex = 0;
 
-var deckNames = ["Training Session","Tactical Session","Strategic Session","Operational Session"]
-    
 deck1[0] = [22,45,66,1,75,15,33];
 deck1[1] = [15,27,33,44,39];
 deck1[2] = [15,16,17,18,19,20,21];
@@ -133,7 +131,7 @@ deck4[37] = [8,37,26,69,48,31,61];
 deck4[38] = [18,30,53,13,31,27,60];
 deck4[39] = [27,20,62,3,46];
 
-var decks = [deck1,deck2,deck3,deck4];
+var decks = [deck1,deck2,/*deck3,*/deck4];
     
     
 var deckCount = 0;
@@ -172,6 +170,7 @@ function newSession(){
     case 1:
     case 2:
     case 3:
+      submit(deckNames[deckCount]);
       results[resultsIndex++] = deckNames[deckCount];
       document.getElementById('session').setAttribute("disabled","true");
       document.getElementById('scores').removeAttribute("disabled");
@@ -272,8 +271,8 @@ function gatherRankedSequence(){
                            document.getElementById('div14').firstChild.getAttribute("id").substring(4) + " ";
   }
   sequenceStr += "number of sec " + elapsedTime;
+  submit(sequenceStr);
   results[resultsIndex++] = sequenceStr;
-
 }    
 
 function gatherOriginalSequence(){
@@ -289,6 +288,7 @@ function gatherOriginalSequence(){
   sequenceStr += " " + document.getElementById('div6').firstChild.getAttribute("id").substring(4) + 
                  " " + document.getElementById('div7').firstChild.getAttribute("id").substring(4);
   }
+  submit(sequenceStr);
   results[resultsIndex++] = sequenceStr;
 }
 
