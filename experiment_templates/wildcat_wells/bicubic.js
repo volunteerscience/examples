@@ -6,8 +6,12 @@ var P = 1; // pixels per square
 
 var map = null;
 
-// Initialize form
 function startBicubic() {
+  buildMap(5);  
+}
+
+//Initialize form
+function startBicubic2() {
   $("#seed").val(seed);
   for (var i = 1; i < 10; i++) {
 //  var max = (1/i).toFixed(2);
