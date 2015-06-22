@@ -6,12 +6,8 @@ var P = 1; // pixels per square
 
 var map = null;
 
-function startBicubic() {
-  buildMap(5);  
-}
-
 //Initialize form
-function startBicubic2() {
+function startBicubic() {
   $("#seed").val(seed);
   for (var i = 1; i < 10; i++) {
 //  var max = (1/i).toFixed(2);
@@ -31,6 +27,7 @@ function submitSettings() {
 }
 
 function drawBicubic2() {
+  seed = parseInt($("#seed").val());
   initializeMap(MAP_W, MAP_H, 0);
   buildMap(seed);
   drawBitMap();
@@ -87,6 +84,7 @@ function addNextOctave() {
 
 // hard-coded fractal
 function buildMap(r_seed) {
+  log("buildMap("+r_seed+")");
   for (var i = 2; i <= 5; i++) {
     var min = 0;
     var max = 1/Math.pow(2, i-2);
@@ -138,7 +136,17 @@ function addInterval(x_sections,y_sections,min,max,exponent,r_seed) {
   fillBicubic(input,w,h, map,MAP_W,MAP_H);  
 }
 
+function displayMap() {
+  $("#themap").html("working...");
+  setTimeout(displayMap2,0);
+}
 
+function displayMap2() {
+  seed = parseInt($("#seed").val());
+  initializeMap(MAP_W, MAP_H, 0);
+  buildMap(seed);
+  $("#themap").html(JSON.stringify(map));
+}
 
 /**
  * a section is the rectangle between 4 input points
