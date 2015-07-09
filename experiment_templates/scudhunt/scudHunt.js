@@ -2,32 +2,21 @@
  * communication features
  */
 var playerChat = true; // players can chat
-var allyUnitPlacement = true; // can see ally's unit placement if it remains on
-                              // map, and in history
-var realTimeUnitPlacement = true; // can see ally's unit placement as they do it
-                                  // -- in other words, for the current turn
-var localSitRep = true; // situation reports show your local reports (overridden
-                        // if global is true)
+var allyUnitPlacement = true; // can see ally's unit placement if it remains on map, and in history
+var realTimeUnitPlacement = true; // can see ally's unit placement as they do it -- in other words, for the current turn
+var localSitRep = true; // situation reports show your local reports (overridden if global is true)
 var globalSitRep = true; // situation reports show everyone's reports
 var localMapScans = true; // show your assets' scans on the map
-var globalMapScans = false; // show everyone's assets' scans on the map
-                            // (overrides local)
-var cumulativeMapScans = true; // if true, current round shows culmination of
-                                // all scans so far, not just yesterday
-var allowMapHistory = true; // allow players to view previous states of the
-                            // board
-var showNumberOfRounds = true; // do we tell the players how many rounds they
-                                // have?
-var showNumberOfTargets = true; // do we tell the players how many targets they
-                                // have?
-var allowGroupTargetPlace = false; // true if the group decides where the
-                                    // targets go
-var highestRankingOfficerChoose = true; // true if the highest ranking player
-                                        // gets to choose who controls what
+var globalMapScans = false; // show everyone's assets' scans on the map (overrides local)
+var cumulativeMapScans = true; // if true, current round shows culmination of all scans so far, not just yesterday
+var allowMapHistory = true; // allow players to view previous states of the board
+var showNumberOfRounds = true;  // do we tell the players how many rounds they have?
+var showNumberOfTargets = true;  // do we tell the players how many targets they have?
+var allowGroupTargetPlace = false; // true if the group decides where the targets go
+var highestRankingOfficerChoose = true; // true if the highest ranking player gets to choose who controls what
 
 var skipAllInstructions = true;
-var skipInstructionsAfter = 0; // anything after this is automagically skipped
-                                // (gets rid of the tutorial)
+var skipInstructionsAfter = 0; // anything after this is automagically skipped (gets rid of the tutorial)
 
 var roundDuration = 90;
 var numRows = 5;
@@ -51,9 +40,8 @@ var allSeries = [ TUTORIAL_ROUND, PRACTICE_ROUND, ACTUAL_ROUND ];
 var ROUND_ZERO = 500;
 var FIRST_ACTUAL_ROUND = 501;
 
-var REGION_BACKGROUND_COLOR = "#48B028"; // "#7DAF27" // "#44aa44"; //
-                                          // "#c7d4e7";
-var REGION_SELECTION_COLOR = "#99E0FF"; // "#b7e4d7";
+var REGION_BACKGROUND_COLOR = "#48B028"; //"#7DAF27" // "#44aa44"; // "#c7d4e7";
+var REGION_SELECTION_COLOR = "#99E0FF"; //"#b7e4d7";
 var REGION_FAIL_COLOR = "#f7d4e7";
 var REGION_WATER_COLOR = "#c7d4e7";
 
@@ -279,14 +267,11 @@ function Region(id, name, x, y, x1, y1, polygon) {
   this.status = []; // text element on the region: 0,?,X
   this.addStatus = function(letter, unitName, removeId) {
     // tX, tY are where the letter goes, based on how many there are already
-    var xOff = 10 + Math.floor(this.status.length
-        / (STATI_PER_ROW * STATI_PER_COL)) * 10; // if we fill up the whole
-                                                  // square, start putting more
-                                                  // in between the letters
-    var tX = x1 + xOff + // left side
-    20 * (this.status.length % STATI_PER_ROW); // this makes the text word wrap
-    var tY = 10 + y1 + // top
-    20 * (Math.floor(this.status.length / STATI_PER_ROW) % STATI_PER_COL);
+    var xOff = 10+Math.floor(this.status.length/(STATI_PER_ROW*STATI_PER_COL))*10; // if we fill up the whole square, start putting more in between the letters
+    var tX = x1 + xOff +// left side
+      20*(this.status.length % STATI_PER_ROW); // this makes the text word wrap
+    var tY = 10+y1 + // top
+      20* (Math.floor(this.status.length/STATI_PER_ROW) % STATI_PER_COL);
 
     // add a new txt element
     var txt = paper.text(tX, tY, letter).attr({
@@ -371,8 +356,7 @@ function Region(id, name, x, y, x1, y1, polygon) {
       } else if (selectedMarker == "marker_x") {
         letter = VALUE_DISPLAY[VALUE_TARGET];
       } else if (selectedMarker == "marker_c") {
-        // this happens if there's an avatar on the region so the marker wasn't
-        // clicked
+        // this happens if there's an avatar on the region so the marker wasn't clicked
         // TODO: detect which letter from mouse position
       }
 
@@ -385,9 +369,8 @@ function Region(id, name, x, y, x1, y1, polygon) {
         userMarkers[currentRound] = [];
       }
       var note = "your mark";
-      submit('<mark region="' + me.id + '" letter="' + letter + '" note="'
-          + note + '" idx="' + userMarkerCtr + '"/>');
-      userMarkers[currentRound].push([ me.id, letter, note, userMarkerCtr ]);
+      submit('<mark region="'+me.id+'" letter="'+letter+'" note="'+note+'" idx="'+userMarkerCtr+'"/>');
+      userMarkers[currentRound].push([me.id,letter,note,userMarkerCtr]);
       me.addStatus(letter, note, userMarkerCtr);
       userMarkerCtr++;
       if (!stickyMarker) {
@@ -484,13 +467,16 @@ function isMyUnit(unit) {
  * @param long_description
  * @param icon
  * @param avatarId
- * @param reportTable[actual][result_prob] --
- *          actual 0 ? X report 0 ? X
- * @returns
- * 
+ * @param reportTable[actual][result_prob] --         
+ *         actual  0  ?  X
+ * report
+ *   0           
+ *   ?
+ *   X
+ * @returns                 
+ *                   
  */
-function Unit(id, ownerId, name, short_description, long_description, label,
-    icon, avatarId, reportTable) {
+function Unit(id, ownerId, name, short_description, long_description, label, icon, avatarId, reportTable) {
   var unitMe = this;
   units[id] = this;
   this.id = id;
@@ -502,8 +488,7 @@ function Unit(id, ownerId, name, short_description, long_description, label,
   this.long_description = long_description;
   this.reportTable = reportTable;
   this.wait = 0;
-  this.remainsOnBoard = false; // set this to true for all assets that stay on
-                                // the board after a turn
+  this.remainsOnBoard = false; // set this to true for all assets that stay on the board after a turn
   this.waitString = "Dead";
   this.label = label;
   this.arrow = null; // arrow span of effect range
@@ -523,8 +508,7 @@ function Unit(id, ownerId, name, short_description, long_description, label,
   }
 
   this.buildAvatar = function(avatarFactory) {
-    this.avatar = avatarFactory.build(avatarId, -100, -100); // build avatar
-                                                              // off screen
+    this.avatar = avatarFactory.build(avatarId,-100,-100); // build avatar off screen
     if (this.label) {
       this.avatar.text = this.label;
     }
@@ -549,13 +533,11 @@ function Unit(id, ownerId, name, short_description, long_description, label,
     deselectAllUnits();
     deselectAllMarkers();
     if (currentRound == FIRST_ACTUAL_ROUND + numRounds) {
-      if (this.ownerId != TARGET_ROLE)
-        return; // on target selection round, only targets may be moved
+      if (this.ownerId != TARGET_ROLE) return; // on target selection round, only targets may be moved
     } else if (currentRound > FIRST_ACTUAL_ROUND + numRounds) {
       return; // no units may be moved
     }
-    if (submitted)
-      return;
+    if (submitted) return;
     selectedUnit = this;
     this.avatar.img.toFront();
     $('.asset[asset="' + this.id + '"]').css('background-color',
@@ -614,10 +596,7 @@ function Unit(id, ownerId, name, short_description, long_description, label,
       this.setStatus("");
     } else {
       this.setStatus(region.name);
-      if (this.ownerId == TARGET_ROLE && !inInstructions
-          && !$("#currentRound").hasClass('selectedTab'))
-        return; // if target moves, only change it on if we're on the
-                // currentRoundTab
+      if (this.ownerId == TARGET_ROLE && !inInstructions && !$("#currentRound").hasClass('selectedTab')) return; // if target moves, only change it on if we're on the currentRoundTab
       this.setLocation(region);
     }
   };
@@ -629,8 +608,7 @@ function Unit(id, ownerId, name, short_description, long_description, label,
       if (this.wait == 0) {
         this.setNextRegion(region);
         if (region != null) {
-          $('.asset[asset="' + this.id + '"]').css('background-color',
-              ASSET_PLACED_COLOR); // enable button
+          $('.asset[asset="'+this.id+'"]').css('background-color',ASSET_PLACED_COLOR); // enable button
         }
 
         // tips
@@ -1254,10 +1232,7 @@ var submitted = false;
 var guess = new Array();
 function submitMove() {
   tips.hide();
-  try {
-    tips.completeTip(tips.getTipByUid(2).index);
-  } catch (err) {
-  } // End Turn Tip
+  try { tips.completeTip(tips.getTipByUid(2).index); } catch (err) {} // End Turn Tip
   if (inInstructions) {
     instructionSubmitMove();
     return;
@@ -1267,9 +1242,8 @@ function submitMove() {
     submitReady();
     return;
   }
-
-  if (submitted)
-    return;
+  
+  if (submitted) return;
   submitted = true;
   if (currentRound - ACTUAL_ROUND > numRounds) {
     $('#go').fadeOut();
@@ -1603,9 +1577,8 @@ function playerDisconnect(playerNum) {
   // alert('playerDisconnect '+playerNum);
 
   // see if I have the lowest live id
-  if (!shouldRunBots())
-    return;
-
+  if (!shouldRunBots()) return;
+  
   // get past the instructions; TODO: activate bot
   if (currentRound < ROUND_ZERO || isMidSeries()) {
     submitReady();
@@ -1652,17 +1625,14 @@ function fetchResponse(val, participant, round, index) {
   } else if (tagName == "PLACE") {
     if (currentRound > ROUND_ZERO + numRounds) {
       // target choosing round
-      if (!allowGroupTargetPlace)
-        return; // don't show the unit placement
+      if (!allowGroupTargetPlace) return; // don't show the unit placement
     } else {
       // normal round
-      if (!realTimeUnitPlacement)
-        return; // don't show the unit placement
+      if (!realTimeUnitPlacement) return; // don't show the unit placement
     }
     var place = $(val);
     var unit = units[place.attr('unit')];
-    if (isMyUnit(unit))
-      return; // prevent feedback
+    if (isMyUnit(unit)) return;  // prevent feedback
     var region_id = place.attr('region');
     var region = null;
     if (region_id != "") {
@@ -1840,8 +1810,7 @@ function showCurrentBoard() {
         }
         updateBoardFromCommands(allScans, -1);
       } else {
-        updateBoardFromCommands(commandHistory[currentRound - 1], -1); // or
-                                                                        // currentRound-1?
+        updateBoardFromCommands(commandHistory[currentRound-1], -1); // or currentRound-1?
       }
     } else if (localMapScans) {
       if (cumulativeMapScans) {
@@ -2068,13 +2037,9 @@ function displayUserMarkers(round) {
 function addBeginTurnSitRep(round, numRounds) {
   // log("addBeginTurnSitRep("+round+")");
   if (showNumberOfRounds) {
-    $("#sitRep").append(
-        '<tr><th class="roundHeading">' + ROUND_NOUN + ' ' + round + ' of '
-            + numRounds + ':</th></tr>');
+    $("#sitRep").append('<tr><th class="roundHeading">'+ROUND_NOUN+' '+round+' of '+numRounds+':</th></tr>');
   } else {
-    $("#sitRep").append(
-        '<tr><th class="roundHeading">' + ROUND_NOUN + ' ' + round
-            + ':</th></tr>');
+    $("#sitRep").append('<tr><th class="roundHeading">'+ROUND_NOUN+' '+round+':</th></tr>');
   }
 }
 
@@ -2169,11 +2134,9 @@ function appendSitRep(title, value, mine) {
   if (mine) {
     srClass = "sr_me";
   }
-
-  $("#sitRep").append(
-      '<tr class=' + srClass + '><th>&nbsp;&nbsp;' + title + '</th><td>'
-          + value + '</td></tr>');
-  sitRepScrollbar.slider("value", 0);
+  
+  $("#sitRep").append('<tr class='+srClass+'><th>&nbsp;&nbsp;'+title+'</th><td>'+value+'</td></tr>'); 
+  sitRepScrollbar.slider("value",0);
 }
 
 var cancelChatTip = null;
