@@ -1984,7 +1984,12 @@ function initRound() {
   showCurrentBoard();
   $('#go').html("End Turn");
   submitted = false;
-  setCountdown("timer", roundDuration);
+  if (currentRound < PRACTICE_ROUND) {
+    $("#timer").hide();
+  } else {
+    $("#timer").show();
+    setCountdown("timer", roundDuration);        
+  }
 }
 
 function clearUnitsFromBoard() {

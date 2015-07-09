@@ -1,0 +1,170 @@
+#game p {
+  font-size: 14px;
+}
+
+#tips_button {
+  border-radius: 4px;
+  min-width: 38px;
+  text-align: center;
+}
+
+#tips_button:hover {
+  color: #555555;
+}
+
+#tips_button_unviewed {
+  border: 1px solid #000000;
+  font-size:90%;
+  border-radius:6px;
+  background-color: #999999;
+  padding: 1px 3px 0 3px;
+}
+
+#tip_window {
+  background-color: #FFFFFF;  
+}
+
+#tips_popup {
+  position: relative;
+  border-radius: 5px;
+  z-index: 100;
+  border: 2px solid #000000;
+  background-color: #FFFFFF;
+  padding: 10px;  
+}
+/*  display: none; */
+/*  display: block; */
+
+.tips_shown {
+}
+
+#tips_close {
+  display: none;
+  position:absolute;
+  right:0;
+  top:0;
+}
+
+.tips_top {
+  font-weight: bold;
+}
+
+#tips_index {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 150%;
+}
+
+
+#tip_title {
+  font-size: 200%;
+  text-align: center;
+  clear: both;
+}
+
+#tip_text {
+  margin-bottom: 3em;
+  min-height: 65px;
+  text-align: justify;
+  padding: 15px;
+}
+
+#tip_text p {
+  line-height: 1.2em;
+  margin-bottom: 0.6em;
+}
+
+#tip_image {
+  float: left;
+  max-width:100px;
+  max-height:100px;
+/*   padding: 0 10px; */
+  margin-right:15px;
+}
+
+#tip_image img {
+  width: 100px;
+  height: 100px;
+}
+
+.tips_nav {
+  border: 2px solid #000000;
+  padding: 3px 7px;
+  cursor: pointer;
+  color: #000000;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-color: #FFFFFF;
+}
+
+#tips_bottom {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  background-color: #C7D4E7;
+}
+
+#tips_prev {
+  float: left;
+}
+
+#tips_next {
+  float: right;
+}
+
+#tips_nav_bar {
+  margin-top: 4px;
+  text-align: left;
+  display: inline-block;
+  margin-bottom: 0;
+  padding-left: 3px;
+}
+
+#tips_nav_bar span {
+  display:inline-block; 
+  vertical-align:middle;
+}
+
+.tip_nav_item {
+  min-width: 10px;
+  cursor: pointer;
+  padding-left: 1px;
+}
+
+.tip_nav_current {
+  text-decoration: underline;
+}
+
+.tip_nav_unviewed {
+  font-weight:bold;
+}
+
+.tips_nav_active {
+  background-color: #7DAF27;
+}
+
+.btn-warning {
+  color: #000000;
+}
+
+@keyframes tips_blink_border { 
+  50% { border-color: #000000; } 
+}
+.tips_blink {
+  border: 2px solid #FF0000;
+  animation: tips_blink_border .5s step-end infinite alternate;
+}
+
+#tip_ok {
+  display: none;
+  float: right;
+  position: absolute;
+  bottom: 30px;
+  right: 50%;
+}

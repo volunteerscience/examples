@@ -287,7 +287,7 @@ function initializeUnits(minPlayers) {
   };
   
   for (var i = 0; i < numTargets; i++) {
-    var scud = new Unit(7+i, TARGET_ROLE, "Target "+(i+1), TARGET_NOUN, 
+    var scud = new Unit(7+i, TARGET_ROLE, "Site "+(i+1), TARGET_NOUN, 
         "Based on your operations over the previous days, place each the "+TARGET_NOUN+" in the most likely location.", 
         "Site "+(i+1),
         getFile("scud.png"), 7, null);
