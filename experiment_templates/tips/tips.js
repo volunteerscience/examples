@@ -44,8 +44,8 @@ function addTip(title, text, cssChanges, icon, uid, okButton) {
   return tips.addTip(new Tip(title, text, cssChanges, icon, uid, okButton));
 }
 
-function addUniqueTip(uid, title, text, cssChanges, icon) {
-  return addTip(title, text, cssChanges, icon, uid);
+function addUniqueTip(uid, title, text, cssChanges, icon, okButton) {
+  return addTip(title, text, cssChanges, icon, uid, okButton);
 }
 
 function addTipPopup(uid, title, text, cssChanges, icon) {
@@ -53,9 +53,9 @@ function addTipPopup(uid, title, text, cssChanges, icon) {
   tips.show();
 }
 
-function delayAddTip(delay, uid, title, text, cssChanges, icon) {
+function delayAddTip(delay, uid, title, text, cssChanges, icon, okButton) {
   var timeout = setTimeout(function() {
-    addTip(title, text, cssChanges, icon, uid);    
+    addTip(title, text, cssChanges, icon, uid, okButton);    
   }, delay);
   
   // return cancellable
@@ -292,6 +292,8 @@ function Tips(button_selector, popup_selector) {
   };
   
   this.setTip = function(index) {
+    index = parseInt(index); // force an int
+    
     if (me.tip_list.length == 0) {
       return;
     }

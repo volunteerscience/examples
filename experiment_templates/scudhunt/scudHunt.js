@@ -26,6 +26,7 @@ var mid_series_delay = 30;
 var MAP_WIDTH = 440;
 var MAP_HEIGHT = 440;
 
+var use1Ptips = true; // single player tips
 var useTutorial = true;
 var usePractice = true;
 var useActual = true;
@@ -612,7 +613,7 @@ function Unit(id, ownerId, name, short_description, long_description, label, ico
         }
 
         // tips
-        if (isMyUnit(unitMe)) {
+        if (use1Ptips && isMyUnit(unitMe)) {
           var myGlow = null;
           unitMe.addListener()
           addUniqueTip(
@@ -636,27 +637,31 @@ function Unit(id, ownerId, name, short_description, long_description, label, ico
           listener.setNextRegion = function(unitMe, region) {
             tips.completeTip(tips.getTipByUid(6).index);
             unitMe.removeListener(listener);
+            addTip(
+                "Continue Playing",
+                '<p>Keep looking for '+TARGET_NOUN_PLURAL+' by deploying assets and clicking <span style="background-color:#7DAF27; color:#FFFFFF; padding:2px;">End Turn</span> when done.</p>',
+                "#playerControls", null, 431);            
           }
           unitMe.addListener(listener);
-        } else {
-          var myGlow = null;
-          addUniqueTip(
-              3,
-              "Ally's Asset",
-              "<p>Your ally has placed an asset on the board.  You do not control this asset, however you can see its location.</p>",
-              function(active) {
-                if (myGlow) {
-                  myGlow.remove();
-                  myGlow = null;
-                }
-
-                if (active) {
-                  myGlow = unitMe.avatar.currentlyOn.polygon.glow({
-                    "color" : "#FF0000"
-                  });
-                  myGlow.toFront();
-                }
-              }, unitMe.icon);
+//        } else {
+//          var myGlow = null;
+//          addUniqueTip(
+//              3,
+//              "Ally's Asset",
+//              "<p>Your ally has placed an asset on the board.  You do not control this asset, however you can see its location.</p>",
+//              function(active) {
+//                if (myGlow) {
+//                  myGlow.remove();
+//                  myGlow = null;
+//                }
+//
+//                if (active) {
+//                  myGlow = unitMe.avatar.currentlyOn.polygon.glow({
+//                    "color" : "#FF0000"
+//                  });
+//                  myGlow.toFront();
+//                }
+//              }, unitMe.icon);
         }
       }
     }
@@ -761,8 +766,9 @@ function Unit(id, ownerId, name, short_description, long_description, label, ico
         // disable button
         $('.asset[asset="' + this.id + '"]').css('background-color',
             ASSET_WAIT_COLOR); // disable button
-
-        addTip(
+        
+        if (use1Ptips) {
+          addTip(
             "Disabled Asset",
             "<p>The gray button indicates that this asset has become disabled.</p>"
                 + "<p>You can see that its status is "
@@ -770,6 +776,7 @@ function Unit(id, ownerId, name, short_description, long_description, label, ico
                 + ".</p>"
                 + "<p>Some assets can recover, others remain disabled thoughout the engagemnt.</p>",
             '.asset[asset="' + this.id + '"]', unitMe.icon, 7, true);
+        }
       }
     }
     this.setWaitStatus(wait);
@@ -998,7 +1005,11 @@ function disableTips() {
 }
 
 function initializePractice() {
-  disableTips();
+  if (useTutorial) {
+    disableTips();    
+  } else {
+    use1Ptips = false;
+  }
 
   if (!usePractice) {
     initializeActual();
@@ -1007,13 +1018,14 @@ function initializePractice() {
 
   ROUND_ZERO = 200;
   FIRST_ACTUAL_ROUND = 201;
-  tips.alwaysPopUp = false;
+  tips.alwaysPopUp = true;
   $("#series_practice").addClass("series_current");
 
   resetGame();
 }
 
 function initializeActual() {
+  disableTips();
   if (!useActual) {
     experimentComplete();
     return;
@@ -1058,6 +1070,7 @@ function resetGame() {
   initializeHistory();
   initializeMyAssets();
   $("#sitRep").html("");
+  $("#chat").html("");
 
   setRound(FIRST_ACTUAL_ROUND);
   initRound();
@@ -1233,6 +1246,7 @@ var guess = new Array();
 function submitMove() {
   tips.hide();
   try { tips.completeTip(tips.getTipByUid(2).index); } catch (err) {} // End Turn Tip
+  try { tips.completeTip(tips.getTipByUid(431).index); } catch (err) {} // End Turn Tip
   if (inInstructions) {
     instructionSubmitMove();
     return;
@@ -1493,7 +1507,8 @@ function showAirstrike() {
       hitStr = "<p>We successfully disabled 1 " + TARGET_NOUN + ".</p>";
     }
     var myGlow = null;
-    addTip("Hit!!",
+    if (use1Ptips) {
+      addTip("Hit!!",
         "<p>Airstrikes were conducted based on your target designations.</p>"
             + hitStr + "<p>The explosion shows the locations you chose.</p>",
         function(active) {
@@ -1509,6 +1524,7 @@ function showAirstrike() {
             myGlow.toFront();
           }
         }, getFile("explosion.png"), 11, true);
+    }
   }
 
   // tip about a miss
@@ -1520,38 +1536,41 @@ function showAirstrike() {
     }
     var missGlow = null;
     var missFireGlow = null;
-    addTip("Miss!!", missStr
-        + "<p>The explosion shows the locations you chose.</p>", function(
-        active) {
-      if (missGlow) {
-        missGlow.remove();
-        missGlow = null;
-      }
-      if (missFireGlow) {
-        missFireGlow.remove();
-        missFireGlow = null;
-      }
-
-      if (active) {
-        if (missLoc) {
-          missGlow = missLoc.polygon.glow({
-            "color" : "#FF0000"
-          });
-          missGlow.toFront();
+    if (use1Ptips) {
+      addTip("Miss!!", missStr
+          + "<p>The explosion shows the locations you chose.  Any missile launchers w/o an explosion survived.</p>", function(
+          active) {
+        if (missGlow) {
+          missGlow.remove();
+          missGlow = null;
         }
-        if (missFireLoc) {
-          missFireGlow = missFireLoc.polygon.glow({
-            "color" : "#FF0000"
-          });
-          missFireGlow.toFront();
+        if (missFireGlow) {
+          missFireGlow.remove();
+          missFireGlow = null;
         }
-      }
-    }, getFile("scud.png"), 12, true);
+  
+        if (active) {
+          if (missLoc) {
+            missGlow = missLoc.polygon.glow({
+              "color" : "#FF0000"
+            });
+            missGlow.toFront();
+          }
+          if (missFireLoc) {
+            missFireGlow = missFireLoc.polygon.glow({
+              "color" : "#FF0000"
+            });
+            missFireGlow.toFront();
+          }
+        }
+      }, getFile("scud.png"), 12, true);
+    }
   }
 
   if (currentRound > allSeries[allSeries.length - 1]) {
     experimentComplete();
   } else {
+    $("#timer").show();
     setCountdown("timer", mid_series_delay, "...Next Round Starting...");
     $('#go').html("Ready");
   }
@@ -1770,10 +1789,14 @@ function addRoundTab(round) {
 }
 
 function showBoardFromRound(round) {
-  try {
-    tips.completeTip(tips.getTipByUid(8).index);
-  } catch (err) {
-  } // Round History Tip
+  try {  
+    tips.completeTip(tips.getTipByUid(8).index); 
+    if (use1Ptips) {
+      addTip("Current Round",
+        "<p>Click back on the <b>Current</b> round to see the current state of the board.</p>", 
+        "#currentRound", null, 432);
+    }
+  } catch (err) {} // Round History Tip
   $(".roundTab").removeClass('selectedTab');
   $('.roundTab[round="' + round + '"]').addClass('selectedTab');
   round += ROUND_ZERO;
@@ -1799,6 +1822,8 @@ function showBoardFromRound(round) {
 
 function showCurrentBoard() {
   // log("showCurrentBoard()");
+  try {  tips.completeTip(tips.getTipByUid(432).index); } catch (err) {} // Clear current Round History Tip
+
   $(".roundTab").removeClass('selectedTab');
   $("#currentRound").addClass('selectedTab');
   if (currentRound > FIRST_ACTUAL_ROUND) {
@@ -1840,11 +1865,12 @@ function initRound() {
   // log("initRound:"+currentRound);
   if (currentRound - ROUND_ZERO <= numRounds) {
     // normal round
-    if (currentRound == TUTORIAL_ROUND + 1) {
+    if (use1Ptips) {
+      if (currentRound == TUTORIAL_ROUND + 1) {
       // if (! (ranks[0] in awards[myid])) {
       // roundDuration = 360;
       // setCountdown("timer",360);
-      addTip(
+        addTip(
           "How To Play",
           '<p>Shadow Force is a complex game of deploying military assets to hunt down enemies.</p>'
               + '<p>We will teach you to play by providing "Tips" along the way.</p>'
@@ -1855,67 +1881,66 @@ function initRound() {
                */
               '<p>You can navigate between the tips with the blue panel below.</p>',
           "#tips_button", units[4].icon, 7777, true);
-      // tips.setTip(tips.index);
-      tips.show();
-      // }
-
-      firstUnit = getUnits(myid)[0];
-      addTip("Deploy Assets",
-          "<p>Deploy one or more of your assets to help search for a "
-              + TARGET_NOUN + ".</p>" + "<p>Click the " + firstUnit.name
-              + ", then click a region in the battlefield.</p>"
-              + "<p>Note: Some units have restricted deployment zones.</p>", [
-              "#playerControls", "#canvas" ], firstUnit.icon, 1);
-
-      var listener = new Object();
-      listener.setNextRegion = function(unitMe, region) {
-        tips.completeTip(tips.getTipByUid(1).index);
-        firstUnit.removeListener(this);
-        log("removed first unit listener: " + firstUnit.listeners.length);
-
-        if (currentRound < PRACTICE_ROUND) {
-
-          spy = units[4];
-          addTip(
-              "Deploy Assets",
-              "<p><b>Good Job!</b></p>"
-                  + "<p>You can add more assets to the map to search more areas.</p>"
-                  + "<p>Try deploying the " + spy.name + ".</p>", [
-                  "#playerControls", "#canvas" ], spy.icon, 331);
-          listener.setNextRegion = function(unitMe, region) {
-            tips.completeTip(tips.getTipByUid(331).index);
-            spy.removeListener(this);
-
+        // tips.setTip(tips.index);
+        tips.show();
+        // }
+  
+        firstUnit = getUnits(myid)[0];
+        addTip("Deploy Assets",
+            "<p>Deploy one or more of your assets to help search for a "
+                + TARGET_NOUN + ".</p>" + "<p>Click the " + firstUnit.name
+                + ", then click a region in the battlefield.</p>"
+                + "<p>Note: Some units have restricted deployment zones.</p>", [
+                "#playerControls", "#canvas" ], firstUnit.icon, 1);
+  
+        var listener = new Object();
+        listener.setNextRegion = function(unitMe, region) {
+          tips.completeTip(tips.getTipByUid(1).index);
+          firstUnit.removeListener(this);
+          log("removed first unit listener: " + firstUnit.listeners.length);
+  
+          if (currentRound < PRACTICE_ROUND) {
+  
+            spy = units[4];
             addTip(
-                "End Turn",
-                '<p><b>Great!</b> You can continue deploying assets.</p>'
-                    + '<p>When you have finished deploying your assets, press <span style="background-color:#7DAF27; color:#FFFFFF; padding:2px;">End Turn</span>.</p>',
-                "#go", null, 2);
-          }
-          spy.addListener(listener);
-
-          spy.origDoWait = spy.doWait;
-          log("spy: override wait");
-          spy.doWait = function() { // first time, don't die
-            log("spy: don't die");
-            spy.doWait = function() { // 2nd time, die
-              log("die spy");
-              spy.doWait = spy.origDoWait;
-              return -1;
+                "Deploy Assets",
+                "<p><b>Good Job!</b></p>"
+                    + "<p>You can add more assets to the map to search more areas.</p>"
+                    + "<p>Try deploying the " + spy.name + ".</p>", [
+                    "#playerControls", "#canvas" ], spy.icon, 331);
+            listener.setNextRegion = function(unitMe, region) {
+              tips.completeTip(tips.getTipByUid(331).index);
+              spy.removeListener(this);
+  
+              addTip(
+                  "End Turn",
+                  '<p><b>Great!</b> You can continue deploying assets.</p>'
+                      + '<p>When you have finished deploying your assets, press <span style="background-color:#7DAF27; color:#FFFFFF; padding:2px;">End Turn</span>.</p>',
+                  "#go", null, 2);
             }
-            return 0;
+            spy.addListener(listener);
+  
+            spy.origDoWait = spy.doWait;
+            log("spy: override wait");
+            spy.doWait = function() { // first time, don't die
+              log("spy: don't die");
+              spy.doWait = function() { // 2nd time, die
+                log("die spy");
+                spy.doWait = spy.origDoWait;
+                return -1;
+              }
+              return 0;
+            }
           }
         }
+        log("add first unit listener");
+        firstUnit.addListener(listener);
       }
-      log("add first unit listener");
-      firstUnit.addListener(listener);
-    }
-
-    if (currentRound - ROUND_ZERO == 4) {
-      addTip("Round History",
-          "<p>You can click on these tabs to see the history of your game.</p>"
-              + "<p>Click one now to continue.</p>", "#roundHistory", null, 8);
-
+      if (currentRound - ROUND_ZERO == 4) {
+        addTip("Round History",
+            "<p>You can click on these tabs to see the history of your game.</p>"
+                + "<p>Click one now to continue.</p>", "#roundHistory", null, 8);
+      }
     }
 
     addBeginTurnSitRep(currentRound - ROUND_ZERO, numRounds);
@@ -1939,7 +1964,8 @@ function initRound() {
 
     $("#playerAssetsTitle").html("Target Locations");
 
-    addTip(
+    if (use1Ptips) {
+      addTip(
         "Identify the Target Locations",
         "<p>Use the information you gained throughout the campaign to determine the most probable location of each "
             + TARGET_NOUN
@@ -1947,7 +1973,7 @@ function initRound() {
             + "<p>Indicate your choice by placing each target indicator on the battlefield map.</p>",
         [ "#playerControls", "#canvas" ], roleUnits[TARGET_ROLE][0].icon, 10,
         true);
-
+    }
     // log("answerRound: done");
   }
   showCurrentBoard();
@@ -2075,7 +2101,8 @@ function addSituationReports(moves) {
               reports = unit
                   .buildSituationReport(no, possible, confirmed, wait);
               if (isMyUnit(unit)) {
-                addTip(
+                if (use1Ptips) {
+                  addTip(
                     "Situation Report",
                     "<p>Your assets have delivered information about "
                         + TARGET_NOUN
@@ -2099,6 +2126,7 @@ function addSituationReports(moves) {
                         $("#sitRep_wrapper").removeClass(defaultAttrs);
                       }
                     }, unit.icon, 4, true);
+                }
               } else {
                 delayAddTip(
                     400,
@@ -2108,6 +2136,7 @@ function addSituationReports(moves) {
                         + TARGET_NOUN_PLURAL
                         + ".</p>"
                         + "<p>Use a marker to jot relevant information on the battlefield map from your allied units.</p>"
+                        + "<p>Click the marker, then click a square in the map to set the marker.</p>",
                         + "<p>Make sure to check the situation reports at the beginning of every turn.</p>",
                     function(active) {
                       if (active) {
@@ -2119,7 +2148,7 @@ function addSituationReports(moves) {
                         $("#marker_panel").removeClass(defaultAttrs);
                         $("#sitRep_wrapper").removeClass(defaultAttrs);
                       }
-                    }, unit.icon);
+                    }, unit.icon, true);
               }
               for (i in reports) {
                 var report = reports[i];
@@ -2135,7 +2164,7 @@ function appendSitRep(title, value, mine) {
     srClass = "sr_me";
   }
   
-  $("#sitRep").append('<tr class='+srClass+'><th>&nbsp;&nbsp;'+title+'</th><td>'+value+'</td></tr>'); 
+  $("#sitRep").append('<tr class='+srClass+'><th>&nbsp;&nbsp;'+title+'&nbsp;</th><td>'+value+'</td></tr>'); 
   sitRepScrollbar.slider("value",0);
 }
 
@@ -2181,6 +2210,8 @@ function callSendChat() {
     cancelChatTip();
     cancelChatTip = null;
   }
+  try { tips.completeTip(tips.getTipByUid(9).index); } catch (err) {} // Chat Tip
+  
   if ($("#chatInput").val() == DEFAULT_CHAT) {
     return;
   }
@@ -2195,8 +2226,34 @@ function chatReceived(tid, val) {
   title = roleName[getFirstRole(tid)];
   value = val;
   $("#chat").append(
-      '<tr><th>&nbsp;&nbsp;' + title + '</th><td>' + value + '</td></tr>');
+      '<tr><th>&nbsp;&nbsp;' + title + '&nbsp;</th><td>' + value + '</td></tr>');
   chatScrollbar.slider("value", 0);
+  
+  if (tid != myid) {    
+    addUniqueTip(
+        433,
+        "Ally Chat",
+        "<p>Your ally has sent you a chat.  When chats contain information about the locations of "
+            + TARGET_NOUN_PLURAL
+            + ",</p>"
+            + '<p>you should manually place a marker (<span style="color:'+VALUE_COLOR[0]
+            +'; font-style:bold;">0</span>,<span style="color:#B4B415; font-style:bold;">?</span>,<span style="color:'
+            + VALUE_COLOR[2]
+            + '; font-style:bold;">!</span>) to jot relevant information on the battlefield map from your allied units.</p>'
+            + "<p>Toggle the marker button, then click squares in the map to set the marker.</p>"
+            + "<p>Untoggle the marker button when complete.</p>",
+        function(active) {
+          if (active) {
+            $(".sr_team").css("background-color", "#FF0000");
+            $("#marker_panel").addClass(defaultAttrs);
+            $("#chatPanel").addClass(defaultAttrs);
+          } else {
+            $(".sr_team").css("background-color", "");
+            $("#marker_panel").removeClass(defaultAttrs);
+            $("#chatPanel").removeClass(defaultAttrs);
+          }
+        }, null, true);
+  }
 }
 
 function disableChat() {
