@@ -1383,16 +1383,16 @@ function showAirstrike() {
       if (numHits >= 1 ) {
         assignQualification("Shadow Force Training");        
       }
-      payAmt(true,0);
+      payAMT(true,0);
     }
     
     // actual
     if (currentRound > ACTUAL_ROUND && numHits >= 1) {
-      var bonus = 0;
-      if (numHits == 4) {
-        bonus = 0.50;
-      }
-      payAmt(true,bonus);
+      var bonus = numHits*0.05;
+//      if (numHits == 4) {
+//        bonus = 0.50;
+//      }
+      payAMT(true,bonus);
     }
   }
   
@@ -1475,7 +1475,7 @@ function showAirstrike() {
       }
 
       var unit = roleUnits[TARGET_ROLE][targetCtr++];
-      unit.avatar.text = null;
+//      unit.avatar.text = null;
       if (typeof unit != "undefined") {
         // place the targets in the actual locations
         if (unit.nextRegion != null) {
@@ -2136,7 +2136,7 @@ function addSituationReports(moves) {
                         + TARGET_NOUN_PLURAL
                         + ".</p>"
                         + "<p>Use a marker to jot relevant information on the battlefield map from your allied units.</p>"
-                        + "<p>Click the marker, then click a square in the map to set the marker.</p>",
+                        + "<p>Click the marker, then click a square in the map to set the marker.</p>"
                         + "<p>Make sure to check the situation reports at the beginning of every turn.</p>",
                     function(active) {
                       if (active) {
