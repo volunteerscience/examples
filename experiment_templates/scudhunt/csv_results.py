@@ -300,7 +300,7 @@ def build_csv_from_xml(xml_string):
   
   # ************** print tables *************
   ret.write("Participant Table\n")
-  ret.write("Participant,Age,Sex,FBinfo\n")
+  ret.write("Participant,Age,Sex,FBInfo\n")
   for p in part_d.itervalues():
     ret.write("%s,%s,%s,%s\n" % (p.uid,p.getAge(),p.sex,"N/A"))
     
