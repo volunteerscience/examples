@@ -257,11 +257,11 @@ def build_csv_from_xml(xml_string):
       for ready_tag in submit.findall('ready'):
         last_ready = max( last_ready, time )
         try:
-          game.difficulty=ready_tag.attrib('difficulty')
+          game.difficulty=ready_tag.attrib['difficulty']
         except:
           pass
         try:
-          game.round_duration=int(ready_tag.attrib('round_duration'))
+          game.round_duration=int(ready_tag.attrib['round_duration'])
         except:
           pass
     
