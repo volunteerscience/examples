@@ -2,7 +2,7 @@ first_actual_round=501
 last_actual_round=506
 # print "imported scud hunt csv_results"
 
-def build_csv(exp, tests, part_data=True, section_data=False, summary=False, variables=[], awards=[], scores=[]):
+def build_csv(exp, tests, part_data=True, section_data=False, summary=False, variables=[], matrices=[], awards=[], scores=[]):
   from soclab.lazer.views import xml_data
   xml_string = xml_data(exp, tests, part_data=part_data, summary=summary, variables=variables, matrices=matrices, awards=awards, scores=scores).getvalue()
   return build_csv_from_xml(xml_string)
