@@ -4,7 +4,7 @@ last_actual_round=506
 
 def build_csv(exp, tests, part_data=True, section_data=False, summary=False, variables=[], awards=[], scores=[]):
   from soclab.lazer.views import xml_data
-  xml_string = xml_data(exp, tests, part_data=part_data, summary=summary, variables=variables, awards=awards, scores=scores).getvalue()
+  xml_string = xml_data(exp, tests, part_data=part_data, summary=summary, variables=variables, matrices=matrices, awards=awards, scores=scores).getvalue()
   return build_csv_from_xml(xml_string)
 
 def build_csv_from_xml(xml_string):
