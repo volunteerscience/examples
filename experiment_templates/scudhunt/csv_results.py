@@ -291,6 +291,7 @@ def build_csv_from_xml(xml_string):
       for target_tag in submit.findall('target'):
         game.attack_choices.append(int(target_tag.attrib['region']))
         game.attack_time = time
+        round.time = time
   
     game_start_d[test_id] = last_ready
       
@@ -330,7 +331,7 @@ def build_csv_from_xml(xml_string):
           r = p_table[round]
           if r.part_uid != 'bot': # hasattr(g, 'part_uid'):
             ret.write("%s,%s,%s,%s,%s,%s,%s,%s\n" % (
-              r.part_uid, r.id, r.pid, (r.round_num-100),r.getRoundDuration(), 
+              r.part_uid, r.id, r.pid, (r.round_num-first_actual_round+1),r.getRoundDuration(), 
               ';'.join(map(str, r.mark_clear)),';'.join(map(str, r.mark_possible)),';'.join(map(str, r.mark_confirm)),
               ))
     
