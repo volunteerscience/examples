@@ -1607,7 +1607,7 @@ function playerDisconnect(playerNum) {
 }
 
 function submitReady() {
-  submit('<ready />');
+  submit('<ready difficulty="'+difficulty+'" round_duration="'+roundDuration+'"/>');
   if (shouldRunBots()) {
     for (var i = 1; i <= numPlayersAndBots; i++) {
       if (!activePlayers[i]) {

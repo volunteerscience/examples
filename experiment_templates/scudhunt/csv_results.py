@@ -152,9 +152,12 @@ def build_csv_from_xml(xml_string):
       difficulty = test.attrib['difficulty']
       if difficulty in difficulty_table:
         difficulty = difficulty_table[difficulty]
-    round_duration = 5*60
+    round_duration = -1
     if 'round_duration' in test.attrib:
-      round_duration = int(test.attrib['round_duration'])
+      try:
+        round_duration = int(test.attrib['round_duration'])
+      except: 
+        pass
     
     for subject in test.findall('subject'):
       uid = subject.attrib['uid']
@@ -253,6 +256,14 @@ def build_csv_from_xml(xml_string):
       
       for ready_tag in submit.findall('ready'):
         last_ready = max( last_ready, time )
+        try:
+          game.difficulty=ready_tag.attrib('difficulty')
+        except:
+          pass
+        try:
+          game.round_duration=int(ready_tag.attrib('round_duration'))
+        except:
+          pass
     
       for command_tag in submit.findall('command'):
         unit=int(command_tag.attrib['unit'])
