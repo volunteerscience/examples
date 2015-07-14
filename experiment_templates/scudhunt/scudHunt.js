@@ -17,6 +17,7 @@ var highestRankingOfficerChoose = true; // true if the highest ranking player ge
 
 var skipAllInstructions = true;
 var skipInstructionsAfter = 0; // anything after this is automagically skipped (gets rid of the tutorial)
+var useAgeGenderForm = false;
 
 var roundDuration = 90;
 var numRows = 5;
@@ -159,6 +160,12 @@ function setDifficulty(d) {
   if (numPlayers < 2) {
     skipAllInstructions = false;
     playerChat = false;
+  }
+  
+  if (!useTutorial) { // in AMT only do the story for tutorial round
+    if (IS_AMT && !IS_PREVIEW) {
+      skipAllInstructions = true;      
+    }
   }
 }
 
@@ -947,6 +954,10 @@ function initialize() {
   if (!useTutorial) {
     allSeries.splice(0, 1);
     $("#series_tutorial").hide();
+  } else {
+    if (IS_AMT && !IS_PREVIEW) {
+      useAgeGenderForm = true;      
+    }    
   }
 
   allow_skip_story = variables['allow_skip_story'].indexOf("rue") == 1;
@@ -955,7 +966,7 @@ function initialize() {
   setDifficulty(variables['difficulty']);
   setRoundDuration(variables['round_duration']);
 
-  for ( var s in allSeries) {
+  for (var s in allSeries) {
     var series = allSeries[s];
     for (var r = 0 + series; r <= series + 1 + numRounds; r++) { // also the
                                                                   // submission
@@ -977,8 +988,24 @@ function initialize() {
 
   initializeMarkerButtons();
 
-  runAllInstructions();
+  if (useAgeGenderForm) {
+    showAgeGenderForm();
+  } else {
+    runAllInstructions();    
+  }
 }
+
+function showAgeGenderForm() {
+  $("#instruction_a").html("");
+  $("#age_gender_form").show();
+  
+  $("#submit_age_gender").click(function() {
+    $("#age_gender_form").hide();
+    runAllInstructions();
+  });
+
+}
+
 
 function initializeTutorial() {
   // end of instructions
@@ -1607,7 +1634,20 @@ function playerDisconnect(playerNum) {
 }
 
 function submitReady() {
-  submit('<ready difficulty="'+difficulty+'" round_duration="'+roundDuration+'"/>');
+  var s = '<ready difficulty="'+difficulty+'" round_duration="'+roundDuration+'"';
+  
+  // include demographic data if it's there
+  var age = $('#age').val();
+  if (age) {
+    s+=' age="'+age+'"';
+  }
+  var gender = $('input[name="gender"]:checked').val();
+  if (gender) {
+    s+=' gender="'+gender+'"';
+  }
+  
+  s += '/>';
+  submit(s);
   if (shouldRunBots()) {
     for (var i = 1; i <= numPlayersAndBots; i++) {
       if (!activePlayers[i]) {

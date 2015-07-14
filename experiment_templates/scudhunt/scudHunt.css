@@ -350,5 +350,29 @@
   cursor: url('/attachment/cursorc.png') 16 17, default !important;
 }
 
+#age_gender_form {
+  background-color: #ffffff;
+  margin: auto;
+  padding: 30px;
+  width: 400px;
+  border: solid 2px #000000;
+  clear: both;
+}
 
+#age_gender_form h3 {
+  text-align: center;
+}
+
+#age_gender_form table {
+  width: 100%;
+}
+
+#age_gender_form th {
+  text-align: right;
+  padding-right: 10px;
+}
+
+#age {
+  width: 50px;
+}
 
