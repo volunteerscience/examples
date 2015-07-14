@@ -22,13 +22,15 @@ def build_csv_from_xml(xml_string):
     def __init__(self, uid):
       self.uid = uid
       self.age = -1
+      self.sex = -1
+
       
     def __str__(self):
       return 'Part %s %s' % (self.uid,self.age)
 
     def getAge(self):
       if self.age > 0:
-        return self.age*6
+        return self.age
       return "-1"
     
   def getPart(uid):
@@ -39,7 +41,7 @@ def build_csv_from_xml(xml_string):
   
   
   game_d = {} #[test.id][part.pid] => Game
-  class Game:
+  class Game: # a multiplayer game has more than one Game object
     def __init__(self, id, part_pid):
       self.id = id
       self.pid = part_pid
@@ -52,6 +54,7 @@ def build_csv_from_xml(xml_string):
       self.attack_time = 0
       self.rank_before = -1
       self.rank_after = -1
+      self.useActual = False
       
     def __str__(self):
       return 'Game %s %s' % (self.id,self.pid)
@@ -84,12 +87,16 @@ def build_csv_from_xml(xml_string):
       except:
         return 0
       
+    def getPart(self):
+      return getPart(self.part_uid)
+  
   def getGame(id,part_pid):
     if not id in game_d:
       game_d[id] = {}
     if not part_pid in game_d[id]:
       game_d[id][part_pid] = Game(id,part_pid)
     return game_d[id][part_pid]
+  
   
   round_d = {} #[test.id][part.pid][round] => Round
   class Round:
@@ -158,6 +165,11 @@ def build_csv_from_xml(xml_string):
         round_duration = int(test.attrib['round_duration'])
       except: 
         pass
+
+    useActual = False
+    if 'useActual' in test.attrib:
+      useActual = test.attrib['useActual'] == 'true'
+
     
     for subject in test.findall('subject'):
       uid = subject.attrib['uid']
@@ -166,19 +178,20 @@ def build_csv_from_xml(xml_string):
         part.pid = int(subject.attrib['id'])
         
         try:
-          part.age = int(subject.attrib['age_bin']) 
+          part.age = int(subject.attrib['age_bin'])*6 # age bin 
         except:
-          part.age = -1
+          pass
           
         try:
           part.sex = 0 if subject.attrib['gender'] == 'male' else 1
         except:
-          part.sex = -1
+          pass
         
         game = getGame(test_id,part.pid)
         game.part_uid = part.uid
         game.difficulty=difficulty
         game.round_duration=round_duration
+        game.useActual = useActual
         
         # ranks
   #       1 = 2LT
@@ -264,6 +277,16 @@ def build_csv_from_xml(xml_string):
           game.round_duration=int(ready_tag.attrib['round_duration'])
         except:
           pass
+        try:
+          game.getPart().age = int(ready_tag.attrib['age'])
+        except:
+          pass
+        try:
+          game.getPart().sex = 0 if ready_tag.attrib['gender'] == 'male' else 1 
+        except:
+          pass
+        
+
     
       for command_tag in submit.findall('command'):
         unit=int(command_tag.attrib['unit'])
@@ -294,15 +317,15 @@ def build_csv_from_xml(xml_string):
         round.time = time
   
     game_start_d[test_id] = last_ready
-      
+
   # <submit subject="1" round="106" time="451"><confidence value="3"/><target unit="7" region="6"/><target unit="8" region="8"/><target unit="9" region="9"/><target unit="10" region="24"/></submit>
   
   
   # ************** print tables *************
   ret.write("Participant Table\n")
-  ret.write("Participant,Age,Sex,FBInfo\n")
+  ret.write("Participant,Age,Sex\n")
   for p in part_d.itervalues():
-    ret.write("%s,%s,%s,%s\n" % (p.uid,p.getAge(),p.sex,"N/A"))
+    ret.write("%s,%s,%s\n" % (p.uid,p.getAge(),p.sex))
     
   ret.write("\n\n")  
   ret.write("Player Game Level\n")
@@ -310,7 +333,7 @@ def build_csv_from_xml(xml_string):
   for game_id in sorted(game_d):
     g_table = game_d[game_id]
     for g in g_table.itervalues():
-      if g.part_uid != 'bot': # hasattr(g, 'part_uid'):
+      if g.useActual and g.part_uid != 'bot': # hasattr(g, 'part_uid'):
         ret.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (
           g.part_uid, g.id, g.pid, g.difficulty, g.round_duration, g.hits(), g.confidence, g.rank_before, g.rank_after,
           ';'.join(map(str, g.assetList())), ';'.join(map(str, g.aiAssets())), g.totalTime(), 
@@ -321,6 +344,8 @@ def build_csv_from_xml(xml_string):
   ret.write("Player Round Table\n")
   ret.write("Participant,GameNum,PlayerNum,Round,RoundDuration,MarkClear,MarkPossible,MarkConfirm\n")
   for game_id in sorted(round_d):
+    if not getGame(game_id, 1).useActual:
+      continue
     g_table = round_d[game_id]
     
     for p_id in sorted(g_table):
@@ -342,6 +367,8 @@ def build_csv_from_xml(xml_string):
   ret.write("Player Assets in Each Round\n")
   ret.write("Participant,GameNum,PlayerNum,Round,AssetType,ReportClear,ReportPossible,ReportConfirm\n")
   for game_id in sorted(asset_d):
+    if not getGame(game_id, 1).useActual:
+      continue
     g_table = asset_d[game_id]
   
     for r in range(first_actual_round,last_actual_round+1):
@@ -350,13 +377,13 @@ def build_csv_from_xml(xml_string):
         r_table = {}
         if r in p_table:
           r_table = p_table[r]
-          
+        
         for a_id in sorted(r_table):
-            a = r_table[a_id]
-            ret.write("%s,%s,%s,%s,%s,%s,%s,%s\n" % (
-              a.part_uid, a.id, a.pid, (a.round_num-first_actual_round-1), a.asset_num,
-              ';'.join(map(str, a.mark_clear)),';'.join(map(str, a.mark_possible)),';'.join(map(str, a.mark_confirm)),
-              ))
+          a = r_table[a_id]
+          ret.write("%s,%s,%s,%s,%s,%s,%s,%s\n" % (
+            a.part_uid, a.id, a.pid, (a.round_num-first_actual_round-1), a.asset_num,
+            ';'.join(map(str, a.mark_clear)),';'.join(map(str, a.mark_possible)),';'.join(map(str, a.mark_confirm)),
+            ))
   return ret
 
 if __name__ == "__main__":
