@@ -255,7 +255,7 @@ def build_csv_from_xml(xml_string):
             round.mark_clear.append(region)
           if letter == "?":
             round.mark_possible.append(region)
-          if letter == "X":
+          if letter == "!":
             round.mark_confirm.append(region)
 
       
@@ -294,7 +294,7 @@ def build_csv_from_xml(xml_string):
         asset=getAsset(test_id,pid,round_num,unit)
         asset.part_uid = game.part_uid
         if 'scan' in command_tag.attrib:
-  #         scan="1,6,11,16,21" result="0,0,?,0,X"
+  #         scan="1,6,11,16,21" result="0,0,?,0,!"
           scan = command_tag.attrib['scan'].split(',')
           scan_result = command_tag.attrib['result'].split(',')
           for i in range(len(scan_result)):
@@ -302,7 +302,7 @@ def build_csv_from_xml(xml_string):
               asset.mark_clear.append(scan[i])
             if scan_result[i] == '?':
               asset.mark_possible.append(scan[i])
-            if scan_result[i] == 'X':
+            if scan_result[i] == '!':
               asset.mark_confirm.append(scan[i])
         try:
           round.time = time
