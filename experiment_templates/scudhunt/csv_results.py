@@ -384,7 +384,7 @@ def build_csv_from_xml(xml_string):
         for a_id in sorted(r_table):
           a = r_table[a_id]
           ret.write("%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (
-            a.part_uid, a.id, a.pid, (a.round_num-first_actual_round-1), a.asset_num, a.region,
+            a.part_uid, a.id, a.pid, (a.round_num-first_actual_round+1), a.asset_num, a.region,
             ';'.join(map(str, a.mark_clear)),';'.join(map(str, a.mark_possible)),';'.join(map(str, a.mark_confirm)),
             ))
   return ret

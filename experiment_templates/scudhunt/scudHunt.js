@@ -163,7 +163,7 @@ function setDifficulty(d) {
   }
   
   if (!useTutorial) { // in AMT only do the story for tutorial round
-    if (IS_AMT && !IS_PREVIEW) {
+    if (IS_AMT && !IS_AMT_PREVIEW) {
       skipAllInstructions = true;      
     }
   }
@@ -955,7 +955,7 @@ function initialize() {
     allSeries.splice(0, 1);
     $("#series_tutorial").hide();
   } else {
-    if (IS_AMT && !IS_PREVIEW) {
+    if (IS_AMT && !IS_AMT_PREVIEW) {
       useAgeGenderForm = true;      
     }    
   }
