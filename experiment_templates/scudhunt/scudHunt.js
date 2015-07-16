@@ -1406,11 +1406,13 @@ function showAirstrike() {
   // payment function
   if (IS_AMT && !IS_AMT_PREVIEW) {
     // tutorial
-    if (currentRound > PRACTICE_ROUND && useTutorial && usePractice) {
+    if (currentRound > PRACTICE_ROUND) {
       if (numHits >= 1 ) {
         assignQualification("Shadow Force Training");        
       }
-      payAMT(true,0);
+      if (!useActual) {
+        payAMT(true,0);        
+      }
     }
     
     // actual

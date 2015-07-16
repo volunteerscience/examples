@@ -130,6 +130,7 @@ def build_csv_from_xml(xml_string):
       self.pid = part_pid
       self.round_num = round_num
       self.asset_num = asset_num
+      self.region = -1
       self.mark_clear = []
       self.mark_possible = []
       self.mark_confirm = []
@@ -293,6 +294,8 @@ def build_csv_from_xml(xml_string):
         game.assets[int(command_tag.attrib['unit'])] = True
         asset=getAsset(test_id,pid,round_num,unit)
         asset.part_uid = game.part_uid
+        if 'region' in command_tag.attrib:
+          asset.region = command_tag.attrib['region']
         if 'scan' in command_tag.attrib:
   #         scan="1,6,11,16,21" result="0,0,?,0,!"
           scan = command_tag.attrib['scan'].split(',')
@@ -365,7 +368,7 @@ def build_csv_from_xml(xml_string):
   
   ret.write("\n\n")  
   ret.write("Player Assets in Each Round\n")
-  ret.write("Participant,GameNum,PlayerNum,Round,AssetType,ReportClear,ReportPossible,ReportConfirm\n")
+  ret.write("Participant,GameNum,PlayerNum,Round,AssetType,Region,ReportClear,ReportPossible,ReportConfirm\n")
   for game_id in sorted(asset_d):
     if not getGame(game_id, 1).useActual:
       continue
@@ -380,8 +383,8 @@ def build_csv_from_xml(xml_string):
         
         for a_id in sorted(r_table):
           a = r_table[a_id]
-          ret.write("%s,%s,%s,%s,%s,%s,%s,%s\n" % (
-            a.part_uid, a.id, a.pid, (a.round_num-first_actual_round-1), a.asset_num,
+          ret.write("%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (
+            a.part_uid, a.id, a.pid, (a.round_num-first_actual_round-1), a.asset_num, a.region,
             ';'.join(map(str, a.mark_clear)),';'.join(map(str, a.mark_possible)),';'.join(map(str, a.mark_confirm)),
             ))
   return ret
