@@ -1,0 +1,41 @@
+test-wrapper {
+  background-color: #eee;
+  font-family: sans-serif;
+}
+
+#jspsych_target {
+  width: 50%;
+  background-color: #eee;
+  border: 0px solid black;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#jspsych_target.box {
+  width: 525px;
+  height: 420px;
+  padding: 25px;
+  background-color: white;
+  border: 3px solid black;
+  box-sizing: unset;
+}
+
+#jspsych_target>.jspsych-num-estimate-question {
+    margin-left: 10px;
+}
+
+#jspsych_target>#instructions {
+    margin-left: 10px;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+#jspsych_target>button {
+    margin-left: 10px;
+}
+
+#jspsych_target img {
+  width: 525px;
+  height: 420px;
+  box-sizing: unset;
+}
