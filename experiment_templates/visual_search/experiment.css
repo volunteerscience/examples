@@ -4,7 +4,6 @@ test-wrapper {
 }
 
 #jspsych_target {
-  width: 50%;
   background-color: #eee;
   border: 0px solid black;
   margin-left: auto;
@@ -28,6 +27,7 @@ test-wrapper {
     margin-left: 10px;
     font-size: 1.5em;
     text-align: center;
+    line-height: 1em;
 }
 
 #jspsych_target>button {
@@ -38,4 +38,10 @@ test-wrapper {
   width: 525px;
   height: 420px;
   box-sizing: unset;
+}
+
+.i_reminder {
+  display: none;
+  text-align:center;
+  font-size: 120%;
 }

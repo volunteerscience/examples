@@ -61,7 +61,7 @@ var debrief = "<div id='instructions'><p>Thank you for participating!</p>";
 
 var instruction_block = {
     type: "html",
-    pages: [{url: "/attachment/welcome.html", cont_key: 13},{url: "/attachment/instructions.html",cont_key: 13},{url: "/attachment/practice.html",cont_key: 77}]
+    pages: [{url: "/attachment/welcome.html?ver=1", cont_key: 13},{url: "/attachment/instructions.html?ver=1",cont_key: 13},{url: "/attachment/practice.html?ver=1",cont_key: 77}]
 };
 var test_block = {type: "single-stim", stimuli: stimuli_random_order, choices: [90,77], timing_post_trial: 500};
 var count_block = {
@@ -80,7 +80,7 @@ var debrief_block = {};
 
 function initialize() {
   if (IS_AMT && !IS_AMT_PREVIEW) {
-    debrief += "<p>Then Press Complete Hit to finish.</div>";
+    debrief += "<p>Press Complete Hit to finish.</div>";
   }
   
   debrief_block = {
@@ -91,5 +91,13 @@ function initialize() {
   jsPsych.init({
       display_element: $('#jspsych_target'),
       experiment_structure: [instruction_block, test_block, count_block, debrief_block],
+      on_trial_start: function() {
+        var p = jsPsych.progress();
+        if (p.current_chunk == 2) {
+          $(".i_reminder").hide();
+        }
+//        log(p.current_chunk);
+//        var o = jsPsych.currentTrial();
+      }
   });
 }
