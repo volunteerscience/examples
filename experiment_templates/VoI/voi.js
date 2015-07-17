@@ -310,13 +310,13 @@ function getCard(card) {
 //  return "<img id=\"card" + card + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + card + ".png\">";
   
   var vals = getCardValues(card);
-  
+
   return '<div id="card'+card+'" draggable="true" ondragstart="drag(event)" class="card"><table>'+
-         '<tr><th>Source Reliable</th><th>Information Content</th><th>Latency</th></tr><tr>'+
-           '<td title="'+description[0][vals[0]][2]+'"><div class="card_val">'+description[0][vals[0]][0]+'</div><div class="card_val_desc">'+description[0][vals[0]][1]+'</div></td>'+
-           '<td title="'+description[1][vals[1]][2]+'"><div class="card_val">'+description[1][vals[1]][0]+'</div><div class="card_val_desc">'+description[1][vals[1]][1]+'</div></td>'+
-           '<td><div class="card_val">'+description[2][vals[2]][0]+'</div></td>'+
-         '</tr></table></div>';
+          '<tr><th>Source Reliable</th><th>Information Content</th><th>Latency</th></tr><tr>'+
+            '<td title="'+description[0][vals[0]][2]+'"><div class="card_val">'+description[0][vals[0]][0]+'</div><div class="card_val_desc">'+description[0][vals[0]][1]+'</div></td>'+
+            '<td title="'+description[1][vals[1]][2]+'"><div class="card_val">'+description[1][vals[1]][0]+'</div><div class="card_val_desc">'+description[1][vals[1]][1]+'</div></td>'+
+            '<td><div class="card_val">'+description[2][vals[2]][0]+'</div></td>'+
+          '</tr></table></div>';
 }
 
 function dealHand(){
@@ -361,8 +361,7 @@ function dealHand(){
       $('#div'+(i+7)).html("");
     }
     
-    
-    
+    $('.card').bind('selectstart', function(){this.dragDrop(); return false;});    
     
     if(handSize == 7){
 //      document.getElementById('div1').innerHTML = "<img id=\"card" + hand[0] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[0] + ".png\">";
@@ -415,7 +414,8 @@ function dealHand(){
   }
 }
 
-
+function initialize() {
+}
 
 function allowDrop(ev) {
   if ($(ev.target).hasClass("candrop")) {  // prevent double-drop
