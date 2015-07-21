@@ -16,7 +16,7 @@ test-wrapper {
   padding: 25px;
   background-color: white;
   border: 3px solid black;
-  box-sizing: unset;
+  box-sizing: content-box;
 }
 
 #jspsych_target>.jspsych-num-estimate-question {

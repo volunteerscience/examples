@@ -78,7 +78,17 @@ var count_block = {
 };
 var debrief_block = {};
 
+function preloadImages(arrayOfImages) {
+  $(arrayOfImages).each(function(){
+      $('<img/>')[0].src = this;
+      // Alternatively you could use:
+      // (new Image()).src = this;
+  });
+}
+
 function initialize() {
+  preloadImages(stimuli_random_order);
+  
   if (IS_AMT && !IS_AMT_PREVIEW) {
     debrief += "<p>Press Complete Hit to finish.</div>";
   }
