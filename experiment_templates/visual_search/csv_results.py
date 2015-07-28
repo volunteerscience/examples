@@ -18,8 +18,11 @@ def build_csv_from_xml(xml_string):
   # *********** create tables ***********
   for test in root.findall('test'):
     test_id = int(test.attrib['id'])
+    subject_id = None
+    for subject in test.findall('subject'):
+      subject_id = subject.attrib['uid']
     for submit in test.findall('submit'):
-      ret.write("test,%s\n" % test_id)
+      ret.write("test,%s,%s\n" % (test_id,subject_id))
       ret.write(submit.text)
       ret.write("\n")
       break;
