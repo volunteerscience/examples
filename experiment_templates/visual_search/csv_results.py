@@ -24,8 +24,8 @@ def build_csv_from_xml(xml_string):
       subject_id = subject.attrib['uid']
     if subject_id in repeat_subjects:
       continue
-    repeat_subjects[subject_id] = True  
     for submit in test.findall('submit'):
+      repeat_subjects[subject_id] = True  
       ret.write("test,%s,%s\n" % (test_id,subject_id))
       ret.write(submit.text)
       ret.write("\n")
