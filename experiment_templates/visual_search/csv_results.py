@@ -14,6 +14,7 @@ def build_csv_from_xml(xml_string):
   import xml.etree.ElementTree as ET
 
   root = ET.fromstring(xml_string)
+  repeat_subjects = {}
   
   # *********** create tables ***********
   for test in root.findall('test'):
@@ -21,11 +22,14 @@ def build_csv_from_xml(xml_string):
     subject_id = None
     for subject in test.findall('subject'):
       subject_id = subject.attrib['uid']
+    if subject_id in repeat_subjects:
+      continue
+    repeat_subjects[subject_id] = True  
     for submit in test.findall('submit'):
       ret.write("test,%s,%s\n" % (test_id,subject_id))
       ret.write(submit.text)
       ret.write("\n")
-      break;
+      break
   return ret
 
 if __name__ == "__main__":
