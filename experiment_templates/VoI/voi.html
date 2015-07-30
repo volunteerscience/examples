@@ -29,9 +29,63 @@
     </div>
   </div>
 
+  <div id="bgrnd" style="display:none">
+    <h2 style="margin: auto; width: 50%; "><br><br>Game Instructions:</h2>
+    <div style="margin: auto; width: 50%; font-size: large;">
+    <p>During the game, you will use your judgment to rank a series of cards, each card
+       represents a single piece of information available to you while performing your
+       job.  The cards are divided into 3 decks: training, emergency, and planning. Each
+       deck, other than training, consists of 40 hands of 5 or 7 cards. The training deck 
+       has 3 hands as its only use is to familiarize you with the game.  You will rank each
+       card based upon the deck tempo (where) and 3 card attributes: source reliablity (who),
+       information content (what), and latency (when).  These values are further explained below.</p>
+       
+    <p>
+    <u>Deck Tempo</u>:
+        <ul>
+          <li>Training:  For training purposes only.  No extra consideration beyond 
+              the card attributes is required.<br></li>
+          <li>Emergency:  The tempo of the emergency deck is an emergency situation, 
+              for example a firefighter battling a fire.  The situation is volatile, 
+            you need up to the minute information and decisions must be made quickly.  
+            You must consider these conditions while ranking the cards.<br></li>
+          <li>Planning:  The tempo of the planning deck is long term planning, for 
+              example a fire marshal planning a fire prevention campaign.  You have 
+            the time and resources to consider trends and evaluate information 
+            carefully before committing to a plan.  Again, be sure to consider 
+            these conditions as you rank the cards.<br></li>
+        </ul> 
+    </p>
+    <p><u>Information Content</u>:<br><br><img src="/attachment/icdef.png" width=40% /><br><br></p>
+    <p><u>Source Reliability</u>:<br><br><img src="/attachment/srdef.png" width=40% /><br><br></p>
+    
+    <p>During the game, the 3 decks are accessed in the order training, emergency, and planning.
+         When you are ready to view the first hand in a deck, press the Begin button on the game
+       screen.  Once a hand is dealt, this button is grayed out until all the hands in the deck
+       are finished. The red text at the top of the page always reminds you which deck you are 
+       currently playing.</p>
+
+        <p>To play the hand, consider the attributes on each card and then drag and drop the cards from
+       the Given Data Set column to the Ranked Data Set column to arrange the cards from highest to
+       lowest VoI (see picture below). During this ranking process, you may return all the cards to their original
+       state in the Given Data Set column by pressing the Reset button. This allows you to restart the
+       ranking process. When you are satisfied with the ranking of the hand, you can press the Enter
+       Scores button. This action finishes the data collection on the current hand and deals a new hand
+       (unless the deck is empty). Consequently, the Count box will increment by one to indicate the current
+       hand in play. If the deck is empty, the web application sets up the next deck (unless all decks are finished).<br><br>
+       <img src="/attachment/inst1.png" width=100% /><br><br></p>
+
+    </div>
+    
+  
+    <div style="margin: auto; width: 100%; text-align: center; font-size: large;">
+      <a id="i_next" href="">Next</a>  
+    </div>
+  </div>
+  
   <div id="testContainer" hidden style="margin-left:auto;margin-right:auto;width:1236px;">
     <a name="TEST"></a>
-    <h1 id="titleName" style="text-align:center; color:Red">Training Session</h1>
+    <h1 id="titleName" style="text-align:center; color:Red">Training</h1>
 
     <div id="givenData" style="width:362px;float:left;">
       <h1 style="text-align:center;">Given Data Set</h1>
@@ -67,8 +121,8 @@
     </div>
 
     <div id="controls" style="width:362px;float:left;">
-      <textarea style="height: 115px; width: 258px; resize: none" readonly>Instructions: Please rank the Information Cards in the Left Column into the Spaces in the Right Column by dragging and dropping the Cards into the appropriate slot.
-      </textarea> 
+      <p style="max-width:210px;">Instructions: Please rank the Information Cards in the Left Column into the Spaces in the Right Column by dragging and dropping the Cards into the appropriate slot.
+      </p> 
       <p>
          <input type='button' id='session' autocomplete="off" style="height: 75px; width: 156px" value='Begin Training Session' onclick="newSession();" />
       </p>
@@ -79,18 +133,23 @@
          <input type='button' id='reset' autocomplete="off" style="height: 75px; width: 156px" value='Reset' onclick="resetHand();"  />
       </p>
       <p>
-         <input type='button' id='exit' autocomplete="off" style="height: 75px; width: 156px" value='Exit' onclick="exitTest();"  />
-      </p>
-      <p>
          <input type='button' id='help' autocomplete="off" style="height: 75px; width: 156px" value='Help' onclick="help();"  />
       </p>
       <p>
-         Count: <input type='text' autocomplete="off" id="counter" style="height: 29px; width: 69px" value='0' readonly/>
+         Count: <span id="counter">1</span> / <span id="deck_length">40</span>
+      </p>
+      <p>
+         Deck: <span id="deck_count">1</span> / <span id="decks_count">3</span>
       </p>
     </div>
   </div>
   
-  <div style="clear:both;margin-left:auto;margin-right:auto;width:720px;" id="submissionContainer" >
+  <div style="clear:both;margin-left:auto;margin-right:auto;width:720px; display: None;" id="thankyou">
+    <h1>Thank you for your participation.</h1>
+    <h2 id="amt_msg">Click the button above that says "Complete Hit" to continue.</h2>
+  </div>
+  
+  <div style="clear:both;margin-left:auto;margin-right:auto;width:720px; display: None;" id="submissionContainer"  >
 
 
     <form id='form' action='voi_results.php' method="post" >
@@ -391,12 +450,12 @@
         <p>
           Education completed: <select autocomplete="off" id="education" name='education' />
             <option value="none" selected="selected">None</option>          
-            <option value="elem">Elementary</option>          
+            <option value="8">Doctoral (Ph.D.) degree</option>          
+            <option value="6">Other graduate degree</option>          
+            <option value="4">Other college degree</option>          
+            <option value="2">College courses, but no degree</option>          
             <option value="hs">High School</option>          
-            <option value="2">Community College (2 years)</option>          
-            <option value="4">Bachelors (4 years)</option>          
-            <option value="6">Masters</option>          
-            <option value="8">PhD</option>          
+            <option value="elem">Other</option>          
           </select>
         </p>
         <p>

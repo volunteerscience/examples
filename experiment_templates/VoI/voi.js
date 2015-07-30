@@ -11,6 +11,7 @@ deck1[2] = [15,16,17,18,19,20,21];
 
 deck2[0] = [23,69,34,60,75];
 deck2[1] = [22,45,66,42,26,58,70];
+/*
 deck2[2] = [48,14,3,4,49,70,72];
 deck2[3] = [51,62,19,75,18];
 deck2[4] = [75,8,60,41,68,14,51];
@@ -49,11 +50,13 @@ deck2[36] = [34,52,75,63,35,47,20];
 deck2[37] = [37,65,66,35,2,74,54];
 deck2[38] = [52,28,23,26,33,13,61];
 deck2[39] = [34,5,36,31,16];
+*/
 
 deck3[0] = [18,5,54,24,70,25,38];
 deck3[1] = [15,53,17,46,59];
 deck3[2] = [24,57,58,9,70,2,54];
 deck3[3] = [52,1,6,71,8,25,62];
+/*
 deck3[4] = [74,32,36,75,65,62,15];
 deck3[5] = [29,32,42,68,38,40,33];
 deck3[6] = [70,48,72,56,27];
@@ -90,8 +93,11 @@ deck3[36] = [73,25,16,71,49];
 deck3[37] = [14,11,44,5,33];
 deck3[38] = [19,42,9,54,31];
 deck3[39] = [28,51,14,30,36,66,2];
+*/
+
 deck4[0] = [9,22,3,17,4,13,50];
 deck4[1] = [45,22,60,53,39];
+/*
 deck4[2] = [73,17,7,2,67];
 deck4[3] = [21,50,46,1,5,14,33];
 deck4[4] = [74,59,23,70,58];
@@ -130,8 +136,9 @@ deck4[36] = [42,19,11,38,67];
 deck4[37] = [8,37,26,69,48,31,61];
 deck4[38] = [18,30,53,13,31,27,60];
 deck4[39] = [27,20,62,3,46];
+*/
 
-var deckNames = ["Training Session","Tactical Session",/*"Strategic Session",*/"Operational Session"];
+var deckNames = ["Training","Emergency",/*"Strategic Session",*/"Planning"];
 var decks = [deck1,deck2,/*deck3,*/deck4];
     
     
@@ -164,6 +171,7 @@ var description = [[
 
 
 function newSession(){
+  log("newSession:"+deckCount);
   handCount = 0;
   
   switch(deckCount){
@@ -174,7 +182,8 @@ function newSession(){
       submit(deckNames[deckCount]);
       results[resultsIndex++] = deckNames[deckCount];
       document.getElementById('session').setAttribute("disabled","true");
-      document.getElementById('scores').removeAttribute("disabled");
+      document.getElementById('scores').setAttribute("disabled", "true");
+//      document.getElementById('scores').removeAttribute("disabled");
       dealHand();
       break;
     default:
@@ -191,10 +200,20 @@ function printResults(){
     resultString += results[i] + "\n";
 }
 
+function initialize() {
+  $("#i_next").click(function(event) {
+    event.preventDefault();
+    $("#bgrnd").hide();
+    document.getElementById('testContainer').removeAttribute("hidden");  
+  });
+  
+  $('#submissionContainer').show();
+}
+
 function beginTest(){
   submit('Demographics : '+$("#locale").val()+' "'+$("#occupation").val()+'" '+$("#age").val()+' '+$("#gender").val()+' '+$("#education").val()+' '+$("#military").val()); 
-  document.getElementById('testContainer').removeAttribute("hidden");
   document.getElementById('submissionContainer').setAttribute("hidden",true);  
+  $("#bgrnd").show();
 }
 
 function exitTest(){
@@ -206,26 +225,37 @@ function editDemo(){
   document.getElementById('demoBtn').setAttribute("hidden",true);
 }
 
-function beginResults(){
+function beginResults() {
+  document.getElementById('demographics').setAttribute("hidden",true);
+  document.getElementById('testContainer').setAttribute("hidden",true);
+  $("#thankyou").show();
+  if (IS_AMT) {
+    $("#amt_msg").show();
+  }
+  payAMT(true,0.0);
+}
+  
+function beginResults2() {
   printResults();
   document.getElementById('submissionContainer').removeAttribute("hidden");
   document.getElementById('results').removeAttribute("hidden");
   document.getElementById('demographics').setAttribute("hidden",true);
   document.getElementById('testContainer').setAttribute("hidden",true);
-  document.getElementById('resultsText').innerHTML =resultString;
-  moveToResults ();    
+  document.getElementById('resultsText').innerHTML=resultString;
 }
 
 function endSession(){
-
+  log("endSession:"+deckCount+" "+decks.length);
+  if (deckCount >= decks.length) {
+    beginResults();
+    return;
+  }
+  
   results[resultsIndex++] = "\n";
-  <!-- test code -->
-  <!--beginResults();-->
-  <!-- test code -->
-
-  document.getElementById('counter').setAttribute("value","0");
+  
   document.getElementById('session').removeAttribute("disabled");
   document.getElementById('session').setAttribute("value", "Begin " + deckNames[deckCount] );
+  
   document.getElementById('scores').setAttribute("disabled", "true");
   document.getElementById('titleName').innerHTML = deckNames[deckCount];
   
@@ -234,30 +264,31 @@ function endSession(){
   }
 }
 
+function isAllRanked() {
+  return !(document.getElementById('div1').hasChildNodes() ||
+  document.getElementById('div2').hasChildNodes() ||
+  document.getElementById('div3').hasChildNodes() ||
+  document.getElementById('div4').hasChildNodes() ||
+  document.getElementById('div5').hasChildNodes() ||
+  document.getElementById('div6').hasChildNodes() ||
+  document.getElementById('div7').hasChildNodes());
+}
+
 function nextHand(){
   endTime = new Date();
   elapsedTime = Math.round((endTime.getTime() - startTime.getTime())/1000);
-  <!-- console.log(elapsedTime); -->
-  
-  if (document.getElementById('div1').hasChildNodes() ||
-    document.getElementById('div2').hasChildNodes() ||
-    document.getElementById('div3').hasChildNodes() ||
-    document.getElementById('div4').hasChildNodes() ||
-    document.getElementById('div5').hasChildNodes() ||
-    document.getElementById('div6').hasChildNodes() ||
-    document.getElementById('div7').hasChildNodes()){
+  if (!isAllRanked()){
     window.alert("Please rank order all cards before proceeding.");
-    }
-    else{
-      gatherRankedSequence();
-      dealHand();
-    }  
+  } else {
+    gatherRankedSequence();
+    dealHand();
+  }  
 }
 
 function resetHand(){
   handCount--;
   resultsIndex--;
-  dealHand();  
+  dealHand(); 
 }
 
 function gatherRankedSequence(){
@@ -301,7 +332,7 @@ function getCardValues(card) {
   
   var ret = [rel, ic, lat];
   
-  log("card:"+card+" ret:"+ret);
+//  log("card:"+card+" ret:"+ret);
   
   return ret;
 }
@@ -320,12 +351,16 @@ function getCard(card) {
 }
 
 function dealHand(){
-
+  document.getElementById('scores').setAttribute("disabled", "true");
   if(handCount >= decks[deckCount].length) {
     deckCount++;          
     endSession();
   }
   else{
+    $('#counter').html(handCount);
+    $('#deck_length').html(decks[deckCount].length);
+    $('#deck_count').html(deckCount+1);
+    $('#decks_count').html(deckNames.length);
 
     var hand;
     switch(deckCount){
@@ -373,7 +408,7 @@ function dealHand(){
 //      document.getElementById('div7').innerHTML = "<img id=\"card" + hand[6] + "\" draggable=\"true\" ondragstart=\"drag(event)\" src=\"images/card" + hand[6] + ".png\">";
 //      document.getElementById('div6').removeAttribute("hidden");
 //      document.getElementById('div7').removeAttribute("hidden");
-      document.getElementById('label5').innerHTML = "5th Lowest";
+      document.getElementById('label5').innerHTML = "5th Highest";
 //      document.getElementById('label6').removeAttribute("hidden");
 //      document.getElementById('label7').removeAttribute("hidden");
 //      document.getElementById('div8').innerHTML = "";
@@ -409,12 +444,10 @@ function dealHand(){
     }
     gatherOriginalSequence();
     handCount++;
-    document.getElementById('counter').setAttribute("value",handCount);
+    $("#counter").html(handCount);
+//    document.getElementById('counter').setAttribute("value",handCount);
     startTime = new Date();
   }
-}
-
-function initialize() {
 }
 
 function allowDrop(ev) {
@@ -434,10 +467,14 @@ function drop(ev) {
   if(!$(ev.target).hasClass("card")){
     ev.target.appendChild(document.getElementById(data));
   }  
+  
+  if (isAllRanked()) {
+    document.getElementById('scores').removeAttribute("disabled");    
+  } else {
+    document.getElementById('scores').setAttribute("disabled", "true");
+  }
 }
 
-function moveToResults (){window.location.hash="RESULTS";}
-    
 function help() {
   $('#helpCard').fadeIn();
 }

@@ -125,3 +125,11 @@
 #helpCard tr td:last-child {
   font-weight: bold;  
 }
+
+#thankyou {
+  text-align: center;
+}
+
+#amt_msg {
+  display: none;
+}
