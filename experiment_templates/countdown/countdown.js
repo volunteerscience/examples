@@ -8,7 +8,7 @@
  * 
  * Routinely call advanceCountdowns();
  * 
- * Implement countdownExpried(id) to be notified when it's done.
+ * Implement countdownExpired(id) to be notified when it's done.
  * 
  * Can also implement countdownUpdate(id,millis,clockString)
  * 
@@ -64,10 +64,10 @@ function updateCountdown(id) {
     $('#'+id+' .countdown-progress').css("width",fraction+"%");
   } else {
     $('#'+id+' .countdown-progress').css("width","0");
+    delete countdowns[id];
     if(typeof countdownExpired == 'function') {
       countdownExpired(id);
     }
-    delete countdowns[id];
   }
   $('#'+id+' .countdown-clock').html(clockString);
   if (typeof countdownUpdate == "function") {
