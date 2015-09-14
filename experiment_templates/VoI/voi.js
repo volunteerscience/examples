@@ -1,7 +1,7 @@
 var deck1 = new Array();
 var deck2 = new Array();
 var deck3 = new Array();
-var deck4 = new Array();
+//var deck4 = new Array();
 var results = new Array();
 var resultsIndex = 0;
 
@@ -11,7 +11,6 @@ deck1[2] = [15,16,17,18,19,20,21];
 
 deck2[0] = [23,69,34,60,75];
 deck2[1] = [22,45,66,42,26,58,70];
-/*
 deck2[2] = [48,14,3,4,49,70,72];
 deck2[3] = [51,62,19,75,18];
 deck2[4] = [75,8,60,41,68,14,51];
@@ -50,13 +49,11 @@ deck2[36] = [34,52,75,63,35,47,20];
 deck2[37] = [37,65,66,35,2,74,54];
 deck2[38] = [52,28,23,26,33,13,61];
 deck2[39] = [34,5,36,31,16];
-*/
 
 deck3[0] = [18,5,54,24,70,25,38];
 deck3[1] = [15,53,17,46,59];
 deck3[2] = [24,57,58,9,70,2,54];
 deck3[3] = [52,1,6,71,8,25,62];
-/*
 deck3[4] = [74,32,36,75,65,62,15];
 deck3[5] = [29,32,42,68,38,40,33];
 deck3[6] = [70,48,72,56,27];
@@ -93,11 +90,10 @@ deck3[36] = [73,25,16,71,49];
 deck3[37] = [14,11,44,5,33];
 deck3[38] = [19,42,9,54,31];
 deck3[39] = [28,51,14,30,36,66,2];
-*/
 
+/*
 deck4[0] = [9,22,3,17,4,13,50];
 deck4[1] = [45,22,60,53,39];
-/*
 deck4[2] = [73,17,7,2,67];
 deck4[3] = [21,50,46,1,5,14,33];
 deck4[4] = [74,59,23,70,58];
@@ -138,8 +134,8 @@ deck4[38] = [18,30,53,13,31,27,60];
 deck4[39] = [27,20,62,3,46];
 */
 
-var deckNames = ["Training","Emergency",/*"Strategic Session",*/"Planning"];
-var decks = [deck1,deck2,/*deck3,*/deck4];
+var deckNames = ["Training","Emergency","Planning"];
+var decks = [deck1,deck2,deck3 /*,deck4*/];
     
     
 var deckCount = 0;
@@ -362,23 +358,23 @@ function dealHand(){
     $('#deck_count').html(deckCount+1);
     $('#decks_count').html(deckNames.length);
 
-    var hand;
-    switch(deckCount){
-      case 0:
-        hand = deck1[handCount];
-        break;
-      case 1:
-        hand = deck2[handCount];
-        break;
-      case 2:
-        hand = deck3[handCount];
-        break;
-      case 3:
-        hand = deck4[handCount];
-        break;
-      default:
-        break;
-    }
+    var hand = decks[deckCount][handCount];
+//    switch(deckCount){
+//      case 0:
+//        hand = deck1[handCount];
+//        break;
+//      case 1:
+//        hand = deck2[handCount];
+//        break;
+//      case 2:
+////        hand = deck3[handCount];
+////        break;
+//      case 3:
+//        hand = deck4[handCount];
+//        break;
+//      default:
+//        break;
+//    }
     handSize = hand.length;
     
     for (var i = 1; i <= 7; i++) {
