@@ -190,7 +190,7 @@ def build_csv_from_xml(xml_string):
     useActual = False
     if 'useActual' in test.attrib:
       useActual = test.attrib['useActual'] == 'true'
-    print 'useActual:%s' % useActual
+#     print 'useActual:%s' % useActual
     
     for subject in test.findall('subject'):
       uid = subject.attrib['uid']
@@ -310,7 +310,7 @@ def build_csv_from_xml(xml_string):
       duration = 0.0
       for duration_tag in submit.findall('duration'): # <duration seconds="55.3" />
         duration = float(duration_tag.attrib['seconds'])
-        print "duration:%s" % duration
+#         print "duration:%s" % duration
     
       for command_tag in submit.findall('command'):
         unit=int(command_tag.attrib['unit'])
