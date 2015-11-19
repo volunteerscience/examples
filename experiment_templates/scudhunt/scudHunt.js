@@ -1270,6 +1270,8 @@ function isMidSeries() {
 var commandHistory = new Array();
 var submitted = false;
 var guess = new Array();
+var roundDuration = 0;
+var roundStartTime = new Date(); // set in initRound()
 function submitMove() {
   tips.hide();
   try { tips.completeTip(tips.getTipByUid(2).index); } catch (err) {} // End Turn Tip
@@ -1285,6 +1287,7 @@ function submitMove() {
   }
   
   if (submitted) return;
+  roundDuration = new Date() - roundStartTime;
   submitted = true;
   if (currentRound - ACTUAL_ROUND > numRounds) {
     $('#go').fadeOut();
@@ -1296,7 +1299,7 @@ function submitMove() {
   $('#go').html("Waiting for Team");
 
   Math.seedrandom(seed * myid * (currentRound + 7));
-  var submission = "";
+  var submission = ''; 
   var myUnits = getUnits(myid);
 
   for (idx in myUnits) {
@@ -1332,6 +1335,7 @@ function submitMove() {
     }
   }
 
+  submission += '<duration seconds="'+(roundDuration/1000.0)+'" />';
   submit(submission);
 
   if (shouldRunBots()) {
@@ -1360,6 +1364,7 @@ function q1(confidence) {
       guess.push(unit.nextRegion.id);
     }
   }
+  submission += '<duration seconds="'+(roundDuration/1000.0)+'" />';
   submit(submission);
   if (shouldRunBots()) {
     for (var i = 1; i <= numPlayersAndBots; i++) {
@@ -1675,6 +1680,7 @@ function fetchResponse(val, participant, round, index) {
     var done = true;
     for (var pid = 1; pid <= numPlayersAndBots; pid++) {
       if (typeof commandHistory[currentRound][pid] === "undefined") {
+        log("waiting for "+pid);
         done = false;
         break;
       }
@@ -1904,7 +1910,7 @@ var cancelEndTurnTip = null;
 var cancelDeployAssetTip = null;
 
 function initRound() {
-  // log("initRound:"+currentRound);
+  log("initRound:"+currentRound);
   if (currentRound - ROUND_ZERO <= numRounds) {
     // normal round
     if (use1Ptips) {
@@ -2025,7 +2031,8 @@ function initRound() {
     $("#timer").hide();
   } else {
     $("#timer").show();
-    setCountdown("timer", roundDuration);        
+    setCountdown("timer", roundDuration);
+    roundStartTime = new Date();
   }
 }
 

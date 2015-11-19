@@ -51,7 +51,7 @@ def build_csv_from_xml(xml_string):
       self.part_uid = "bot"
       self.difficulty = -1
       self.round_duration = -1
-      self.attack_time = 0
+      self.attack_time = 0 # timestamp of the attack complete
       self.rank_before = -1
       self.rank_after = -1
       self.useActual = False
@@ -82,6 +82,20 @@ def build_csv_from_xml(xml_string):
       return sorted(ret)
       
     def totalTime(self):
+      # new way 11/19/15:
+      # sum the round durations
+      sum = 0.0      
+      durationMissing = False
+      for roundNum in range(first_actual_round, last_actual_round+1):
+        r = getRound(self.id, self.pid, roundNum)
+        if r.duration > 0.0:
+          sum += r.duration
+        else:
+          durationMissing = True
+      if not durationMissing and sum > 0.0:
+        return sum    
+      
+      # old way, attackTime-startTime      
       try:
         return g.attack_time-game_start_d[self.id]
       except:
@@ -107,9 +121,15 @@ def build_csv_from_xml(xml_string):
       self.mark_clear = []
       self.mark_possible = []
       self.mark_confirm = []
-      self.time = 0
+      self.time = 0 # timestamp on the round
+      self.duration = 0.0
       
     def getRoundDuration(self):
+      # post 11/19/15 the results have durations
+      if self.duration > 0.0:
+        return self.duration
+      
+      # old ones have to calcualate from server times
       if self.round_num == first_actual_round:
         return self.time-game_start_d[self.id]
       return self.time-getRound(self.id,self.pid,self.round_num-1).time
@@ -170,7 +190,7 @@ def build_csv_from_xml(xml_string):
     useActual = False
     if 'useActual' in test.attrib:
       useActual = test.attrib['useActual'] == 'true'
-
+    print 'useActual:%s' % useActual
     
     for subject in test.findall('subject'):
       uid = subject.attrib['uid']
@@ -287,7 +307,10 @@ def build_csv_from_xml(xml_string):
         except:
           pass
         
-
+      duration = 0.0
+      for duration_tag in submit.findall('duration'): # <duration seconds="55.3" />
+        duration = float(duration_tag.attrib['seconds'])
+        print "duration:%s" % duration
     
       for command_tag in submit.findall('command'):
         unit=int(command_tag.attrib['unit'])
@@ -309,6 +332,7 @@ def build_csv_from_xml(xml_string):
               asset.mark_confirm.append(scan[i])
         try:
           round.time = time
+          round.duration = duration
         except:
           pass    
       for confidence_tag in submit.findall('confidence'):
