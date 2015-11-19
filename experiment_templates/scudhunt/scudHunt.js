@@ -1270,7 +1270,7 @@ function isMidSeries() {
 var commandHistory = new Array();
 var submitted = false;
 var guess = new Array();
-var roundDuration = 0;
+var currentRoundDuration = 0;
 var roundStartTime = new Date(); // set in initRound()
 function submitMove() {
   tips.hide();
@@ -1287,7 +1287,7 @@ function submitMove() {
   }
   
   if (submitted) return;
-  roundDuration = new Date() - roundStartTime;
+  currentRoundDuration = new Date() - roundStartTime;
   submitted = true;
   if (currentRound - ACTUAL_ROUND > numRounds) {
     $('#go').fadeOut();
@@ -1335,7 +1335,7 @@ function submitMove() {
     }
   }
 
-  submission += '<duration seconds="'+(roundDuration/1000.0)+'" />';
+  submission += '<duration seconds="'+(currentRoundDuration/1000.0)+'" />';
   submit(submission);
 
   if (shouldRunBots()) {
@@ -1364,7 +1364,7 @@ function q1(confidence) {
       guess.push(unit.nextRegion.id);
     }
   }
-  submission += '<duration seconds="'+(roundDuration/1000.0)+'" />';
+  submission += '<duration seconds="'+(currentRoundDuration/1000.0)+'" />';
   submit(submission);
   if (shouldRunBots()) {
     for (var i = 1; i <= numPlayersAndBots; i++) {
