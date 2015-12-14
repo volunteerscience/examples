@@ -9,7 +9,16 @@ def build_csv(exp, tests, part_data=True, section_data=False, summary=False, var
 
 def build_csv_from_xml(xml_string):
   from cStringIO import StringIO
+  import csv
+  import re
+  
   ret = StringIO()
+  w = csv.writer(ret, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+  
+  labels = ["Country", "Occupation", "Age", "Gender", "Education", "Military"] 
+  re_demographic = re.compile('Demographics\s:\s(\S+)\s"(\S*)"\s(\d*)\s(\w*)\s(\w*)\s(\w)')
+  w.writerow(labels)
+  
   
   import xml.etree.ElementTree as ET
 
@@ -18,6 +27,7 @@ def build_csv_from_xml(xml_string):
   
   # *********** create tables ***********
   for test in root.findall('test'):
+    demographics = ["","","","","",""]
     test_id = int(test.attrib['id'])
     ret.write("Test: %s\n" % test_id)
 #     subject_id = None
@@ -26,8 +36,19 @@ def build_csv_from_xml(xml_string):
 #     if subject_id in repeat_subjects:
 #       continue
     for submit in test.findall('submit'):
+      if submit.text.startswith("Demographics"):
+        m = re_demographic.match(submit.text)
+        for i in range(6):
+          demographics[i] = m.group(i+1)
+      
       ret.write("%s\n" % submit.text)
     ret.write("\n")
+    
+    w.writerow(demographics)
+
+    
+
+
   return ret
 
 if __name__ == "__main__":
