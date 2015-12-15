@@ -106,7 +106,7 @@ def build_csv_from_xml(xml_string):
   decks = [deck1,deck2,deck3]
 
   column = [None]*len(decks) # reverse index of original to ranked deck => original => column
-
+#   sorted_column = [None]*len(decks)
   # build up the headers
   dem_names = ["Test","Subject","Country", "Occupation", "Age", "Gender", "Education", "Military"] 
   deckNames = ["Training","Emergency","Planning"]
@@ -124,6 +124,7 @@ def build_csv_from_xml(xml_string):
     
   for d in range(len(decks)):
     column[d] = {}
+#     sorted_column[d] = {}
     h1.append(deckNames[d])
     for h in range(len(decks[d])):
 #       print decks[d][h]
@@ -131,6 +132,8 @@ def build_csv_from_xml(xml_string):
       h2.append(original)
       h2.append("") # time
       column[d][original] = curCol
+#       sorted_val = " ".join(str(x) for x in sorted([int(x) for x in original.split()]))
+#       sorted_column[d][sorted_val] = curCol
       if h > 0:
         h1.append("")
       h1.append("") # time
@@ -156,6 +159,7 @@ def build_csv_from_xml(xml_string):
     
     curDeck = 0 # training, emergency, planning
     curCol = len(dem_names)
+    raLast = True # Ranked Last (flip flops with Original/Ranked);  This fixes a problem where Original gets submitted before previous Ranked
     
     test_id = int(test.attrib['id'])
     row[0] = test_id
@@ -180,23 +184,31 @@ def build_csv_from_xml(xml_string):
           row[i+2] = m.group(i+1)
 
       if submit.text.startswith("Or"): # Original
-        m = re_original.match(submit.text)
-        k = m.group(1)
-        try:
-          curCol = column[curDeck][k]
-        except:
+        if raLast:
+          raLast = False
+          m = re_original.match(submit.text)
+          k = m.group(1)
           try:
-            curDeck += 1
             curCol = column[curDeck][k]
           except:
-            pass
-          
-#         print "k:%s : %s" % (curCol, k)
-         
+            try:
+              curDeck += 1
+              curCol = column[curDeck][k]
+            except:
+              pass
 
       if submit.text.startswith("Ra"): # Ranked
+        raLast = True
         m = re_ranked.match(submit.text)
-        row[curCol] = m.group(1)
+        val = m.group(1)
+#         sorted_val = " ".join(str(x) for x in sorted([int(x) for x in val.split()]))
+#         try:
+#           curCol = sorted_column[curDeck][sorted_val]
+#         except:
+#           curCol += 2
+#         print curCol
+
+        row[curCol] = val
         row[curCol+1] = m.groups()[-1]
         curCol += 2
 
