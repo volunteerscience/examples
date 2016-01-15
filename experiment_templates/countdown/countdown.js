@@ -6,7 +6,8 @@
  * 
  * Call setCountdown("timer",90);  // set "timer" to 90 seconds.
  * 
- * Routinely call advanceCountdowns();
+ * Routinely call advanceCountdowns(); aka:
+ * setInterval(advanceCountdowns, 50); // 20FPS
  * 
  * Implement countdownExpired(id) to be notified when it's done.
  * 
