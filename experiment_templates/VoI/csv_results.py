@@ -116,28 +116,27 @@ def build_csv_from_xml(xml_string):
   h1 = []
   h2 = dem_names[:]
 
+  # properly space out the different sections in h1
   curCol = 0
-  
   for i in range(len(h2)):
     h1.append("")
     curCol += 1
     
   for d in range(len(decks)):
     column[d] = {}
-#     sorted_column[d] = {}
     h1.append(deckNames[d])
     for h in range(len(decks[d])):
-#       print decks[d][h]
       original = ' '.join(str(x) for x in decks[d][h])
       h2.append(original)
-      h2.append("") # time
+      for space in range(len(decks[d][h]) - 1):
+        h2.append("")
+      h2.append("Time") # time
       column[d][original] = curCol
-#       sorted_val = " ".join(str(x) for x in sorted([int(x) for x in original.split()]))
-#       sorted_column[d][sorted_val] = curCol
       if h > 0:
         h1.append("")
-      h1.append("") # time
-      curCol += 2
+      for space in range(len(decks[d][h])):
+        h1.append("") 
+      curCol += len(decks[d][h])+1
   
   w.writerow(h1)
   w.writerow(h2)
@@ -201,19 +200,14 @@ def build_csv_from_xml(xml_string):
         raLast = True
         m = re_ranked.match(submit.text)
         val = m.group(1)
-#         sorted_val = " ".join(str(x) for x in sorted([int(x) for x in val.split()]))
-#         try:
-#           curCol = sorted_column[curDeck][sorted_val]
-#         except:
-#           curCol += 2
-#         print curCol
-
-        row[curCol] = val
-        row[curCol+1] = m.groups()[-1]
+        cards = val.split(" ")
+        for idx, card in enumerate(cards):
+          row[curCol+idx] = card   
+#         row[curCol] = val
+        timeCol = curCol + len(k.split(" "))
+        row[timeCol] = m.groups()[-1]
         curCol += 2
 
-#       ret.write("%s\n" % submit.text)
-#     ret.write("\n")
     
     w.writerow(row)
 
