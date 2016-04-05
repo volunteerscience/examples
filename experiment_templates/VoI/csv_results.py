@@ -126,12 +126,20 @@ def build_csv_from_xml(xml_string):
     column[d] = {}
     h1.append(deckNames[d])
     for h in range(len(decks[d])):
-      original = ' '.join(str(x) for x in decks[d][h])
-      h2.append(original)
-      for space in range(len(decks[d][h]) - 1):
-        h2.append("")
+      # to put the given group in one column
+#       original = ' '.join(str(x) for x in decks[d][h])
+#       h2.append(original)
+#       for space in range(len(decks[d][h]) - 1):
+#         h2.append("")
+
+      # or put the given group on individual columns
+      for given in decks[d][h]:
+#         print given
+        h2.append(given)
+                  
       h2.append("Time") # time
-      column[d][original] = curCol
+      
+      
       if h > 0:
         h1.append("")
       for space in range(len(decks[d][h])):
