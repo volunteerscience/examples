@@ -127,14 +127,15 @@ def build_csv_from_xml(xml_string):
     h1.append(deckNames[d])
     for h in range(len(decks[d])):
       # to put the given group in one column
-#       original = ' '.join(str(x) for x in decks[d][h])
+      original = ' '.join(str(x) for x in decks[d][h])
+      column[d][original] = curCol  
+      
 #       h2.append(original)
 #       for space in range(len(decks[d][h]) - 1):
 #         h2.append("")
 
       # or put the given group on individual columns
       for given in decks[d][h]:
-#         print given
         h2.append(given)
                   
       h2.append("Time") # time
@@ -190,7 +191,7 @@ def build_csv_from_xml(xml_string):
         for i in range(6):
           row[i+2] = m.group(i+1)
 
-      if submit.text.startswith("Or"): # Original
+      if submit.text.startswith("Or"): # Original Card Set : 15 16 17 18 19 20 21
         if raLast:
           raLast = False
           m = re_original.match(submit.text)
@@ -203,8 +204,10 @@ def build_csv_from_xml(xml_string):
               curCol = column[curDeck][k]
             except:
               pass
-
-      if submit.text.startswith("Ra"): # Ranked
+          
+#       print("%s %s" % (curCol, submit.text))
+      
+      if submit.text.startswith("Ra"): # Ranked Card Set : 15 16 17 18 19 20 21 number of sec 12
         raLast = True
         m = re_ranked.match(submit.text)
         val = m.group(1)
