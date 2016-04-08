@@ -210,14 +210,15 @@ def build_csv_from_xml(xml_string):
       if submit.text.startswith("Ra"): # Ranked Card Set : 15 16 17 18 19 20 21 number of sec 12
         raLast = True
         m = re_ranked.match(submit.text)
-        val = m.group(1)
-        cards = val.split(" ")
-        for idx, card in enumerate(cards):
-          row[curCol+idx] = card   
-#         row[curCol] = val
-        timeCol = curCol + len(k.split(" "))
-        row[timeCol] = m.groups()[-1]
-        curCol += 2
+        if m:
+          val = m.group(1)
+          cards = val.split(" ")
+          for idx, card in enumerate(cards):
+            row[curCol+idx] = card   
+  #         row[curCol] = val
+          timeCol = curCol + len(k.split(" "))
+          row[timeCol] = m.groups()[-1]
+          curCol += 2
 
     
     w.writerow(row)
