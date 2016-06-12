@@ -1,0 +1,35 @@
+<script>
+function receiveMessage(event) {
+  if (event.data == "closeQSIWindow") {
+    $("#qualFrame").hide();  
+    setRandomSurvey();
+  }
+}
+
+function initialize() {
+  window.addEventListener("message", receiveMessage, false);
+
+  setRandomSurvey();
+}
+
+function setRandomSurvey() {
+  var idx = Math.floor(Math.random() * surveys.length); 
+  setSurvey(surveys[idx][0],surveys[idx][1]);  
+}
+
+function setSurvey(title, src) {
+  $("#survey_title").html(title);
+  $("#qualFrame").attr("src",src+"&testId="+seed+"&subjectId="+myid);
+  $("#qualFrame").attr("height",variables["survey_height"]);
+  $("#qualFrame").show();  
+}
+</script>
+
+<h1 id="survey_title"></h1>
+<iframe id="qualFrame" 
+  name="qualtrics" scrolling="auto" frameborder="no" align="center" 
+  width="100%"
+  style="display: none;"></iframe>
+  
+  
+  

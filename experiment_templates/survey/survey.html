@@ -1,0 +1,26 @@
+<script>
+function receiveMessage(event) {
+  if (event.data == "closeQSIWindow") {
+    $("#qualFrame").hide();  
+    quit();
+  }
+}
+
+function initialize() {
+  $("#survey_title").html(variables["title"]);
+  window.addEventListener("message", receiveMessage, false);
+  
+  $("#qualFrame").attr("src",variables["survey_link"]+"&testId="+seed+"&subjectId="+myid);
+  $("#qualFrame").attr("height",variables["survey_height"]);
+  $("#qualFrame").show();
+}
+</script>
+
+<h1 id="survey_title"></h1>
+<iframe id="qualFrame" 
+  name="qualtrics" scrolling="auto" frameborder="no" align="center" 
+  width="100%"
+  style="display: none;"></iframe>
+  
+  
+  
